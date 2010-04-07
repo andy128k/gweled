@@ -1,8 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+    -DDATADIR=\""$(datadir)"\" \
+	-DPACKAGE_DATA_DIR=\""$(datadir)/gweled"\" \
+	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
 	@PACKAGE_CFLAGS@
 
 bin_PROGRAMS = gweled
