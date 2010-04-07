@@ -1,5 +1,12 @@
-#include <gnome.h>
+/* for memset and strlen */
+#include <string.h>
+/* for fabs() */
+#include <math.h>
+
+#include <gtk/gtk.h>
 #include <mikmod.h>
+
+#include <libgnome/gnome-score.h>
 
 #include "sge_core.h"
 #include "board_engine.h"

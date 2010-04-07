@@ -26,8 +26,10 @@
 #endif
 
 #include <stdio.h>
-#include <gnome.h>
-#include <glib.h>
+#include <gtk/gtk.h>
+
+#include <libgnome/gnome-score.h>
+
 #include <pthread.h>
 #include <mikmod.h>
 
@@ -37,7 +39,6 @@
 #include "music.h"
 
 // GLOBALS
-GnomeProgram *g_program;
 GtkBuilder *gweled_xml;
 GtkWidget *g_main_window;
 GtkWidget *g_pref_window;
@@ -236,7 +237,7 @@ void show_hiscores (int newscore_rank)
  					      GTK_DIALOG_DESTROY_WITH_PARENT,
  					      GTK_MESSAGE_INFO,
  					      GTK_BUTTONS_OK,
- 					      _("No highscores recorded yet"));
+ 					      "No highscores recorded yet");
  		gtk_dialog_run (GTK_DIALOG (box));
  		gtk_widget_destroy (box);
  	}
@@ -249,10 +250,10 @@ int main (int argc, char **argv)
 
 	gnome_score_init ("gweled");
 
-	g_program =
-	    gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE, argc,
-				argv, GNOME_PARAM_APP_DATADIR,
-				DATADIR, NULL);
+	gtk_window_set_default_icon_name ("gweled");
+    g_set_application_name("Gweled");
+
+    gtk_init(&argc, &argv);
 
     music_init ();
 	sge_init ();

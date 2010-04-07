@@ -1,18 +1,22 @@
-#include <gnome.h>
+/* for exit() */
+#include <stdlib.h>
+/* for strlen() */
+#include <string.h>
+
+#include <gtk/gtk.h>
 #include "sge_core.h"
 #include "sge_utils.h"
 
 #include "board_engine.h"
 #include "graphic_engine.h"
 
-extern gi_game_running;
+extern gint gi_game_running;
 extern gchar gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 extern GRand *g_random_generator;
 extern GdkPixbuf *g_gems_pixbuf[7];
 extern GtkWidget *g_drawing_area;
 extern GdkPixmap *g_buffer_pixmap;
 extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
-extern GnomeProgram *g_program;
 
 extern GweledPrefs prefs;
 signed char gpc_font_glyphs[256];
@@ -28,7 +32,7 @@ gweled_load_font (void)
 	int i;
 
 	pixbuf =
-	    sge_load_file_to_pixbuf (g_program, "gweled/font_24_20.png");
+	    sge_load_file_to_pixbuf ("gweled/font_24_20.png");
 	if (pixbuf) {
 		for (i = 0; i < 50; i++)
 			gi_charset_pixbuf[i] =
@@ -50,7 +54,7 @@ gweled_load_pixmaps (void)
 	for (i = 0; i < 7; i++) {
 		filename = g_strdup_printf ("gweled/gem%02d.svg", i + 1);
 		pixbuf =
-		    sge_load_svg_to_pixbuf (g_program, filename,
+		    sge_load_svg_to_pixbuf (filename,
 					    prefs.tile_width, prefs.tile_height);
 		if (pixbuf == NULL)
 			exit (-1);
@@ -60,21 +64,21 @@ gweled_load_pixmaps (void)
 	}
 
 	pixbuf =
-	    sge_load_svg_to_pixbuf (g_program, "gweled/tile_odd.svg",
+	    sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_tiles_bg_pixbuf[0] = sge_register_pixbuf (pixbuf, -1);
 
 	pixbuf =
-	    sge_load_svg_to_pixbuf (g_program, "gweled/tile_even.svg",
+	    sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_tiles_bg_pixbuf[1] = sge_register_pixbuf (pixbuf, -1);
 
 	pixbuf =
-	    sge_load_svg_to_pixbuf (g_program, "gweled/cursor.svg",
+	    sge_load_svg_to_pixbuf ("gweled/cursor.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
@@ -92,7 +96,7 @@ gweled_reload_pixmaps (void)
 	for (i = 0; i < 7; i++) {
 		filename = g_strdup_printf ("gweled/gem%02d.svg", i + 1);
 		pixbuf =
-		    sge_load_svg_to_pixbuf (g_program, filename,
+		    sge_load_svg_to_pixbuf (filename,
 					    prefs.tile_width, prefs.tile_height);
 		if (pixbuf == NULL)
 			exit (-1);
@@ -102,21 +106,21 @@ gweled_reload_pixmaps (void)
 	}
 
 	pixbuf =
-	    sge_load_svg_to_pixbuf (g_program, "gweled/tile_odd.svg",
+	    sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
 	sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[0]);
 
 	pixbuf =
-	    sge_load_svg_to_pixbuf (g_program, "gweled/tile_even.svg",
+	    sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
 	sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[1]);
 
 	pixbuf =
-	    sge_load_svg_to_pixbuf (g_program, "gweled/cursor.svg",
+	    sge_load_svg_to_pixbuf ("gweled/cursor.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);

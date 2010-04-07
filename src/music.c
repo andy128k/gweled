@@ -38,7 +38,7 @@ void music_init()
 void music_thread(void *ptr)
 {
 	while (1) {
-	    usleep(10000);
+	    g_usleep(10000);
 		MikMod_Update();
     }
 }

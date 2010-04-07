@@ -1,19 +1,19 @@
-#include <gnome.h>
+#include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
 
 #include "sge_utils.h"
 
 GdkPixbuf *
-sge_load_svg_to_pixbuf (GnomeProgram * program, char *filename, int width,
+sge_load_svg_to_pixbuf (char *filename, int width,
 			int height)
 {
 	gchar *full_pathname;
 	GdkPixbuf *pixbuf = NULL;
 	GError *error;
 
-	full_pathname = gnome_program_locate_file (program,
-						   GNOME_FILE_DOMAIN_APP_PIXMAP,
-						   filename, TRUE, NULL);
+	full_pathname = g_strconcat(DATADIR "/pixmaps/",
+	                            filename,
+	                            NULL );
 	if (full_pathname) {
 		pixbuf =
 		    rsvg_pixbuf_from_file_at_size (full_pathname, width,
@@ -29,14 +29,14 @@ sge_load_svg_to_pixbuf (GnomeProgram * program, char *filename, int width,
 }
 
 GdkPixbuf *
-sge_load_file_to_pixbuf (GnomeProgram * program, char *filename)
+sge_load_file_to_pixbuf (char *filename)
 {
 	gchar *full_pathname;
 	GdkPixbuf *pixbuf = NULL;
 
-	full_pathname = gnome_program_locate_file (program,
-						   GNOME_FILE_DOMAIN_APP_PIXMAP,
-						   filename, TRUE, NULL);
+	full_pathname = g_strconcat(DATADIR "/pixmaps/",
+	                            filename,
+	                            NULL );
 	if (full_pathname) {
 		pixbuf = gdk_pixbuf_new_from_file (full_pathname, NULL);
 		g_free (full_pathname);

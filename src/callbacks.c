@@ -2,7 +2,7 @@
 #  include <config.h>
 #endif
 
-#include <gnome.h>
+#include <gtk/gtk.h>
 #include <mikmod.h>
 
 #include "callbacks.h"
@@ -49,7 +49,7 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
-					      _("Do you really want to abort this game ?"));
+					      "Do you really want to abort this game ?");
 
 		gtk_dialog_set_default_response (GTK_DIALOG (box),
 						 GTK_RESPONSE_NO);
@@ -86,39 +86,30 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-	static GtkWidget *about = NULL;
 	GdkPixbuf *pixbuf = NULL;
-	const gchar *authors[] = { "Sebastien Delestaing <sebdelestaing@free.fr>", NULL };
-	const gchar *documenters[] = { NULL };
-	const gchar *translator_credits = _("translator_credits");
 
-	if (about != NULL)
-	{
-		gdk_window_raise (about->window);
-		gdk_window_show (about->window);
-		return;
-	}
+	const gchar *authors[] = {
+	    "Sebastien Delestaing <sebdelestaing@free.fr>",
+	    "Daniele Napolitano <dnax88@gmail.com>",
+	    NULL
+	};
 
-	pixbuf = gdk_pixbuf_new_from_file (PACKAGE_DATA_DIR "/gweled/gweled_logo.png", NULL);
+	const gchar *translator_credits = "translator-credits";
 
-	about = gnome_about_new(_("Gweled"), VERSION,
-			"Copyright \xc2\xa9 2003-2005 Sebastien Delestaing",
-			_("This is a GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond Mine\")."),
-			(const char **)authors,
-			(const char **)documenters,
-			strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,
-			pixbuf);
+	pixbuf = gdk_pixbuf_new_from_file (DATADIR "/gweled/gweled_logo.png", NULL);
 
-	gtk_window_set_icon_from_file(GTK_WINDOW(about), PACKAGE_DATA_DIR "/gweled/gweled_icon.png", NULL);
+    gtk_show_about_dialog (GTK_WINDOW(g_main_window),
+             "authors", authors,
+		     "translator-credits", g_strcmp0("translator-credits", translator_credits) ? translator_credits : NULL,
+             "comments", "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond Mine\")",
+             "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010 Daniele Napolitano",
+             "version", VERSION,
+             "website", "http://sebdelestaing.free.fr/gweled/",
+		     "icon", "pixbuf",
+             NULL);
 
 	if (pixbuf != NULL)
 		gdk_pixbuf_unref (pixbuf);
-
-	g_signal_connect (G_OBJECT (about), "destroy",
-			G_CALLBACK (gtk_widget_destroyed), &about);
-	g_object_add_weak_pointer (G_OBJECT (about), (void**)&(about));
-
-	gtk_widget_show(about);
 }
 
 gboolean
