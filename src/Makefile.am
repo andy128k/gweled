@@ -13,6 +13,7 @@ gweled_SOURCES = \
 	graphic_engine.c graphic_engine.h \
 	sge_core.c sge_core.h \
 	sge_utils.c sge_utils.h \
+	music.c music.h \
 	callbacks.c callbacks.h
 
 EXTRA_DIST =			\

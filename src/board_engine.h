@@ -4,6 +4,7 @@
 typedef struct s_gweled_prefs
 {
 	gboolean timer_mode;
+	gboolean music_on;
 	gint tile_width;
 	gint tile_height;
 }GweledPrefs;

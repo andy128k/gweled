@@ -7,6 +7,7 @@
 #include <mikmod.h>
 
 #include "callbacks.h"
+#include "music.h"
 
 #include "sge_core.h"
 #include "board_engine.h"
@@ -113,7 +114,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 	if (pixbuf != NULL)
 		gdk_pixbuf_unref (pixbuf);
-	
+
 	g_signal_connect (G_OBJECT (about), "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &about);
 	g_object_add_weak_pointer (G_OBJECT (about), (void**)&(about));
@@ -152,7 +153,7 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 			gi_dragging = -1;
 
 			if(click_sfx)
-				Sample_Play(click_sfx, 0, 0);						
+				Sample_Play(click_sfx, 0, 0);
 
 		} else {
 			on_new1_activate (NULL, NULL);
@@ -161,7 +162,7 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 
 	case GDK_BUTTON_RELEASE:
 		gi_dragging = 0;
-		gi_gem_dragged = 0;		
+		gi_gem_dragged = 0;
 		x_release = event->x / prefs.tile_width;
 		y_release = event->y / prefs.tile_height;
 		if( (x_release < 0) ||
@@ -195,7 +196,7 @@ drawing_area_motion_event_cb (GtkWidget * widget, GdkEventMotion * event, gpoint
 		gi_y_drag = event->y / prefs.tile_height;
 		gi_gem_dragged = -1;
 	}
-	
+
 	return FALSE;
 }
 
@@ -269,7 +270,8 @@ on_hintButton_clicked (GtkButton * button, gpointer user_data)
 		gi_gem_clicked = -1;
 		g_do_not_score = TRUE;
 	}
-}
+
+}
 */
 void
 on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
@@ -338,5 +340,16 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 				      BOARD_WIDTH * prefs.tile_width,
 				      BOARD_HEIGHT * prefs.tile_height);
+	}
+}
+
+void
+on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+	if (gtk_toggle_button_get_active (togglebutton)) {
+		music_play();
+	}
+	else {
+		music_stop();
 	}
 }

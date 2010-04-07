@@ -133,3 +133,7 @@ on_mediumRadiobutton_toggled           (GtkToggleButton *togglebutton,
 void
 on_largeRadiobutton_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
+
+void
+on_music_checkbutton_toggled		    (GtkToggleButton *togglebutton,
+                                         gpointer  		 user_data);

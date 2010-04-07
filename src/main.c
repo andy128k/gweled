@@ -35,6 +35,7 @@
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
+#include "music.h"
 
 // GLOBALS
 GnomeProgram *g_program;
@@ -51,11 +52,12 @@ GdkPixmap *g_buffer_pixmap = NULL;
 GRand *g_random_generator;
 
 GweledPrefs prefs;
+pthread_t thread;
 
-MODULE *module;
+/*MODULE *module;*/
 SAMPLE *swap_sfx, *click_sfx;
 
-static pthread_t thread;
+/*static pthread_t thread;*/
 
 void save_preferences(void)
 {
@@ -91,6 +93,7 @@ void load_preferences(void)
 		prefs.tile_width = 48;
 		prefs.tile_height = 48;
 		prefs.timer_mode = FALSE;
+		prefs.music_on = TRUE;
 
 		save_preferences();
 	}
@@ -122,6 +125,13 @@ void init_pref_window(void)
 	}
 	if (radio_button)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
+
+	//Is the music playing at start ?
+	radio_button = glade_xml_get_widget(gweled_xml, "music_checkbutton");
+	if (prefs.music_on)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
 }
 
 void show_hiscores (int newscore_rank)
@@ -233,15 +243,6 @@ void show_hiscores (int newscore_rank)
  	}
 }
 
-
-void mikmod_thread(void *ptr)
-{
-	while (1) {
-	    usleep(10000);
-		MikMod_Update();
-    }
-}
-
 int main (int argc, char **argv)
 {
 	guint board_engine_id;
@@ -253,23 +254,7 @@ int main (int argc, char **argv)
 				argv, GNOME_PARAM_APP_DATADIR,
 				PACKAGE_DATA_DIR, NULL);
 
-    /* register all the drivers */
-    MikMod_RegisterDriver(&drv_AF);
-    MikMod_RegisterDriver(&drv_esd);
-    MikMod_RegisterDriver(&drv_alsa);
-    MikMod_RegisterDriver(&drv_oss);
-    MikMod_RegisterDriver(&drv_nos);
-
-    /* register all the module loaders */
-    MikMod_RegisterAllLoaders();
-
-    /* initialize the library */
-    if (MikMod_Init(""))
-	{
-        fprintf(stderr, "Could not initialize sound, reason: %s\n", MikMod_strerror(MikMod_errno));
-        //return; don't fail on sound problems
-    }
-
+    music_init ();
 	sge_init ();
 
 	g_random_generator = g_rand_new_with_seed (time (NULL));
@@ -309,9 +294,6 @@ int main (int argc, char **argv)
 
 	gi_game_running = 0;
 
-    // load module
-    module = Player_Load(PACKAGE_DATA_DIR "/sounds/gweled/autonom.s3m", 64, 0);
-
 	// load sound fx
     swap_sfx = Sample_Load(PACKAGE_DATA_DIR "/sounds/gweled/swap.wav");
     if (!swap_sfx) {
@@ -334,13 +316,8 @@ int main (int argc, char **argv)
 
     MikMod_EnableOutput();
 
-    if (module) {
-        Player_Start(module);
-		Player_SetVolume(64);
-		pthread_create(&thread, NULL, (void *)&mikmod_thread, NULL);
-
-    } else
-        fprintf(stderr, "Could not load module, reason: %s\n", MikMod_strerror(MikMod_errno));
+	if (prefs.music_on)
+		music_play();
 
 	board_engine_id = gtk_timeout_add (100, board_engine_loop, NULL);
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
@@ -359,13 +336,8 @@ int main (int argc, char **argv)
 	g_rand_free (g_random_generator);
 	g_object_unref(G_OBJECT(gweled_xml));
 
-    if (module)
-	{
-		pthread_cancel(thread);
-		pthread_join(thread, NULL);
-	    Player_Stop();
-	    Player_Free(module);
-	}
+	music_stop();
+
 	if(swap_sfx)
 		Sample_Free(swap_sfx);
 	if(click_sfx)
