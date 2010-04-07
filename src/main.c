@@ -254,7 +254,11 @@ int main (int argc, char **argv)
 				PACKAGE_DATA_DIR, NULL);
 
     /* register all the drivers */
-    MikMod_RegisterAllDrivers();
+    MikMod_RegisterDriver(&drv_AF);
+    MikMod_RegisterDriver(&drv_esd);
+    MikMod_RegisterDriver(&drv_alsa);
+    MikMod_RegisterDriver(&drv_oss);
+    MikMod_RegisterDriver(&drv_nos);
 
     /* register all the module loaders */
     MikMod_RegisterAllLoaders();
