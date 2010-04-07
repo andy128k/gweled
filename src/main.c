@@ -1,5 +1,5 @@
 /*     ____
-      /____\ 
+      /____\
       \    /    Gweled
        \  /
         \/
@@ -62,7 +62,7 @@ void save_preferences(void)
 	gchar *filename;
 	FILE *stream;
 
-	filename = g_strconcat(g_get_home_dir(), "/.gweled", NULL);
+	filename = g_strconcat(g_get_user_config_dir(), "/.gweled", NULL);
 	stream = fopen(filename, "w");
 	if(stream)
 	{
@@ -78,7 +78,7 @@ void load_preferences(void)
 	char *filename;
 	FILE *stream;
 
-	filename = g_strconcat(g_get_home_dir(), "/.gweled", NULL);
+	filename = g_strconcat(g_get_user_config_dir(), "/.gweled", NULL);
 
 	stream = fopen(filename, "r");
 	if(stream)
@@ -92,7 +92,7 @@ void load_preferences(void)
 		prefs.tile_height = 48;
 		prefs.timer_mode = FALSE;
 
-		save_preferences();	
+		save_preferences();
 	}
 	g_free(filename);
 }
@@ -131,7 +131,7 @@ void show_hiscores (int newscore_rank)
  	//  the list, don't try to highlight the new score. Else if
  	//  (1 <= newscore_rank <= 10), then let the user know they've just made
  	//  a new high score.
- 
+
  	GtkWidget *box;
  	GtkWidget *label;
  	char **names;
@@ -139,17 +139,17 @@ void show_hiscores (int newscore_rank)
  	time_t *scoretimes;
  	int i, nb_scores;
  	char *buffer;
- 	
+
  	gboolean close_score_list = TRUE;
- 
+
  	nb_scores = gnome_score_get_notable ("gweled", "easy", &names, &scores, &scoretimes);
- 
+
  // FIXME: that's a temporary solution to display the timed game highscores
      if (prefs.timer_mode)
  	   	nb_scores = gnome_score_get_notable ("gweled", "timed", &names, &scores, &scoretimes);
  	else
  	   	nb_scores = gnome_score_get_notable ("gweled", "easy", &names, &scores, &scoretimes);
- 	   	
+
  	if (nb_scores)
 	{
  		buffer = g_strdup_printf ("label27");
@@ -160,7 +160,7 @@ void show_hiscores (int newscore_rank)
  				gtk_label_set_markup (GTK_LABEL (label), "<span color=\"red\" weight=\"bold\">You made the highscore list!</span>");
  			else
  				gtk_label_set_markup (GTK_LABEL (label), "<span weight=\"bold\">Highscores</span>");
- 		
+
  		for (i = 0; i < 10 && i < nb_scores; i++)
 		{
  			buffer = g_strdup_printf ("label%d", i + 28);
@@ -175,7 +175,7 @@ void show_hiscores (int newscore_rank)
  				gtk_label_set_markup (GTK_LABEL (label), buffer);
  				g_free (buffer);
  			}
- 
+
  			buffer = g_strdup_printf ("nameLabel%02d", i + 1);
  			label = glade_xml_get_widget(gweled_xml, buffer);
  			g_free (buffer);
@@ -194,7 +194,7 @@ void show_hiscores (int newscore_rank)
  				}
 				else
  					gtk_label_set_text (GTK_LABEL (label), "");
- 
+
  			buffer = g_strdup_printf ("scoreLabel%02d", i + 1);
  			label = glade_xml_get_widget(gweled_xml, buffer);
  			g_free (buffer);
@@ -211,14 +211,14 @@ void show_hiscores (int newscore_rank)
 				else
  					gtk_label_set_text (GTK_LABEL (label), "");
  		}
- 
+
  		for (; i < nb_scores; i++)
  			g_free (names[i]);
- 
+
  		g_free (names);
  		g_free (scores);
  		g_free (scoretimes);
- 
+
  		gtk_widget_show (g_score_window);
  	}
 	else
@@ -232,7 +232,7 @@ void show_hiscores (int newscore_rank)
  		gtk_widget_destroy (box);
  	}
 }
- 
+
 
 void mikmod_thread(void *ptr)
 {
@@ -241,7 +241,7 @@ void mikmod_thread(void *ptr)
 		MikMod_Update();
     }
 }
-	
+
 int main (int argc, char **argv)
 {
 	guint board_engine_id;
@@ -353,7 +353,7 @@ int main (int argc, char **argv)
 	sge_destroy ();
 	gtk_timeout_remove (board_engine_id);
 	g_rand_free (g_random_generator);
-	g_object_unref(G_OBJECT(gweled_xml));	
+	g_object_unref(G_OBJECT(gweled_xml));
 
     if (module)
 	{
