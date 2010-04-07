@@ -369,7 +369,7 @@ int main (int argc, char **argv)
 	if(swap_sfx)
 		Sample_Free(swap_sfx);
 	if(click_sfx)
-		Sample_Free(swap_sfx);
+		Sample_Free(click_sfx);
 
 	MikMod_Exit();
 
