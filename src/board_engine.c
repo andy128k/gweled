@@ -33,7 +33,8 @@ gint gi_score, gi_current_score, gi_game_running;
 
 gint gi_total_gems_removed;
 gint gi_gems_removed_per_move;
-gint gi_bonus_multiply;
+
+gint gi_bonus_multiply;
 gint gi_previous_bonus_at;
 gint gi_next_bonus_at;
 gint gi_trigger_bonus;
@@ -47,7 +48,7 @@ gint gi_gem_dragged = 0;
 gint gi_x_drag = 0;
 gint gi_y_drag = 0;
 
-gchar gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
+gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 gint gi_nb_of_tiles[7];
 
 gboolean g_do_not_score;
@@ -103,10 +104,11 @@ get_new_tile (void)
 }
 
 void
-gweled_start_new_game (void) 
+gweled_start_new_game (void)
 {
 	gint i, j, i_deleted;
-		gi_score = 0;
+
+	gi_score = 0;
 	gi_current_score = 0;
 	gi_gems_removed_per_move = 0;
 	gi_bonus_multiply = 3;
@@ -119,7 +121,8 @@ gweled_start_new_game (void)
 		gi_total_gems_removed = FIRST_BONUS_AT / 2;
 	else
 		gi_total_gems_removed = 0;
-		gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 0.0);
+
+	gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 0.0);
 	gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
 	gtk_label_set_markup ((GtkLabel *) g_bonus_label, "<span weight=\"bold\">x1</span>");
 
@@ -152,22 +155,25 @@ gpc_game_board[2][7] = 1;
 gpc_game_board[3][7] = 0;
 gpc_game_board[4][7] = 1;
 gpc_game_board[5][7] = 1;
-*/ 
+*/
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
 			g_gem_objects[i][j] = sge_create_object (i * prefs.tile_width, (j - BOARD_HEIGHT) * prefs.tile_height, 1,
 													 gi_gems_pixbuf[gpc_game_board[i][j]]);
-				gweled_gems_fall_into_place ();
+
+	gweled_gems_fall_into_place ();
 
 	gi_game_running = -1;
 	gi_state = _MARK_ALIGNED_GEMS;
 }
-gint
-gweled_is_part_of_an_alignment (gint x, gint y) 
+
+gint
+gweled_is_part_of_an_alignment (gint x, gint y)
 {
 	gint i, result;
-		result = 0;
+
+	result = 0;
 	for (i = x - 2; i <= x; i++)
 		if (i >= 0 && i + 2 < BOARD_WIDTH)
 			if (gpc_bit_n[gpc_game_board[i][y]] &
@@ -185,14 +191,16 @@ gweled_is_part_of_an_alignment (gint x, gint y)
 				result |= 2;	// is part of a vertical alignment
 				break;
 		}
-		return result;
+
+	return result;
 }
 
 gboolean
-gweled_check_for_moves_left (int *pi, int *pj) 
+gweled_check_for_moves_left (int *pi, int *pj)
 {
 	gint i, j;
-		for (j = BOARD_HEIGHT - 1; j >= 0; j--)
+
+	for (j = BOARD_HEIGHT - 1; j >= 0; j--)
 		for (i = BOARD_WIDTH - 1; i >= 0; i--) {
 			if (i > 0) {
 				gweled_swap_gems (i - 1, j, i, j);
@@ -226,16 +234,19 @@ gweled_check_for_moves_left (int *pi, int *pj)
 				}
 				gweled_swap_gems (i, j + 1, i, j);
 			}
-		}		return FALSE;
-      move_found:
+		}
+	return FALSE;
+
+move_found:
 	if (pi && pj) {
 		*pi = i;
 		*pj = j;
 	}
 	return TRUE;
 }
-void
-gweled_swap_gems (gint x1, gint y1, gint x2, gint y2) 
+
+void
+gweled_swap_gems (gint x1, gint y1, gint x2, gint y2)
 {
 	gint i;
 	T_SGEObject * object;
@@ -246,12 +257,13 @@ gweled_swap_gems (gint x1, gint y1, gint x2, gint y2)
 	i = gpc_game_board[x1][y1];
 	gpc_game_board[x1][y1] = gpc_game_board[x2][y2];
 	gpc_game_board[x2][y2] = i;
-} 
+}
 void
-gweled_refill_board (void) 
+gweled_refill_board (void)
 {
 	gint i, j, k;
-	for (i = 0; i < BOARD_WIDTH; i++)
+
+	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
 			if (gpc_game_board[i][j] == -1)
 			{
@@ -317,7 +329,8 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 		i_total_score = 10 * g_rand_int_range (g_random_generator, 1, 2);
 	else
 		i_total_score = 10 * (gi_gems_removed_per_move - 2) * (gi_bonus_multiply >> 1);
-		if (g_do_not_score == FALSE) {
+
+	if (g_do_not_score == FALSE) {
 		gi_score += i_total_score;
 //display score
 		buffer = g_strdup_printf ("%d", i_total_score);
@@ -357,7 +370,7 @@ take_down_alignment (gpointer object, gpointer user_data)
 }
 
 void
-gweled_take_down_deleted_gems (void) 
+gweled_take_down_deleted_gems (void)
 {
 	g_list_foreach (g_alignment_list, take_down_alignment, NULL);
 }
@@ -375,11 +388,11 @@ destroy_all_alignments (void)
 }
 
 void
-gweled_delete_gems_for_bonus (void) 
+gweled_delete_gems_for_bonus (void)
 {
 	gint i;
 	T_Alignment * alignment;
-	
+
 	destroy_all_alignments ();
 	for (i = 0; i < NB_BONUS_GEMS; i++) {
 		alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
@@ -390,7 +403,8 @@ gweled_delete_gems_for_bonus (void)
 		g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
 	}
 }
-
+
+
 // FIXME!!!
 //
 // if we have the following pattern:
@@ -405,17 +419,18 @@ gweled_delete_gems_for_bonus (void)
 // However the fix implies a significant change in the function below for
 // a bug that is unlikely to happen. I will fix it. Just... not now.
 gboolean
-gweled_check_for_alignments (void) 
+gweled_check_for_alignments (void)
 {
 	gint i, j, i_nb_aligned, start_x, start_y;
 	T_Alignment *alignment;
 
 	destroy_all_alignments ();
-	
+
 // make a list of vertical alignments
 	i_nb_aligned = 0;
 
-	for (i = 0; i < BOARD_WIDTH; i++) {			for (j = 0; j < BOARD_HEIGHT; j++)
+	for (i = 0; i < BOARD_WIDTH; i++) {
+		for (j = 0; j < BOARD_HEIGHT; j++)
 			if ((gweled_is_part_of_an_alignment (i, j) & 2) == 2) {
 				// record the origin of the alignment
 				if (i_nb_aligned == 0) {
@@ -424,7 +439,7 @@ gweled_check_for_alignments (void)
 				}
 				i_nb_aligned++;
 			} else {
-				// we found one, let's remember it for later use                                
+				// we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
 					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
 					alignment->x = start_x;
@@ -447,7 +462,7 @@ gweled_check_for_alignments (void)
 		}
 		i_nb_aligned = 0;
 	}
-	
+
 // make a list of horizontal alignments
 	i_nb_aligned = 0;
 
@@ -461,7 +476,7 @@ gweled_check_for_alignments (void)
 				}
 				i_nb_aligned++;
 			} else {
-				// if we found one, let's remember it for later use                             
+				// if we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
 					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
 					alignment->x = start_x;
@@ -497,7 +512,7 @@ board_engine_loop (gpointer data)
 	gint hiscore_rank;
 
 	time_slice++;
-	
+
 // progressive score
 	if(gi_current_score < gi_score)
 	{
@@ -547,7 +562,7 @@ board_engine_loop (gpointer data)
 			x2 = gi_x_click;
 			y2 = gi_y_click;
 			gi_gem_clicked = 0;
-			if (((x1 == x2) && (fabs (y1 - y2) == 1)) || 
+			if (((x1 == x2) && (fabs (y1 - y2) == 1)) ||
 			    ((y1 == y2) && (fabs (x1 - x2) == 1))) {
 				// If the player clicks an adjacent gem, try to swap
 				if (cursor[1])
@@ -562,12 +577,12 @@ board_engine_loop (gpointer data)
 						x1 * prefs.tile_width,
 						y1 * prefs.tile_height);
 				if(swap_sfx)
-					Sample_Play(swap_sfx, 0, 0);						
+					Sample_Play(swap_sfx, 0, 0);
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
 				if (cursor[1])
 					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = NULL;					
+				cursor[1] = NULL;
 				// If the player clicks the selected gem, deselect it
 				if(cursor[0])
 					sge_destroy_object(cursor[0], NULL);
@@ -576,7 +591,7 @@ board_engine_loop (gpointer data)
 			} else {
 				if (cursor[1])
 					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = NULL;					
+				cursor[1] = NULL;
 				// If the player clicks anywhere else, make that the first selection
 				x1 = x2;
 				y1 = y2;
