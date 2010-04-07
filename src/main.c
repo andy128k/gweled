@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <gnome.h>
 #include <glib.h>
-#include <glade/glade.h>
 #include <pthread.h>
 #include <mikmod.h>
 
@@ -39,7 +38,7 @@
 
 // GLOBALS
 GnomeProgram *g_program;
-GladeXML *gweled_xml;
+GtkBuilder *gweled_xml;
 GtkWidget *g_main_window;
 GtkWidget *g_pref_window;
 GtkWidget *g_score_window;
@@ -105,29 +104,29 @@ void init_pref_window(void)
 	GtkWidget *radio_button = NULL;
 
 	if (prefs.timer_mode == FALSE)
-		radio_button = glade_xml_get_widget(gweled_xml, "easyRadiobutton");
+		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "easyRadiobutton"));
 	else
-		radio_button = glade_xml_get_widget(gweled_xml, "hardRadiobutton");
+		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "hardRadiobutton"));
 	if (radio_button)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 
 	radio_button = NULL;
 	switch (prefs.tile_width) {
 	case 32:
-		radio_button = glade_xml_get_widget(gweled_xml, "smallRadiobutton");
+		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "smallRadiobutton"));
 		break;
 	case 48:
-		radio_button = glade_xml_get_widget(gweled_xml, "mediumRadiobutton");
+		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "mediumRadiobutton"));
 		break;
 	case 64:
-		radio_button = glade_xml_get_widget(gweled_xml, "largeRadiobutton");
+		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "largeRadiobutton"));
 		break;
 	}
 	if (radio_button)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 
 	//Is the music playing at start ?
-	radio_button = glade_xml_get_widget(gweled_xml, "music_checkbutton");
+	radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "music_checkbutton"));
 	if (prefs.music_on)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 	else
@@ -163,7 +162,7 @@ void show_hiscores (int newscore_rank)
  	if (nb_scores)
 	{
  		buffer = g_strdup_printf ("label27");
- 		label = glade_xml_get_widget(gweled_xml, buffer);
+ 		label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
  		g_free (buffer);
  		if (label)
  			if (newscore_rank > 0)
@@ -174,7 +173,7 @@ void show_hiscores (int newscore_rank)
  		for (i = 0; i < 10 && i < nb_scores; i++)
 		{
  			buffer = g_strdup_printf ("label%d", i + 28);
- 			label = glade_xml_get_widget(gweled_xml, buffer);
+ 			label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
  			g_free (buffer);
  			if (label)
 			{
@@ -187,7 +186,7 @@ void show_hiscores (int newscore_rank)
  			}
 
  			buffer = g_strdup_printf ("nameLabel%02d", i + 1);
- 			label = glade_xml_get_widget(gweled_xml, buffer);
+ 			label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
  			g_free (buffer);
  			if (label)
  				if(i < nb_scores)
@@ -206,7 +205,7 @@ void show_hiscores (int newscore_rank)
  					gtk_label_set_text (GTK_LABEL (label), "");
 
  			buffer = g_strdup_printf ("scoreLabel%02d", i + 1);
- 			label = glade_xml_get_widget(gweled_xml, buffer);
+ 			label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
  			g_free (buffer);
  			if (label)
  				if(i < nb_scores)
@@ -246,32 +245,38 @@ void show_hiscores (int newscore_rank)
 int main (int argc, char **argv)
 {
 	guint board_engine_id;
+	GError* error = NULL;
 
 	gnome_score_init ("gweled");
 
 	g_program =
 	    gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE, argc,
 				argv, GNOME_PARAM_APP_DATADIR,
-				PACKAGE_DATA_DIR, NULL);
+				DATADIR, NULL);
 
     music_init ();
 	sge_init ();
 
 	g_random_generator = g_rand_new_with_seed (time (NULL));
 
-	gweled_xml = glade_xml_new(PACKAGE_DATA_DIR "/gweled/gweled.glade", NULL, NULL);
-	g_pref_window = glade_xml_get_widget(gweled_xml, "preferencesDialog");
-	g_main_window = glade_xml_get_widget(gweled_xml, "gweledApp");
-	g_score_window = glade_xml_get_widget(gweled_xml, "highscoresDialog");
-	g_progress_bar = glade_xml_get_widget(gweled_xml, "bonusProgressbar");
-	g_score_label = glade_xml_get_widget(gweled_xml, "scoreLabel");
-	g_bonus_label = glade_xml_get_widget(gweled_xml, "bonusLabel");
-	g_drawing_area = glade_xml_get_widget(gweled_xml, "boardDrawingarea");
+    gweled_xml = gtk_builder_new ();
+    if (!gtk_builder_add_from_file (gweled_xml, PACKAGE_DATA_DIR "/gweled.ui", &error))
+    {
+        g_warning ("Couldn't load builder file: %s", error->message);
+        g_error_free (error);
+    }
+    g_pref_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "preferencesDialog"));
+    g_main_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "gweledApp"));
+    g_score_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "highscoresDialog"));
+    g_progress_bar = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "bonusProgressbar"));
+    g_score_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel"));
+    g_bonus_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "bonusLabel"));
+    g_drawing_area = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "boardDrawingarea"));
 
 	load_preferences();
 	init_pref_window();
 
-	glade_xml_signal_autoconnect(gweled_xml);
+	gtk_builder_connect_signals(gweled_xml, NULL);
 
 	gtk_widget_add_events (GTK_WIDGET (g_drawing_area),
 			       GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_MOTION_MASK);
@@ -295,13 +300,13 @@ int main (int argc, char **argv)
 	gi_game_running = 0;
 
 	// load sound fx
-    swap_sfx = Sample_Load(PACKAGE_DATA_DIR "/sounds/gweled/swap.wav");
+    swap_sfx = Sample_Load(DATADIR "/sounds/gweled/swap.wav");
     if (!swap_sfx) {
         fprintf(stderr, "Could not load swap.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
         //MikMod_Exit();
         //return; nope, this is not critical
     }
-    click_sfx = Sample_Load(PACKAGE_DATA_DIR "/sounds/gweled/click.wav");
+    click_sfx = Sample_Load(DATADIR "/sounds/gweled/click.wav");
     if (!click_sfx) {
         fprintf(stderr, "Could not load click.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
         //MikMod_Exit();

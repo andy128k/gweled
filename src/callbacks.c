@@ -3,7 +3,6 @@
 #endif
 
 #include <gnome.h>
-#include <glade/glade.h>
 #include <mikmod.h>
 
 #include "callbacks.h"
@@ -17,7 +16,7 @@ extern gi_game_running;
 extern gint gi_score;
 extern gboolean g_do_not_score;
 
-extern GladeXML *gweled_xml;
+extern GtkBuilder *gweled_xml;
 extern GtkWidget *g_main_window;
 extern GtkWidget *g_pref_window;
 extern GtkWidget *g_score_window;

@@ -22,9 +22,10 @@ EXTRA_DIST =			\
 
 Datadir = $(datadir)/gweled/
 Data_DATA = 	\
-	gweled.glade \
+	gweled.ui \
 	gweled_icon.png \
 	gweled_logo.png
 
 gweled_LDADD = @PACKAGE_LIBS@
+
 
