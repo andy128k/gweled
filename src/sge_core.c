@@ -1,24 +1,24 @@
-/*
-                          Seb's Graphic Engine (SGE)
+/* Gweled - Seb's Graphic Engine (SGE)
+ *
+ * Copyright (C) 2003-2005 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
+ * Copyright (C) 2010 Daniele Napolitano <dnax88@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 
-(C)opyright 2003 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-#include <gnome.h>
+#include <gtk/gtk.h>
 #include <math.h>
 #include "sge_core.h"
 
@@ -36,7 +36,8 @@ static GdkPixmap *g_pixmap_buffer;
 static GdkPixbuf **g_pixbufs;
 static gint g_width, g_height;
 static gint gi_nb_pixbufs;
-static GtkWidget *g_drawing_area = NULL;
+
+static GtkWidget *g_drawing_area = NULL;
 
 // helper functions
 gint
@@ -47,7 +48,7 @@ compare_by_layer (gconstpointer a, gconstpointer b)
 
 // main loop functions
 void
-draw_object (gpointer object, gpointer user_data) 
+draw_object (gpointer object, gpointer user_data)
 {
 	int x, y;
 	GdkGC *gc;
@@ -88,12 +89,14 @@ draw_object (gpointer object, gpointer user_data)
 		invalidate_objects_above ((T_SGEObject *) object);
 	}
 }
-void
-move_object (gpointer object, gpointer user_data) 
+
+void
+move_object (gpointer object, gpointer user_data)
 {
 	((T_SGEObject *) object)->vx += ((T_SGEObject *) object)->ax;
 	((T_SGEObject *) object)->vy += ((T_SGEObject *) object)->ay;
-		if (sge_object_is_moving ((T_SGEObject *) object))
+
+	if (sge_object_is_moving ((T_SGEObject *) object))
 	{
 		invalidate_background_beneath ((T_SGEObject *) object);
 		((T_SGEObject *) object)->x += ((T_SGEObject *) object)->vx;
@@ -102,14 +105,18 @@ move_object (gpointer object, gpointer user_data)
 	}
 
 	if (((T_SGEObject *) object)->stop_condition)
-		if (((T_SGEObject *) object)->
-		     stop_condition ((T_SGEObject *) object)) {
-			((T_SGEObject *) object)->vx = 0.0;
-			((T_SGEObject *) object)->vy = 0.0;
-			((T_SGEObject *) object)->ax = 0.0;
-			((T_SGEObject *) object)->ay = 0.0;
-			if (((T_SGEObject *) object)->stop_callback)
-				((T_SGEObject *) object)->
+
+        if (((T_SGEObject *) object)->
+		     stop_condition ((T_SGEObject *) object))
+		{
+		    ((T_SGEObject *) object)->vx = 0.0;
+            ((T_SGEObject *) object)->vy = 0.0;
+            ((T_SGEObject *) object)->ax = 0.0;
+            ((T_SGEObject *) object)->ay = 0.0;
+
+            if (((T_SGEObject *) object)->stop_callback)
+
+                ((T_SGEObject *) object)->
 				    stop_callback (object, NULL);
 		}
 }
@@ -119,8 +126,10 @@ sge_main_loop (gpointer data)
 {
 	g_list_foreach (g_object_list, draw_object, NULL);
 	g_list_foreach (g_object_list, move_object, NULL);
-	return TRUE;
-}
+
+    return TRUE;
+
+}
 
 // creation/destruction
 void
@@ -133,19 +142,23 @@ sge_init (void)
 }
 
 void
-scale_object_pos (gpointer object, gpointer user_data) 
+scale_object_pos (gpointer object, gpointer user_data)
 {
-	gdouble ratio;
+
+    gdouble ratio;
 
 	ratio = *((gdouble *) user_data);
 	((T_SGEObject *) object)->x = ((T_SGEObject *) object)->x * ratio;
-	((T_SGEObject *) object)->y = ((T_SGEObject *) object)->y * ratio;
+
+    ((T_SGEObject *) object)->y = ((T_SGEObject *) object)->y * ratio;
 	((T_SGEObject *) object)->dest_x =
 	    (int) rint (((T_SGEObject *) object)->x);
-	((T_SGEObject *) object)->dest_y =
+
+    ((T_SGEObject *) object)->dest_y =
 	    (int) rint (((T_SGEObject *) object)->y);
 	((T_SGEObject *) object)->needs_drawing = -1;
-}
+
+}
 
 void
 sge_set_drawing_area (GtkWidget * drawing_area, GdkPixmap * pixmap_buffer,
@@ -182,7 +195,7 @@ sge_destroy (void)
 
 // pixbuf management
 void
-pixbuf_update_notify (gpointer item, gpointer data) 
+pixbuf_update_notify (gpointer item, gpointer data)
 {
 	int pixbuf_id;
 	T_SGEObject *object;
@@ -190,12 +203,15 @@ pixbuf_update_notify (gpointer item, gpointer data)
 	object = (T_SGEObject *) item;
 	pixbuf_id = *((int *) data);
 
-	if (object->pixbuf_id == pixbuf_id) {
+	if (object->pixbuf_id == pixbuf_id)
+	{
 		object->width =
 		    gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
-		object->height =
+
+        object->height =
 		    gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
-		if (object->pre_rendered) {
+		if (object->pre_rendered)
+		{
 			g_object_unref (G_OBJECT (object->pre_rendered));
 			object->pre_rendered =
 			    gdk_pixmap_new (g_drawing_area->window,
@@ -258,7 +274,7 @@ objects_intersect (T_SGEObject * object1, T_SGEObject * object2)
 }
 
 void
-invalidate_object_if_above (gpointer item, gpointer data) 
+invalidate_object_if_above (gpointer item, gpointer data)
 {
 	T_SGEObject *target_object, *source_object;
 
@@ -280,7 +296,7 @@ invalidate_objects_above (T_SGEObject * object)
 }
 
 void
-invalidate_background_if_under_object (gpointer item, gpointer data) 
+invalidate_background_if_under_object (gpointer item, gpointer data)
 {
 	T_SGEObject *target_object, *source_object;
 
@@ -303,7 +319,7 @@ invalidate_background_beneath (T_SGEObject * object)
 }
 
 void
-invalidate_if_layer (gpointer item, gpointer data) 
+invalidate_if_layer (gpointer item, gpointer data)
 {
 	T_SGEObject *target_object;
 
@@ -314,7 +330,7 @@ invalidate_if_layer (gpointer item, gpointer data)
 }
 
 void
-sge_invalidate_layer (int layer) 
+sge_invalidate_layer (int layer)
 {
 	g_list_foreach (g_object_list, invalidate_if_layer,
 			(void *) &layer);
@@ -322,27 +338,28 @@ sge_invalidate_layer (int layer)
 
 //objects creation/destruction
 T_SGEObject *
-sge_create_object (gint x, gint y, gint layer, gint pixbuf_id) 
+sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
 {
-	T_SGEObject * object;
 
+    T_SGEObject * object;
 	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
-	object->x = x;
-	object->y = y;
-	object->vx = 0.0;
-	object->vy = 0.0;
-	object->ax = 0.0;
-	object->ay = 0.0;
-	object->pixbuf_id = pixbuf_id;
-	object->dest_x = 0;
-	object->dest_y = 0;
-	object->stop_condition = NULL;
+    object->x = x;
+    object->y = y;
+    object->vx = 0.0;
+    object->vy = 0.0;
+    object->ax = 0.0;
+    object->ay = 0.0;
+    object->pixbuf_id = pixbuf_id;
+    object->dest_x = 0;
+    object->dest_y = 0;
+
+    object->stop_condition = NULL;
 	object->stop_callback = NULL;
 	object->layer = layer;
 	object->needs_drawing = 0x01;
 
 	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
-	object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
+    object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
 
 	if (layer == 0) {
 		object->pre_rendered =
@@ -354,11 +371,12 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
 				 GDK_RGB_DITHER_NONE, 0, 0);
 	} else
 		object->pre_rendered = NULL;
-	g_object_list = g_list_append (g_object_list, (gpointer) object);
+
+    g_object_list = g_list_append (g_object_list, (gpointer) object);
 	g_object_list = g_list_sort (g_object_list, compare_by_layer);
 
 	return object;
-}
+}
 
 void
 sge_destroy_object (gpointer object, gpointer user_data)
@@ -386,8 +404,9 @@ is_out_of_screen (T_SGEObject * object)
 		return -1;
 
 	return 0;
-}
-int
+}
+
+int
 has_reached_destination (T_SGEObject * object)
 {
 	if (fabs (object->x - object->dest_x) < 1.0 &&
@@ -395,8 +414,9 @@ has_reached_destination (T_SGEObject * object)
 		return -1;
 
 	return 0;
-}
-int
+}
+
+int
 has_reached_floor (T_SGEObject * object)
 {
 	if (object->y >= object->dest_y) {
@@ -405,10 +425,10 @@ has_reached_floor (T_SGEObject * object)
 	}
 
 	return 0;
-}
+}
 
 int
-has_reached_time_limit (T_SGEObject * object) 
+has_reached_time_limit (T_SGEObject * object)
 {
 	if (object->lifetime--)
 		return 0;
@@ -427,18 +447,19 @@ void
 sge_object_take_down (T_SGEObject * object)
 {
 	object->vx = g_rand_double_range (g_rand_generator, -1.0, 1.0);
-	object->vy = g_rand_double_range (g_rand_generator, 0.0, 1.0);
-	object->ax = 0.0;
-	object->ay = ACCELERATION;
-	object->stop_condition = is_out_of_screen;
+    object->vy = g_rand_double_range (g_rand_generator, 0.0, 1.0);
+    object->ax = 0.0;
+    object->ay = ACCELERATION;
+    object->stop_condition = is_out_of_screen;
 	object->stop_callback = sge_destroy_object;
 
 	g_object_list = g_list_sort (g_object_list, compare_by_layer);
 }
 
 #define NB_STEPS	4
-void
-sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y) 
+
+void
+sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 {
 	object->vx = (dest_x - object->x) / NB_STEPS;
 	object->vy = (dest_y - object->y) / NB_STEPS;
@@ -453,9 +474,10 @@ sge_object_set_lifetime (T_SGEObject * object, gint lifetime)
 	object->lifetime = lifetime;
 	object->stop_condition = has_reached_time_limit;
 	object->stop_callback = sge_destroy_object;
-} void
+}
+void
 
-sge_object_fall_to (T_SGEObject * object, gint y_pos) 
+sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
 	if (object->y < y_pos) {
 		object->ay = ACCELERATION;
@@ -467,13 +489,13 @@ sge_object_fall_to (T_SGEObject * object, gint y_pos)
 //other useful stuff
 
 gboolean
-sge_object_is_moving (T_SGEObject * object) 
+sge_object_is_moving (T_SGEObject * object)
 {
 	return ((object->vx != 0.0) || (object->vy != 0.0));
 }
 
 gboolean
-sge_objects_are_moving (void) 
+sge_objects_are_moving (void)
 {
 	gint i;
 	T_SGEObject *object;
@@ -488,7 +510,7 @@ sge_objects_are_moving (void)
 }
 
 gboolean
-sge_objects_are_moving_on_layer (int layer) 
+sge_objects_are_moving_on_layer (int layer)
 {
 	gint i;
 	T_SGEObject *object;
