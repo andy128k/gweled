@@ -61,7 +61,7 @@ typedef struct s_alignment {
 
 SAMPLE *swap_sfx;
 
-gint gi_score, gi_current_score, gi_game_running;
+gint gi_score, gi_current_score, gi_game_running, gi_game_paused;
 
 gint gi_total_gems_removed;
 gint gi_gems_removed_per_move;
@@ -535,6 +535,22 @@ gweled_check_for_alignments (void)
 	return (g_list_length (g_alignment_list) != 0);
 }
 
+void
+board_pause(gboolean value)
+{
+    gi_game_paused = value;
+    if(value == TRUE) {
+        gweled_draw_game_message(_("paused"), 1);
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
+    }
+    else {
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), "");
+    }
+
+}
+
+
+
 gboolean
 board_engine_loop (gpointer data)
 {
@@ -554,7 +570,7 @@ board_engine_loop (gpointer data)
 	}
 
 /* Let's first check if we are in timer mode, and penalize the player if necessary */
-	if (prefs.timer_mode && gi_game_running && (time_slice % 10 == 0))
+	if (prefs.timer_mode && gi_game_running && !gi_game_paused  && (time_slice % 10 == 0))
 	{
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {

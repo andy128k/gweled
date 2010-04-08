@@ -50,6 +50,7 @@ GtkWidget *g_drawing_area;
 GtkWidget *g_progress_bar;
 GtkWidget *g_score_label;
 GtkWidget *g_bonus_label;
+GtkWidget *g_menu_pause;
 GdkPixmap *g_buffer_pixmap = NULL;
 GRand *g_random_generator;
 
@@ -286,7 +287,7 @@ int main (int argc, char **argv)
     gweled_xml = gtk_builder_new ();
     if (!gtk_builder_add_from_file (gweled_xml, PACKAGE_DATA_DIR "/gweled.ui", &error))
     {
-        g_warning ("Couldn't load builder file: %s", error->message);
+        g_error ("Couldn't load builder file: %s", error->message);
         g_error_free (error);
     }
     g_pref_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "preferencesDialog"));
@@ -296,6 +297,7 @@ int main (int argc, char **argv)
     g_score_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel"));
     g_bonus_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "bonusLabel"));
     g_drawing_area = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "boardDrawingarea"));
+    g_menu_pause = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "pause1"));
 
 	load_preferences();
 	init_pref_window();
@@ -326,12 +328,12 @@ int main (int argc, char **argv)
 	// load sound fx
     swap_sfx = Sample_Load(DATADIR "/sounds/gweled/swap.wav");
     if (!swap_sfx) {
-        fprintf(stderr, "Could not load swap.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
+        g_warning("Could not load swap.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
 
     }
     click_sfx = Sample_Load(DATADIR "/sounds/gweled/click.wav");
     if (!click_sfx) {
-        fprintf(stderr, "Could not load click.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
+        g_warning("Could not load click.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
     }
 
     MikMod_SetNumVoices(-1, 4);

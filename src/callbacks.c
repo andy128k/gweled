@@ -44,6 +44,7 @@ extern GtkWidget *g_score_window;
 extern GtkWidget *g_drawing_area;
 extern GdkPixmap *g_buffer_pixmap;
 extern GtkWidget *g_appbar;
+extern GtkWidget *g_menu_pause;
 
 extern gint gi_gem_clicked;
 extern gint gi_x_click;
@@ -84,6 +85,7 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 	sge_destroy_all_objects ();
 	gweled_draw_board ();
 	gweled_start_new_game ();
+	gtk_widget_set_sensitive(g_menu_pause, TRUE);
 }
 
 void
@@ -91,6 +93,48 @@ on_scores1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	// See comments in show_hiscores() for meaning of 0 as argument
  	show_hiscores (0);
+}
+
+void
+on_pause_activate (GtkMenuItem *menuitem, gpointer user_data)
+{
+
+    if(!gi_game_running) return;
+
+    if(g_strcmp0( gtk_menu_item_get_label(menuitem), _("_Resume")) == 0 ) {
+        gtk_menu_item_set_label(menuitem, _("_Pause"));
+        gtk_widget_set_sensitive(g_drawing_area, TRUE);
+	    board_pause(FALSE);
+	} else {
+	    gtk_menu_item_set_label(menuitem, _("_Resume"));
+	    gtk_widget_set_sensitive(g_drawing_area, FALSE);
+	    board_pause(TRUE);
+	}
+}
+
+gboolean
+on_window_unmap_event (GtkWidget *widget,
+                       GdkEvent  *event,
+                       gpointer   user_data)
+{
+    if(gi_game_running && prefs.timer_mode == TRUE && g_strcmp0( gtk_menu_item_get_label(GTK_MENU_ITEM(g_menu_pause)), _("_Pause")) == 0 ) {
+        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
+	    gtk_widget_set_sensitive(g_drawing_area, FALSE);
+	    board_pause(TRUE);
+	}
+
+    return FALSE;
+}
+
+gboolean
+on_window_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer data)
+{
+    if( gi_game_running && prefs.timer_mode == TRUE && g_strcmp0( gtk_menu_item_get_label(GTK_MENU_ITEM(g_menu_pause)), _("_Pause")) == 0 ) {
+        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
+	    gtk_widget_set_sensitive(g_drawing_area, FALSE);
+        board_pause(TRUE);
+    }
+    return FALSE;
 }
 
 void
@@ -127,8 +171,6 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 		     "logo-icon-name", "gweled",
              NULL);
 
-	if (pixbuf != NULL)
-		gdk_pixbuf_unref (pixbuf);
 }
 
 gboolean

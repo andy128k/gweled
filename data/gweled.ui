@@ -9,6 +9,8 @@
     <accel-groups>
       <group name="accelgroup1"/>
     </accel-groups>
+    <signal name="unmap_event" handler="on_window_unmap_event"/>
+    <signal name="focus_out_event" handler="on_window_focus_out_event"/>
     <signal name="delete_event" handler="on_app1_delete_event"/>
     <child>
       <object class="GtkVBox" id="vbox1">
@@ -31,6 +33,21 @@
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_new1_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="pause1">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="label" translatable="yes">_Pause</property>
+                        <property name="use_underline">True</property>
+                        <accelerator key="Pause" signal="activate"/>
+                        <signal name="activate" handler="on_pause_activate"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="menuitem1">
+                        <property name="visible">True</property>
                       </object>
                     </child>
                     <child>
