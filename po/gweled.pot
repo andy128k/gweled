@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-08 04:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.c:169
+msgid "<span color=\"red\" weight=\"bold\">You made the highscore list!</span>"
+msgstr ""
+
+#: ../src/main.c:171 ../data/gweled.ui.h:3
+msgid "<span weight=\"bold\">Highscores</span>"
+msgstr ""
+
+#: ../src/main.c:239
+msgid "No highscores recorded yet"
+msgstr ""
+
+#: ../src/callbacks.c:73
+msgid "Do you really want to abort this game ?"
+msgstr ""
+
+#: ../src/callbacks.c:118
+msgid "translator-credits"
+msgstr ""
+
+#: ../src/callbacks.c:123
+msgid ""
+"A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
+"Mine\")"
+msgstr ""
+
+#: ../src/board_engine.c:561
+msgid "time's up #"
+msgstr ""
+
+#: ../src/board_engine.c:705 ../src/board_engine.c:730
+msgid "no moves left #"
+msgstr ""
+
+#: ../src/board_engine.c:753
+#, c-format
+msgid "bonus x%d"
+msgstr ""
+
+#: ../data/gweled.ui.h:1
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr ""
+
+#: ../data/gweled.ui.h:2
+msgid "<span weight=\"bold\">Difficulty level</span>"
+msgstr ""
+
+#: ../data/gweled.ui.h:4
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr ""
+
+#: ../data/gweled.ui.h:5
+msgid "Gweled"
+msgstr ""
+
+#: ../data/gweled.ui.h:6
+msgid "Highscores"
+msgstr ""
+
+#: ../data/gweled.ui.h:7
+msgid "Large"
+msgstr ""
+
+#: ../data/gweled.ui.h:8
+msgid "Medium"
+msgstr ""
+
+#: ../data/gweled.ui.h:9
+msgid "Normal"
+msgstr ""
+
+#: ../data/gweled.ui.h:10
+msgid "Play background music"
+msgstr ""
+
+#: ../data/gweled.ui.h:11
+msgid "Preferences"
+msgstr ""
+
+#: ../data/gweled.ui.h:12
+msgid "Small"
+msgstr ""
+
+#: ../data/gweled.ui.h:13
+msgid "Timed"
+msgstr ""
+
+#: ../data/gweled.ui.h:14
+msgid "_Game"
+msgstr ""
+
+#: ../data/gweled.ui.h:15
+msgid "_Help"
+msgstr ""
+
+#: ../data/gweled.ui.h:16
+msgid "_Scores"
+msgstr ""
+
+#: ../data/gweled.ui.h:17
+msgid "_Settings"
+msgstr ""
+
+#: ../data/gweled.desktop.in.h:1
+msgid "Play a puzzle game similar to \"Diamond Mine\""
+msgstr ""

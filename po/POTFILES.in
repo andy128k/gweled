@@ -1,0 +1,7 @@
+# List of source files containing translatable strings.
+[encoding: UTF-8]
+src/main.c
+src/callbacks.c
+src/board_engine.c
+[type: gettext/glade]data/gweled.ui
+data/gweled.desktop.in

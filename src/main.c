@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 
 #include <libgnome/gnome-score.h>
 
@@ -165,9 +166,9 @@ void show_hiscores (int newscore_rank)
  		g_free (buffer);
  		if (label)
  			if (newscore_rank > 0)
- 				gtk_label_set_markup (GTK_LABEL (label), "<span color=\"red\" weight=\"bold\">You made the highscore list!</span>");
+ 				gtk_label_set_markup (GTK_LABEL (label), _("<span color=\"red\" weight=\"bold\">You made the highscore list!</span>"));
  			else
- 				gtk_label_set_markup (GTK_LABEL (label), "<span weight=\"bold\">Highscores</span>");
+ 				gtk_label_set_markup (GTK_LABEL (label), _("<span weight=\"bold\">Highscores</span>"));
 
  		for (i = 0; i < 10 && i < nb_scores; i++)
 		{
@@ -235,7 +236,7 @@ void show_hiscores (int newscore_rank)
  					      GTK_DIALOG_DESTROY_WITH_PARENT,
  					      GTK_MESSAGE_INFO,
  					      GTK_BUTTONS_OK,
- 					      "No highscores recorded yet");
+ 					      _("No highscores recorded yet"));
  		gtk_dialog_run (GTK_DIALOG (box));
  		gtk_widget_destroy (box);
  	}
@@ -245,6 +246,12 @@ int main (int argc, char **argv)
 {
 	guint board_engine_id;
 	GError* error = NULL;
+
+	/* gettext */
+    bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
+    setlocale (LC_ALL, "");
 
 	gnome_score_init ("gweled");
 

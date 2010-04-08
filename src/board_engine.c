@@ -18,12 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 /* for memset and strlen */
 #include <string.h>
 /* for fabs() */
 #include <math.h>
 
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 #include <mikmod.h>
 
 #include <libgnome/gnome-score.h>
@@ -553,7 +558,7 @@ board_engine_loop (gpointer data)
 	{
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
-			gweled_draw_message ("time's up #");
+			gweled_draw_message (_("time's up #"));
 			gi_game_running = 0;
  			hiscore_rank = gnome_score_log ((gfloat) gi_score, "timed", TRUE);
  			if (hiscore_rank > 0)
@@ -697,7 +702,7 @@ board_engine_loop (gpointer data)
 				if ((gi_next_bonus_at == FIRST_BONUS_AT) || (prefs.timer_mode)) {
 					gint i, j;
 
-					gweled_draw_game_message ("no moves left #", 1.0);
+					gweled_draw_game_message (_("no moves left #"), 1.0);
 					memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
 					for (i = 0; i < BOARD_WIDTH; i++)
@@ -722,7 +727,7 @@ board_engine_loop (gpointer data)
 					gweled_gems_fall_into_place ();
 					gi_state = _MARK_ALIGNED_GEMS;
 				} else {
-					gweled_draw_message ("no moves left #");
+					gweled_draw_message (_("no moves left #"));
 					gi_game_running = 0;
 					hiscore_rank = gnome_score_log ((gfloat) gi_score, "easy", TRUE);
  					if (hiscore_rank > 0)
@@ -745,7 +750,7 @@ board_engine_loop (gpointer data)
 				if (prefs.timer_mode)
 					g_steps_for_timer = (gi_next_bonus_at - gi_previous_bonus_at) / TOTAL_STEPS_FOR_TIMER + 1;
 				gi_bonus_multiply++;
-				sprintf (msg_buffer, "bonus x%d", gi_bonus_multiply >> 1);
+				sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
 				gweled_draw_game_message (msg_buffer, 1.0);
 				gweled_delete_gems_for_bonus ();
 				gweled_take_down_deleted_gems ();

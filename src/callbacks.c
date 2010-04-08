@@ -23,6 +23,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 #include <mikmod.h>
 
 #include "callbacks.h"
@@ -69,7 +70,7 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
-					      "Do you really want to abort this game ?");
+					      _("Do you really want to abort this game ?"));
 
 		gtk_dialog_set_default_response (GTK_DIALOG (box),
 						 GTK_RESPONSE_NO);
@@ -114,12 +115,12 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 	    NULL
 	};
 
-	const gchar *translator_credits = "translator-credits";
+	const gchar *translator_credits = _("translator-credits");
 
     gtk_show_about_dialog (GTK_WINDOW(g_main_window),
              "authors", authors,
 		     "translator-credits", g_strcmp0("translator-credits", translator_credits) ? translator_credits : NULL,
-             "comments", "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond Mine\")",
+             "comments", _("A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond Mine\")"),
              "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010 Daniele Napolitano",
              "version", VERSION,
              "website", "http://sebdelestaing.free.fr/gweled/",

@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="gweledApp">
-    <property name="title" translatable="yes">Gweled</property>
+    <property name="title" translatable="no">Gweled</property>
     <property name="resizable">False</property>
     <property name="icon_name">gweled</property>
     <accel-groups>
