@@ -93,6 +93,7 @@ void load_preferences(void)
 		prefs.tile_height = 48;
 		prefs.timer_mode = FALSE;
 		prefs.music_on = TRUE;
+		prefs.sounds_on = TRUE;
 
 		save_preferences();
 	}
@@ -103,6 +104,7 @@ void init_pref_window(void)
 {
 	GtkWidget *radio_button = NULL;
 
+    // Game type
 	if (prefs.timer_mode == FALSE)
 		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "easyRadiobutton"));
 	else
@@ -110,6 +112,7 @@ void init_pref_window(void)
 	if (radio_button)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 
+    // Board size
 	radio_button = NULL;
 	switch (prefs.tile_width) {
 	case 32:
@@ -128,6 +131,13 @@ void init_pref_window(void)
 	//Is the music playing at start ?
 	radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "music_checkbutton"));
 	if (prefs.music_on)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
+
+	// Sounds
+	radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
+	if (prefs.sounds_on)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
@@ -242,6 +252,14 @@ void show_hiscores (int newscore_rank)
  	}
 }
 
+void mikmod_thread(void *ptr)
+{
+	while (1) {
+	    usleep(10000);
+		MikMod_Update();
+    }
+}
+
 int main (int argc, char **argv)
 {
 	guint board_engine_id;
@@ -323,6 +341,8 @@ int main (int argc, char **argv)
 	Voice_SetVolume(3, 255);
 
     MikMod_EnableOutput();
+
+    pthread_create(&thread, NULL, (void *)&music_thread, NULL);
 
 	if (prefs.music_on)
 		music_play();

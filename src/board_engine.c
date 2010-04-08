@@ -608,8 +608,8 @@ board_engine_loop (gpointer data)
 				sge_object_move_to (g_gem_objects[x2][y2],
 						x1 * prefs.tile_width,
 						y1 * prefs.tile_height);
-				if(swap_sfx)
-					Sample_Play(swap_sfx, 0, 0);
+				if(swap_sfx && prefs.sounds_on == TRUE)
+				Sample_Play(swap_sfx, 0, 0);
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
 				if (cursor[1])

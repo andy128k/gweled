@@ -161,7 +161,7 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 			gi_gem_clicked = -1;
 			gi_dragging = -1;
 
-			if(click_sfx)
+			if(click_sfx && prefs.sounds_on == TRUE)
 				Sample_Play(click_sfx, 0, 0);
 
 		} else {
@@ -360,5 +360,16 @@ on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 	}
 	else {
 		music_stop();
+	}
+}
+
+void
+on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+	if (gtk_toggle_button_get_active (togglebutton)) {
+		prefs.sounds_on = TRUE;
+	}
+	else {
+		prefs.sounds_on = FALSE;
 	}
 }
