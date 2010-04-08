@@ -193,6 +193,9 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 	static int x_release = -1;
 	static int y_release = -1;
 
+	if(event->button != 1)
+	    return FALSE;
+
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		x_press = event->x / prefs.tile_width;
