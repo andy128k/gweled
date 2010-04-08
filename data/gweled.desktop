@@ -1,3 +1,4 @@
+
 [Desktop Entry]
 Name=Gweled
 Comment=Play a puzzle game similar to "Diamond Mine"
@@ -7,3 +8,4 @@ Terminal=false
 Type=Application
 Categories=GNOME;GTK;Game;LogicGame;
 StartupNotify=true
+Name[it_IT]=gweled.desktop.in

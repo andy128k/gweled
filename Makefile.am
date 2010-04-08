@@ -1,15 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src
-
-EXTRA_DIST = \
-	gweled.desktop \
-  gweled.png
-
-icondir = $(datadir)/pixmaps
-icon_DATA = gweled.png
-sysdir = $(datadir)/applications/
-sys_DATA = gweled.desktop
+SUBDIRS = src data
 
 install-data-local:
 	@$(NORMAL_INSTALL)

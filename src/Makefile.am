@@ -23,15 +23,6 @@ gweled_SOURCES = \
 	music.c music.h \
 	callbacks.c callbacks.h
 
-EXTRA_DIST =			\
-	$(Data_DATA)
-
-Datadir = $(datadir)/gweled/
-Data_DATA = 	\
-	gweled.ui \
-	gweled_icon.png \
-	gweled_logo.png
-
 gweled_LDADD = @GTK_LIBS@ @RSVG_LIBS@ @GNOME_LIBS@ @MIKMOD_LIBS@ @PTHREAD_LIBS@
 
 

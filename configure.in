@@ -49,7 +49,7 @@ AC_CHECK_LIB(pthread, pthread_create,
                                 PTHREAD_CFLAGS="$PTHREAD_CFLAGS -D_THREAD_SAFE"],
                  AC_MSG_ERROR([*** Cannot find pthread library]))])
 AC_SUBST(PTHREAD_CFLAGS)
-AC_SUBST(PTHREAD_LDFLAGS)
+AC_SUBST(PTHREAD_LIBS)
 
 LIBS="$LIBS -export-dynamic"
 
@@ -77,6 +77,7 @@ AC_SUBST(scoredir)
 AC_OUTPUT([
 Makefile
 src/Makefile
+data/Makefile
 ])
 
 echo "

@@ -116,8 +116,6 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 	const gchar *translator_credits = "translator-credits";
 
-	pixbuf = gdk_pixbuf_new_from_file (DATADIR "/gweled/gweled_logo.png", NULL);
-
     gtk_show_about_dialog (GTK_WINDOW(g_main_window),
              "authors", authors,
 		     "translator-credits", g_strcmp0("translator-credits", translator_credits) ? translator_credits : NULL,
@@ -125,7 +123,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
              "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010 Daniele Napolitano",
              "version", VERSION,
              "website", "http://sebdelestaing.free.fr/gweled/",
-		     "icon", "pixbuf",
+		     "logo-icon-name", "gweled",
              NULL);
 
 	if (pixbuf != NULL)
