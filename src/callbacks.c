@@ -205,9 +205,6 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 
 			if(click_sfx && prefs.sounds_on == TRUE)
 				Sample_Play(click_sfx, 0, 0);
-
-		} else {
-			on_new1_activate (NULL, NULL);
 		}
 		break;
 
