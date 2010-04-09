@@ -456,7 +456,7 @@ sge_object_take_down (T_SGEObject * object)
 	g_object_list = g_list_sort (g_object_list, compare_by_layer);
 }
 
-#define NB_STEPS	4
+#define NB_STEPS	10
 
 void
 sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
