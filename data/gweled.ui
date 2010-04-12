@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="gweledApp">
-    <property name="title" translatable="no">Gweled</property>
+    <property name="title">Gweled</property>
     <property name="resizable">False</property>
     <property name="icon_name">gweled</property>
     <accel-groups>
@@ -39,6 +39,8 @@
                       <object class="GtkMenuItem" id="pause1">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip_text" translatable="yes">Pauses the game for you can return to it later</property>
                         <property name="label" translatable="yes">_Pause</property>
                         <property name="use_underline">True</property>
                         <accelerator key="Pause" signal="activate"/>
