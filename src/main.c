@@ -72,7 +72,7 @@ void save_preferences(void)
 	gchar *filename;
 	FILE *stream;
 
-	filename = g_strconcat(g_get_user_config_dir(), "/.gweled", NULL);
+	filename = g_strconcat(g_get_user_config_dir(), "/gweled", NULL);
 	stream = fopen(filename, "w");
 	if(stream)
 	{
@@ -88,7 +88,7 @@ void load_preferences(void)
 	char *filename;
 	FILE *stream;
 
-	filename = g_strconcat(g_get_user_config_dir(), "/.gweled", NULL);
+	filename = g_strconcat(g_get_user_config_dir(), "/gweled", NULL);
 
 	stream = fopen(filename, "r");
 	if(stream)
