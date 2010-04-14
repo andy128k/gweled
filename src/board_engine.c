@@ -31,7 +31,7 @@
 #include <glib/gi18n-lib.h>
 #include <mikmod.h>
 
-#include <libgnome/gnome-score.h>
+#include "games-scores.h"
 
 #include "sge_core.h"
 #include "board_engine.h"
@@ -100,6 +100,8 @@ extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
 
 extern GweledPrefs prefs;
+
+extern GamesScores *highscores;
 
 gchar
 get_new_tile (void)
@@ -557,11 +559,12 @@ board_engine_loop (gpointer data)
 	static gint x1, y1, x2, y2, time_slice = 0;
 	static T_SGEObject *cursor[2] = { NULL, NULL };
 	gchar msg_buffer[200];
+    GamesScoreValue score;
 	gint hiscore_rank;
 
 	time_slice++;
 
-// progressive score
+    // progressive score
 	if(gi_current_score < gi_score)
 	{
 		gi_current_score += 10;
@@ -569,17 +572,23 @@ board_engine_loop (gpointer data)
 		gtk_label_set_markup ((GtkLabel *) g_score_label, msg_buffer);
 	}
 
-/* Let's first check if we are in timer mode, and penalize the player if necessary */
+    /* Let's first check if we are in timer mode, and penalize the player if necessary */
 	if (prefs.timer_mode && gi_game_running && !gi_game_paused  && (time_slice % 10 == 0))
 	{
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
 			gweled_draw_message (_("time's up #"));
 			gi_game_running = 0;
- 			hiscore_rank = gnome_score_log ((gfloat) gi_score, "timed", TRUE);
- 			if (hiscore_rank > 0)
- 				show_hiscores (hiscore_rank);
- 			show_hiscores (gi_score);
+ 			score.plain = gi_score;
+ 			games_scores_set_category (highscores, "Timed");
+ 			hiscore_rank = games_scores_add_score (highscores, score);
+ 			if (show_hiscores (hiscore_rank, TRUE) == GTK_RESPONSE_REJECT)
+                gtk_main_quit ();
+            else {
+                sge_destroy_all_objects ();
+	            gweled_draw_board ();
+	            gweled_start_new_game ();
+            }
 			g_do_not_score = FALSE;
 			gi_state = _IDLE;
 		} else
@@ -745,9 +754,16 @@ board_engine_loop (gpointer data)
 				} else {
 					gweled_draw_message (_("no moves left #"));
 					gi_game_running = 0;
-					hiscore_rank = gnome_score_log ((gfloat) gi_score, "easy", TRUE);
- 					if (hiscore_rank > 0)
- 						show_hiscores (hiscore_rank);
+					score.plain = gi_score;
+					games_scores_set_category (highscores, "Normal");
+					hiscore_rank = games_scores_add_score (highscores, score);
+ 					if (show_hiscores (hiscore_rank, TRUE) == GTK_RESPONSE_REJECT)
+                        gtk_main_quit ();
+                    else {
+                        sge_destroy_all_objects ();
+	                    gweled_draw_board ();
+	                    gweled_start_new_game ();
+                    }
 					g_do_not_score = FALSE;
 					gi_state = _IDLE;
 				}

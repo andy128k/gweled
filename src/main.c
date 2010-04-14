@@ -28,9 +28,10 @@
 
 #include <stdio.h>
 #include <gtk/gtk.h>
-#include <glib/gi18n-lib.h>
+#include <glib/gi18n.h>
 
-#include <libgnome/gnome-score.h>
+#include "games-scores.h"
+#include "games-scores-dialog.h"
 
 #include <pthread.h>
 #include <mikmod.h>
@@ -56,6 +57,13 @@ GRand *g_random_generator;
 
 GweledPrefs prefs;
 pthread_t thread;
+
+static const GamesScoresCategory scorecats[] = {
+  {"Normal", NC_("game type", "Normal")  },
+  {"Timed",  NC_("game type", "Timed") }
+};
+
+GamesScores *highscores;
 
 SAMPLE *swap_sfx, *click_sfx;
 
@@ -144,113 +152,76 @@ void init_pref_window(void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
 }
 
-void show_hiscores (int newscore_rank)
+gint
+show_hiscores (gint pos, gboolean endofgame)
 {
- 	// Note (newscore_rank := 0) is a rather kludgy hack that tells us we're
-	//  calling this from the menu, not at the end of a game, so just display
- 	//  the list, don't try to highlight the new score. Else if
- 	//  (1 <= newscore_rank <= 10), then let the user know they've just made
- 	//  a new high score.
+  gchar *message;
+  static GtkWidget *scoresdialog = NULL;
+  static GtkWidget *sorrydialog = NULL;
+  GtkWidget *dialog;
+  gint result;
 
- 	GtkWidget *box;
- 	GtkWidget *label;
- 	char **names;
- 	gfloat *scores;
- 	time_t *scoretimes;
- 	int i, nb_scores;
- 	char *buffer;
+  if (endofgame && (pos <= 0)) {
+    if (sorrydialog != NULL) {
+      gtk_window_present (GTK_WINDOW (sorrydialog));
+    } else {
+      sorrydialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (g_main_window),
+							GTK_DIALOG_DESTROY_WITH_PARENT,
+							GTK_MESSAGE_INFO,
+							GTK_BUTTONS_NONE,
+							"<b>%s</b>\n%s",
+							_
+							("Game over!"),
+							_
+							("Great work, but unfortunately your score did not make the top ten."));
+      gtk_dialog_add_buttons (GTK_DIALOG (sorrydialog), GTK_STOCK_QUIT,
+			      GTK_RESPONSE_REJECT, _("_New Game"),
+			      GTK_RESPONSE_ACCEPT, NULL);
+      gtk_dialog_set_default_response (GTK_DIALOG (sorrydialog),
+				       GTK_RESPONSE_ACCEPT);
+      gtk_window_set_title (GTK_WINDOW (sorrydialog), "");
+    }
+    dialog = sorrydialog;
+  } else {
 
- 	gboolean close_score_list = TRUE;
+    if (scoresdialog != NULL) {
+      gtk_window_present (GTK_WINDOW (scoresdialog));
+    } else {
+      scoresdialog = games_scores_dialog_new (GTK_WINDOW (g_main_window), highscores, _("Gweled Scores"));
+      games_scores_dialog_set_category_description (GAMES_SCORES_DIALOG
+						    (scoresdialog),
+						    _("Game type:"));
+    }
 
- 	nb_scores = gnome_score_get_notable ("gweled", "easy", &names, &scores, &scoretimes);
+    if (pos > 0) {
+      games_scores_dialog_set_hilight (GAMES_SCORES_DIALOG (scoresdialog),
+				       pos);
+      message = g_strdup_printf ("<b>%s</b>\n\n%s",
+				 _("Congratulations!"),
+				 pos == 1 ? _("Your score is the best!") :
+                                 _("Your score has made the top ten."));
+      games_scores_dialog_set_message (GAMES_SCORES_DIALOG (scoresdialog),
+				       message);
+      g_free (message);
+    } else {
+      games_scores_dialog_set_message (GAMES_SCORES_DIALOG (scoresdialog),
+				       NULL);
+    }
 
- // FIXME: that's a temporary solution to display the timed game highscores
-     if (prefs.timer_mode)
- 	   	nb_scores = gnome_score_get_notable ("gweled", "timed", &names, &scores, &scoretimes);
- 	else
- 	   	nb_scores = gnome_score_get_notable ("gweled", "easy", &names, &scores, &scoretimes);
+    if (endofgame) {
+      games_scores_dialog_set_buttons (GAMES_SCORES_DIALOG (scoresdialog),
+				       GAMES_SCORES_QUIT_BUTTON |
+				       GAMES_SCORES_NEW_GAME_BUTTON);
+    } else {
+      games_scores_dialog_set_buttons (GAMES_SCORES_DIALOG (scoresdialog), 0);
+    }
+    dialog = scoresdialog;
+  }
 
- 	if (nb_scores)
-	{
- 		buffer = g_strdup_printf ("label27");
- 		label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
- 		g_free (buffer);
- 		if (label)
- 			if (newscore_rank > 0)
- 				gtk_label_set_markup (GTK_LABEL (label), _("<span color=\"red\" weight=\"bold\">You made the highscore list!</span>"));
- 			else
- 				gtk_label_set_markup (GTK_LABEL (label), _("<span weight=\"bold\">Highscores</span>"));
+  result = gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_hide (dialog);
 
- 		for (i = 0; i < 10 && i < nb_scores; i++)
-		{
- 			buffer = g_strdup_printf ("label%d", i + 28);
- 			label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
- 			g_free (buffer);
- 			if (label)
-			{
- 				if (i == newscore_rank - 1)
- 					buffer = g_strdup_printf ("<span weight=\"bold\">%d.</span>", i + 1);
- 				else
- 					buffer = g_strdup_printf ("%d.", i + 1);
- 				gtk_label_set_markup (GTK_LABEL (label), buffer);
- 				g_free (buffer);
- 			}
-
- 			buffer = g_strdup_printf ("nameLabel%02d", i + 1);
- 			label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
- 			g_free (buffer);
- 			if (label)
- 				if(i < nb_scores)
-				{
- 					if (i == newscore_rank - 1)
-					{
-						buffer = g_strdup_printf ("<span weight=\"bold\">%s</span>", names[i]);
- 						gtk_label_set_markup (GTK_LABEL (label), buffer);
- 						g_free (buffer);
- 					}
-					else
- 						gtk_label_set_text (GTK_LABEL (label), names[i]);
- 					g_free (names[i]);
- 				}
-				else
- 					gtk_label_set_text (GTK_LABEL (label), "");
-
- 			buffer = g_strdup_printf ("scoreLabel%02d", i + 1);
- 			label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, buffer));
- 			g_free (buffer);
- 			if (label)
- 				if(i < nb_scores)
-				{
- 					if (i == newscore_rank - 1)
- 						buffer = g_strdup_printf ("<span weight=\"bold\">%.0f</span>", scores[i]);
- 					else
- 						buffer = g_strdup_printf ("%.0f", scores[i]);
- 					gtk_label_set_markup (GTK_LABEL (label), buffer);
- 					g_free (buffer);
- 				}
-				else
- 					gtk_label_set_text (GTK_LABEL (label), "");
- 		}
-
- 		for (; i < nb_scores; i++)
- 			g_free (names[i]);
-
- 		g_free (names);
- 		g_free (scores);
- 		g_free (scoretimes);
-
- 		gtk_widget_show (g_score_window);
- 	}
-	else
-	{
- 		box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
- 					      GTK_DIALOG_DESTROY_WITH_PARENT,
- 					      GTK_MESSAGE_INFO,
- 					      GTK_BUTTONS_OK,
- 					      _("No highscores recorded yet"));
- 		gtk_dialog_run (GTK_DIALOG (box));
- 		gtk_widget_destroy (box);
- 	}
+  return result;
 }
 
 void mikmod_thread(void *ptr)
@@ -272,12 +243,20 @@ int main (int argc, char **argv)
     textdomain(GETTEXT_PACKAGE);
     setlocale (LC_ALL, "");
 
-	gnome_score_init ("gweled");
+    // needed for scores handling
+    setgid_io_init();
+
+	g_set_application_name("Gweled");
+
+	gtk_init(&argc, &argv);
+
+	highscores = games_scores_new ("gweled",
+                                 scorecats, G_N_ELEMENTS (scorecats),
+                                 "game type", NULL,
+                                 0 /* default category */,
+                                 GAMES_SCORES_STYLE_PLAIN_DESCENDING);
 
 	gtk_window_set_default_icon_name ("gweled");
-    g_set_application_name("Gweled");
-
-    gtk_init(&argc, &argv);
 
     music_init ();
 	sge_init ();

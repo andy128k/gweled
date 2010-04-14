@@ -32,6 +32,7 @@
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
+#include "games-scores.h"
 
 extern gi_game_running;
 extern gint gi_score;
@@ -56,6 +57,8 @@ extern gint gi_y_drag;
 
 extern GweledPrefs prefs;
 
+extern GamesScores *highscores;
+
 SAMPLE *click_sfx;
 
 static gint gi_dragging = 0;
@@ -71,7 +74,7 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
-					      _("Do you really want to abort this game ?"));
+					      _("Do you really want to abort this game?"));
 
 		gtk_dialog_set_default_response (GTK_DIALOG (box),
 						 GTK_RESPONSE_NO);
@@ -92,7 +95,7 @@ void
 on_scores1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
 	// See comments in show_hiscores() for meaning of 0 as argument
- 	show_hiscores (0);
+ 	show_hiscores (0, FALSE);
 }
 
 void
@@ -310,6 +313,7 @@ on_hardRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 			gweled_draw_board ();
 			gweled_start_new_game ();
 		}
+		games_scores_set_category (highscores, "Timed");
 	}
 }
 /*

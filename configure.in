@@ -32,13 +32,6 @@ PKG_CHECK_MODULES(RSVG, librsvg-2.0,,
 AC_SUBST(RSVG_CFLAGS)
 AC_SUBST(RSVG_LIBS)
 
-#### Check for libgnomeui-2.0 ####
-PKG_CHECK_MODULES(GNOME, libgnome-2.0,,
-	AC_MSG_ERROR([libgnome-2.0 is required to compile gweled]))
-
-AC_SUBST(GNOME_CFLAGS)
-AC_SUBST(GNOME_LIBS)
-
 #### Check for mikmod.h header ####
 AC_CHECK_HEADER(mikmod.h,, AC_MSG_ERROR([libmikmod is required to compile gweled]))
 
@@ -61,25 +54,37 @@ AC_SUBST(PTHREAD_LIBS)
 
 LIBS="$LIBS -export-dynamic"
 
-AC_ARG_ENABLE(setgid,
-  [  --disable-setgid           Disable the use of setgid binaries],
+AC_ARG_ENABLE([setgid],
+  [AS_HELP_STRING([--disable-setgid],
+    [Disable the use of setgid binaries])],
   [case "${enableval}" in
     yes) setgid=true ;;
     no)  setgid=false ;;
-    *) AC_MSG_ERROR(bad value ${enableval} for --disable-setgid) ;;
-   esac],[setgid=true])
-AC_SUBST(setgid)
-
-AC_ARG_WITH(scores-group,
-[  --with-scores-group=group    Group for the high score tables and binaries],
-scores_group="$withval",scores_group="games")
-AC_SUBST(scores_group)
-AC_ARG_WITH(scores-user,
-[  --with-scores-user=user    User for the high score tables],
-scores_user="$withval",scores_user="games")
-AC_SUBST(scores_user)
+    *) AC_MSG_ERROR([bad value ${enableval} for --disable-setgid]) ;;
+   esac],[setgid=true;enable_setgid=yes])
 
 scoredir='${localstatedir}/games'
+scores_group=games
+scores_user=games
+
+if test "$enable_setgid" = "yes"; then
+  AC_DEFINE([ENABLE_SETGID],[1],[Define if use of setgid binaries is enabled])
+
+  AC_ARG_WITH(scores-group,
+    AC_HELP_STRING([--with-scores-group=group],
+      [Group for the high score tables and binaries]),
+    scores_group="$withval",scores_group="games")
+  AC_ARG_WITH(scores-user,
+    AC_HELP_STRING([--with-scores-user=user],
+      [User for the high score tables]),
+    scores_user="$withval",scores_user="games")
+fi
+
+AM_CONDITIONAL([ENABLE_SETGID],[test "$enable_setgid" = "yes"])
+
+AC_SUBST(setgid)
+AC_SUBST(scores_group)
+AC_SUBST(scores_user)
 AC_SUBST(scoredir)
 
 AC_OUTPUT([
@@ -90,16 +95,17 @@ po/Makefile.in
 ])
 
 echo "
-** Configuration **
+Configuration:
 
-  Source code location:	  	   ${srcdir}
-  Compiler:		  	   ${CC}
+    Source code location:   ${srcdir}
+    Compiler:               ${CC}
 
-  Use setgid binaries                $setgid
-  Scores user                        $scores_user
-  Scores & setgid group              $scores_group
+    Use setgid binaries:    $enable_setgid
+    Scores user:            $scores_user
+    Scores & setgid group:  $scores_group
 "
-if grep -q "$scores_group:" /etc/group ; then
+
+if grep "$scores_group:" /etc/group > /dev/null; then
 :;
 else
 echo
@@ -108,3 +114,4 @@ echo "         succeed, but high score logging will not work. To specify a"
 echo "         different group use the --with-scores-group option."
 echo
 fi
+

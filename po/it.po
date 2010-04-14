@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-02 19:35+0200\n"
+"POT-Creation-Date: 2010-04-14 17:46+0200\n"
 "PO-Revision-Date: 2009-03-06 22:43+0100\n"
 "Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -15,33 +15,68 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:244
-msgid "No highscores recorded yet"
-msgstr "Nessun punteggio ancora registrato"
+#: ../src/main.c:62
+msgctxt "game type"
+msgid "Normal"
+msgstr "Normale"
 
-#: ../src/main.c:264 ../src/gweled.glade.h:5
-msgid "Gweled"
-msgstr "Gweled"
+#: ../src/main.c:63
+msgctxt "game type"
+msgid "Timed"
+msgstr "Temporizzato"
 
-#: ../src/callbacks.c:54
+#: ../src/main.c:174
+msgid "Game over!"
+msgstr "Partita finita"
+
+#: ../src/main.c:176
+msgid "Great work, but unfortunately your score did not make the top ten."
+msgstr ""
+"Ottimo lavoro, ma sfortunatamente il tuo punteggio non rientra nei primi 10."
+
+#: ../src/main.c:178
+msgid "_New Game"
+msgstr "_Nuovo gioco"
+
+#: ../src/main.c:190
+msgid "Gweled Scores"
+msgstr "Punteggi di Gweled"
+
+#: ../src/main.c:193
+msgid "Game type:"
+msgstr "Tipo di gioco:"
+
+#: ../src/main.c:200
+msgid "Congratulations!"
+msgstr "Congratulazioni!"
+
+#: ../src/main.c:201
+msgid "Your score is the best!"
+msgstr "Il tuo punteggio è il migliore!"
+
+#: ../src/main.c:202
+msgid "Your score has made the top ten."
+msgstr "Il tuo punteggio rientra nei primi 10."
+
+#: ../src/callbacks.c:77
 msgid "Do you really want to abort this game?"
 msgstr "Si è sicuri di voler abbandonare il gioco?"
 
-#: ../src/callbacks.c:84 ../src/callbacks.c:89 ../src/callbacks.c:101
-#: ../src/callbacks.c:113
+#: ../src/callbacks.c:107 ../src/callbacks.c:112 ../src/callbacks.c:124
+#: ../src/callbacks.c:136
 msgid "_Resume"
 msgstr "_Riprendi"
 
-#: ../src/callbacks.c:85 ../src/callbacks.c:100 ../src/callbacks.c:112
-#: ../src/gweled.glade.h:16
+#: ../src/callbacks.c:108 ../src/callbacks.c:123 ../src/callbacks.c:135
+#: ../data/gweled.ui.h:17
 msgid "_Pause"
 msgstr "_Pausa"
 
-#: ../src/callbacks.c:142
+#: ../src/callbacks.c:165
 msgid "translator-credits"
 msgstr "Daniele Napolitano <dnax88@gmail.com>"
 
-#: ../src/callbacks.c:149
+#: ../src/callbacks.c:170
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
@@ -49,82 +84,99 @@ msgstr ""
 "Un port GNOME del gioco \"Bejeweled\" per PalmOS/Windows/Java (anche "
 "\"Diamond Mine\")"
 
-#: ../src/board_engine.c:516 ../src/board_engine.c:517
+#: ../src/board_engine.c:545
 msgid "paused"
 msgstr "in pausa"
 
-#: ../src/board_engine.c:548
+#: ../src/board_engine.c:546
+msgid "Paused"
+msgstr "In pausa"
+
+#: ../src/board_engine.c:580
 msgid "time's up #"
 msgstr "tempo scaduto #"
 
-#: ../src/board_engine.c:692 ../src/board_engine.c:717
+#: ../src/board_engine.c:730 ../src/board_engine.c:755
 msgid "no moves left #"
 msgstr "mosse esaurite #"
 
-#: ../src/gweled.glade.h:1
+#: ../src/board_engine.c:785
+#, c-format
+msgid "bonus x%d"
+msgstr "bonus x%d"
+
+#: ../data/gweled.ui.h:1
 msgid "<span weight=\"bold\">Board size</span>"
 msgstr "<span weight=\"bold\">Dimensione</span>"
 
-#: ../src/gweled.glade.h:2
+#: ../data/gweled.ui.h:2
 msgid "<span weight=\"bold\">Difficulty level</span>"
 msgstr "<span weight=\"bold\">Livello di difficoltà</span>"
 
-#: ../src/gweled.glade.h:3
+#: ../data/gweled.ui.h:3
 msgid "<span weight=\"bold\">Highscores</span>"
 msgstr "<span weight=\"bold\">Migliori punteggi</span>"
 
-#: ../src/gweled.glade.h:4
+#: ../data/gweled.ui.h:4
 msgid "<span weight=\"bold\">Sound</span>"
 msgstr "<span weight=\"bold\">Suono</span>"
 
-#: ../src/gweled.glade.h:6
+#: ../data/gweled.ui.h:5
 msgid "Highscores"
 msgstr "Migliori punteggi"
 
-#: ../src/gweled.glade.h:7
+#: ../data/gweled.ui.h:6
 msgid "Large"
 msgstr "Grande"
 
-#: ../src/gweled.glade.h:8
+#: ../data/gweled.ui.h:7
 msgid "Medium"
 msgstr "Medio"
 
-#: ../src/gweled.glade.h:9
+#: ../data/gweled.ui.h:8
 msgid "Normal"
 msgstr "Normale"
 
-#: ../src/gweled.glade.h:10
+#: ../data/gweled.ui.h:9
+msgid "Pauses the game for you can return to it later"
+msgstr "Mette in pausa il gioco per potervi tornare in seguito"
+
+#: ../data/gweled.ui.h:10
 msgid "Play background music"
 msgstr "Riproduci la musica di sottofondo"
 
-#: ../src/gweled.glade.h:11
+#: ../data/gweled.ui.h:11
+msgid "Play sound effects"
+msgstr "Riproduci effetti sonori"
+
+#: ../data/gweled.ui.h:12
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: ../src/gweled.glade.h:12
+#: ../data/gweled.ui.h:13
 msgid "Small"
 msgstr "Piccolo"
 
-#: ../src/gweled.glade.h:13
+#: ../data/gweled.ui.h:14
 msgid "Timed"
 msgstr "Temporizzato"
 
-#: ../src/gweled.glade.h:14
+#: ../data/gweled.ui.h:15
 msgid "_Game"
 msgstr "_Gioco"
 
-#: ../src/gweled.glade.h:15
+#: ../data/gweled.ui.h:16
 msgid "_Help"
 msgstr "_Aiuto"
 
-#: ../src/gweled.glade.h:17
+#: ../data/gweled.ui.h:18
 msgid "_Scores"
 msgstr "_Punteggi"
 
-#: ../src/gweled.glade.h:18
+#: ../data/gweled.ui.h:19
 msgid "_Settings"
 msgstr "_Impostazioni"
 
-#: ../gweled.desktop.in.h:1
+#: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Gioca ad un rompicapo simile a \"Diamond Mine\""

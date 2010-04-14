@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-08 04:30+0200\n"
+"POT-Creation-Date: 2010-04-14 17:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,41 +16,89 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:169
-msgid "<span color=\"red\" weight=\"bold\">You made the highscore list!</span>"
+#: ../src/main.c:62
+msgctxt "game type"
+msgid "Normal"
 msgstr ""
 
-#: ../src/main.c:171 ../data/gweled.ui.h:3
-msgid "<span weight=\"bold\">Highscores</span>"
+#: ../src/main.c:63
+msgctxt "game type"
+msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:239
-msgid "No highscores recorded yet"
+#: ../src/main.c:174
+msgid "Game over!"
 msgstr ""
 
-#: ../src/callbacks.c:73
-msgid "Do you really want to abort this game ?"
+#: ../src/main.c:176
+msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/callbacks.c:118
+#: ../src/main.c:178
+msgid "_New Game"
+msgstr ""
+
+#: ../src/main.c:190
+msgid "Gweled Scores"
+msgstr ""
+
+#: ../src/main.c:193
+msgid "Game type:"
+msgstr ""
+
+#: ../src/main.c:200
+msgid "Congratulations!"
+msgstr ""
+
+#: ../src/main.c:201
+msgid "Your score is the best!"
+msgstr ""
+
+#: ../src/main.c:202
+msgid "Your score has made the top ten."
+msgstr ""
+
+#: ../src/callbacks.c:77
+msgid "Do you really want to abort this game?"
+msgstr ""
+
+#: ../src/callbacks.c:107 ../src/callbacks.c:112 ../src/callbacks.c:124
+#: ../src/callbacks.c:136
+msgid "_Resume"
+msgstr ""
+
+#: ../src/callbacks.c:108 ../src/callbacks.c:123 ../src/callbacks.c:135
+#: ../data/gweled.ui.h:17
+msgid "_Pause"
+msgstr ""
+
+#: ../src/callbacks.c:165
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/callbacks.c:123
+#: ../src/callbacks.c:170
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
 msgstr ""
 
-#: ../src/board_engine.c:561
+#: ../src/board_engine.c:545
+msgid "paused"
+msgstr ""
+
+#: ../src/board_engine.c:546
+msgid "Paused"
+msgstr ""
+
+#: ../src/board_engine.c:580
 msgid "time's up #"
 msgstr ""
 
-#: ../src/board_engine.c:705 ../src/board_engine.c:730
+#: ../src/board_engine.c:730 ../src/board_engine.c:755
 msgid "no moves left #"
 msgstr ""
 
-#: ../src/board_engine.c:753
+#: ../src/board_engine.c:785
 #, c-format
 msgid "bonus x%d"
 msgstr ""
@@ -63,28 +111,32 @@ msgstr ""
 msgid "<span weight=\"bold\">Difficulty level</span>"
 msgstr ""
 
+#: ../data/gweled.ui.h:3
+msgid "<span weight=\"bold\">Highscores</span>"
+msgstr ""
+
 #: ../data/gweled.ui.h:4
 msgid "<span weight=\"bold\">Sound</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:5
-msgid "Gweled"
-msgstr ""
-
-#: ../data/gweled.ui.h:6
 msgid "Highscores"
 msgstr ""
 
-#: ../data/gweled.ui.h:7
+#: ../data/gweled.ui.h:6
 msgid "Large"
 msgstr ""
 
-#: ../data/gweled.ui.h:8
+#: ../data/gweled.ui.h:7
 msgid "Medium"
 msgstr ""
 
-#: ../data/gweled.ui.h:9
+#: ../data/gweled.ui.h:8
 msgid "Normal"
+msgstr ""
+
+#: ../data/gweled.ui.h:9
+msgid "Pauses the game for you can return to it later"
 msgstr ""
 
 #: ../data/gweled.ui.h:10
@@ -92,30 +144,34 @@ msgid "Play background music"
 msgstr ""
 
 #: ../data/gweled.ui.h:11
-msgid "Preferences"
+msgid "Play sound effects"
 msgstr ""
 
 #: ../data/gweled.ui.h:12
-msgid "Small"
+msgid "Preferences"
 msgstr ""
 
 #: ../data/gweled.ui.h:13
-msgid "Timed"
+msgid "Small"
 msgstr ""
 
 #: ../data/gweled.ui.h:14
-msgid "_Game"
+msgid "Timed"
 msgstr ""
 
 #: ../data/gweled.ui.h:15
-msgid "_Help"
+msgid "_Game"
 msgstr ""
 
 #: ../data/gweled.ui.h:16
+msgid "_Help"
+msgstr ""
+
+#: ../data/gweled.ui.h:18
 msgid "_Scores"
 msgstr ""
 
-#: ../data/gweled.ui.h:17
+#: ../data/gweled.ui.h:19
 msgid "_Settings"
 msgstr ""
 

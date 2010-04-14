@@ -2,45 +2,34 @@
 
 SUBDIRS = src data po
 
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/pixmaps; then \
-	  $(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
-	  for pixmap in $(srcdir)/pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
-	    fi \
-	  done \
-	fi
-	if test -d $(srcdir)/sounds; then \
-	  $(mkinstalldirs) $(DESTDIR)$(datadir)/sounds/$(PACKAGE); \
-	  for sound in $(srcdir)/sounds/*; do \
-	    if test -f $$sound; then \
-	      $(INSTALL_DATA) $$sound $(DESTDIR)$(datadir)/sounds/$(PACKAGE); \
-	    fi \
-	  done \
-	fi
-	-$(mkinstalldirs) $(DESTDIR)$(scoredir)
-	touch $(DESTDIR)$(scoredir)/gweled.easy.scores
-	-chown $(scores_user):$(scores_group) $(DESTDIR)$(scoredir)/gweled.easy.scores
-	-chmod 664 $(DESTDIR)$(scoredir)/gweled.easy.scores
-	-if test "x$(setgid)" = "xtrue"; then chgrp $(scores_group) $(DESTDIR)$(bindir)/gweled && chmod 2555 $(DESTDIR)$(bindir)/gweled ; fi
+pixmapdir   = $(datadir)/pixmaps/$(PACKAGE)
+pixmap_DATA = pixmaps/cursor.svg pixmaps/font_24_20.png pixmaps/font_48_40.png \
+              pixmaps/gem01.svg pixmaps/gem02.svg pixmaps/gem03.svg \
+              pixmaps/gem04.svg pixmaps/gem05.svg pixmaps/gem06.svg \
+              pixmaps/gem07.svg pixmaps/tile_even.svg pixmaps/tile_odd.svg
 
-dist-hook:
-	if test -d pixmaps; then \
-	  mkdir $(distdir)/pixmaps; \
-	  for pixmap in pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      cp -p $$pixmap $(distdir)/pixmaps; \
-	    fi \
-	  done \
-	fi
-	if test -d sounds; then \
-	  mkdir $(distdir)/sounds; \
-	  for sound in sounds/*; do \
-	    if test -f $$sound; then \
-	      cp -p $$sound $(distdir)/sounds; \
-	    fi \
-	  done \
+soundsdir   = $(datadir)/sounds/$(PACKAGE)
+sounds_DATA = sounds/autonom.s3m sounds/click.wav sounds/swap.wav
+
+EXTRA_DIST = $(sounds_DATA) \
+             $(pixmap_DATA)
+
+SCOREFILES = Normal Timed
+
+install-data-local:
+	-$(mkinstalldirs) $(DESTDIR)$(scoredir)
+	## Change the names of the high score files, unless the local user has
+	## beaten us to it.
+	-if [ -f $(DESTDIR)$(scoredir)/gweled.easy.scores -a ! -f $(DESTDIR)$(scoredir)/gweled.Normal.scores ]; then mv -f $(DESTDIR)$(scoredir)/gweled.easy.scores $(DESTDIR)$(scoredir)/gweled.Normal.scores  ; fi
+	-if [ -f $(DESTDIR)$(scoredir)/gweled.hard.scores -a ! -f $(DESTDIR)$(scoredir)/gweled.Timed.scores ]; then mv -f $(DESTDIR)$(scoredir)/gweled.hard.scores $(DESTDIR)$(scoredir)/gweled.Timed.scores  ; fi
+	-for i in ${SCOREFILES} ; do \
+	   touch $(DESTDIR)$(scoredir)/gweled.$$i.scores; \
+	   chown $(scores_user):$(scores_group) $(DESTDIR)$(scoredir)/gweled.$$i.scores; \
+	   chmod 664 $(DESTDIR)$(scoredir)/gweled.$$i.scores; \
+	 done
+
+install-exec-hook:
+	-if test "$(setgid)" = "true"; then \
+	  chgrp $(scores_group) $(DESTDIR)$(bindir)/gweled && chmod 2555 $(DESTDIR)$(bindir)/gweled ;\
 	fi
 
