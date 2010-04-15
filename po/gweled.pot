@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-14 17:46+0200\n"
+"POT-Creation-Date: 2010-04-15 02:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,25 +58,25 @@ msgstr ""
 msgid "Your score has made the top ten."
 msgstr ""
 
-#: ../src/callbacks.c:77
+#: ../src/callbacks.c:74
 msgid "Do you really want to abort this game?"
 msgstr ""
 
-#: ../src/callbacks.c:107 ../src/callbacks.c:112 ../src/callbacks.c:124
-#: ../src/callbacks.c:136
+#: ../src/callbacks.c:103 ../src/callbacks.c:108 ../src/callbacks.c:120
+#: ../src/callbacks.c:132
 msgid "_Resume"
 msgstr ""
 
-#: ../src/callbacks.c:108 ../src/callbacks.c:123 ../src/callbacks.c:135
-#: ../data/gweled.ui.h:17
+#: ../src/callbacks.c:104 ../src/callbacks.c:119 ../src/callbacks.c:131
+#: ../data/gweled.ui.h:15
 msgid "_Pause"
 msgstr ""
 
-#: ../src/callbacks.c:165
+#: ../src/callbacks.c:161
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/callbacks.c:170
+#: ../src/callbacks.c:166
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
@@ -112,66 +112,58 @@ msgid "<span weight=\"bold\">Difficulty level</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:3
-msgid "<span weight=\"bold\">Highscores</span>"
-msgstr ""
-
-#: ../data/gweled.ui.h:4
 msgid "<span weight=\"bold\">Sound</span>"
 msgstr ""
 
-#: ../data/gweled.ui.h:5
-msgid "Highscores"
-msgstr ""
-
-#: ../data/gweled.ui.h:6
+#: ../data/gweled.ui.h:4
 msgid "Large"
 msgstr ""
 
-#: ../data/gweled.ui.h:7
+#: ../data/gweled.ui.h:5
 msgid "Medium"
 msgstr ""
 
-#: ../data/gweled.ui.h:8
+#: ../data/gweled.ui.h:6
 msgid "Normal"
 msgstr ""
 
-#: ../data/gweled.ui.h:9
+#: ../data/gweled.ui.h:7
 msgid "Pauses the game for you can return to it later"
 msgstr ""
 
-#: ../data/gweled.ui.h:10
+#: ../data/gweled.ui.h:8
 msgid "Play background music"
 msgstr ""
 
-#: ../data/gweled.ui.h:11
+#: ../data/gweled.ui.h:9
 msgid "Play sound effects"
 msgstr ""
 
-#: ../data/gweled.ui.h:12
+#: ../data/gweled.ui.h:10
 msgid "Preferences"
 msgstr ""
 
-#: ../data/gweled.ui.h:13
+#: ../data/gweled.ui.h:11
 msgid "Small"
 msgstr ""
 
-#: ../data/gweled.ui.h:14
+#: ../data/gweled.ui.h:12
 msgid "Timed"
 msgstr ""
 
-#: ../data/gweled.ui.h:15
+#: ../data/gweled.ui.h:13
 msgid "_Game"
 msgstr ""
 
-#: ../data/gweled.ui.h:16
+#: ../data/gweled.ui.h:14
 msgid "_Help"
 msgstr ""
 
-#: ../data/gweled.ui.h:18
+#: ../data/gweled.ui.h:16
 msgid "_Scores"
 msgstr ""
 
-#: ../data/gweled.ui.h:19
+#: ../data/gweled.ui.h:17
 msgid "_Settings"
 msgstr ""
 

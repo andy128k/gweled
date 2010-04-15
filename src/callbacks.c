@@ -32,7 +32,6 @@
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
-#include "games-scores.h"
 
 extern gi_game_running;
 extern gint gi_score;
@@ -56,8 +55,6 @@ extern gint gi_x_drag;
 extern gint gi_y_drag;
 
 extern GweledPrefs prefs;
-
-extern GamesScores *highscores;
 
 SAMPLE *click_sfx;
 
@@ -94,7 +91,6 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_scores1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-	// See comments in show_hiscores() for meaning of 0 as argument
  	show_hiscores (0, FALSE);
 }
 
@@ -268,23 +264,10 @@ on_preferencesDialog_delete_event (GtkWidget * widget, GdkEvent * event, gpointe
 	return TRUE;
 }
 
-gboolean
-on_highscoresDialog_delete_event (GtkWidget * widget, GdkEvent * event, gpointer user_data)
-{
-	gtk_widget_hide (widget);
-	return TRUE;
-}
-
 void
 on_closebutton1_clicked (GtkButton * button, gpointer user_data)
 {
 	save_preferences();
-	gtk_widget_hide (gtk_widget_get_toplevel (GTK_WIDGET (button)));
-}
-
-void
-on_closebutton2_clicked (GtkButton * button, gpointer user_data)
-{
 	gtk_widget_hide (gtk_widget_get_toplevel (GTK_WIDGET (button)));
 }
 
@@ -313,7 +296,6 @@ on_hardRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 			gweled_draw_board ();
 			gweled_start_new_game ();
 		}
-		games_scores_set_category (highscores, "Timed");
 	}
 }
 /*
