@@ -69,35 +69,66 @@ SAMPLE *swap_sfx, *click_sfx;
 
 void save_preferences(void)
 {
-	gchar *filename;
-	FILE *stream;
+	gchar *filename, *configstr;
+	GKeyFile *config;
+	FILE *configfile;
+	GError *error = NULL;
 
 	filename = g_strconcat(g_get_user_config_dir(), "/gweled", NULL);
-	stream = fopen(filename, "w");
-	if(stream)
-	{
-		fwrite(&prefs, sizeof(GweledPrefs), 1, stream);
-		fclose(stream);
-	}
 
+    config = g_key_file_new();
+	g_key_file_load_from_file(config, filename,
+		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error);
+
+	if(error == NULL) {
+	    g_key_file_set_integer(config, "General", "tile_width", prefs.tile_width);
+	    g_key_file_set_integer(config, "General", "tile_height", prefs.tile_height);
+	    g_key_file_set_boolean(config, "General", "timer_mode", prefs.timer_mode);
+	    g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
+	    g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
+
+        configstr = g_key_file_to_data(config, NULL, NULL);
+
+	    configfile = fopen(filename, "w");
+	    fprintf(configfile, configstr, NULL);
+	    fclose(configfile);
+	    g_free(configstr);
+
+	} else {
+	    g_printerr("Error loading config file for saving: %s", error->message);
+	    g_error_free (error);
+    }
+
+    g_key_file_free(config);
 	g_free(filename);
 }
 
 void load_preferences(void)
 {
 	char *filename;
-	FILE *stream;
+	GKeyFile *config;
+	GError *error = NULL;
 
 	filename = g_strconcat(g_get_user_config_dir(), "/gweled", NULL);
 
-	stream = fopen(filename, "r");
-	if(stream)
-	{
-		fread(&prefs, sizeof(GweledPrefs), 1, stream);
-		fclose(stream);
-	}
-	else
-	{
+	config = g_key_file_new();
+	g_key_file_load_from_file(config, filename,
+		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error);
+
+    if(error == NULL && g_key_file_has_group(config, "General")) {
+
+	    prefs.tile_width = g_key_file_get_integer(config, "General", "tile_width", NULL);
+	    prefs.tile_height = g_key_file_get_integer(config, "General", "tile_height", NULL);
+	    prefs.timer_mode = g_key_file_get_boolean(config, "General", "timer_mode", NULL);
+	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
+	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
+
+    } else {
+        if (error) {
+            g_printerr("Error loading config file: %s", error->message);
+            g_error_free (error);
+        }
+
 		prefs.tile_width = 48;
 		prefs.tile_height = 48;
 		prefs.timer_mode = FALSE;
@@ -106,7 +137,9 @@ void load_preferences(void)
 
 		save_preferences();
 	}
+	g_key_file_free(config);
 	g_free(filename);
+
 }
 
 void init_pref_window(void)
