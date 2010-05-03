@@ -100,6 +100,7 @@ extern GtkWidget *g_bonus_label;
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
 
+extern guint board_engine_id;
 extern GweledPrefs prefs;
 
 extern GamesScores *highscores;
@@ -544,18 +545,26 @@ gweled_check_for_alignments (void)
 void
 board_pause(gboolean value)
 {
+    static gchar *last_text;
     gi_game_paused = value;
     if(value == TRUE) {
-        gweled_draw_game_message(_("paused"), 1);
+        gweled_draw_game_message(_("paused"), 2);
+        last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
     }
     else {
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), "");
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
+        g_free(last_text);
+        respawn_board_engine_loop();
     }
 
 }
 
-
+void respawn_board_engine_loop()
+{
+    if(!board_engine_id)
+        board_engine_id = gtk_timeout_add (100, board_engine_loop, NULL);
+}
 
 gboolean
 board_engine_loop (gpointer data)
@@ -605,7 +614,7 @@ board_engine_loop (gpointer data)
 						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
 
-    g_print("Current state: %s\n", state[gi_state]);
+    g_debug("Current state: %s", state[gi_state]);
 
 	switch (gi_state) {
 	case _IDLE:
@@ -796,8 +805,6 @@ board_engine_loop (gpointer data)
 				g_sprintf(msg_buffer, _("Level %d"), gi_level);
 	            gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), msg_buffer);
 
-				g_print("Level %i\n", gi_level);
-
                 // draw bonus message in game
 				g_sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
 				gweled_draw_game_message (msg_buffer, 2.0);
@@ -824,5 +831,12 @@ board_engine_loop (gpointer data)
 	default:
 		break;
 	}
+
+	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.timer_mode && gi_game_paused) || !prefs.timer_mode))
+    {
+        board_engine_id = 0;
+        g_debug("Board engine timer stopped");
+        return FALSE;
+    }
 	return TRUE;
 }

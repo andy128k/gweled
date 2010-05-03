@@ -48,6 +48,8 @@ void gweled_swap_gems(gint x1, gint y1, gint x2, gint y2);
 void gweled_refill_board(void);
 gboolean gweled_check_for_moves_left(int *pi, int *pj);
 
+void respawn_board_engine_loop();
+
 gboolean board_engine_loop(gpointer data);
 
 #endif

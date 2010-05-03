@@ -54,6 +54,7 @@ extern gint gi_gem_dragged;
 extern gint gi_x_drag;
 extern gint gi_y_drag;
 
+extern guint board_engine_id;
 extern GweledPrefs prefs;
 
 SAMPLE *click_sfx;
@@ -81,6 +82,8 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 		if (response != GTK_RESPONSE_YES)
 			return;
 	}
+
+    respawn_board_engine_loop();
 
 	sge_destroy_all_objects ();
 	gweled_draw_board ();
@@ -194,6 +197,8 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 
 	if(event->button != 1)
 	    return FALSE;
+
+    respawn_board_engine_loop();
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:

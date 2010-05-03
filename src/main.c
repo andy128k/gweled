@@ -55,6 +55,8 @@ GtkWidget *g_menu_pause;
 GdkPixmap *g_buffer_pixmap = NULL;
 GRand *g_random_generator;
 
+guint board_engine_id;
+
 GweledPrefs prefs;
 pthread_t thread;
 
@@ -267,7 +269,6 @@ void mikmod_thread(void *ptr)
 
 int main (int argc, char **argv)
 {
-	guint board_engine_id;
 	GError* error = NULL;
 
 	/* gettext */
@@ -361,7 +362,6 @@ int main (int argc, char **argv)
 	if (prefs.music_on)
 		music_play();
 
-	board_engine_id = gtk_timeout_add (100, board_engine_loop, NULL);
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 			      BOARD_WIDTH * prefs.tile_width,
 			      BOARD_HEIGHT * prefs.tile_height);
@@ -374,7 +374,8 @@ int main (int argc, char **argv)
     MikMod_DisableOutput();
 
 	sge_destroy ();
-	gtk_timeout_remove (board_engine_id);
+	if(board_engine_id)
+	    g_source_remove (board_engine_id);
 	g_rand_free (g_random_generator);
 	g_object_unref(G_OBJECT(gweled_xml));
 
