@@ -29,6 +29,7 @@ typedef struct s_sge_object
 	gdouble vy;
 	gdouble ax;
 	gdouble ay;
+	gint y_delay;
 	gint dest_x;
 	gint dest_y;
 	gint width;
@@ -55,7 +56,8 @@ void sge_destroy_all_objects(void);
 void sge_object_set_lifetime(T_SGEObject *object, gint lifetime);
 void sge_object_take_down(T_SGEObject *object);
 void sge_object_move_to(T_SGEObject *object, gint dest_x, gint dest_y);
-void sge_objects_fall_to(T_SGEObject *object, gint dest_y);
+void sge_object_fall_to(T_SGEObject *object, gint dest_y);
+void sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay);
 
 gboolean sge_object_is_moving(T_SGEObject *object);
 gboolean sge_objects_are_moving(void);

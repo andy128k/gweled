@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-15 02:11+0200\n"
+"POT-Creation-Date: 2010-05-03 20:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,35 +26,35 @@ msgctxt "game type"
 msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:174
+#: ../src/main.c:207
 msgid "Game over!"
 msgstr ""
 
-#: ../src/main.c:176
+#: ../src/main.c:209
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/main.c:178
+#: ../src/main.c:211
 msgid "_New Game"
 msgstr ""
 
-#: ../src/main.c:190
+#: ../src/main.c:223
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:193
+#: ../src/main.c:226
 msgid "Game type:"
 msgstr ""
 
-#: ../src/main.c:200
+#: ../src/main.c:233
 msgid "Congratulations!"
 msgstr ""
 
-#: ../src/main.c:201
+#: ../src/main.c:234
 msgid "Your score is the best!"
 msgstr ""
 
-#: ../src/main.c:202
+#: ../src/main.c:235
 msgid "Your score has made the top ten."
 msgstr ""
 
@@ -82,23 +82,29 @@ msgid ""
 "Mine\")"
 msgstr ""
 
-#: ../src/board_engine.c:545
+#: ../src/board_engine.c:163 ../src/board_engine.c:796
+#, c-format
+msgid "Level %d"
+msgstr ""
+
+#: ../src/board_engine.c:549
 msgid "paused"
 msgstr ""
 
-#: ../src/board_engine.c:546
+#: ../src/board_engine.c:550
 msgid "Paused"
 msgstr ""
 
-#: ../src/board_engine.c:580
+#: ../src/board_engine.c:587
 msgid "time's up #"
 msgstr ""
 
-#: ../src/board_engine.c:730 ../src/board_engine.c:755
+#: ../src/board_engine.c:738 ../src/board_engine.c:763
 msgid "no moves left #"
 msgstr ""
 
-#: ../src/board_engine.c:785
+#. draw bonus message in game
+#: ../src/board_engine.c:802
 #, c-format
 msgid "bonus x%d"
 msgstr ""

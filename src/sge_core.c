@@ -93,6 +93,12 @@ draw_object (gpointer object, gpointer user_data)
 void
 move_object (gpointer object, gpointer user_data)
 {
+    if(((T_SGEObject *) object)->y_delay > 0) {
+        ((T_SGEObject *) object)->y_delay -= 1;
+        return;
+    }
+
+
 	((T_SGEObject *) object)->vx += ((T_SGEObject *) object)->ax;
 	((T_SGEObject *) object)->vy += ((T_SGEObject *) object)->ay;
 
@@ -353,6 +359,8 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->dest_x = 0;
     object->dest_y = 0;
 
+    object->y_delay = 0;
+
     object->stop_condition = NULL;
 	object->stop_callback = NULL;
 	object->layer = layer;
@@ -409,6 +417,7 @@ is_out_of_screen (T_SGEObject * object)
 int
 has_reached_destination (T_SGEObject * object)
 {
+    //g_print("has_reached_destination():\n");
 	if (fabs (object->x - object->dest_x) < 1.0 &&
 	    fabs (object->y - object->dest_y) < 1.0)
 		return -1;
@@ -446,6 +455,7 @@ sge_object_rise (T_SGEObject * object)
 void
 sge_object_take_down (T_SGEObject * object)
 {
+    g_print("sge_object_take_down():\n");
 	object->vx = g_rand_double_range (g_rand_generator, -1.0, 1.0);
     object->vy = g_rand_double_range (g_rand_generator, 0.0, 1.0);
     object->ax = 0.0;
@@ -458,9 +468,12 @@ sge_object_take_down (T_SGEObject * object)
 
 #define NB_STEPS	10
 
+// used for gems swapping
 void
 sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 {
+    //g_print("sge_object_move_to(): dest_x:%d dest_y:%d\n", dest_x, dest_y);
+
 	object->vx = (dest_x - object->x) / NB_STEPS;
 	object->vy = (dest_y - object->y) / NB_STEPS;
 	object->dest_x = dest_x;
@@ -479,10 +492,30 @@ void
 
 sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
+    g_print("sge_object_fall_to(): y_pos:%d\n", y_pos);
 	if (object->y < y_pos) {
 		object->ay = ACCELERATION;
 		object->dest_y = y_pos;
 		object->stop_condition = has_reached_floor;
+	}
+}
+void
+sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
+{
+    //g_print("sge_object_fall_to_with_accel(): y_pos:%d y:%4.1f diff:%4.1f x:%4.1f delay:%4.1f\n", y_pos/48, object->y/48, (y_pos-object->y)/48 +1, object->x/48, 0-object->y/48);
+    //static gint last_x_pos = 0;
+    //static gint last_delay = 0;
+	if (object->y < y_pos) {
+		object->ay = ACCELERATION;
+		object->dest_y = y_pos;
+		object->stop_condition = has_reached_floor;
+        //if(y_pos == 0) {
+        //    object->y_delay = 0;
+
+        //} else
+        //    object->y_delay = y_pos / 48;
+		//last_x_pos = (gint) object->x;
+		object->y_delay = delay;
 	}
 }
 

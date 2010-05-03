@@ -69,6 +69,7 @@ gint gi_gems_removed_per_move;
 gint gi_bonus_multiply;
 gint gi_previous_bonus_at;
 gint gi_next_bonus_at;
+gint gi_level;
 gint gi_trigger_bonus;
 guint g_steps_for_timer;
 
@@ -146,6 +147,7 @@ gweled_start_new_game (void)
 	gi_current_score = 0;
 	gi_gems_removed_per_move = 0;
 	gi_bonus_multiply = 3;
+	gi_level = 1;
 	gi_previous_bonus_at = 0;
 	gi_next_bonus_at = FIRST_BONUS_AT;
 	gi_trigger_bonus = 0;
@@ -158,7 +160,9 @@ gweled_start_new_game (void)
 
 	gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 0.0);
 	gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
-	gtk_label_set_markup ((GtkLabel *) g_bonus_label, "<span weight=\"bold\">x1</span>");
+    gchar *text = g_strdup_printf(_("Level %d"), 1);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
+	g_free(text);
 
 	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
@@ -460,7 +464,7 @@ gweled_check_for_alignments (void)
 
 	destroy_all_alignments ();
 
-// make a list of vertical alignments
+    // make a list of vertical alignments
 	i_nb_aligned = 0;
 
 	for (i = 0; i < BOARD_WIDTH; i++) {
@@ -497,7 +501,7 @@ gweled_check_for_alignments (void)
 		i_nb_aligned = 0;
 	}
 
-// make a list of horizontal alignments
+    // make a list of horizontal alignments
 	i_nb_aligned = 0;
 
 	for (j = 0; j < BOARD_HEIGHT; j++) {
@@ -564,11 +568,14 @@ board_engine_loop (gpointer data)
 
 	time_slice++;
 
+	const gchar* state[] = {"_IDLE", "_FIRST_GEM_CLICKED", "_SECOND_GEM_CLICKED",
+	                        "_ILLEGAL_MOVE", "_MARK_ALIGNED_GEMS", "_BOARD_REFILLING"};
+
     // progressive score
 	if(gi_current_score < gi_score)
 	{
 		gi_current_score += 10;
-		sprintf (msg_buffer, "<span weight=\"bold\">%06d</span>", gi_current_score);
+		g_sprintf (msg_buffer, "<span weight=\"bold\">%06d</span>", gi_current_score);
 		gtk_label_set_markup ((GtkLabel *) g_score_label, msg_buffer);
 	}
 
@@ -597,6 +604,8 @@ board_engine_loop (gpointer data)
 						       (float)(gi_total_gems_removed -gi_previous_bonus_at)
 						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
+
+    g_print("Current state: %s\n", state[gi_state]);
 
 	switch (gi_state) {
 	case _IDLE:
@@ -717,8 +726,7 @@ board_engine_loop (gpointer data)
 				gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
 			else
 				gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 1.0);
-			//sprintf (msg_buffer, "<span weight=\"bold\">%06d</span>", gi_score);
-			//gtk_label_set_markup ((GtkLabel *) g_score_label, msg_buffer);
+
 			gweled_refill_board ();
 			gweled_gems_fall_into_place ();
 			gi_state = _BOARD_REFILLING;
@@ -782,20 +790,29 @@ board_engine_loop (gpointer data)
 				if (prefs.timer_mode)
 					g_steps_for_timer = (gi_next_bonus_at - gi_previous_bonus_at) / TOTAL_STEPS_FOR_TIMER + 1;
 				gi_bonus_multiply++;
-				sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
-				gweled_draw_game_message (msg_buffer, 1.0);
+
+                gi_level++;
+
+				g_sprintf(msg_buffer, _("Level %d"), gi_level);
+	            gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), msg_buffer);
+
+				g_print("Level %i\n", gi_level);
+
+                // draw bonus message in game
+				g_sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
+				gweled_draw_game_message (msg_buffer, 2.0);
+
 				gweled_delete_gems_for_bonus ();
 				gweled_take_down_deleted_gems ();
 				gweled_remove_gems_and_update_score ();
+
 				if (prefs.timer_mode)
 					gi_total_gems_removed = (gi_next_bonus_at + gi_previous_bonus_at) / 2;
+
 				gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar,
 					(float) (gi_total_gems_removed - gi_previous_bonus_at) /
 					(float) (gi_next_bonus_at - gi_previous_bonus_at));
-				//sprintf (msg_buffer, "<span weight=\"bold\">%06d</span>", gi_score);
-				//gtk_label_set_markup ((GtkLabel *)g_score_label, msg_buffer);
-				sprintf (msg_buffer, "<span weight=\"bold\">x%d</span>", gi_bonus_multiply >> 1);
-				gtk_label_set_markup ((GtkLabel *)g_bonus_label, msg_buffer);
+
 				gweled_refill_board ();
 				gweled_gems_fall_into_place ();
 				g_do_not_score = TRUE;

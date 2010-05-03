@@ -287,13 +287,15 @@ int
 gweled_gems_fall_into_place (void)
 {
 	gint i, j;
-
+    g_print("gweled_gems_fall_into_place():\n");
 
     for (i = 0; i < BOARD_WIDTH; i++)
 
-        for (j = 0; j < BOARD_HEIGHT; j++)
-			sge_object_fall_to (g_gem_objects[i][j],
-					    j * prefs.tile_height);
+        for (j = 0; j < BOARD_HEIGHT; j++) {
+			sge_object_fall_to_with_delay (g_gem_objects[i][j],
+					    j * prefs.tile_height, (BOARD_HEIGHT - 1 - j)*2);
+
+		}
 
 }
 
