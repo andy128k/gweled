@@ -34,16 +34,15 @@ sge_load_svg_to_pixbuf (char *filename, int width,
 	full_pathname = g_strconcat(DATADIR "/pixmaps/",
 	                            filename,
 	                            NULL );
-	if (full_pathname) {
-		pixbuf =
-		    rsvg_pixbuf_from_file_at_size (full_pathname, width,
+	if (g_file_test(full_pathname, G_FILE_TEST_IS_REGULAR)) {
+		pixbuf = rsvg_pixbuf_from_file_at_size (full_pathname, width,
 						   height, &error);
 		g_free (full_pathname);
-		if (pixbuf == NULL) {
+		if (pixbuf == NULL)
 			g_free (error);
-		}
+
 	} else
-		printf ("%s not found\n", filename);
+		g_warning ("%s not found", filename);
 
 	return pixbuf;
 }
@@ -57,11 +56,11 @@ sge_load_file_to_pixbuf (char *filename)
 	full_pathname = g_strconcat(DATADIR "/pixmaps/",
 	                            filename,
 	                            NULL );
-	if (full_pathname) {
+	if (g_file_test(full_pathname, G_FILE_TEST_IS_REGULAR)) {
 		pixbuf = gdk_pixbuf_new_from_file (full_pathname, NULL);
 		g_free (full_pathname);
 	} else
-		printf ("%s not found\n", filename);
+		g_warning ("%s not found\n", filename);
 
 	return pixbuf;
 }

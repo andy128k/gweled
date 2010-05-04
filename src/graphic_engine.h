@@ -27,6 +27,10 @@
 #define FONT_HEIGHT   20
 
 // FUNCTIONS
+
+void
+gweled_load_pixmaps (void);
+
 void
 gweled_draw_message (gchar *in_message);
 

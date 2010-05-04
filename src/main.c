@@ -69,6 +69,8 @@ GamesScores *highscores;
 
 SAMPLE *swap_sfx, *click_sfx;
 
+extern gint gi_game_running;
+
 void save_preferences(void)
 {
 	gchar *filename, *configstr;
@@ -262,7 +264,7 @@ show_hiscores (gint pos, gboolean endofgame)
 void mikmod_thread(void *ptr)
 {
 	while (1) {
-	    usleep(10000);
+	    g_usleep(10000);
 		MikMod_Update();
     }
 }
@@ -308,7 +310,6 @@ int main (int argc, char **argv)
     g_score_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "highscoresDialog"));
     g_progress_bar = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "bonusProgressbar"));
     g_score_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel"));
-    //g_bonus_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "bonusLabel"));
     g_drawing_area = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "boardDrawingarea"));
     g_menu_pause = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "pause1"));
 
@@ -341,12 +342,12 @@ int main (int argc, char **argv)
 	// load sound fx
     swap_sfx = Sample_Load(DATADIR "/sounds/gweled/swap.wav");
     if (!swap_sfx) {
-        g_warning("Could not load swap.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
+        g_warning("Could not load swap.wav, reason: %s", MikMod_strerror(MikMod_errno));
 
     }
     click_sfx = Sample_Load(DATADIR "/sounds/gweled/click.wav");
     if (!click_sfx) {
-        g_warning("Could not load click.wav, reason: %s\n", MikMod_strerror(MikMod_errno));
+        g_warning("Could not load click.wav, reason: %s", MikMod_strerror(MikMod_errno));
     }
 
     MikMod_SetNumVoices(-1, 4);

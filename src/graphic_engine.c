@@ -41,10 +41,10 @@ extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 extern GweledPrefs prefs;
 
 signed char gpc_font_glyphs[256];
-gint gi_tiles_bg_pixbuf[2];
-gint gi_gems_pixbuf[7];
+gint gi_tiles_bg_pixbuf[2] = {-1, -1};
+gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
 gint gi_charset_pixbuf[50];
-gint gi_cursor_pixbuf;
+gint gi_cursor_pixbuf = -1;
 
 void
 gweled_load_font (void)
@@ -79,73 +79,33 @@ gweled_load_pixmaps (void)
 					    prefs.tile_width, prefs.tile_height);
 		if (pixbuf == NULL)
 			exit (-1);
-		gi_gems_pixbuf[i] = sge_register_pixbuf (pixbuf, -1);
+		gi_gems_pixbuf[i] = sge_register_pixbuf (pixbuf, gi_gems_pixbuf[i]);
 
 		g_free (filename);
 	}
 
-	pixbuf =
-	    sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
-				    prefs.tile_width, prefs.tile_height);
-	if (pixbuf == NULL)
-		exit (-1);
-	gi_tiles_bg_pixbuf[0] = sge_register_pixbuf (pixbuf, -1);
+    pixbuf = sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
+				                prefs.tile_width, prefs.tile_height);
 
-	pixbuf =
-	    sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
-				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
-	gi_tiles_bg_pixbuf[1] = sge_register_pixbuf (pixbuf, -1);
+	gi_tiles_bg_pixbuf[0] = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[0]);
+
+    pixbuf = sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
+				                prefs.tile_width, prefs.tile_height);
+
+	if (pixbuf == NULL)
+		exit (-1);
+	gi_tiles_bg_pixbuf[1] = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[1]);
+
 
 	pixbuf =
 	    sge_load_svg_to_pixbuf ("gweled/cursor.svg",
 				    prefs.tile_width, prefs.tile_height);
 	if (pixbuf == NULL)
 		exit (-1);
-	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, -1);
-}
+	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
 
-// FIXME: load and reload functions ? yeah right...
-void
-gweled_reload_pixmaps (void)
-{
-	gchar *filename, *full_pathname;
-	GdkPixbuf *pixbuf;
-	int i;
-
-	for (i = 0; i < 7; i++) {
-		filename = g_strdup_printf ("gweled/gem%02d.svg", i + 1);
-		pixbuf =
-		    sge_load_svg_to_pixbuf (filename,
-					    prefs.tile_width, prefs.tile_height);
-		if (pixbuf == NULL)
-			exit (-1);
-		sge_register_pixbuf (pixbuf, gi_gems_pixbuf[i]);
-
-		g_free (filename);
-	}
-
-	pixbuf =
-	    sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
-				    prefs.tile_width, prefs.tile_height);
-	if (pixbuf == NULL)
-		exit (-1);
-	sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[0]);
-
-	pixbuf =
-	    sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
-				    prefs.tile_width, prefs.tile_height);
-	if (pixbuf == NULL)
-		exit (-1);
-	sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[1]);
-
-	pixbuf =
-	    sge_load_svg_to_pixbuf ("gweled/cursor.svg",
-				    prefs.tile_width, prefs.tile_height);
-	if (pixbuf == NULL)
-		exit (-1);
-	sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
 }
 
 void
@@ -240,7 +200,7 @@ gweled_draw_message_at (gchar * in_message, gint msg_x, gint msg_y)
 		gweled_draw_character (msg_x + i * FONT_WIDTH, msg_y, 1,
 				       message[i]);
 
-	free (message);
+	g_free (message);
 }
 
 void
@@ -280,7 +240,7 @@ gweled_draw_game_message (gchar * in_message, double timing)
 						 (int) (50.0 * timing));
 		}
 
-    free (message);
+    g_free (message);
 }
 
 int

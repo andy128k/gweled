@@ -15,13 +15,12 @@ AM_CFLAGS = 		  \
 bin_PROGRAMS = gweled
 
 gweled_SOURCES = \
-	main.c \
+	main.c callbacks.c\
 	board_engine.c board_engine.h \
 	graphic_engine.c graphic_engine.h \
 	sge_core.c sge_core.h \
 	sge_utils.c sge_utils.h \
 	music.c music.h \
-	callbacks.c callbacks.h \
 	games-score.c games-score.h \
 	games-scores.c games-scores.h \
 	games-scores-backend.c games-scores-backend.h \

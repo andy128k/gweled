@@ -22,6 +22,8 @@
 #include <math.h>
 #include "sge_core.h"
 
+#define SGE_OBJECT(obj)  ((T_SGEObject *) obj)
+
 #define ACCELERATION	1.0
 
 // LOCAL FUNCTIONS
@@ -43,7 +45,7 @@ static GtkWidget *g_drawing_area = NULL;
 gint
 compare_by_layer (gconstpointer a, gconstpointer b)
 {
-	return ((T_SGEObject *) a)->layer - ((T_SGEObject *) b)->layer;
+	return SGE_OBJECT(a)->layer - SGE_OBJECT(b)->layer;
 }
 
 // main loop functions
@@ -53,77 +55,69 @@ draw_object (gpointer object, gpointer user_data)
 	int x, y;
 	GdkGC *gc;
 
-	if ((int) ((T_SGEObject *) object)->needs_drawing) {
-		x = (int) ((T_SGEObject *) object)->x;
-		y = (int) ((T_SGEObject *) object)->y;
-		if (((T_SGEObject *) object)->pre_rendered) {
+	if ((int) SGE_OBJECT(object)->needs_drawing) {
+		x = (int) SGE_OBJECT(object)->x;
+		y = (int) SGE_OBJECT(object)->y;
+
+		if (SGE_OBJECT(object)->pre_rendered) {
 			gc = gdk_gc_new (GDK_DRAWABLE (g_pixmap_buffer));
 			gdk_draw_drawable (GDK_DRAWABLE (g_pixmap_buffer),
 					   gc,
-					   GDK_DRAWABLE (((T_SGEObject *)
-							  object)->
-							 pre_rendered), 0,
-					   0, x, y,
-					   ((T_SGEObject *) object)->width,
-					   ((T_SGEObject *) object)->
-					   height);
+					   GDK_DRAWABLE (SGE_OBJECT(object)->pre_rendered),
+					   0, 0, x, y,
+					   SGE_OBJECT(object)->width,
+					   SGE_OBJECT(object)->height);
 			g_object_unref (gc);
-		} else
+
+		} else {
 			gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-					 NULL, g_pixbufs[((T_SGEObject *)
-							  object)->
-							 pixbuf_id], 0, 0,
-					 x, y,
-					 ((T_SGEObject *) object)->width,
-					 ((T_SGEObject *) object)->height,
+					 NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
+					 0, 0, x, y,
+					 SGE_OBJECT(object)->width,
+					 SGE_OBJECT(object)->height,
 					 GDK_RGB_DITHER_NONE, 0, 0);
-//      gdk_pixbuf_render_to_drawable_alpha(g_pixbufs[((T_SGEObject *)object)->pixbuf_id], GDK_DRAWABLE (g_pixmap_buffer), 0, 0, x, y, w, h,    0, 0, GDK_RGB_DITHER_NONE, 0, 0);
-		gtk_widget_queue_draw_area (g_drawing_area, x, y,
-					    ((T_SGEObject *) object)->
-					    width,
-					    ((T_SGEObject *) object)->
-					    height);
+        }
 
-		((T_SGEObject *) object)->needs_drawing = 0;
+        gtk_widget_queue_draw_area (g_drawing_area, x, y,
+				SGE_OBJECT(object)->width,
+				SGE_OBJECT(object)->height);
 
-		invalidate_objects_above ((T_SGEObject *) object);
+		SGE_OBJECT(object)->needs_drawing = 0;
+
+		invalidate_objects_above (SGE_OBJECT(object));
 	}
 }
 
 void
 move_object (gpointer object, gpointer user_data)
 {
-    if(((T_SGEObject *) object)->y_delay > 0) {
-        ((T_SGEObject *) object)->y_delay -= 1;
+    if(SGE_OBJECT(object)->y_delay > 0) {
+        SGE_OBJECT(object)->y_delay -= 1;
         return;
     }
 
+	SGE_OBJECT(object)->vx += SGE_OBJECT(object)->ax;
+	SGE_OBJECT(object)->vy += SGE_OBJECT(object)->ay;
 
-	((T_SGEObject *) object)->vx += ((T_SGEObject *) object)->ax;
-	((T_SGEObject *) object)->vy += ((T_SGEObject *) object)->ay;
-
-	if (sge_object_is_moving ((T_SGEObject *) object))
+	if (sge_object_is_moving (SGE_OBJECT(object)))
 	{
-		invalidate_background_beneath ((T_SGEObject *) object);
-		((T_SGEObject *) object)->x += ((T_SGEObject *) object)->vx;
-		((T_SGEObject *) object)->y += ((T_SGEObject *) object)->vy;
-		((T_SGEObject *) object)->needs_drawing |= 0x02;
+		invalidate_background_beneath (SGE_OBJECT(object));
+		SGE_OBJECT(object)->x += SGE_OBJECT(object)->vx;
+		SGE_OBJECT(object)->y += SGE_OBJECT(object)->vy;
+		SGE_OBJECT(object)->needs_drawing |= 0x02;
 	}
 
-	if (((T_SGEObject *) object)->stop_condition)
+	if (SGE_OBJECT(object)->stop_condition)
 
-        if (((T_SGEObject *) object)->
-		     stop_condition ((T_SGEObject *) object))
+        if (SGE_OBJECT(object)->stop_condition(SGE_OBJECT(object)))
 		{
-		    ((T_SGEObject *) object)->vx = 0.0;
-            ((T_SGEObject *) object)->vy = 0.0;
-            ((T_SGEObject *) object)->ax = 0.0;
-            ((T_SGEObject *) object)->ay = 0.0;
+		    SGE_OBJECT(object)->vx = 0.0;
+            SGE_OBJECT(object)->vy = 0.0;
+            SGE_OBJECT(object)->ax = 0.0;
+            SGE_OBJECT(object)->ay = 0.0;
 
-            if (((T_SGEObject *) object)->stop_callback)
-
-                ((T_SGEObject *) object)->
-				    stop_callback (object, NULL);
+            if (SGE_OBJECT(object)->stop_callback)
+                SGE_OBJECT(object)->stop_callback (object, NULL);
 		}
 }
 
@@ -153,16 +147,14 @@ scale_object_pos (gpointer object, gpointer user_data)
 
     gdouble ratio;
 
-	ratio = *((gdouble *) user_data);
-	((T_SGEObject *) object)->x = ((T_SGEObject *) object)->x * ratio;
+    ratio = *((gdouble *) user_data);
+    SGE_OBJECT(object)->x = SGE_OBJECT(object)->x * ratio;
+    SGE_OBJECT(object)->y = SGE_OBJECT(object)->y * ratio;
 
-    ((T_SGEObject *) object)->y = ((T_SGEObject *) object)->y * ratio;
-	((T_SGEObject *) object)->dest_x =
-	    (int) rint (((T_SGEObject *) object)->x);
+    SGE_OBJECT(object)->dest_x = (int) rint (SGE_OBJECT(object)->x);
 
-    ((T_SGEObject *) object)->dest_y =
-	    (int) rint (((T_SGEObject *) object)->y);
-	((T_SGEObject *) object)->needs_drawing = -1;
+    SGE_OBJECT(object)->dest_y = (int) rint (SGE_OBJECT(object)->y);
+    SGE_OBJECT(object)->needs_drawing = -1;
 
 }
 
@@ -211,11 +203,9 @@ pixbuf_update_notify (gpointer item, gpointer data)
 
 	if (object->pixbuf_id == pixbuf_id)
 	{
-		object->width =
-		    gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
+        object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
+        object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
 
-        object->height =
-		    gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
 		if (object->pre_rendered)
 		{
 			g_object_unref (G_OBJECT (object->pre_rendered));
@@ -389,10 +379,9 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
 void
 sge_destroy_object (gpointer object, gpointer user_data)
 {
-	invalidate_background_beneath ((T_SGEObject *) object);
-	if (((T_SGEObject *) object)->pre_rendered)
-		g_object_unref (G_OBJECT
-				(((T_SGEObject *) object)->pre_rendered));
+	invalidate_background_beneath (SGE_OBJECT(object));
+	if (SGE_OBJECT(object)->pre_rendered)
+		g_object_unref (G_OBJECT(SGE_OBJECT(object)->pre_rendered));
 	g_object_list = g_list_remove (g_object_list, object);
 }
 
@@ -417,7 +406,7 @@ is_out_of_screen (T_SGEObject * object)
 int
 has_reached_destination (T_SGEObject * object)
 {
-    //g_print("has_reached_destination():\n");
+    //g_debug("has_reached_destination():\n");
 	if (fabs (object->x - object->dest_x) < 1.0 &&
 	    fabs (object->y - object->dest_y) < 1.0)
 		return -1;
@@ -503,18 +492,12 @@ void
 sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
 {
     //g_print("sge_object_fall_to_with_accel(): y_pos:%d y:%4.1f diff:%4.1f x:%4.1f delay:%4.1f\n", y_pos/48, object->y/48, (y_pos-object->y)/48 +1, object->x/48, 0-object->y/48);
-    //static gint last_x_pos = 0;
-    //static gint last_delay = 0;
+
 	if (object->y < y_pos) {
 		object->ay = ACCELERATION;
 		object->dest_y = y_pos;
 		object->stop_condition = has_reached_floor;
-        //if(y_pos == 0) {
-        //    object->y_delay = 0;
 
-        //} else
-        //    object->y_delay = y_pos / 48;
-		//last_x_pos = (gint) object->x;
 		object->y_delay = delay;
 	}
 }

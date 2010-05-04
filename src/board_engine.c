@@ -90,6 +90,7 @@ T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 unsigned char gpc_bit_n[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
 static gint gi_state = _IDLE;
+
 static GList *g_alignment_list;
 
 extern GRand *g_random_generator;
@@ -128,7 +129,6 @@ get_new_tile (void)
 		}
 	}
 
-//  i = (gint)g_rand_int_range(g_random_generator, 0, 4);
 	i = (gint) g_rand_int_range (g_random_generator, 0, 2);
 
 	switch (i) {
@@ -340,7 +340,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 	T_SGEObject *object;
 
 	alignment = (T_Alignment *) alignment_pointer;
-// delete alignment
+    // delete alignment
 	if (alignment->direction == 1)	// horizontal
 	{
 		xhotspot = (alignment->x * prefs.tile_width + alignment->length * prefs.tile_width / 2);
@@ -363,7 +363,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 			}
 		}
 	}
-//compute score
+    //compute score
 	if (alignment->length == 1)	//bonus mode
 		i_total_score = 10 * g_rand_int_range (g_random_generator, 1, 2);
 	else
@@ -371,7 +371,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 
 	if (g_do_not_score == FALSE) {
 		gi_score += i_total_score;
-//display score
+        //display score
 		buffer = g_strdup_printf ("%d", i_total_score);
 		xsize = strlen (buffer) * FONT_WIDTH;
 		ysize = FONT_HEIGHT;
@@ -558,12 +558,6 @@ board_pause(gboolean value)
         respawn_board_engine_loop();
     }
 
-}
-
-void respawn_board_engine_loop()
-{
-    if(!board_engine_id)
-        board_engine_id = gtk_timeout_add (100, board_engine_loop, NULL);
 }
 
 gboolean
@@ -839,4 +833,10 @@ board_engine_loop (gpointer data)
         return FALSE;
     }
 	return TRUE;
+}
+
+void respawn_board_engine_loop()
+{
+    if(!board_engine_id)
+        board_engine_id = gtk_timeout_add (100, board_engine_loop, NULL);
 }

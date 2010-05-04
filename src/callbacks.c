@@ -26,7 +26,6 @@
 #include <glib/gi18n-lib.h>
 #include <mikmod.h>
 
-#include "callbacks.h"
 #include "music.h"
 
 #include "sge_core.h"
@@ -322,8 +321,6 @@ on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 		prefs.tile_width = 32;
 		prefs.tile_height = 32;
 
-		gweled_reload_pixmaps ();
-
 		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
 					     BOARD_WIDTH * prefs.tile_width,
 					     BOARD_HEIGHT * prefs.tile_height);
@@ -335,7 +332,7 @@ on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 				      BOARD_WIDTH * prefs.tile_width,
 				      BOARD_HEIGHT * prefs.tile_height);
 
-		gweled_reload_pixmaps ();
+		gweled_load_pixmaps ();
 	}
 }
 
@@ -346,8 +343,6 @@ on_mediumRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 		prefs.tile_width = 48;
 		prefs.tile_height = 48;
 
-		gweled_reload_pixmaps ();
-
 		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
 					     BOARD_WIDTH * prefs.tile_width,
 					     BOARD_HEIGHT * prefs.tile_height);
@@ -359,6 +354,8 @@ on_mediumRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 				      BOARD_WIDTH * prefs.tile_width,
 				      BOARD_HEIGHT * prefs.tile_height);
+
+		gweled_load_pixmaps ();
 	}
 }
 
@@ -369,8 +366,6 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 		prefs.tile_width = 64;
 		prefs.tile_height = 64;
 
-		gweled_reload_pixmaps ();
-
 		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
 					     BOARD_WIDTH * prefs.tile_width,
 					     BOARD_HEIGHT * prefs.tile_height);
@@ -382,6 +377,8 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 				      BOARD_WIDTH * prefs.tile_width,
 				      BOARD_HEIGHT * prefs.tile_height);
+
+		gweled_load_pixmaps ();
 	}
 }
 
