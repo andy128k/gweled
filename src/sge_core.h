@@ -53,6 +53,7 @@ gint sge_register_pixbuf(GdkPixbuf *pixbuf, int index);
 
 T_SGEObject *sge_create_object(gint x, gint y, gint layer, gint pixbuf_id);//GdkPixbuf *pixbuf);
 void sge_destroy_object(gpointer object, gpointer user_data);
+void sge_destroy_all_objects_on_level(int level);
 void sge_destroy_all_objects(void);
 
 void sge_object_set_lifetime(T_SGEObject *object, gint lifetime);

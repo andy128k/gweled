@@ -143,7 +143,7 @@ void
 sge_init (void)
 {
 	g_rand_generator = g_rand_new_with_seed (time (NULL));
-	g_main_loop_id = gtk_timeout_add (20, sge_main_loop, NULL);
+	g_main_loop_id = g_timeout_add (20, sge_main_loop, NULL);
 	gi_nb_pixbufs = 0;
 	g_pixbufs = NULL;
 }
@@ -194,7 +194,7 @@ sge_destroy (void)
 	g_source_remove (g_main_loop_id);
 	g_rand_free (g_rand_generator);
 	for (i = 0; i < gi_nb_pixbufs; i++)
-		gdk_pixbuf_unref (g_pixbufs[i]);
+		g_object_unref (g_pixbufs[i]);
 	g_free (g_pixbufs);
 }
 
@@ -248,7 +248,7 @@ sge_register_pixbuf (GdkPixbuf * pixbuf, int index)
 		g_pixbufs[i] = pixbuf;
 	} else {
 		i = index;
-		gdk_pixbuf_unref (g_pixbufs[i]);
+		g_object_unref (g_pixbufs[i]);
 		g_pixbufs[i] = pixbuf;
 		g_list_foreach (g_object_list, pixbuf_update_notify,
 				(void *) &i);
@@ -461,7 +461,7 @@ has_reached_time_limit (T_SGEObject * object)
 }
 
 // animations/effects
-int
+void
 sge_object_rise (T_SGEObject * object)
 {
 	object->layer++;

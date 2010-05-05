@@ -40,6 +40,7 @@
 #include "board_engine.h"
 #include "graphic_engine.h"
 #include "music.h"
+#include "main.h"
 
 // GLOBALS
 GtkBuilder *gweled_xml;
@@ -99,7 +100,7 @@ void save_preferences(void)
 	    g_free(configstr);
 
 	} else {
-	    g_printerr("Error loading config file for saving: %s", error->message);
+	    g_printerr("Error loading config file for saving: %s\n", error->message);
 	    g_error_free (error);
     }
 
@@ -129,7 +130,7 @@ void load_preferences(void)
 
     } else {
         if (error) {
-            g_printerr("Error loading config file: %s", error->message);
+            g_printerr("Error loading config file: %s\n", error->message);
             g_error_free (error);
         }
 
@@ -277,7 +278,6 @@ int main (int argc, char **argv)
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
-    setlocale (LC_ALL, "");
 
     // needed for scores handling
     setgid_io_init();

@@ -26,13 +26,13 @@
 #include <glib/gi18n-lib.h>
 #include <mikmod.h>
 
+#include "main.h"
 #include "music.h"
-
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
 
-extern gi_game_running;
+extern gint gi_game_running;
 extern gint gi_score;
 extern gboolean g_do_not_score;
 
@@ -141,8 +141,6 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 void
 on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-	GdkPixbuf *pixbuf = NULL;
-
 	const gchar *authors[] = {
 	    "Sebastien Delestaing <sebdelestaing@free.fr>",
 	    "Daniele Napolitano <dnax88@gmail.com>",
@@ -160,14 +158,13 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
              "website", "http://sebdelestaing.free.fr/gweled/",
 		     "logo-icon-name", "gweled",
              NULL);
-
 }
 
 gboolean
 drawing_area_expose_event_cb (GtkWidget * widget, GdkEventExpose * event, gpointer user_data)
 {
 	gdk_draw_drawable (GDK_DRAWABLE (widget->window),
-			   widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+			   widget->style->fg_gc[gtk_widget_get_state (widget)],
 			   g_buffer_pixmap, event->area.x, event->area.y,
 			   event->area.x, event->area.y, event->area.width,
 			   event->area.height);

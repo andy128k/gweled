@@ -28,10 +28,13 @@
 #include <math.h>
 
 #include <gtk/gtk.h>
+#include <glib/gprintf.h>
 #include <glib/gi18n-lib.h>
 #include <mikmod.h>
 
 #include "games-scores.h"
+
+#include "main.h"
 
 #include "sge_core.h"
 #include "board_engine.h"
@@ -137,74 +140,6 @@ get_new_tile (void)
 	default:
 		return (max_index + (gchar) g_rand_int_range (g_random_generator, 1, 7)) % 7;
 	}
-}
-
-void
-gweled_start_new_game (void)
-{
-	gint i, j, i_deleted;
-
-	gi_score = 0;
-	gi_current_score = 0;
-	gi_gems_removed_per_move = 0;
-	gi_bonus_multiply = 3;
-	gi_level = 1;
-	gi_previous_bonus_at = 0;
-	gi_next_bonus_at = FIRST_BONUS_AT;
-	gi_trigger_bonus = 0;
-	g_steps_for_timer = FIRST_BONUS_AT / TOTAL_STEPS_FOR_TIMER;
-
-	if(prefs.timer_mode)
-		gi_total_gems_removed = FIRST_BONUS_AT / 2;
-	else
-		gi_total_gems_removed = 0;
-
-	gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 0.0);
-	gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
-    gchar *text = g_strdup_printf(_("Level %d"), 1);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
-	g_free(text);
-
-	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
-
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-		{
-			gpc_game_board[i][j] = get_new_tile ();
-			gi_nb_of_tiles[gpc_game_board[i][j]]++;
-			g_gem_objects[i][j] =
-			    sge_create_object (i * prefs.tile_width,
-							(j - BOARD_HEIGHT) * prefs.tile_height,
-							1,
-							gi_gems_pixbuf[gpc_game_board[i][j]]);
-		}
-
-	g_do_not_score = TRUE;
-	while(gweled_check_for_alignments ()) {
-		gweled_remove_gems_and_update_score ();
-		gweled_refill_board();
-	};
-	g_do_not_score = FALSE;
-
-//test pattern for a known bug
-/*
-gpc_game_board[0][7] = 0;
-gpc_game_board[1][7] = 0;
-gpc_game_board[2][7] = 1;
-gpc_game_board[3][7] = 0;
-gpc_game_board[4][7] = 1;
-gpc_game_board[5][7] = 1;
-*/
-
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			g_gem_objects[i][j] = sge_create_object (i * prefs.tile_width, (j - BOARD_HEIGHT) * prefs.tile_height, 1,
-													 gi_gems_pixbuf[gpc_game_board[i][j]]);
-
-	gweled_gems_fall_into_place ();
-
-	gi_game_running = -1;
-	gi_state = _MARK_ALIGNED_GEMS;
 }
 
 gint
@@ -852,5 +787,73 @@ board_engine_loop (gpointer data)
 void respawn_board_engine_loop()
 {
     if(!board_engine_id)
-        board_engine_id = gtk_timeout_add (100, board_engine_loop, NULL);
+        board_engine_id = g_timeout_add (100, board_engine_loop, NULL);
+}
+
+void
+gweled_start_new_game (void)
+{
+	gint i, j;
+
+	gi_score = 0;
+	gi_current_score = 0;
+	gi_gems_removed_per_move = 0;
+	gi_bonus_multiply = 3;
+	gi_level = 1;
+	gi_previous_bonus_at = 0;
+	gi_next_bonus_at = FIRST_BONUS_AT;
+	gi_trigger_bonus = 0;
+	g_steps_for_timer = FIRST_BONUS_AT / TOTAL_STEPS_FOR_TIMER;
+
+	if(prefs.timer_mode)
+		gi_total_gems_removed = FIRST_BONUS_AT / 2;
+	else
+		gi_total_gems_removed = 0;
+
+	gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 0.0);
+	gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
+    gchar *text = g_strdup_printf(_("Level %d"), 1);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
+	g_free(text);
+
+	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
+		{
+			gpc_game_board[i][j] = get_new_tile ();
+			gi_nb_of_tiles[gpc_game_board[i][j]]++;
+			g_gem_objects[i][j] =
+			    sge_create_object (i * prefs.tile_width,
+							(j - BOARD_HEIGHT) * prefs.tile_height,
+							1,
+							gi_gems_pixbuf[gpc_game_board[i][j]]);
+		}
+
+	g_do_not_score = TRUE;
+	while(gweled_check_for_alignments ()) {
+		gweled_remove_gems_and_update_score ();
+		gweled_refill_board();
+	};
+	g_do_not_score = FALSE;
+
+//test pattern for a known bug
+/*
+gpc_game_board[0][7] = 0;
+gpc_game_board[1][7] = 0;
+gpc_game_board[2][7] = 1;
+gpc_game_board[3][7] = 0;
+gpc_game_board[4][7] = 1;
+gpc_game_board[5][7] = 1;
+*/
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
+			g_gem_objects[i][j] = sge_create_object (i * prefs.tile_width, (j - BOARD_HEIGHT) * prefs.tile_height, 1,
+													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+
+	gweled_gems_fall_into_place ();
+
+	gi_game_running = -1;
+	gi_state = _MARK_ALIGNED_GEMS;
 }

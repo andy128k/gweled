@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+
 #include "sge_core.h"
 #include "sge_utils.h"
 
@@ -68,7 +69,7 @@ gweled_load_font (void)
 void
 gweled_load_pixmaps (void)
 {
-	gchar *filename, *full_pathname;
+	gchar *filename;
 	GdkPixbuf *pixbuf;
 	int i;
 
@@ -180,10 +181,10 @@ gweled_draw_board (void)
 T_SGEObject *
 gweled_draw_character (int x, int y, int layer, char character)
 {
-	if (gpc_font_glyphs[character] != -1)
+	if (gpc_font_glyphs[(int)character] != -1)
 		return sge_create_object (x, y, layer,
 					  gi_charset_pixbuf[gpc_font_glyphs
-							    [character]]);
+							    [(int)character]]);
 	else
 		return NULL;
 }
@@ -229,13 +230,13 @@ gweled_draw_game_message (gchar * in_message, double timing)
 	message = g_ascii_strup (in_message, -1);
 
 	for (i = 0; i < strlen (message); i++)
-		if (gpc_font_glyphs[message[i]] != -1) {
+		if (gpc_font_glyphs[(int)message[i]] != -1) {
 			p_object =
 			    sge_create_object (msg_x + i * FONT_WIDTH,
 					       msg_y, 3,
 					       gi_charset_pixbuf
 					       [gpc_font_glyphs
-						[message[i]]]);
+						[(int)message[i]]]);
 			sge_object_set_lifetime (p_object,
 						 (int) (50.0 * timing));
 		}
@@ -245,7 +246,7 @@ gweled_draw_game_message (gchar * in_message, double timing)
 
 const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
 
-int
+void
 gweled_gems_fall_into_place (void)
 {
 	gint i, j;

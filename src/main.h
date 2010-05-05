@@ -18,41 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef _GRAPHIC_ENGINE_H
-#define _GRAPHIC_ENGINE_H
+#ifndef _GWELED_MAIN_H_
+#define _GWELED_MAIN_H_
 
-#define BOARD_WIDTH   8
-#define BOARD_HEIGHT  8
-#define FONT_WIDTH    24
-#define FONT_HEIGHT   20
-
-// FUNCTIONS
+#include<glib.h>
 
 void
-gweled_load_font (void);
+save_preferences(void);
 
 void
-gweled_load_pixmaps (void);
+load_preferences(void);
 
-void
-gweled_init_glyphs (void);
-
-void
-gweled_draw_message (gchar *in_message);
-
-void
-gweled_draw_game_message (gchar *in_message, double timing);
-
-void
-gweled_draw_message_at (gchar *in_message, gint msg_x, gint msg_y);
-
-void
-gweled_gems_fall_into_place (void);
-
-T_SGEObject*
-gweled_draw_character (int x, int y, int layer, char character);
-
-void
-gweled_draw_board (void);
+gint
+show_hiscores (gint pos, gboolean endofgame);
 
 #endif

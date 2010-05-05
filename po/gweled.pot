@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-03 20:27+0200\n"
+"POT-Creation-Date: 2010-05-05 11:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,95 +16,93 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:62
+#: ../src/main.c:65
 msgctxt "game type"
 msgid "Normal"
 msgstr ""
 
-#: ../src/main.c:63
+#: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:207
+#: ../src/main.c:212
 msgid "Game over!"
 msgstr ""
 
-#: ../src/main.c:209
+#: ../src/main.c:214
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/main.c:211
+#: ../src/main.c:216
 msgid "_New Game"
 msgstr ""
 
-#: ../src/main.c:223
+#: ../src/main.c:228
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:226
+#: ../src/main.c:231
 msgid "Game type:"
 msgstr ""
 
-#: ../src/main.c:233
+#: ../src/main.c:238
 msgid "Congratulations!"
 msgstr ""
 
-#: ../src/main.c:234
+#: ../src/main.c:239
 msgid "Your score is the best!"
 msgstr ""
 
-#: ../src/main.c:235
+#: ../src/main.c:240
 msgid "Your score has made the top ten."
 msgstr ""
 
-#: ../src/callbacks.c:74
+#: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr ""
 
-#: ../src/callbacks.c:103 ../src/callbacks.c:108 ../src/callbacks.c:120
-#: ../src/callbacks.c:132
-msgid "_Resume"
-msgstr ""
-
-#: ../src/callbacks.c:104 ../src/callbacks.c:119 ../src/callbacks.c:131
-#: ../data/gweled.ui.h:15
-msgid "_Pause"
-msgstr ""
-
-#: ../src/callbacks.c:161
+#: ../src/callbacks.c:150
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/callbacks.c:166
+#: ../src/callbacks.c:155
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
 msgstr ""
 
-#: ../src/board_engine.c:163 ../src/board_engine.c:796
+#: ../src/board_engine.c:488
+msgid "_Resume"
+msgstr ""
+
+#: ../src/board_engine.c:489
+msgid "paused"
+msgstr ""
+
+#: ../src/board_engine.c:491
+msgid "Paused"
+msgstr ""
+
+#: ../src/board_engine.c:496 ../data/gweled.ui.h:15
+msgid "_Pause"
+msgstr ""
+
+#: ../src/board_engine.c:539
+msgid "time's up #"
+msgstr ""
+
+#: ../src/board_engine.c:690 ../src/board_engine.c:715
+msgid "no moves left #"
+msgstr ""
+
+#: ../src/board_engine.c:748 ../src/board_engine.c:815
 #, c-format
 msgid "Level %d"
 msgstr ""
 
-#: ../src/board_engine.c:549
-msgid "paused"
-msgstr ""
-
-#: ../src/board_engine.c:550
-msgid "Paused"
-msgstr ""
-
-#: ../src/board_engine.c:587
-msgid "time's up #"
-msgstr ""
-
-#: ../src/board_engine.c:738 ../src/board_engine.c:763
-msgid "no moves left #"
-msgstr ""
-
 #. draw bonus message in game
-#: ../src/board_engine.c:802
+#: ../src/board_engine.c:752
 #, c-format
 msgid "bonus x%d"
 msgstr ""
