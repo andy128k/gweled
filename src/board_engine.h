@@ -35,6 +35,10 @@ void gweled_start_new_game(void);
 void gweled_swap_gems(gint x1, gint y1, gint x2, gint y2);
 void gweled_refill_board(void);
 
+void board_set_pause(gboolean value);
+
+gboolean board_get_pause(void);
+
 void respawn_board_engine_loop();
 
 #endif

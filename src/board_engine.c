@@ -96,7 +96,7 @@ static GList *g_alignment_list;
 extern GRand *g_random_generator;
 extern GtkWidget *g_progress_bar;
 extern GtkWidget *g_score_label;
-extern GtkWidget *g_bonus_label;
+extern GtkWidget *g_menu_pause;
 
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
@@ -544,21 +544,34 @@ gweled_check_for_alignments (void)
 }
 
 void
-board_pause(gboolean value)
+board_set_pause(gboolean value)
 {
     static gchar *last_text;
     gi_game_paused = value;
+
     if(value == TRUE) {
-        gweled_draw_game_message(_("paused"), 2);
+        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
+        gweled_draw_message(_("paused"));
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
+        sge_set_layer_visibility(1, FALSE);
+        sge_set_layer_visibility(2, FALSE);
     }
     else {
+        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Pause"));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
         g_free(last_text);
+        sge_set_layer_visibility(1, TRUE);
+        sge_set_layer_visibility(2, TRUE);
+        sge_destroy_all_objects_on_level(3);
         respawn_board_engine_loop();
     }
+}
 
+gboolean
+board_get_pause()
+{
+    return gi_game_paused;
 }
 
 gboolean

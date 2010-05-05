@@ -18,6 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+/* Levels:
+ * 0 -> board background
+ * 1 -> gems
+ * 2 -> cursor
+ * 3 -> text
+ */
+
 #include <gtk/gtk.h>
 #include <math.h>
 #include "sge_core.h"
@@ -39,6 +46,8 @@ static gint gi_nb_pixbufs;
 
 static GtkWidget *g_drawing_area = NULL;
 
+static gboolean layers_visibility[5] = {TRUE, TRUE, TRUE, TRUE, TRUE};
+
 // helper functions
 gint
 compare_by_layer (gconstpointer a, gconstpointer b)
@@ -53,7 +62,7 @@ draw_object (gpointer object, gpointer user_data)
 	int x, y;
 	GdkGC *gc;
 
-	if ((int) SGE_OBJECT(object)->needs_drawing) {
+	if ((int) SGE_OBJECT(object)->needs_drawing && layers_visibility[SGE_OBJECT(object)->layer] == TRUE) {
 		x = (int) SGE_OBJECT(object)->x;
 		y = (int) SGE_OBJECT(object)->y;
 
@@ -384,9 +393,29 @@ sge_destroy_object (gpointer object, gpointer user_data)
 }
 
 void
+sge_destroy_object_on_level (gpointer object, gpointer user_data)
+{
+    // destroy only objects in the specified level
+    if(SGE_OBJECT(object)->layer != GPOINTER_TO_INT(user_data))
+        return;
+
+    invalidate_background_beneath (SGE_OBJECT(object));
+    if (SGE_OBJECT(object)->pre_rendered)
+        g_object_unref (G_OBJECT(SGE_OBJECT(object)->pre_rendered));
+    g_object_list = g_list_remove (g_object_list, object);
+
+}
+
+void
 sge_destroy_all_objects (void)
 {
 	g_list_foreach (g_object_list, sge_destroy_object, NULL);
+}
+
+void
+sge_destroy_all_objects_on_level (int level)
+{
+	g_list_foreach (g_object_list, sge_destroy_object_on_level, GINT_TO_POINTER(level));
 }
 
 // Stop conditions
@@ -537,4 +566,15 @@ sge_objects_are_moving_on_layer (int layer)
 				return TRUE;
 	}
 	return FALSE;
+}
+
+void sge_set_layer_visibility (int layer, gboolean visibility)
+{
+    if(layer >= 0 && layer < 5) {
+        layers_visibility[layer] = visibility;
+        if(layer > 0)
+            sge_invalidate_layer(layer-1);
+        else
+            sge_invalidate_layer(0);
+    }
 }

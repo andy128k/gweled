@@ -197,7 +197,7 @@ gweled_draw_message_at (gchar * in_message, gint msg_x, gint msg_y)
 	message = g_ascii_strup (in_message, -1);
 
 	for (i = 0; i < strlen (message); i++)
-		gweled_draw_character (msg_x + i * FONT_WIDTH, msg_y, 1,
+		gweled_draw_character (msg_x + i * FONT_WIDTH, msg_y, 3,
 				       message[i]);
 
 	g_free (message);

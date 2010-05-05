@@ -42,7 +42,6 @@ extern GtkWidget *g_pref_window;
 extern GtkWidget *g_score_window;
 extern GtkWidget *g_drawing_area;
 extern GdkPixmap *g_buffer_pixmap;
-extern GtkWidget *g_appbar;
 extern GtkWidget *g_menu_pause;
 
 extern gint gi_gem_clicked;
@@ -102,15 +101,10 @@ on_pause_activate (GtkMenuItem *menuitem, gpointer user_data)
 
     if(!gi_game_running) return;
 
-    if(g_strcmp0( gtk_menu_item_get_label(menuitem), _("_Resume")) == 0 ) {
-        gtk_menu_item_set_label(menuitem, _("_Pause"));
-        gtk_widget_set_sensitive(g_drawing_area, TRUE);
-	    board_pause(FALSE);
-	} else {
-	    gtk_menu_item_set_label(menuitem, _("_Resume"));
-	    gtk_widget_set_sensitive(g_drawing_area, FALSE);
-	    board_pause(TRUE);
-	}
+    if(board_get_pause() == TRUE )
+	    board_set_pause(FALSE);
+    else
+	    board_set_pause(TRUE);
 }
 
 gboolean
@@ -118,11 +112,8 @@ on_window_unmap_event (GtkWidget *widget,
                        GdkEvent  *event,
                        gpointer   user_data)
 {
-    if(gi_game_running && prefs.timer_mode == TRUE && g_strcmp0( gtk_menu_item_get_label(GTK_MENU_ITEM(g_menu_pause)), _("_Pause")) == 0 ) {
-        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
-	    gtk_widget_set_sensitive(g_drawing_area, FALSE);
-	    board_pause(TRUE);
-	}
+    if(gi_game_running && prefs.timer_mode == TRUE && board_get_pause() == FALSE )
+        board_set_pause(TRUE);
 
     return FALSE;
 }
@@ -130,11 +121,9 @@ on_window_unmap_event (GtkWidget *widget,
 gboolean
 on_window_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
-    if( gi_game_running && prefs.timer_mode == TRUE && g_strcmp0( gtk_menu_item_get_label(GTK_MENU_ITEM(g_menu_pause)), _("_Pause")) == 0 ) {
-        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
-	    gtk_widget_set_sensitive(g_drawing_area, FALSE);
-        board_pause(TRUE);
-    }
+    if( gi_game_running && prefs.timer_mode == TRUE && board_get_pause() == FALSE )
+        board_set_pause(TRUE);
+
     return FALSE;
 }
 
@@ -194,8 +183,20 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 	static int x_release = -1;
 	static int y_release = -1;
 
-	if(event->button != 1)
-	    return FALSE;
+    // resume game on click
+    if(gi_game_running && board_get_pause() == TRUE && event->type == GDK_BUTTON_RELEASE ) {
+        board_set_pause(FALSE);
+        // not handle this click
+        return FALSE;
+    }
+
+    // in pause mode don't accept events
+    if(board_get_pause())
+        return FALSE;
+
+    // only handle left button
+    if(event->button != 1)
+        return FALSE;
 
     respawn_board_engine_loop();
 

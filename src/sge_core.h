@@ -65,6 +65,8 @@ gboolean sge_object_is_moving(T_SGEObject *object);
 gboolean sge_objects_are_moving(void);
 gboolean sge_objects_are_moving_on_layer(int layer);
 
+void sge_set_layer_visibility (int layer, gboolean visibility);
+
 void sge_invalidate_layer(int layer);
 
 #endif
