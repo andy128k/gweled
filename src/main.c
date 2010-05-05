@@ -82,26 +82,24 @@ void save_preferences(void)
 	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
 
     config = g_key_file_new();
-	g_key_file_load_from_file(config, filename,
-		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error);
 
-	if(error == NULL) {
-	    g_key_file_set_integer(config, "General", "tile_width", prefs.tile_width);
-	    g_key_file_set_integer(config, "General", "tile_height", prefs.tile_height);
-	    g_key_file_set_boolean(config, "General", "timer_mode", prefs.timer_mode);
-	    g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
-	    g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
+	g_key_file_set_integer(config, "General", "tile_width", prefs.tile_width);
+	g_key_file_set_integer(config, "General", "tile_height", prefs.tile_height);
+	g_key_file_set_boolean(config, "General", "timer_mode", prefs.timer_mode);
+	g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
+	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
 
-        configstr = g_key_file_to_data(config, NULL, NULL);
+    configstr = g_key_file_to_data(config, NULL, NULL);
 
-	    configfile = fopen(filename, "w");
+	configfile = fopen(filename, "w");
+
+	if(configfile != NULL)
 	    fprintf(configfile, configstr, NULL);
 	    fclose(configfile);
 	    g_free(configstr);
 
 	} else {
-	    g_printerr("Error loading config file for saving: %s\n", error->message);
-	    g_error_free (error);
+	    g_printerr("Error writing config file\n");
     }
 
     g_key_file_free(config);
