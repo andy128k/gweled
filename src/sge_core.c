@@ -22,8 +22,6 @@
 #include <math.h>
 #include "sge_core.h"
 
-#define SGE_OBJECT(obj)  ((T_SGEObject *) obj)
-
 #define ACCELERATION	1.0
 
 // LOCAL FUNCTIONS
@@ -92,7 +90,7 @@ void
 move_object (gpointer object, gpointer user_data)
 {
     if(SGE_OBJECT(object)->y_delay > 0) {
-        SGE_OBJECT(object)->y_delay -= 1;
+        SGE_OBJECT(object)->y_delay--;
         return;
     }
 
@@ -184,7 +182,7 @@ sge_destroy (void)
 {
 	int i;
 
-	gtk_timeout_remove (g_main_loop_id);
+	g_source_remove (g_main_loop_id);
 	g_rand_free (g_rand_generator);
 	for (i = 0; i < gi_nb_pixbufs; i++)
 		gdk_pixbuf_unref (g_pixbufs[i]);
@@ -481,7 +479,7 @@ void
 
 sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
-    g_print("sge_object_fall_to(): y_pos:%d\n", y_pos);
+    //g_print("sge_object_fall_to(): y_pos:%d\n", y_pos);
 	if (object->y < y_pos) {
 		object->ay = ACCELERATION;
 		object->dest_y = y_pos;

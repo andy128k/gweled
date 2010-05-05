@@ -43,6 +43,8 @@ typedef struct s_sge_object
 	GFunc stop_callback;
 }T_SGEObject;
 
+#define SGE_OBJECT(obj)  ((T_SGEObject *) obj)
+
 void sge_init(void);
 void sge_destroy(void);
 void sge_set_drawing_area(GtkWidget *drawing_area, GdkPixmap *pixmap_buffer, gint width, gint height);

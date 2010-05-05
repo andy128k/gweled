@@ -301,6 +301,7 @@ void
 gweled_refill_board (void)
 {
 	gint i, j, k;
+	g_debug("gweled_refill_board():");
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
