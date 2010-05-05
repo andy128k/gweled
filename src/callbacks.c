@@ -283,6 +283,8 @@ on_easyRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 			sge_destroy_all_objects ();
 			gweled_draw_board ();
 			gweled_start_new_game ();
+			board_set_pause(FALSE);
+			respawn_board_engine_loop();
 		}
 	}
 }
@@ -297,6 +299,8 @@ on_hardRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 			sge_destroy_all_objects ();
 			gweled_draw_board ();
 			gweled_start_new_game ();
+			board_set_pause(FALSE);
+			respawn_board_engine_loop();
 		}
 	}
 }

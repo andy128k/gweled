@@ -494,7 +494,8 @@ board_set_pause(gboolean value)
     }
     else {
         gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Pause"));
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
+        if(last_text != NULL)
+            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
         g_free(last_text);
         sge_set_layer_visibility(1, TRUE);
         sge_set_layer_visibility(2, TRUE);
@@ -795,6 +796,7 @@ gweled_start_new_game (void)
 {
 	gint i, j;
 
+    gi_game_paused = 0;
 	gi_score = 0;
 	gi_current_score = 0;
 	gi_gems_removed_per_move = 0;
