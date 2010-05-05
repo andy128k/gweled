@@ -78,7 +78,7 @@ void save_preferences(void)
 	FILE *configfile;
 	GError *error = NULL;
 
-	filename = g_strconcat(g_get_user_config_dir(), "/gweled", NULL);
+	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
 
     config = g_key_file_new();
 	g_key_file_load_from_file(config, filename,
@@ -113,7 +113,7 @@ void load_preferences(void)
 	GKeyFile *config;
 	GError *error = NULL;
 
-	filename = g_strconcat(g_get_user_config_dir(), "/gweled", NULL);
+	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
 
 	config = g_key_file_new();
 	g_key_file_load_from_file(config, filename,
