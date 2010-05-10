@@ -93,7 +93,7 @@ void save_preferences(void)
 
 	configfile = fopen(filename, "w");
 
-	if(configfile != NULL)
+	if(configfile != NULL) {
 	    fprintf(configfile, configstr, NULL);
 	    fclose(configfile);
 	    g_free(configstr);
