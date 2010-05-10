@@ -1,0 +1,86 @@
+0.8
+    Features:
+        * Pause support (LP #195206)
+        * Plain text config file (LP #563135)
+        * More application icons for launchers and menus (included SVG)
+        * Gweled translatable
+        * Scores handling refactory
+        * Dropped glade dependency
+        * Dropped libgnomeui dependency
+
+    Translations:
+        * New Italian translation (complete)
+        * New Russian translation (complete)
+        * New French translation (almost complete)
+        * New Spanish translation (almost complete)
+        * New Finnish translation (partially complete)
+        * New Turkish translation (incomplete)
+        * New Arabic translation (incomplete)
+
+    Bugs fixed:
+        * LP  #30441: Pressing space removes menu
+        * LP  #33578: Desktop file fixed, added right categories
+        * LP  #39181: Added -export-dynamic to gcc linker options
+        * LP  #90499: Gweled plays annoying sound which can't be switched off
+        * LP #201509: Get rid of .gweled file and follow fd.o specifications
+        * LP #217546: Menu is displaying in wrong locale
+        * LP #244064: High score incorrectly reported
+        * LP #244066: High score dismissed on mouse click on game
+
+
+0.7
+    * Remember config in a config file
+    * Music (Autonomus by Skaven, this mod was used in the original Bejeweled)
+    * Sound (pathetic wav found on the internet)
+    * debug patch for GCC4 (Adrian Reber)
+    * Fix for the timed game (reported by Sebastien Loss, fixed by Neil Moore)
+    * Hiscore improvements (pops up when you enter highscore list) (Sean C. Nichols)
+
+    * New dependency: libmikmod (the sound engine)
+
+0.6
+    * almost fixed the hiscore files install bug (it's hardcoded to /var/games now, if your Gnome install is different, then move the 2 files where appropriate).
+    * fixed the hiscore table display when there are less than 10 entries recorded
+    * display the timed hiscore table when in timed mode. This is a bit confusing since it's not visible anywhere that you are in timed mode...
+    * fixed a crash in the drag'n'drop code
+    * highlight the drop target when dragging
+    * updated the spec file. hope it works as I don't have a RedHat system anymore (Go Ubuntu !)
+
+0.5
+    * timed game
+    * drag'n drop to swap gems
+
+0.4
+    * removed the toolbar (as suggested by Eugenia Loli-Queru)
+    * applied a preliminary patch for timed game (by David Meggy), not usable yet
+    * applied patch to unselect the selected gem (Pat Rondon)
+    * fixed a buffer overflow (first reported by Joseph Antrosio)
+    * switch to libglade
+    * provide a spec file (Marc Deslauriers)
+
+0.3
+    * png icon for the window
+    * svg file for the cursor and the background tiles
+    * remove the unnecessary and intrusive "illegal move" message
+    * start new game by clicking anywhere in the game window
+    * bonus does not score insane amounts of points
+    * optimize board refresh routine (smoother animations)
+    * does not score when "hint" is used
+    * enable preferences
+    * instant-apply board size setting (SVG finally pays)
+    * do not loose before the first bonus
+
+0.2
+    * first public release
+    * fix the score (1 small bug left though)
+    * move the score above the board
+    * add various in-game animations
+    * get rid of the windows, copyrighted, game graphics
+    * redraw all gems and switch to SVG
+    * optimize the graphic engine (don't redraw everything all the time !)
+    * rewrite the graphic engine (split the graphic core and the game engine)
+    * integrate properly with Gnome 2 (menu entry)
+
+0.1
+    * private release for Laura
+    * the game works

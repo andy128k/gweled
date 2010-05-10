@@ -77,7 +77,7 @@ gweled_load_pixmaps (void)
 		filename = g_strdup_printf ("gweled/gem%02d.svg", i + 1);
 		pixbuf =
 		    sge_load_svg_to_pixbuf (filename,
-					    prefs.tile_width, prefs.tile_height);
+					    prefs.tile_size, prefs.tile_size);
 		if (pixbuf == NULL)
 			exit (-1);
 		gi_gems_pixbuf[i] = sge_register_pixbuf (pixbuf, gi_gems_pixbuf[i]);
@@ -86,14 +86,14 @@ gweled_load_pixmaps (void)
 	}
 
     pixbuf = sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
-				                prefs.tile_width, prefs.tile_height);
+				                prefs.tile_size, prefs.tile_size);
 
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_tiles_bg_pixbuf[0] = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[0]);
 
     pixbuf = sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
-				                prefs.tile_width, prefs.tile_height);
+				                prefs.tile_size, prefs.tile_size);
 
 	if (pixbuf == NULL)
 		exit (-1);
@@ -102,7 +102,7 @@ gweled_load_pixmaps (void)
 
 	pixbuf =
 	    sge_load_svg_to_pixbuf ("gweled/cursor.svg",
-				    prefs.tile_width, prefs.tile_height);
+				    prefs.tile_size, prefs.tile_size);
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
@@ -173,8 +173,8 @@ gweled_draw_board (void)
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			sge_create_object (i * prefs.tile_width,
-					   j * prefs.tile_height, 0,
+			sge_create_object (i * prefs.tile_size,
+					   j * prefs.tile_size, 0,
 					   gi_tiles_bg_pixbuf[(i + j) % 2]);
 }
 
@@ -210,8 +210,8 @@ gweled_draw_message (gchar * in_message)
 	gint msg_x, msg_y, msg_w;
 
 	msg_w = FONT_WIDTH * strlen (in_message);
-	msg_x = (BOARD_WIDTH * prefs.tile_width - msg_w) >> 1;
-	msg_y = (BOARD_HEIGHT * prefs.tile_height - FONT_HEIGHT) >> 1;
+	msg_x = (BOARD_WIDTH * prefs.tile_size - msg_w) >> 1;
+	msg_y = (BOARD_HEIGHT * prefs.tile_size - FONT_HEIGHT) >> 1;
 
 	gweled_draw_message_at (in_message, msg_x, msg_y);
 }
@@ -224,8 +224,8 @@ gweled_draw_game_message (gchar * in_message, double timing)
 	gchar *message;
 
 	msg_w = FONT_WIDTH * strlen (in_message);
-	msg_x = (BOARD_WIDTH * prefs.tile_width - msg_w) >> 1;
-	msg_y = (BOARD_HEIGHT * prefs.tile_height - FONT_HEIGHT) >> 1;
+	msg_x = (BOARD_WIDTH * prefs.tile_size - msg_w) >> 1;
+	msg_y = (BOARD_HEIGHT * prefs.tile_size - FONT_HEIGHT) >> 1;
 
 	message = g_ascii_strup (in_message, -1);
 
@@ -258,7 +258,7 @@ gweled_gems_fall_into_place (void)
             //g_print("%s\e[0m|", gems[SGE_OBJECT(g_gem_objects[i][j])->pixbuf_id]);
 
 			sge_object_fall_to (g_gem_objects[i][j],
-					    j * prefs.tile_height);
+					    j * prefs.tile_size);
 
 		}
 		//g_print("\n\e[0m");

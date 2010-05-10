@@ -199,8 +199,8 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		x_press = event->x / prefs.tile_width;
-		y_press = event->y / prefs.tile_height;
+		x_press = event->x / prefs.tile_size;
+		y_press = event->y / prefs.tile_size;
 		if (gi_game_running) {
 			gi_x_click = x_press;
 			gi_y_click = y_press;
@@ -215,8 +215,8 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 	case GDK_BUTTON_RELEASE:
 		gi_dragging = 0;
 		gi_gem_dragged = 0;
-		x_release = event->x / prefs.tile_width;
-		y_release = event->y / prefs.tile_height;
+		x_release = event->x / prefs.tile_size;
+		y_release = event->y / prefs.tile_size;
 		if( (x_release < 0) ||
 			(x_release > BOARD_WIDTH - 1) ||
 			(y_release < 0) ||
@@ -244,8 +244,8 @@ gboolean
 drawing_area_motion_event_cb (GtkWidget * widget, GdkEventMotion * event, gpointer user_data)
 {
 	if (gi_dragging) {
-		gi_x_drag = event->x / prefs.tile_width;
-		gi_y_drag = event->y / prefs.tile_height;
+		gi_x_drag = event->x / prefs.tile_size;
+		gi_y_drag = event->y / prefs.tile_size;
 		gi_gem_dragged = -1;
 	}
 
@@ -320,19 +320,18 @@ void
 on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
 	if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.tile_width = 32;
-		prefs.tile_height = 32;
+		prefs.tile_size = 32;
 
 		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * prefs.tile_width,
-					     BOARD_HEIGHT * prefs.tile_height);
+					     BOARD_WIDTH * prefs.tile_size,
+					     BOARD_HEIGHT * prefs.tile_size);
 		g_object_unref (G_OBJECT (g_buffer_pixmap));
 		g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * prefs.tile_width,
-				    BOARD_HEIGHT * prefs.tile_height, -1);
+				    BOARD_WIDTH * prefs.tile_size,
+				    BOARD_HEIGHT * prefs.tile_size, -1);
 		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * prefs.tile_width,
-				      BOARD_HEIGHT * prefs.tile_height);
+				      BOARD_WIDTH * prefs.tile_size,
+				      BOARD_HEIGHT * prefs.tile_size);
 
 		gweled_load_pixmaps ();
 	}
@@ -342,20 +341,19 @@ void
 on_mediumRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
 	if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.tile_width = 48;
-		prefs.tile_height = 48;
+		prefs.tile_size = 48;
 
 		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * prefs.tile_width,
-					     BOARD_HEIGHT * prefs.tile_height);
+					     BOARD_WIDTH * prefs.tile_size,
+					     BOARD_HEIGHT * prefs.tile_size);
 		g_object_unref (G_OBJECT (g_buffer_pixmap));
 		g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * prefs.tile_width,
-				    BOARD_HEIGHT * prefs.tile_height, -1);
+				    BOARD_WIDTH * prefs.tile_size,
+				    BOARD_HEIGHT * prefs.tile_size, -1);
 
 		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * prefs.tile_width,
-				      BOARD_HEIGHT * prefs.tile_height);
+				      BOARD_WIDTH * prefs.tile_size,
+				      BOARD_HEIGHT * prefs.tile_size);
 
 		gweled_load_pixmaps ();
 	}
@@ -365,20 +363,19 @@ void
 on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
 	if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.tile_width = 64;
-		prefs.tile_height = 64;
+		prefs.tile_size = 64;
 
 		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * prefs.tile_width,
-					     BOARD_HEIGHT * prefs.tile_height);
+					     BOARD_WIDTH * prefs.tile_size,
+					     BOARD_HEIGHT * prefs.tile_size);
 		g_object_unref (G_OBJECT (g_buffer_pixmap));
 		g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * prefs.tile_width,
-				    BOARD_HEIGHT * prefs.tile_height, -1);
+				    BOARD_WIDTH * prefs.tile_size,
+				    BOARD_HEIGHT * prefs.tile_size, -1);
 
 		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * prefs.tile_width,
-				      BOARD_HEIGHT * prefs.tile_height);
+				      BOARD_WIDTH * prefs.tile_size,
+				      BOARD_HEIGHT * prefs.tile_size);
 
 		gweled_load_pixmaps ();
 	}

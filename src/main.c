@@ -83,8 +83,7 @@ void save_preferences(void)
 
     config = g_key_file_new();
 
-	g_key_file_set_integer(config, "General", "tile_width", prefs.tile_width);
-	g_key_file_set_integer(config, "General", "tile_height", prefs.tile_height);
+	g_key_file_set_integer(config, "General", "tile_size", prefs.tile_size);
 	g_key_file_set_boolean(config, "General", "timer_mode", prefs.timer_mode);
 	g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
 	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
@@ -120,11 +119,15 @@ void load_preferences(void)
 
     if(error == NULL && g_key_file_has_group(config, "General")) {
 
-	    prefs.tile_width = g_key_file_get_integer(config, "General", "tile_width", NULL);
-	    prefs.tile_height = g_key_file_get_integer(config, "General", "tile_height", NULL);
+	    prefs.tile_size = g_key_file_get_integer(config, "General", "tile_size", NULL);
 	    prefs.timer_mode = g_key_file_get_boolean(config, "General", "timer_mode", NULL);
 	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
 	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
+
+	    if(prefs.tile_size < 32)
+	        prefs.tile_size = 32;
+	    if(prefs.tile_size > 64)
+	        prefs.tile_size = 64;
 
     } else {
         if (error) {
@@ -132,8 +135,7 @@ void load_preferences(void)
             g_error_free (error);
         }
 
-		prefs.tile_width = 48;
-		prefs.tile_height = 48;
+		prefs.tile_size = 48;
 		prefs.timer_mode = FALSE;
 		prefs.music_on = TRUE;
 		prefs.sounds_on = TRUE;
@@ -159,7 +161,7 @@ void init_pref_window(void)
 
     // Board size
 	radio_button = NULL;
-	switch (prefs.tile_width) {
+	switch (prefs.tile_size) {
 	case 32:
 		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "smallRadiobutton"));
 		break;
@@ -323,13 +325,13 @@ int main (int argc, char **argv)
 	gtk_widget_show (g_main_window);
 
 	gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-				     BOARD_WIDTH * prefs.tile_width,
-				     BOARD_HEIGHT * prefs.tile_height);
+				     BOARD_WIDTH * prefs.tile_size,
+				     BOARD_HEIGHT * prefs.tile_size);
 
 	g_buffer_pixmap =
 	    gdk_pixmap_new (g_drawing_area->window,
-			    BOARD_WIDTH * prefs.tile_width,
-			    BOARD_HEIGHT * prefs.tile_height, -1);
+			    BOARD_WIDTH * prefs.tile_size,
+			    BOARD_HEIGHT * prefs.tile_size, -1);
 
 	gweled_init_glyphs ();
 	gweled_load_pixmaps ();
@@ -362,8 +364,8 @@ int main (int argc, char **argv)
 		music_play();
 
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-			      BOARD_WIDTH * prefs.tile_width,
-			      BOARD_HEIGHT * prefs.tile_height);
+			      BOARD_WIDTH * prefs.tile_size,
+			      BOARD_HEIGHT * prefs.tile_size);
 
 	gweled_draw_board ();
 	gweled_draw_message ("gweled");

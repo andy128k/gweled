@@ -24,8 +24,7 @@
 typedef struct s_gweled_prefs
 {
 	gboolean timer_mode;
-	gint tile_width;
-	gint tile_height;
+	gint tile_size;
 	gboolean music_on;
 	gboolean sounds_on;
 }GweledPrefs;
