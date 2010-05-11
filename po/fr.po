@@ -1,0 +1,182 @@
+# French translation for gweled
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gweled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gweled\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-05-05 11:48+0200\n"
+"PO-Revision-Date: 2010-05-09 21:27+0000\n"
+"Last-Translator: FLOZz <flo@flogisoft.com>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-11 16:12+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/main.c:65
+msgctxt "game type"
+msgid "Normal"
+msgstr "Normal"
+
+#: ../src/main.c:66
+msgctxt "game type"
+msgid "Timed"
+msgstr "Contre la montre"
+
+#: ../src/main.c:212
+msgid "Game over!"
+msgstr "Perdu !"
+
+#: ../src/main.c:214
+msgid "Great work, but unfortunately your score did not make the top ten."
+msgstr ""
+"Bien joué, mais malheureusement votre score n'entre pas dans le top 10."
+
+#: ../src/main.c:216
+msgid "_New Game"
+msgstr "_Nouvelle partie"
+
+#: ../src/main.c:228
+msgid "Gweled Scores"
+msgstr ""
+
+#: ../src/main.c:231
+msgid "Game type:"
+msgstr "Type de jeu :"
+
+#: ../src/main.c:238
+msgid "Congratulations!"
+msgstr "Félicitations !"
+
+#: ../src/main.c:239
+msgid "Your score is the best!"
+msgstr "Votre score est le meilleur !"
+
+#: ../src/main.c:240
+msgid "Your score has made the top ten."
+msgstr "Votre score est entré au top 10."
+
+#: ../src/callbacks.c:73
+msgid "Do you really want to abort this game?"
+msgstr "Voulez-vous vraiment arrêter cette partie ?"
+
+#: ../src/callbacks.c:150
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  FLOZz https://launchpad.net/~flozz"
+
+#: ../src/callbacks.c:155
+msgid ""
+"A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
+"Mine\")"
+msgstr ""
+"Une adaptation pour GNOME du jeu \"Bejeweled\" (alias \"Diamond Mine\") "
+"disponible sur PalmOS/Windows/Java game"
+
+#: ../src/board_engine.c:488
+msgid "_Resume"
+msgstr "_Reprendre"
+
+#: ../src/board_engine.c:489
+msgid "paused"
+msgstr "en pause"
+
+#: ../src/board_engine.c:491
+msgid "Paused"
+msgstr "En pause"
+
+#: ../src/board_engine.c:496 ../data/gweled.ui.h:15
+msgid "_Pause"
+msgstr "_Pause"
+
+#: ../src/board_engine.c:539
+msgid "time's up #"
+msgstr "temps écoulé #"
+
+#: ../src/board_engine.c:690 ../src/board_engine.c:715
+msgid "no moves left #"
+msgstr "aucun mouvement restant #"
+
+#: ../src/board_engine.c:748 ../src/board_engine.c:815
+#, c-format
+msgid "Level %d"
+msgstr "Niveau %d"
+
+#. draw bonus message in game
+#: ../src/board_engine.c:752
+#, c-format
+msgid "bonus x%d"
+msgstr "bonus x%d"
+
+#: ../data/gweled.ui.h:1
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr "<span weight=\"bold\">Taille du plateau</span>"
+
+#: ../data/gweled.ui.h:2
+msgid "<span weight=\"bold\">Difficulty level</span>"
+msgstr "<span weight=\"bold\">Niveau de difficulté</span>"
+
+#: ../data/gweled.ui.h:3
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr "<span weight=\"bold\">Son</span>"
+
+#: ../data/gweled.ui.h:4
+msgid "Large"
+msgstr "Grand"
+
+#: ../data/gweled.ui.h:5
+msgid "Medium"
+msgstr "Moyen"
+
+#: ../data/gweled.ui.h:6
+msgid "Normal"
+msgstr "Normal"
+
+#: ../data/gweled.ui.h:7
+msgid "Pauses the game for you can return to it later"
+msgstr "Mettre le jeu en pause pour continuer plus tard"
+
+#: ../data/gweled.ui.h:8
+msgid "Play background music"
+msgstr "Jouer la musique de fond"
+
+#: ../data/gweled.ui.h:9
+msgid "Play sound effects"
+msgstr "Jouer les effets sonores"
+
+#: ../data/gweled.ui.h:10
+msgid "Preferences"
+msgstr "Préférences"
+
+#: ../data/gweled.ui.h:11
+msgid "Small"
+msgstr "Petit"
+
+#: ../data/gweled.ui.h:12
+msgid "Timed"
+msgstr "Contre la montre"
+
+#: ../data/gweled.ui.h:13
+msgid "_Game"
+msgstr "_Jeu"
+
+#: ../data/gweled.ui.h:14
+msgid "_Help"
+msgstr "_Aide"
+
+#: ../data/gweled.ui.h:16
+msgid "_Scores"
+msgstr "_Scores"
+
+#: ../data/gweled.ui.h:17
+msgid "_Settings"
+msgstr "_Paramètres"
+
+#: ../data/gweled.desktop.in.h:1
+msgid "Play a puzzle game similar to \"Diamond Mine\""
+msgstr "Jouer à un casse tête similaire à \"Diamond Mine\""
