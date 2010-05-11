@@ -3,48 +3,63 @@
         * Pause support (LP #195206)
         * Plain text config file (LP #563135)
         * More application icons for launchers and menus (included SVG)
-        * Gweled translatable
+        * Gweled translatable (gettext i18n support)
         * Scores handling refactory
-        * Dropped glade dependency
-        * Dropped libgnomeui dependency
+        * Dropped deprecated libglade dependency (now use GtkBuilder)
+        * Dropped deprecated libgnomeui dependency
+        * Removed a lot of deprecated GTK+ symbols
+
+    Bugs fixed:
+        * LP  #30441: Pressing space removes menu (BonoboUI feature, deprecated)
+        * LP  #33578: Desktop file fixed, added right categories
+        * LP  #39181: Added -export-dynamic to gcc linker options
+        * LP  #90499: Gweled plays annoying sound which can't be switched off
+        * LP #201509: Get rid of .gweled file and follow fd.o specifications (now config file stored under $XDG_CONFIG_HOME)
+        * LP #217546: Menu is displaying in wrong locale
+        * LP #244064: High score incorrectly reported
+        * LP #244066: High score dismissed on mouse click on game
+        * LP #330640: Gweled Segmentation fault on abnormal tile values in config file
+        * Debian bug #280506: Unplayable on PowerPC (board matrix with gint instead gchar index type)
+        * Debian bug #401727: Disable MikMod disk writer driver
+        * Debian bug #401730: Double free on exit
 
     Translations:
         * New Italian translation (complete)
         * New Russian translation (complete)
         * New French translation (almost complete)
+        * New German translation (almost complete)
         * New Spanish translation (almost complete)
         * New Finnish translation (partially complete)
         * New Turkish translation (incomplete)
         * New Arabic translation (incomplete)
 
-    Bugs fixed:
-        * LP  #30441: Pressing space removes menu
-        * LP  #33578: Desktop file fixed, added right categories
-        * LP  #39181: Added -export-dynamic to gcc linker options
-        * LP  #90499: Gweled plays annoying sound which can't be switched off
-        * LP #201509: Get rid of .gweled file and follow fd.o specifications
-        * LP #217546: Menu is displaying in wrong locale
-        * LP #244064: High score incorrectly reported
-        * LP #244066: High score dismissed on mouse click on game
-
+    Notes:
+        Note that config file is now stored under ~/.config, so you must move
+        manually from home directory to new path and change file name from
+        ".gweled" to "gweled.conf".
 
 0.7
-    * Remember config in a config file
-    * Music (Autonomus by Skaven, this mod was used in the original Bejeweled)
-    * Sound (pathetic wav found on the internet)
-    * debug patch for GCC4 (Adrian Reber)
-    * Fix for the timed game (reported by Sebastien Loss, fixed by Neil Moore)
-    * Hiscore improvements (pops up when you enter highscore list) (Sean C. Nichols)
+    Features:
+        * Remember config in a config file
+        * Music (Autonomus by Skaven, this mod was used in the original Bejeweled)
+        * Sound (pathetic wav found on the internet)
+        * Hiscore improvements (pops up when you enter highscore list) (Sean C. Nichols)
+        * New dependency: libmikmod (the sound engine)
 
-    * New dependency: libmikmod (the sound engine)
+    Bugs fixed:
+        * Debian bug #286874: Fix for the timed game (reported by Sebastien Loss, fixed by Neil Moore)
+        * debug patch for GCC4 (Adrian Reber)
 
 0.6
-    * almost fixed the hiscore files install bug (it's hardcoded to /var/games now, if your Gnome install is different, then move the 2 files where appropriate).
-    * fixed the hiscore table display when there are less than 10 entries recorded
-    * display the timed hiscore table when in timed mode. This is a bit confusing since it's not visible anywhere that you are in timed mode...
-    * fixed a crash in the drag'n'drop code
-    * highlight the drop target when dragging
-    * updated the spec file. hope it works as I don't have a RedHat system anymore (Go Ubuntu !)
+    Features:
+        * display the timed hiscore table when in timed mode (this is a bit confusing since it's not visible anywhere that you are in timed mode).
+        * highlight the drop target when dragging
+        * updated the spec file.
+
+    Bugs fixed:
+        * almost fixed the hiscore files install bug (it's hardcoded to /var/games now, if your Gnome install is different, then move the 2 files where appropriate).
+        * fixed the hiscore table display when there are less than 10 entries recorded
+        * fixed a crash in the drag'n'drop code
 
 0.5
     * timed game
