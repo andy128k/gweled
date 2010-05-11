@@ -236,7 +236,7 @@ void
 gweled_refill_board (void)
 {
 	gint i, j, k;
-	g_debug("gweled_refill_board():");
+	//g_debug("gweled_refill_board():");
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
@@ -558,7 +558,7 @@ board_engine_loop (gpointer data)
 						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
 
-    g_debug("Current state: %s", state[gi_state]);
+    //g_debug("Current state: %s", state[gi_state]);
 
 	switch (gi_state) {
 	case _IDLE:
@@ -779,7 +779,7 @@ board_engine_loop (gpointer data)
 	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.timer_mode && gi_game_paused) || !prefs.timer_mode))
     {
         board_engine_id = 0;
-        g_debug("Board engine timer stopped");
+        //g_debug("Board engine timer stopped");
         return FALSE;
     }
 	return TRUE;

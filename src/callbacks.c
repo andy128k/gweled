@@ -155,7 +155,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
              "comments", _("A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond Mine\")"),
              "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010 Daniele Napolitano",
              "version", VERSION,
-             "website", "http://sebdelestaing.free.fr/gweled/",
+             "website", "https://launchpad.net/gweled",
 		     "logo-icon-name", "gweled",
              NULL);
 }

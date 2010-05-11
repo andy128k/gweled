@@ -244,13 +244,13 @@ gweled_draw_game_message (gchar * in_message, double timing)
     g_free (message);
 }
 
-const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
+//const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
 
 void
 gweled_gems_fall_into_place (void)
 {
 	gint i, j;
-    g_debug("gweled_gems_fall_into_place():");
+    //g_debug("gweled_gems_fall_into_place():");
 
     for (j = 0; j < BOARD_HEIGHT; j++) {
         for (i = 0; i < BOARD_WIDTH; i++) {

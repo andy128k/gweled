@@ -471,7 +471,7 @@ sge_object_rise (T_SGEObject * object)
 void
 sge_object_take_down (T_SGEObject * object)
 {
-    g_print("sge_object_take_down():\n");
+    //g_print("sge_object_take_down():\n");
 	object->vx = g_rand_double_range (g_rand_generator, -1.0, 1.0);
     object->vy = g_rand_double_range (g_rand_generator, 0.0, 1.0);
     object->ax = 0.0;
