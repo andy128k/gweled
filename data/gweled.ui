@@ -226,7 +226,6 @@
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">hardRadiobutton</property>
                         <signal name="toggled" handler="on_easyRadiobutton_toggled"/>
                       </object>
                     </child>
@@ -289,7 +288,6 @@
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">mediumRadiobutton</property>
                         <signal name="toggled" handler="on_smallRadiobutton_toggled"/>
                       </object>
                     </child>
