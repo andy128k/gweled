@@ -110,7 +110,7 @@ static void games_scores_dialog_set_style (GamesScoresDialog *self,
   switch (style) {
   case GAMES_SCORES_STYLE_TIME_DESCENDING:
   case GAMES_SCORES_STYLE_TIME_ASCENDING:
-    header = _("Time");
+    header = "Time";
     break;
   case GAMES_SCORES_STYLE_PLAIN_DESCENDING:
   case GAMES_SCORES_STYLE_PLAIN_ASCENDING:
@@ -273,7 +273,7 @@ static void games_scores_dialog_redraw (GamesScoresDialog *self) {
       dscore = ((GamesScore *)scorelist->data)->value.time_double;
       score = (int) (100.0 * dscore + 0.5);
       /* Translators: this is for a minutes, seconds time display. */
-      ss = g_strdup_printf (_("%dm %ds"), score/100, score%100);
+      ss = g_strdup_printf ("%dm %ds", score/100, score%100);
       break;
     case GAMES_SCORES_STYLE_PLAIN_ASCENDING:
     case GAMES_SCORES_STYLE_PLAIN_DESCENDING:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 11:48+0200\n"
+"POT-Creation-Date: 2010-05-12 02:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,25 +88,39 @@ msgstr ""
 msgid "_Pause"
 msgstr ""
 
-#: ../src/board_engine.c:539
+#: ../src/board_engine.c:540
 msgid "time's up #"
 msgstr ""
 
-#: ../src/board_engine.c:690 ../src/board_engine.c:715
+#: ../src/board_engine.c:691 ../src/board_engine.c:716
 msgid "no moves left #"
 msgstr ""
 
-#: ../src/board_engine.c:748 ../src/board_engine.c:815
+#: ../src/board_engine.c:749 ../src/board_engine.c:817
 #, c-format
 msgid "Level %d"
 msgstr ""
 
 #. draw bonus message in game
-#: ../src/board_engine.c:752
+#: ../src/board_engine.c:753
 #, c-format
 msgid "bonus x%d"
 msgstr ""
 
+#. Note that this assumes the default style is plain.
+#: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
+msgid "Score"
+msgstr ""
+
+#: ../src/games-scores-dialog.c:437
+msgid "New Game"
+msgstr ""
+
+#: ../src/games-scores-dialog.c:537
+msgid "Name"
+msgstr ""
+
+#. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
 msgid "<span weight=\"bold\">Board size</span>"
 msgstr ""
