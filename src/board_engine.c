@@ -338,10 +338,10 @@ take_down_alignment (gpointer object, gpointer user_data)
 
 	if (alignment->direction == 1)	// horizontal
 		for (i = alignment->x; i < alignment->x + alignment->length; i++)
-			sge_destroy_object (g_gem_objects[i][alignment->y], NULL);
+			sge_object_fadeout (g_gem_objects[i][alignment->y]);
 	else
 		for (i = alignment->y; i < alignment->y + alignment->length; i++)
-			sge_destroy_object (g_gem_objects[alignment->x][i], NULL);
+			sge_object_fadeout (g_gem_objects[alignment->x][i]);
 }
 
 void
@@ -635,7 +635,6 @@ board_engine_loop (gpointer data)
 		if (!sge_object_is_moving (g_gem_objects[x1][y1]) && !sge_object_is_moving (g_gem_objects[x2][y2])) {
 			gweled_swap_gems (x1, y1, x2, y2);
 			if (!gweled_is_part_of_an_alignment (x1, y1) && !gweled_is_part_of_an_alignment (x2, y2)) {
-				//gweled_draw_game_message("illegal move !", 1.0);
 				sge_object_move_to (g_gem_objects[x1][y1],
 						x2 * prefs.tile_size,
 						y2 * prefs.tile_size);
@@ -644,26 +643,21 @@ board_engine_loop (gpointer data)
 						y1 * prefs.tile_size);
 				gi_state = _ILLEGAL_MOVE;
 			} else {
-				if (cursor[0])
-					sge_destroy_object (cursor[0], NULL);
-				if (cursor[1])
-					sge_destroy_object (cursor[1], NULL);
-				cursor[0] = NULL;
-				cursor[1] = NULL;
 				gi_gems_removed_per_move = 0;
 				gi_state = _MARK_ALIGNED_GEMS;
 			}
+			// fadeout cursors
+			if (cursor[0])
+				sge_object_fadeout (cursor[0]);
+			if (cursor[1])
+				sge_object_fadeout (cursor[1]);
+			cursor[0] = NULL;
+			cursor[1] = NULL;
 		}
 		break;
 
 	case _ILLEGAL_MOVE:
 		if (!sge_object_is_moving (g_gem_objects[x1][y1]) && !sge_object_is_moving (g_gem_objects[x2][y2])) {
-			if (cursor[0])
-				sge_destroy_object (cursor[0], NULL);
-			if (cursor[1])
-				sge_destroy_object (cursor[1], NULL);
-			cursor[0] = NULL;
-			cursor[1] = NULL;
 			gweled_swap_gems (x1, y1, x2, y2);
 			gi_state = _IDLE;
 		}
@@ -687,7 +681,7 @@ board_engine_loop (gpointer data)
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
 				if ((gi_next_bonus_at == FIRST_BONUS_AT) || (prefs.timer_mode)) {
 					gint i, j;
-
+                    // TRANSLATORS: # is replaced with !!
 					gweled_draw_game_message (_("no moves left #"), 1.0);
 					memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 

@@ -63,7 +63,15 @@ draw_object (gpointer object, gpointer user_data)
 	GdkGC *gc;
 	GdkPixbuf *alpha_buffer;
 
-	if ((int) SGE_OBJECT(object)->needs_drawing && layers_visibility[SGE_OBJECT(object)->layer] == TRUE) {
+    if(SGE_OBJECT(object)->fadeout == TRUE && SGE_OBJECT(object)->alpha <= 0) {
+	    sge_destroy_object (SGE_OBJECT(object), NULL);
+        return;
+    }
+
+    if ((int) SGE_OBJECT(object)->needs_drawing
+        && layers_visibility[SGE_OBJECT(object)->layer]
+        && SGE_OBJECT(object)->alpha > 0) {
+
 		x = (int) SGE_OBJECT(object)->x;
 		y = (int) SGE_OBJECT(object)->y;
 
@@ -124,6 +132,11 @@ draw_object (gpointer object, gpointer user_data)
 
 		invalidate_objects_above (SGE_OBJECT(object));
 	}
+
+    if(SGE_OBJECT(object)->fadeout == TRUE) {
+        SGE_OBJECT(object)->alpha -= 30;
+        invalidate_background_beneath (SGE_OBJECT(object));
+    }
 }
 
 void
@@ -389,6 +402,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
 
     object->y_delay = 0;
     object->alpha = 255;
+    object->fadeout = FALSE;
 
     object->stop_condition = NULL;
 	object->stop_callback = NULL;
@@ -622,4 +636,9 @@ void sge_object_set_opacity (T_SGEObject *object, gint alpha)
 
     object->alpha = alpha;
 
+}
+
+void sge_object_fadeout (T_SGEObject *object)
+{
+    object->fadeout = TRUE;
 }
