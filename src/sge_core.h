@@ -36,6 +36,7 @@ typedef struct s_sge_object
 	gint height;
 	gint layer;
 	gint lifetime;
+	gint alpha;
 	gint needs_drawing;
 	gint pixbuf_id;
 	GdkPixmap *pre_rendered;
@@ -69,5 +70,7 @@ gboolean sge_objects_are_moving_on_layer(int layer);
 void sge_set_layer_visibility (int layer, gboolean visibility);
 
 void sge_invalidate_layer(int layer);
+
+void sge_object_set_opacity (T_SGEObject *object, gint alpha);
 
 #endif

@@ -61,6 +61,7 @@ draw_object (gpointer object, gpointer user_data)
 {
 	int x, y;
 	GdkGC *gc;
+	GdkPixbuf *alpha_buffer;
 
 	if ((int) SGE_OBJECT(object)->needs_drawing && layers_visibility[SGE_OBJECT(object)->layer] == TRUE) {
 		x = (int) SGE_OBJECT(object)->x;
@@ -77,12 +78,42 @@ draw_object (gpointer object, gpointer user_data)
 			g_object_unref (gc);
 
 		} else {
-			gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-					 NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-					 0, 0, x, y,
-					 SGE_OBJECT(object)->width,
-					 SGE_OBJECT(object)->height,
-					 GDK_RGB_DITHER_NONE, 0, 0);
+
+            if (SGE_OBJECT(object)->alpha < 255) {
+
+                alpha_buffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
+                        TRUE, 8,
+                        SGE_OBJECT(object)->width,
+                        SGE_OBJECT(object)->height);
+
+                gdk_pixbuf_fill (alpha_buffer, 0x00000000);
+                gdk_pixbuf_composite(g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
+                        alpha_buffer,
+                        0, 0,
+                        SGE_OBJECT(object)->width,
+                        SGE_OBJECT(object)->height,
+                        0, 0, 1.0, 1.0,
+                        GDK_INTERP_NEAREST,
+                        SGE_OBJECT(object)->alpha);
+
+                gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                        NULL, alpha_buffer,
+                        0, 0, x, y,
+                        SGE_OBJECT(object)->width,
+                        SGE_OBJECT(object)->height,
+                        GDK_RGB_DITHER_NONE, 0, 0);
+
+                g_object_unref(alpha_buffer);
+
+            } else {
+
+                gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                        NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
+                        0, 0, x, y,
+                        SGE_OBJECT(object)->width,
+                        SGE_OBJECT(object)->height,
+                        GDK_RGB_DITHER_NONE, 0, 0);
+            }
         }
 
         gtk_widget_queue_draw_area (g_drawing_area, x, y,
@@ -357,6 +388,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->dest_y = 0;
 
     object->y_delay = 0;
+    object->alpha = 255;
 
     object->stop_condition = NULL;
 	object->stop_callback = NULL;
@@ -577,4 +609,17 @@ void sge_set_layer_visibility (int layer, gboolean visibility)
         else
             sge_invalidate_layer(0);
     }
+}
+
+void sge_object_set_opacity (T_SGEObject *object, gint alpha)
+{
+
+    if(object->pre_rendered && object->alpha == alpha)
+        return;
+
+    if (object->pre_rendered)
+        g_object_unref (G_OBJECT(object->pre_rendered));
+
+    object->alpha = alpha;
+
 }
