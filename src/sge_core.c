@@ -61,7 +61,8 @@ draw_object (gpointer object, gpointer user_data)
 {
 	int x, y;
 	GdkGC *gc;
-	GdkPixbuf *alpha_buffer;
+	GdkPixbuf *pixbuffer;
+
 
     if((SGE_OBJECT(object)->fadeout && SGE_OBJECT(object)->opacity <= 0)
     || (SGE_OBJECT(object)->zoomout && SGE_OBJECT(object)->zoom <= 0))
@@ -93,14 +94,14 @@ draw_object (gpointer object, gpointer user_data)
                 || SGE_OBJECT(object)->zoom != 1.0)
             {
 
-                alpha_buffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
+                pixbuffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
                         TRUE, 8,
                         SGE_OBJECT(object)->width,
                         SGE_OBJECT(object)->height);
 
-                gdk_pixbuf_fill (alpha_buffer, 0x00000000);
+                gdk_pixbuf_fill (pixbuffer, 0x00000000);
                 gdk_pixbuf_composite(g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-                        alpha_buffer,
+                        pixbuffer,
                         0,
                         0,
                         SGE_OBJECT(object)->width,
@@ -112,7 +113,7 @@ draw_object (gpointer object, gpointer user_data)
                         SGE_OBJECT(object)->opacity);
 
                 gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                        NULL, alpha_buffer,
+                        NULL, pixbuffer,
                         0, 0,
                         x +
                             (SGE_OBJECT(object)->width -
@@ -126,10 +127,33 @@ draw_object (gpointer object, gpointer user_data)
                         SGE_OBJECT(object)->height * SGE_OBJECT(object)->zoom,
                         GDK_RGB_DITHER_NONE, 0, 0);
 
-                g_object_unref(alpha_buffer);
+                g_object_unref(pixbuffer);
+
+            } else if(SGE_OBJECT(object)->blink) {
+                pixbuffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
+                        TRUE, 8,
+                        SGE_OBJECT(object)->width,
+                        SGE_OBJECT(object)->height);
+
+                gdk_pixbuf_fill (pixbuffer, 0x00000000);
+
+                gdk_pixbuf_saturate_and_pixelate(
+                            g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
+                            pixbuffer,
+                            SGE_OBJECT(object)->saturation,
+                            FALSE);
+
+                gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                        NULL, pixbuffer,
+                        0, 0, x, y,
+                        SGE_OBJECT(object)->width,
+                        SGE_OBJECT(object)->height,
+                        GDK_RGB_DITHER_NONE, 0, 0);
+
+               g_object_unref(pixbuffer);
 
             } else {
-
+                // draw pixbuf without effects
                 gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
                         NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
                         0, 0, x, y,
@@ -138,7 +162,7 @@ draw_object (gpointer object, gpointer user_data)
                         GDK_RGB_DITHER_NONE, 0, 0);
             }
         }
-
+        // request area drawing
         gtk_widget_queue_draw_area (g_drawing_area, x, y,
 				SGE_OBJECT(object)->width,
 				SGE_OBJECT(object)->height);
@@ -155,6 +179,20 @@ draw_object (gpointer object, gpointer user_data)
     if(SGE_OBJECT(object)->zoomout) {
         SGE_OBJECT(object)->zoom -= 0.20;
         invalidate_background_beneath (SGE_OBJECT(object));
+    }
+    if(SGE_OBJECT(object)->blink) {
+        if(SGE_OBJECT(object)->saturation >= 2.0)
+            SGE_OBJECT(object)->blink_increase = FALSE;
+
+        if(SGE_OBJECT(object)->saturation <= 0.4)
+            SGE_OBJECT(object)->blink_increase = TRUE;
+
+        if(SGE_OBJECT(object)->blink_increase)
+            SGE_OBJECT(object)->saturation += 0.2;
+        else
+            SGE_OBJECT(object)->saturation -= 0.2;
+
+         invalidate_background_beneath (SGE_OBJECT(object));
     }
 }
 
@@ -181,13 +219,16 @@ move_object (gpointer object, gpointer user_data)
 
         if (SGE_OBJECT(object)->stop_condition(SGE_OBJECT(object)))
 		{
-		    SGE_OBJECT(object)->vx = 0.0;
-            SGE_OBJECT(object)->vy = 0.0;
-            SGE_OBJECT(object)->ax = 0.0;
-            SGE_OBJECT(object)->ay = 0.0;
-
             if (SGE_OBJECT(object)->stop_callback)
                 SGE_OBJECT(object)->stop_callback (object, NULL);
+
+            // needed for scores messages
+            if(!SGE_OBJECT(object)->fadeout)
+                SGE_OBJECT(object)->vy = 0.0;
+
+		    SGE_OBJECT(object)->vx = 0.0;
+            SGE_OBJECT(object)->ax = 0.0;
+            SGE_OBJECT(object)->ay = 0.0;
 		}
 }
 
@@ -425,6 +466,10 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->zoom = 1.0;
     object->zoomout = FALSE;
 
+    object->saturation = 1.0;
+    object->blink = FALSE;
+    object->blink_increase = TRUE;
+
     object->stop_condition = NULL;
 	object->stop_callback = NULL;
 	object->layer = layer;
@@ -564,12 +609,17 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 	object->stop_condition = has_reached_destination;
 }
 
+void sge_object_fadeout_cb (gpointer object, gpointer user_data)
+{
+    SGE_OBJECT(object)->fadeout = TRUE;
+}
+
 void
 sge_object_set_lifetime (T_SGEObject * object, gint lifetime)
 {
 	object->lifetime = lifetime;
 	object->stop_condition = has_reached_time_limit;
-	object->stop_callback = sge_destroy_object;
+	object->stop_callback = sge_object_fadeout_cb;
 }
 void
 
@@ -669,4 +719,15 @@ void sge_object_fadeout (T_SGEObject *object)
 void sge_object_zoomout (T_SGEObject *object)
 {
     object->zoomout = TRUE;
+}
+
+void sge_object_blink_start (T_SGEObject *object)
+{
+    object->blink = TRUE;
+    object->blink_increase = TRUE;
+}
+
+void sge_object_blink_stop (T_SGEObject *object)
+{
+    object->blink = FALSE;
 }
