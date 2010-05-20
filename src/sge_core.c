@@ -63,7 +63,9 @@ draw_object (gpointer object, gpointer user_data)
 	GdkGC *gc;
 	GdkPixbuf *alpha_buffer;
 
-    if(SGE_OBJECT(object)->fadeout == TRUE && SGE_OBJECT(object)->alpha <= 0) {
+    if((SGE_OBJECT(object)->fadeout && SGE_OBJECT(object)->alpha <= 0)
+    || (SGE_OBJECT(object)->zoomout && SGE_OBJECT(object)->zoom <= 0))
+    {
 	    sge_destroy_object (SGE_OBJECT(object), NULL);
         return;
     }
@@ -87,7 +89,9 @@ draw_object (gpointer object, gpointer user_data)
 
 		} else {
 
-            if (SGE_OBJECT(object)->alpha < 255) {
+            if (SGE_OBJECT(object)->alpha < 255
+                || SGE_OBJECT(object)->zoom != 1.0)
+            {
 
                 alpha_buffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
                         TRUE, 8,
@@ -97,18 +101,29 @@ draw_object (gpointer object, gpointer user_data)
                 gdk_pixbuf_fill (alpha_buffer, 0x00000000);
                 gdk_pixbuf_composite(g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
                         alpha_buffer,
-                        0, 0,
+                        0,
+                        0,
                         SGE_OBJECT(object)->width,
                         SGE_OBJECT(object)->height,
-                        0, 0, 1.0, 1.0,
+                        0, 0,
+                        SGE_OBJECT(object)->zoom,
+                        SGE_OBJECT(object)->zoom,
                         GDK_INTERP_NEAREST,
                         SGE_OBJECT(object)->alpha);
 
                 gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
                         NULL, alpha_buffer,
-                        0, 0, x, y,
-                        SGE_OBJECT(object)->width,
-                        SGE_OBJECT(object)->height,
+                        0, 0,
+                        x +
+                            (SGE_OBJECT(object)->width -
+                             SGE_OBJECT(object)->width *
+                             SGE_OBJECT(object)->zoom) / 2,
+                        y +
+                            (SGE_OBJECT(object)->height -
+                             SGE_OBJECT(object)->height *
+                             SGE_OBJECT(object)->zoom) / 2,
+                        SGE_OBJECT(object)->width * SGE_OBJECT(object)->zoom,
+                        SGE_OBJECT(object)->height * SGE_OBJECT(object)->zoom,
                         GDK_RGB_DITHER_NONE, 0, 0);
 
                 g_object_unref(alpha_buffer);
@@ -133,8 +148,12 @@ draw_object (gpointer object, gpointer user_data)
 		invalidate_objects_above (SGE_OBJECT(object));
 	}
 
-    if(SGE_OBJECT(object)->fadeout == TRUE) {
+    if(SGE_OBJECT(object)->fadeout) {
         SGE_OBJECT(object)->alpha -= 30;
+        invalidate_background_beneath (SGE_OBJECT(object));
+    }
+    if(SGE_OBJECT(object)->zoomout) {
+        SGE_OBJECT(object)->zoom -= 0.20;
         invalidate_background_beneath (SGE_OBJECT(object));
     }
 }
@@ -403,6 +422,8 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->y_delay = 0;
     object->alpha = 255;
     object->fadeout = FALSE;
+    object->zoom = 1.0;
+    object->zoomout = FALSE;
 
     object->stop_condition = NULL;
 	object->stop_callback = NULL;
@@ -638,7 +659,14 @@ void sge_object_set_opacity (T_SGEObject *object, gint alpha)
 
 }
 
+// fadeout the object and then destroy it
 void sge_object_fadeout (T_SGEObject *object)
 {
     object->fadeout = TRUE;
+}
+
+// zoomout the object and then destroy it
+void sge_object_zoomout (T_SGEObject *object)
+{
+    object->zoomout = TRUE;
 }

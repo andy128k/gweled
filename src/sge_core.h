@@ -38,6 +38,8 @@ typedef struct s_sge_object
 	gint lifetime;
 	gint alpha;
 	gboolean fadeout;
+	gboolean zoomout;
+	gfloat zoom;
 	gint needs_drawing;
 	gint pixbuf_id;
 	GdkPixmap *pre_rendered;
@@ -74,5 +76,6 @@ void sge_invalidate_layer(int layer);
 
 void sge_object_set_opacity (T_SGEObject *object, gint alpha);
 void sge_object_fadeout (T_SGEObject *object);
+void sge_object_zoomout (T_SGEObject *object);
 
 #endif
