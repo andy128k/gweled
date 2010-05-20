@@ -36,7 +36,7 @@ typedef struct s_sge_object
 	gint height;
 	gint layer;
 	gint lifetime;
-	gint alpha;
+	gint opacity;
 	gboolean fadeout;
 	gboolean zoomout;
 	gfloat zoom;

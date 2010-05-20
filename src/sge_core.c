@@ -63,7 +63,7 @@ draw_object (gpointer object, gpointer user_data)
 	GdkGC *gc;
 	GdkPixbuf *alpha_buffer;
 
-    if((SGE_OBJECT(object)->fadeout && SGE_OBJECT(object)->alpha <= 0)
+    if((SGE_OBJECT(object)->fadeout && SGE_OBJECT(object)->opacity <= 0)
     || (SGE_OBJECT(object)->zoomout && SGE_OBJECT(object)->zoom <= 0))
     {
 	    sge_destroy_object (SGE_OBJECT(object), NULL);
@@ -72,7 +72,7 @@ draw_object (gpointer object, gpointer user_data)
 
     if ((int) SGE_OBJECT(object)->needs_drawing
         && layers_visibility[SGE_OBJECT(object)->layer]
-        && SGE_OBJECT(object)->alpha > 0) {
+        && SGE_OBJECT(object)->opacity > 0) {
 
 		x = (int) SGE_OBJECT(object)->x;
 		y = (int) SGE_OBJECT(object)->y;
@@ -89,7 +89,7 @@ draw_object (gpointer object, gpointer user_data)
 
 		} else {
 
-            if (SGE_OBJECT(object)->alpha < 255
+            if (SGE_OBJECT(object)->opacity < 255
                 || SGE_OBJECT(object)->zoom != 1.0)
             {
 
@@ -109,7 +109,7 @@ draw_object (gpointer object, gpointer user_data)
                         SGE_OBJECT(object)->zoom,
                         SGE_OBJECT(object)->zoom,
                         GDK_INTERP_NEAREST,
-                        SGE_OBJECT(object)->alpha);
+                        SGE_OBJECT(object)->opacity);
 
                 gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
                         NULL, alpha_buffer,
@@ -149,7 +149,7 @@ draw_object (gpointer object, gpointer user_data)
 	}
 
     if(SGE_OBJECT(object)->fadeout) {
-        SGE_OBJECT(object)->alpha -= 30;
+        SGE_OBJECT(object)->opacity -= 30;
         invalidate_background_beneath (SGE_OBJECT(object));
     }
     if(SGE_OBJECT(object)->zoomout) {
@@ -420,7 +420,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->dest_y = 0;
 
     object->y_delay = 0;
-    object->alpha = 255;
+    object->opacity = 255;
     object->fadeout = FALSE;
     object->zoom = 1.0;
     object->zoomout = FALSE;
@@ -646,16 +646,16 @@ void sge_set_layer_visibility (int layer, gboolean visibility)
     }
 }
 
-void sge_object_set_opacity (T_SGEObject *object, gint alpha)
+void sge_object_set_opacity (T_SGEObject *object, gint opacity)
 {
 
-    if(object->pre_rendered && object->alpha == alpha)
+    if(object->pre_rendered && object->opacity == opacity)
         return;
 
     if (object->pre_rendered)
         g_object_unref (G_OBJECT(object->pre_rendered));
 
-    object->alpha = alpha;
+    object->opacity = opacity;
 
 }
 
