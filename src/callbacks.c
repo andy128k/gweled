@@ -304,18 +304,7 @@ on_hardRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 		}
 	}
 }
-/*
-void
-on_hintButton_clicked (GtkButton * button, gpointer user_data)
-{
-	if (gi_game_running) {
-		gweled_check_for_moves_left (&gi_x_click, &gi_y_click);
-		gi_gem_clicked = -1;
-		g_do_not_score = TRUE;
-	}
 
-}
-*/
 void
 on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {

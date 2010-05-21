@@ -6,7 +6,10 @@ pixmapdir   = $(datadir)/pixmaps/$(PACKAGE)
 pixmap_DATA = pixmaps/cursor.svg pixmaps/font_24_20.png pixmaps/font_48_40.png \
               pixmaps/gem01.svg pixmaps/gem02.svg pixmaps/gem03.svg \
               pixmaps/gem04.svg pixmaps/gem05.svg pixmaps/gem06.svg \
-              pixmaps/gem07.svg pixmaps/tile_even.svg pixmaps/tile_odd.svg
+              pixmaps/gem07.svg pixmaps/tile_even.svg pixmaps/tile_odd.svg \
+              pixmaps/powerglow_32.png pixmaps/powerglow_48.png \
+              pixmaps/powerglow_64.png pixmaps/sparkle_32.png \
+              pixmaps/sparkle_48.png pixmaps/sparkle_64.png
 
 soundsdir   = $(datadir)/sounds/$(PACKAGE)
 sounds_DATA = sounds/autonom.s3m sounds/click.wav sounds/swap.wav

@@ -46,6 +46,8 @@ gint gi_tiles_bg_pixbuf[2] = {-1, -1};
 gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
 gint gi_charset_pixbuf[50];
 gint gi_cursor_pixbuf = -1;
+gint gi_sparkle_pixbuf = -1;
+gint gi_powerglow_pixbuf = -1;
 
 void
 gweled_load_font (void)
@@ -106,6 +108,20 @@ gweled_load_pixmaps (void)
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
+
+    filename = g_strdup_printf ("gweled/sparkle_%d.png", prefs.tile_size);
+	pixbuf = sge_load_file_to_pixbuf (filename);
+	if (pixbuf == NULL)
+		exit (-1);
+	g_free(filename);
+	gi_sparkle_pixbuf = sge_register_pixbuf (pixbuf, gi_sparkle_pixbuf);
+
+	filename = g_strdup_printf ("gweled/powerglow_%d.png", prefs.tile_size);
+	pixbuf = sge_load_file_to_pixbuf (filename);
+	if (pixbuf == NULL)
+		exit (-1);
+    g_free(filename);
+	gi_powerglow_pixbuf = sge_register_pixbuf (pixbuf, gi_powerglow_pixbuf);
 
 }
 

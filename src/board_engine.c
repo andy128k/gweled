@@ -43,6 +43,7 @@
 #define FIRST_BONUS_AT	100	// needs tweaking
 #define NB_BONUS_GEMS	8	// same
 #define TOTAL_STEPS_FOR_TIMER	60	// seconds
+#define HINT_TIMEOUT  15	// seconds
 
 void gweled_remove_gems_and_update_score (void);
 
@@ -68,6 +69,8 @@ gint gi_score, gi_current_score, gi_game_running, gi_game_paused;
 
 gint gi_total_gems_removed;
 gint gi_gems_removed_per_move;
+
+guint hint_timeout;
 
 gint gi_bonus_multiply;
 gint gi_previous_bonus_at;
@@ -103,6 +106,8 @@ extern GtkWidget *g_menu_pause;
 
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
+extern gint gi_powerglow_pixbuf;
+extern gint gi_sparkle_pixbuf;
 
 extern guint board_engine_id;
 extern GweledPrefs prefs;
@@ -141,6 +146,8 @@ get_new_tile (void)
 		return (max_index + (gchar) g_rand_int_range (g_random_generator, 1, 7)) % 7;
 	}
 }
+
+
 
 gint
 gweled_is_part_of_an_alignment (gint x, gint y)
@@ -511,6 +518,27 @@ board_get_pause()
 }
 
 gboolean
+hint_callback (gpointer data)
+{
+	gint x, y;
+	T_SGEObject *object;
+
+	if (gi_game_running) {
+		gweled_check_for_moves_left (&x, &y);
+		g_debug("hint_callback(): x:%d, y%d", x, y);
+		object = sge_create_object (prefs.tile_size * x,
+					prefs.tile_size * y,
+					2, gi_powerglow_pixbuf);
+		sge_object_animate(object, TRUE);
+		// 2 seconds (50 * seconds)
+		sge_object_set_lifetime (object, 100);
+	}
+
+	return FALSE;
+
+}
+
+gboolean
 board_engine_loop (gpointer data)
 {
 	static gint x1, y1, x2, y2, time_slice = 0;
@@ -560,6 +588,11 @@ board_engine_loop (gpointer data)
 
     //g_debug("Current state: %s", state[gi_state]);
 
+    if(hint_timeout && gi_gem_clicked) {
+        g_source_remove(hint_timeout);
+        hint_timeout = 0;
+    }
+
 	switch (gi_state) {
 	case _IDLE:
 		if (gi_gem_clicked) {
@@ -567,6 +600,8 @@ board_engine_loop (gpointer data)
 			y1 = gi_y_click;
 			gi_state = _FIRST_GEM_CLICKED;
 			sge_object_blink_start(g_gem_objects[gi_x_click][gi_y_click]);
+
+
 			if (cursor[0])
 				sge_destroy_object (cursor[0], NULL);
 			cursor[0] = sge_create_object (prefs.tile_size * x1,
@@ -574,7 +609,8 @@ board_engine_loop (gpointer data)
 					2, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
 			gi_gem_dragged = 0;
-		}
+		} else
+
 		break;
 
 	case _FIRST_GEM_CLICKED:
@@ -774,6 +810,9 @@ board_engine_loop (gpointer data)
 	default:
 		break;
 	}
+
+	if(gi_state == _IDLE && gi_gem_clicked == FALSE && !hint_timeout)
+	    hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
 
 	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.timer_mode && gi_game_paused) || !prefs.timer_mode))
     {

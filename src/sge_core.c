@@ -112,20 +112,31 @@ draw_object (gpointer object, gpointer user_data)
                         GDK_INTERP_NEAREST,
                         SGE_OBJECT(object)->opacity);
 
-                gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                        NULL, pixbuffer,
-                        0, 0,
-                        x +
-                            (SGE_OBJECT(object)->width -
-                             SGE_OBJECT(object)->width *
-                             SGE_OBJECT(object)->zoom) / 2,
-                        y +
-                            (SGE_OBJECT(object)->height -
-                             SGE_OBJECT(object)->height *
-                             SGE_OBJECT(object)->zoom) / 2,
-                        SGE_OBJECT(object)->width * SGE_OBJECT(object)->zoom,
-                        SGE_OBJECT(object)->height * SGE_OBJECT(object)->zoom,
-                        GDK_RGB_DITHER_NONE, 0, 0);
+                if(SGE_OBJECT(object)->animation)
+
+                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                            NULL, pixbuffer,
+                            ((int)SGE_OBJECT(object)->animation_iter) * SGE_OBJECT(object)->height,
+                            0,
+                            x, y,
+                            SGE_OBJECT(object)->height,
+                            SGE_OBJECT(object)->height,
+                            GDK_RGB_DITHER_NONE, 0, 0);
+                else
+                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                            NULL, pixbuffer,
+                            0, 0,
+                            x +
+                                (SGE_OBJECT(object)->width -
+                                 SGE_OBJECT(object)->width *
+                                 SGE_OBJECT(object)->zoom) / 2,
+                            y +
+                                (SGE_OBJECT(object)->height -
+                                 SGE_OBJECT(object)->height *
+                                 SGE_OBJECT(object)->zoom) / 2,
+                            SGE_OBJECT(object)->width * SGE_OBJECT(object)->zoom,
+                            SGE_OBJECT(object)->height * SGE_OBJECT(object)->zoom,
+                            GDK_RGB_DITHER_NONE, 0, 0);
 
                 g_object_unref(pixbuffer);
 
@@ -154,7 +165,7 @@ draw_object (gpointer object, gpointer user_data)
 
             } else {
                 if(SGE_OBJECT(object)->animation) {
-                    // height of animation is the tile size
+                    // width of each sprite of animation is the object height
                     gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
                             NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
                             ((int)SGE_OBJECT(object)->animation_iter) * SGE_OBJECT(object)->height,
@@ -163,18 +174,6 @@ draw_object (gpointer object, gpointer user_data)
                             SGE_OBJECT(object)->height,
                             SGE_OBJECT(object)->height,
                             GDK_RGB_DITHER_NONE, 0, 0);
-
-                    SGE_OBJECT(object)->animation_iter += 0.5;
-
-                    if(SGE_OBJECT(object)->animation_iter * SGE_OBJECT(object)->height == SGE_OBJECT(object)->width) {
-                        if(SGE_OBJECT(object)->animation_repeat)
-                            SGE_OBJECT(object)->animation_iter = 0;
-                        else {
-                            sge_destroy_object (SGE_OBJECT(object), NULL);
-                            return;
-                        }
-                    }
-                    invalidate_background_beneath (SGE_OBJECT(object));
 
                 } else {
 
@@ -219,6 +218,19 @@ draw_object (gpointer object, gpointer user_data)
             SGE_OBJECT(object)->saturation -= 0.2;
 
          invalidate_background_beneath (SGE_OBJECT(object));
+    }
+    if(SGE_OBJECT(object)->animation) {
+        SGE_OBJECT(object)->animation_iter += 0.5;
+
+        if(SGE_OBJECT(object)->animation_iter * SGE_OBJECT(object)->height == SGE_OBJECT(object)->width) {
+            if(SGE_OBJECT(object)->animation_repeat)
+                SGE_OBJECT(object)->animation_iter = 0;
+            else {
+                sge_destroy_object (SGE_OBJECT(object), NULL);
+                return;
+            }
+        }
+        invalidate_background_beneath (SGE_OBJECT(object));
     }
 }
 
