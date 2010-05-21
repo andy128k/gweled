@@ -153,13 +153,39 @@ draw_object (gpointer object, gpointer user_data)
                g_object_unref(pixbuffer);
 
             } else {
-                // draw pixbuf without effects
-                gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                        NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-                        0, 0, x, y,
-                        SGE_OBJECT(object)->width,
-                        SGE_OBJECT(object)->height,
-                        GDK_RGB_DITHER_NONE, 0, 0);
+                if(SGE_OBJECT(object)->animation) {
+                    // height of animation is the tile size
+                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                            NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
+                            ((int)SGE_OBJECT(object)->animation_iter) * SGE_OBJECT(object)->height,
+                            0,
+                            x, y,
+                            SGE_OBJECT(object)->height,
+                            SGE_OBJECT(object)->height,
+                            GDK_RGB_DITHER_NONE, 0, 0);
+
+                    SGE_OBJECT(object)->animation_iter += 0.5;
+
+                    if(SGE_OBJECT(object)->animation_iter * SGE_OBJECT(object)->height == SGE_OBJECT(object)->width) {
+                        if(SGE_OBJECT(object)->animation_repeat)
+                            SGE_OBJECT(object)->animation_iter = 0;
+                        else {
+                            sge_destroy_object (SGE_OBJECT(object), NULL);
+                            return;
+                        }
+                    }
+                    invalidate_background_beneath (SGE_OBJECT(object));
+
+                } else {
+
+                    // draw pixbuf without effects
+                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
+                            NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
+                            0, 0, x, y,
+                            SGE_OBJECT(object)->width,
+                            SGE_OBJECT(object)->height,
+                            GDK_RGB_DITHER_NONE, 0, 0);
+                }
             }
         }
         // request area drawing
@@ -470,6 +496,10 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->blink = FALSE;
     object->blink_increase = TRUE;
 
+    object->animation = FALSE;
+    object->animation_iter = 1;
+    object->animation_repeat = TRUE;
+
     object->stop_condition = NULL;
 	object->stop_callback = NULL;
 	object->layer = layer;
@@ -730,4 +760,10 @@ void sge_object_blink_start (T_SGEObject *object)
 void sge_object_blink_stop (T_SGEObject *object)
 {
     object->blink = FALSE;
+}
+
+void sge_object_animate (T_SGEObject *object, gboolean repeat)
+{
+    object->animation = TRUE;
+    object->animation_repeat = repeat;
 }

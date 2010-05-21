@@ -43,6 +43,9 @@ typedef struct s_sge_object
 	gfloat saturation;
 	gboolean blink;
 	gboolean blink_increase;
+	gboolean animation;
+	gfloat animation_iter;
+	gboolean animation_repeat;
 	gint needs_drawing;
 	gint pixbuf_id;
 	GdkPixmap *pre_rendered;
@@ -83,5 +86,7 @@ void sge_object_zoomout (T_SGEObject *object);
 
 void sge_object_blink_start (T_SGEObject *object);
 void sge_object_blink_stop (T_SGEObject *object);
+
+void sge_object_animate (T_SGEObject *object, gboolean repeat);
 
 #endif
