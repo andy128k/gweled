@@ -544,6 +544,7 @@ sge_destroy_object (gpointer object, gpointer user_data)
 	if (SGE_OBJECT(object)->pre_rendered)
 		g_object_unref (G_OBJECT(SGE_OBJECT(object)->pre_rendered));
 	g_object_list = g_list_remove (g_object_list, object);
+	g_free(object);
 }
 
 void
@@ -553,11 +554,7 @@ sge_destroy_object_on_level (gpointer object, gpointer user_data)
     if(SGE_OBJECT(object)->layer != GPOINTER_TO_INT(user_data))
         return;
 
-    invalidate_background_beneath (SGE_OBJECT(object));
-    if (SGE_OBJECT(object)->pre_rendered)
-        g_object_unref (G_OBJECT(SGE_OBJECT(object)->pre_rendered));
-    g_object_list = g_list_remove (g_object_list, object);
-
+    sge_destroy_object(object, NULL);
 }
 
 void

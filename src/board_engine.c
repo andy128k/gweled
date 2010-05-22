@@ -618,7 +618,6 @@ board_engine_loop (gpointer data)
 			gi_state = _FIRST_GEM_CLICKED;
 			sge_object_blink_start(g_gem_objects[gi_x_click][gi_y_click]);
 
-
 			if (cursor[0])
 				sge_destroy_object (cursor[0], NULL);
 			cursor[0] = sge_create_object (prefs.tile_size * x1,
@@ -654,19 +653,23 @@ board_engine_loop (gpointer data)
 				Sample_Play(swap_sfx, 0, 0);
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
-				if (cursor[1])
+				if (cursor[1]) {
 					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = NULL;
+				    cursor[1] = NULL;
+				}
 				// If the player clicks the selected gem, deselect it
-				if(cursor[0])
+				if(cursor[0]) {
 					sge_destroy_object(cursor[0], NULL);
+					cursor[0] = NULL;
+				}
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				gi_state = _IDLE;
 				gi_gem_clicked = 0;
 			} else {
-				if (cursor[1])
+				if (cursor[1]) {
 					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = NULL;
+				    cursor[1] = NULL;
+				}
 				// If the player clicks anywhere else, make that the first selection
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				sge_object_blink_start(g_gem_objects[x2][y2]);
@@ -683,7 +686,7 @@ board_engine_loop (gpointer data)
 			//printf("gem dragged\n");
 			if (cursor[1])
 					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = sge_create_object (prefs.tile_size * gi_x_drag,
+			cursor[1] = sge_create_object (prefs.tile_size * gi_x_drag,
 						prefs.tile_size * gi_y_drag,
 						2, gi_cursor_pixbuf);
 		}
