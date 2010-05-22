@@ -508,7 +508,7 @@ board_set_pause(gboolean value)
             g_source_remove(hint_timeout);
             hint_timeout = 0;
         }
-        if(g_hint_object != NULL) {
+        if(sge_object_exists(g_hint_object)) {
             sge_destroy_object (g_hint_object, NULL);
             g_hint_object = NULL;
         }
@@ -604,10 +604,11 @@ board_engine_loop (gpointer data)
     if(hint_timeout && gi_gem_clicked) {
         g_source_remove(hint_timeout);
         hint_timeout = 0;
-        if(g_hint_object != NULL) {
+        if(g_hint_object && sge_object_exists(g_hint_object)) {
             sge_destroy_object (g_hint_object, NULL);
             g_hint_object = NULL;
-        }
+        } else
+            g_hint_object = NULL;
     }
 
 	switch (gi_state) {
@@ -869,6 +870,11 @@ gweled_start_new_game (void)
 		gi_total_gems_removed = FIRST_BONUS_AT / 2;
 	else
 		gi_total_gems_removed = 0;
+
+	if(hint_timeout) {
+        g_source_remove(hint_timeout);
+        hint_timeout = 0;
+    }
 
 	gtk_progress_bar_set_fraction ((GtkProgressBar *) g_progress_bar, 0.0);
 	gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");

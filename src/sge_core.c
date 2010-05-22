@@ -776,3 +776,12 @@ void sge_object_animate (T_SGEObject *object, gboolean repeat)
     object->animation = TRUE;
     object->animation_repeat = repeat;
 }
+
+gboolean
+sge_object_exists (T_SGEObject *object)
+{
+    if(g_list_index(g_object_list, object) == -1)
+        return FALSE;
+    else
+        return TRUE;
+}

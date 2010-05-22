@@ -89,4 +89,6 @@ void sge_object_blink_stop (T_SGEObject *object);
 
 void sge_object_animate (T_SGEObject *object, gboolean repeat);
 
+gboolean sge_object_exists (T_SGEObject *object);
+
 #endif
