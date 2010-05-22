@@ -41,7 +41,7 @@ void
 gweled_draw_message (gchar *in_message);
 
 void
-gweled_draw_game_message (gchar *in_message, double timing);
+gweled_draw_game_message (gchar *in_message, int timing);
 
 void
 gweled_draw_message_at (gchar *in_message, gint msg_x, gint msg_y);

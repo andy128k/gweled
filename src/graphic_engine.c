@@ -232,7 +232,7 @@ gweled_draw_message (gchar * in_message)
 	gweled_draw_message_at (in_message, msg_x, msg_y);
 }
 void
-gweled_draw_game_message (gchar * in_message, double timing)
+gweled_draw_game_message (gchar * in_message, int timing)
 {
 	int i;
 	gint msg_x, msg_y, msg_w;
@@ -253,8 +253,7 @@ gweled_draw_game_message (gchar * in_message, double timing)
 					       gi_charset_pixbuf
 					       [gpc_font_glyphs
 						[(int)message[i]]]);
-			sge_object_set_lifetime (p_object,
-						 (int) (50.0 * timing));
+			sge_object_set_lifetime (p_object, timing);
 		}
 
     g_free (message);

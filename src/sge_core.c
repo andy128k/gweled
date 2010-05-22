@@ -30,6 +30,7 @@
 #include "sge_core.h"
 
 #define ACCELERATION	1.0
+#define SGE_TIMER_INTERVAL  20
 
 // LOCAL FUNCTIONS
 void invalidate_objects_above (T_SGEObject * object);
@@ -285,7 +286,7 @@ void
 sge_init (void)
 {
 	g_rand_generator = g_rand_new_with_seed (time (NULL));
-	g_main_loop_id = g_timeout_add (20, sge_main_loop, NULL);
+	g_main_loop_id = g_timeout_add (SGE_TIMER_INTERVAL, sge_main_loop, NULL);
 	gi_nb_pixbufs = 0;
 	g_pixbufs = NULL;
 }
@@ -654,9 +655,9 @@ void sge_object_fadeout_cb (gpointer object, gpointer user_data)
 }
 
 void
-sge_object_set_lifetime (T_SGEObject * object, gint lifetime)
+sge_object_set_lifetime (T_SGEObject * object, gint seconds)
 {
-	object->lifetime = lifetime;
+	object->lifetime = (1000 / SGE_TIMER_INTERVAL) * seconds;
 	object->stop_condition = has_reached_time_limit;
 	object->stop_callback = sge_object_fadeout_cb;
 }

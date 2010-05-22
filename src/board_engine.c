@@ -329,7 +329,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 			ypos = yhotspot - ysize / 2;
 			object = gweled_draw_character (xpos, ypos, 4, buffer[i]);
 			object->vy = -1.0;
-			sge_object_set_lifetime (object, 50);	//1s
+			sge_object_set_lifetime (object, 1);	//1s
 		}
 		g_free (buffer);
 	}
@@ -544,7 +544,7 @@ hint_callback (gpointer data)
 					2, gi_powerglow_pixbuf);
 		sge_object_animate(g_hint_object, TRUE);
 		// 2 seconds (50 * seconds)
-		sge_object_set_lifetime (g_hint_object, 100);
+		sge_object_set_lifetime (g_hint_object, 2);
 	}
 
 	return TRUE;
@@ -744,7 +744,7 @@ board_engine_loop (gpointer data)
 				if ((gi_next_bonus_at == FIRST_BONUS_AT) || (prefs.timer_mode)) {
 					gint i, j;
                     // TRANSLATORS: # is replaced with !!
-					gweled_draw_game_message (_("no moves left #"), 1.0);
+					gweled_draw_game_message (_("no moves left #"), 1);
 					memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
 					for (i = 0; i < BOARD_WIDTH; i++)
@@ -807,7 +807,7 @@ board_engine_loop (gpointer data)
 
                 // draw bonus message in game
 				g_sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
-				gweled_draw_game_message (msg_buffer, 2.0);
+				gweled_draw_game_message (msg_buffer, 2);
 
 				gweled_delete_gems_for_bonus ();
 				gweled_take_down_deleted_gems ();

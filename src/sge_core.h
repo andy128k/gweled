@@ -66,7 +66,7 @@ void sge_destroy_object(gpointer object, gpointer user_data);
 void sge_destroy_all_objects_on_level(int level);
 void sge_destroy_all_objects(void);
 
-void sge_object_set_lifetime(T_SGEObject *object, gint lifetime);
+void sge_object_set_lifetime(T_SGEObject *object, gint seconds);
 void sge_object_take_down(T_SGEObject *object);
 void sge_object_move_to(T_SGEObject *object, gint dest_x, gint dest_y);
 void sge_object_fall_to(T_SGEObject *object, gint dest_y);
