@@ -95,6 +95,8 @@ gboolean g_do_not_score;
 T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 unsigned char gpc_bit_n[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
+static T_SGEObject *g_hint_object = NULL;
+
 static gint gi_state = _IDLE;
 
 static GList *g_alignment_list;
@@ -181,12 +183,13 @@ gweled_check_for_moves_left (int *pi, int *pj)
 {
 	gint i, j;
 
-	for (j = BOARD_HEIGHT - 1; j >= 0; j--)
-		for (i = BOARD_WIDTH - 1; i >= 0; i--) {
+	for (j = 0; j <= BOARD_HEIGHT - 1; j++)
+		for (i = 0; i <= BOARD_WIDTH - 1; i++) {
 			if (i > 0) {
 				gweled_swap_gems (i - 1, j, i, j);
 				if (gweled_is_part_of_an_alignment (i, j)) {
 					gweled_swap_gems (i - 1, j, i, j);
+					i = i - 1;
 					goto move_found;
 				}
 				gweled_swap_gems (i - 1, j, i, j);
@@ -195,6 +198,7 @@ gweled_check_for_moves_left (int *pi, int *pj)
 				gweled_swap_gems (i + 1, j, i, j);
 				if (gweled_is_part_of_an_alignment (i, j)) {
 					gweled_swap_gems (i + 1, j, i, j);
+					i = i + 1;
 					goto move_found;
 				}
 				gweled_swap_gems (i + 1, j, i, j);
@@ -203,6 +207,7 @@ gweled_check_for_moves_left (int *pi, int *pj)
 				gweled_swap_gems (i, j - 1, i, j);
 				if (gweled_is_part_of_an_alignment (i, j)) {
 					gweled_swap_gems (i, j - 1, i, j);
+					j = j - 1;
 					goto move_found;
 				}
 				gweled_swap_gems (i, j - 1, i, j);
@@ -211,6 +216,7 @@ gweled_check_for_moves_left (int *pi, int *pj)
 				gweled_swap_gems (i, j + 1, i, j);
 				if (gweled_is_part_of_an_alignment (i, j)) {
 					gweled_swap_gems (i, j + 1, i, j);
+					j = j + 1;
 					goto move_found;
 				}
 				gweled_swap_gems (i, j + 1, i, j);
@@ -498,6 +504,14 @@ board_set_pause(gboolean value)
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
         sge_set_layer_visibility(1, FALSE);
         sge_set_layer_visibility(2, FALSE);
+        if(hint_timeout) {
+            g_source_remove(hint_timeout);
+            hint_timeout = 0;
+        }
+        if(g_hint_object != NULL) {
+            sge_destroy_object (g_hint_object, NULL);
+            g_hint_object = NULL;
+        }
     }
     else {
         gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Pause"));
@@ -521,20 +535,19 @@ gboolean
 hint_callback (gpointer data)
 {
 	gint x, y;
-	T_SGEObject *object;
 
 	if (gi_game_running) {
 		gweled_check_for_moves_left (&x, &y);
 		g_debug("hint_callback(): x:%d, y%d", x, y);
-		object = sge_create_object (prefs.tile_size * x,
+		g_hint_object = sge_create_object (prefs.tile_size * x,
 					prefs.tile_size * y,
 					2, gi_powerglow_pixbuf);
-		sge_object_animate(object, TRUE);
+		sge_object_animate(g_hint_object, TRUE);
 		// 2 seconds (50 * seconds)
-		sge_object_set_lifetime (object, 100);
+		sge_object_set_lifetime (g_hint_object, 100);
 	}
 
-	return FALSE;
+	return TRUE;
 
 }
 
@@ -591,6 +604,10 @@ board_engine_loop (gpointer data)
     if(hint_timeout && gi_gem_clicked) {
         g_source_remove(hint_timeout);
         hint_timeout = 0;
+        if(g_hint_object != NULL) {
+            sge_destroy_object (g_hint_object, NULL);
+            g_hint_object = NULL;
+        }
     }
 
 	switch (gi_state) {
