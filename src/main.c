@@ -147,6 +147,45 @@ void load_preferences(void)
 
 }
 
+void save_current_game(void)
+{
+    GweledGameState game;
+    gchar *filename;
+    FILE *stream;
+
+    game = gweled_get_current_game();
+
+    filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+
+    stream = fopen(filename, "w");
+
+    if(stream)
+    {
+        fwrite(&game, sizeof(GweledGameState), 1, stream);
+        fclose(stream);
+    }
+}
+
+void load_previous_game(void)
+{
+    gchar *filename;
+    FILE *stream;
+    GweledGameState game;
+
+    filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+
+    stream = fopen(filename, "r");
+
+    if(stream)
+    {
+        fread(&game, sizeof(GweledGameState), 1, stream);
+        fclose(stream);
+
+        gweled_set_previous_game(game);
+    }
+
+}
+
 void init_pref_window(void)
 {
 	GtkWidget *radio_button = NULL;
@@ -369,6 +408,8 @@ int main (int argc, char **argv)
 
 	gweled_draw_board ();
 	gweled_draw_message ("gweled");
+
+	load_previous_game();
 
 	gtk_main ();
 

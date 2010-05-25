@@ -21,12 +21,11 @@
 #ifndef _GRAPHIC_ENGINE_H
 #define _GRAPHIC_ENGINE_H
 
-#define BOARD_WIDTH   8
-#define BOARD_HEIGHT  8
+#include <glib.h>
+
 #define FONT_WIDTH    24
 #define FONT_HEIGHT   20
 
-// FUNCTIONS
 
 void
 gweled_load_font (void);
@@ -47,7 +46,7 @@ void
 gweled_draw_message_at (gchar *in_message, gint msg_x, gint msg_y);
 
 void
-gweled_gems_fall_into_place (void);
+gweled_gems_fall_into_place (gboolean with_delay);
 
 T_SGEObject*
 gweled_draw_character (int x, int y, int layer, char character);

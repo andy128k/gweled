@@ -21,13 +21,16 @@
 #ifndef _GWELED_MAIN_H_
 #define _GWELED_MAIN_H_
 
-#include<glib.h>
+#include <glib.h>
 
 void
 save_preferences(void);
 
 void
 load_preferences(void);
+
+void
+save_current_game();
 
 gint
 show_hiscores (gint pos, gboolean endofgame);

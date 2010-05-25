@@ -262,7 +262,7 @@ gweled_draw_game_message (gchar * in_message, int timing)
 //const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
 
 void
-gweled_gems_fall_into_place (void)
+gweled_gems_fall_into_place (gboolean with_delay)
 {
 	gint i, j;
     //g_debug("gweled_gems_fall_into_place():");
@@ -271,11 +271,15 @@ gweled_gems_fall_into_place (void)
         for (i = 0; i < BOARD_WIDTH; i++) {
 
             //g_print("%s\e[0m|", gems[SGE_OBJECT(g_gem_objects[i][j])->pixbuf_id]);
+            if(with_delay)
+                sge_object_fall_to_with_delay(g_gem_objects[i][j],
+                                              j * prefs.tile_size,
+                                              (BOARD_HEIGHT - j)*i);
+            else
+                sge_object_fall_to (g_gem_objects[i][j],
+                                    j * prefs.tile_size);
 
-			sge_object_fall_to (g_gem_objects[i][j],
-					    j * prefs.tile_size);
-
-		}
+        }
 		//g_print("\n\e[0m");
     }
 }

@@ -21,6 +21,9 @@
 #ifndef _BOARD_ENGINE_H_
 #define _BOARD_ENGINE_H_
 
+#define BOARD_WIDTH   8
+#define BOARD_HEIGHT  8
+
 typedef struct s_gweled_prefs
 {
 	gboolean timer_mode;
@@ -28,6 +31,21 @@ typedef struct s_gweled_prefs
 	gboolean music_on;
 	gboolean sounds_on;
 }GweledPrefs;
+
+typedef struct s_gweled_gamestate
+{
+    gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
+    gint gi_score;
+    gint gi_total_gems_removed;
+    gint gi_gems_removed_per_move;
+    gint gi_bonus_multiply;
+    gint gi_previous_bonus_at;
+    gint gi_next_bonus_at;
+    gint gi_level;
+    gint gi_trigger_bonus;
+    guint g_steps_for_timer;
+
+} GweledGameState;
 
 // FUNCTIONS
 void gweled_start_new_game(void);
@@ -39,5 +57,11 @@ void board_set_pause(gboolean value);
 gboolean board_get_pause(void);
 
 void respawn_board_engine_loop();
+
+GweledGameState
+gweled_get_current_game(void);
+
+void
+gweled_set_previous_game(GweledGameState game);
 
 #endif

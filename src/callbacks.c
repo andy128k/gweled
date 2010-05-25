@@ -130,6 +130,31 @@ on_window_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer dat
 void
 on_quit1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
+    GtkWidget *box;
+    gint response;
+
+    if (gi_game_running) {
+        box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+                          GTK_DIALOG_DESTROY_WITH_PARENT,
+                          GTK_MESSAGE_QUESTION,
+                          GTK_BUTTONS_YES_NO,
+                          _("Do you want to save the current game?"));
+
+        gtk_dialog_set_default_response (GTK_DIALOG (box),
+                         GTK_RESPONSE_NO);
+        response = gtk_dialog_run (GTK_DIALOG (box));
+        gtk_widget_destroy (box);
+
+        if (response == GTK_RESPONSE_YES)
+            save_current_game();
+        else {
+            gchar *filename;
+
+            filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+            unlink(filename);
+        }
+    }
+
 	gtk_main_quit ();
 }
 
@@ -255,6 +280,31 @@ drawing_area_motion_event_cb (GtkWidget * widget, GdkEventMotion * event, gpoint
 gboolean
 on_app1_delete_event (GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
+    GtkWidget *box;
+    gint response;
+
+    if (gi_game_running) {
+        box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+                          GTK_DIALOG_DESTROY_WITH_PARENT,
+                          GTK_MESSAGE_QUESTION,
+                          GTK_BUTTONS_YES_NO,
+                          _("Do you want to save the current game?"));
+
+        gtk_dialog_set_default_response (GTK_DIALOG (box),
+                         GTK_RESPONSE_NO);
+        response = gtk_dialog_run (GTK_DIALOG (box));
+        gtk_widget_destroy (box);
+
+        if (response == GTK_RESPONSE_YES)
+            save_current_game();
+        else {
+            gchar *filename;
+
+            filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+            unlink(filename);
+        }
+    }
+
 	gtk_main_quit ();
 	return FALSE;
 }
