@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-12 02:48+0200\n"
+"POT-Creation-Date: 2010-06-04 01:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,83 +26,93 @@ msgctxt "game type"
 msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:212
+#: ../src/main.c:251
 msgid "Game over!"
 msgstr ""
 
-#: ../src/main.c:214
+#: ../src/main.c:253
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/main.c:216
+#: ../src/main.c:255
 msgid "_New Game"
 msgstr ""
 
-#: ../src/main.c:228
+#: ../src/main.c:267
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:231
+#: ../src/main.c:270
 msgid "Game type:"
 msgstr ""
 
-#: ../src/main.c:238
+#: ../src/main.c:277
 msgid "Congratulations!"
 msgstr ""
 
-#: ../src/main.c:239
+#: ../src/main.c:278
 msgid "Your score is the best!"
 msgstr ""
 
-#: ../src/main.c:240
+#: ../src/main.c:279
 msgid "Your score has made the top ten."
+msgstr ""
+
+#: ../src/main.c:423
+msgid "There is a game saved, do you want restore it?"
 msgstr ""
 
 #: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr ""
 
-#: ../src/callbacks.c:150
+#: ../src/callbacks.c:141 ../src/callbacks.c:291
+msgid "Do you want to save the current game?"
+msgstr ""
+
+#: ../src/callbacks.c:175
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/callbacks.c:155
+#: ../src/callbacks.c:180
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
 msgstr ""
 
-#: ../src/board_engine.c:488
+#: ../src/board_engine.c:501
 msgid "_Resume"
 msgstr ""
 
-#: ../src/board_engine.c:489
+#: ../src/board_engine.c:502
 msgid "paused"
 msgstr ""
 
-#: ../src/board_engine.c:491
+#: ../src/board_engine.c:504
 msgid "Paused"
 msgstr ""
 
-#: ../src/board_engine.c:496 ../data/gweled.ui.h:15
+#: ../src/board_engine.c:517 ../data/gweled.ui.h:15
 msgid "_Pause"
 msgstr ""
 
-#: ../src/board_engine.c:540
+#: ../src/board_engine.c:581
 msgid "time's up #"
 msgstr ""
 
-#: ../src/board_engine.c:691 ../src/board_engine.c:716
+#. TRANSLATORS: # is replaced with !!
+#: ../src/board_engine.c:747 ../src/board_engine.c:772
 msgid "no moves left #"
 msgstr ""
 
-#: ../src/board_engine.c:749 ../src/board_engine.c:817
+#: ../src/board_engine.c:805 ../src/board_engine.c:881
+#: ../src/board_engine.c:974
 #, c-format
 msgid "Level %d"
 msgstr ""
 
 #. draw bonus message in game
-#: ../src/board_engine.c:753
+#: ../src/board_engine.c:809
 #, c-format
 msgid "bonus x%d"
 msgstr ""

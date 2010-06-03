@@ -312,6 +312,9 @@ void mikmod_thread(void *ptr)
 int main (int argc, char **argv)
 {
 	GError* error = NULL;
+	GtkWidget *box;
+	gchar *filename;
+	gint response;
 
 	/* gettext */
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -409,7 +412,28 @@ int main (int argc, char **argv)
 	gweled_draw_board ();
 	gweled_draw_message ("gweled");
 
-	load_previous_game();
+    // check for previous saved game
+    filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+
+	if(g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
+	    box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+                          GTK_DIALOG_DESTROY_WITH_PARENT,
+                          GTK_MESSAGE_QUESTION,
+                          GTK_BUTTONS_YES_NO,
+                          _("There is a game saved, do you want restore it?"));
+
+        gtk_dialog_set_default_response (GTK_DIALOG (box),
+                         GTK_RESPONSE_NO);
+        response = gtk_dialog_run (GTK_DIALOG (box));
+        gtk_widget_destroy (box);
+
+        if (response == GTK_RESPONSE_YES)
+            load_previous_game();
+        else
+            unlink(filename);
+	}
+
+	g_free(filename);
 
 	gtk_main ();
 
