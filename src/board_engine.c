@@ -644,10 +644,18 @@ board_engine_loop (gpointer data)
 						prefs.tile_size * y2,
 						2, gi_cursor_pixbuf);
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
+				// swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],
 						x2 * prefs.tile_size,
 						y2 * prefs.tile_size);
 				sge_object_move_to (g_gem_objects[x2][y2],
+						x1 * prefs.tile_size,
+						y1 * prefs.tile_size);
+				// swap cursors
+				sge_object_move_to (cursor[0],
+						x2 * prefs.tile_size,
+						y2 * prefs.tile_size);
+				sge_object_move_to (cursor[1],
 						x1 * prefs.tile_size,
 						y1 * prefs.tile_size);
 				if(swap_sfx && prefs.sounds_on == TRUE)
@@ -697,12 +705,21 @@ board_engine_loop (gpointer data)
 		if (!sge_object_is_moving (g_gem_objects[x1][y1]) && !sge_object_is_moving (g_gem_objects[x2][y2])) {
 			gweled_swap_gems (x1, y1, x2, y2);
 			if (!gweled_is_part_of_an_alignment (x1, y1) && !gweled_is_part_of_an_alignment (x2, y2)) {
+				// re-swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],
 						x2 * prefs.tile_size,
 						y2 * prefs.tile_size);
 				sge_object_move_to (g_gem_objects[x2][y2],
 						x1 * prefs.tile_size,
 						y1 * prefs.tile_size);
+				// re-swap cursors
+				sge_object_move_to (cursor[1],
+						x2 * prefs.tile_size,
+						y2 * prefs.tile_size);
+				sge_object_move_to (cursor[0],
+						x1 * prefs.tile_size,
+						y1 * prefs.tile_size);
+
 				gi_state = _ILLEGAL_MOVE;
 			} else {
 				gi_gems_removed_per_move = 0;
