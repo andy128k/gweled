@@ -72,6 +72,8 @@ SAMPLE *swap_sfx, *click_sfx;
 
 extern gint gi_game_running;
 
+const gchar* game_modes_strv[] = {"normal", "timed", "endless"};
+
 void save_preferences(void)
 {
 	gchar *filename, *configstr;
@@ -84,7 +86,7 @@ void save_preferences(void)
     config = g_key_file_new();
 
 	g_key_file_set_integer(config, "General", "tile_size", prefs.tile_size);
-	g_key_file_set_boolean(config, "General", "timer_mode", prefs.timer_mode);
+	g_key_file_set_string(config, "General", "game_mode", game_modes_strv[prefs.game_mode]);
 	g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
 	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
 
@@ -110,6 +112,7 @@ void load_preferences(void)
 	char *filename;
 	GKeyFile *config;
 	GError *error = NULL;
+	char *game_mode;
 
 	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
 
@@ -120,14 +123,25 @@ void load_preferences(void)
     if(error == NULL && g_key_file_has_group(config, "General")) {
 
 	    prefs.tile_size = g_key_file_get_integer(config, "General", "tile_size", NULL);
-	    prefs.timer_mode = g_key_file_get_boolean(config, "General", "timer_mode", NULL);
+	    game_mode = g_key_file_get_string(config, "General", "game_mode", NULL);
 	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
 	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
 
 	    if(prefs.tile_size < 32)
 	        prefs.tile_size = 32;
-	    if(prefs.tile_size > 64)
+	    else if(prefs.tile_size > 64)
 	        prefs.tile_size = 64;
+	    else
+	        prefs.tile_size = 48;
+
+	    if(g_strcmp0("timed", game_mode) == 0)
+	        prefs.game_mode = TIMED_MODE;
+	    else if(g_strcmp0("endless", game_mode) == 0)
+	        prefs.game_mode = ENDLESS_MODE;
+	    else
+	        prefs.game_mode = NORMAL_MODE;
+
+	   g_free(game_mode);
 
     } else {
         if (error) {
@@ -136,7 +150,7 @@ void load_preferences(void)
         }
 
 		prefs.tile_size = 48;
-		prefs.timer_mode = FALSE;
+		prefs.game_mode = NORMAL_MODE;
 		prefs.music_on = TRUE;
 		prefs.sounds_on = TRUE;
 
@@ -191,10 +205,18 @@ void init_pref_window(void)
 	GtkWidget *radio_button = NULL;
 
     // Game type
-	if (prefs.timer_mode == FALSE)
-		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "easyRadiobutton"));
-	else
-		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "hardRadiobutton"));
+	switch (prefs.game_mode)
+	{
+	    case NORMAL_MODE:
+		    radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "normalRadiobutton"));
+		    break;
+	    case TIMED_MODE:
+	        radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "timedRadiobutton"));
+	        break;
+	    case ENDLESS_MODE:
+	        radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "endlessRadiobutton"));
+	        break;
+	}
 	if (radio_button)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 

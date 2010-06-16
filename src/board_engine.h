@@ -24,9 +24,16 @@
 #define BOARD_WIDTH   8
 #define BOARD_HEIGHT  8
 
+typedef enum e_gweled_game_mode
+{
+    NORMAL_MODE,
+    TIMED_MODE,
+    ENDLESS_MODE
+} gweled_game_mode;
+
 typedef struct s_gweled_prefs
 {
-	gboolean timer_mode;
+	gweled_game_mode game_mode;
 	gint tile_size;
 	gboolean music_on;
 	gboolean sounds_on;

@@ -204,7 +204,7 @@
                   <object class="GtkLabel" id="label18">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
-                    <property name="label" translatable="yes">&lt;span weight="bold"&gt;Difficulty level&lt;/span&gt;</property>
+                    <property name="label" translatable="yes">&lt;span weight="bold"&gt;Game mode&lt;/span&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
                   <packing>
@@ -218,7 +218,7 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkRadioButton" id="easyRadiobutton">
+                      <object class="GtkRadioButton" id="normalRadiobutton">
                         <property name="label" translatable="yes">Normal</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -226,7 +226,7 @@
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_easyRadiobutton_toggled"/>
+                        <signal name="toggled" handler="on_normalRadio_toggled"/>
                       </object>
                     </child>
                   </object>
@@ -239,7 +239,7 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkRadioButton" id="hardRadiobutton">
+                      <object class="GtkRadioButton" id="timedRadiobutton">
                         <property name="label" translatable="yes">Timed</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -247,13 +247,35 @@
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">easyRadiobutton</property>
-                        <signal name="toggled" handler="on_hardRadiobutton_toggled"/>
+                        <property name="group">normalRadiobutton</property>
+                        <signal name="toggled" handler="on_timedRadio_toggled"/>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkAlignment" id="alignment8">
+                    <property name="visible">True</property>
+                    <property name="left_padding">12</property>
+                    <child>
+                      <object class="GtkRadioButton" id="endlessRadiobutton">
+                        <property name="label" translatable="yes">Endless</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">In this mode the game never ends, but scores will not be recorded!</property>
+                        <property name="use_underline">True</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="group">normalRadiobutton</property>
+                        <signal name="toggled" handler="on_endlessRadio_toggled"/>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>

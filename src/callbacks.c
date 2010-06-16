@@ -112,7 +112,7 @@ on_window_unmap_event (GtkWidget *widget,
                        GdkEvent  *event,
                        gpointer   user_data)
 {
-    if(gi_game_running && prefs.timer_mode == TRUE && board_get_pause() == FALSE )
+    if(gi_game_running && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
         board_set_pause(TRUE);
 
     return FALSE;
@@ -121,7 +121,7 @@ on_window_unmap_event (GtkWidget *widget,
 gboolean
 on_window_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
-    if( gi_game_running && prefs.timer_mode == TRUE && board_get_pause() == FALSE )
+    if( gi_game_running && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
         board_set_pause(TRUE);
 
     return FALSE;
@@ -324,11 +324,12 @@ on_closebutton1_clicked (GtkButton * button, gpointer user_data)
 }
 
 void
-on_easyRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+on_gamemodeRadio_toggled (GtkToggleButton * togglebutton, gweled_game_mode game_mode)
 {
 	if (gtk_toggle_button_get_active (togglebutton))
 	{
-		prefs.timer_mode = FALSE;
+		prefs.game_mode = game_mode;
+
 		if (gi_game_running) {
 			sge_destroy_all_objects ();
 			gweled_draw_board ();
@@ -340,19 +341,21 @@ on_easyRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 }
 
 void
-on_hardRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+on_normalRadio_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-	if (gtk_toggle_button_get_active (togglebutton))
-	{
-		prefs.timer_mode = TRUE;
-		if (gi_game_running) {
-			sge_destroy_all_objects ();
-			gweled_draw_board ();
-			gweled_start_new_game ();
-			board_set_pause(FALSE);
-			respawn_board_engine_loop();
-		}
-	}
+    on_gamemodeRadio_toggled(togglebutton, NORMAL_MODE);
+}
+
+void
+on_timedRadio_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+    on_gamemodeRadio_toggled(togglebutton, TIMED_MODE);
+}
+
+void
+on_endlessRadio_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+{
+    on_gamemodeRadio_toggled(togglebutton, ENDLESS_MODE);
 }
 
 void

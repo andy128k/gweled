@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-04 01:26+0200\n"
+"POT-Creation-Date: 2010-06-16 19:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,39 +26,39 @@ msgctxt "game type"
 msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:251
+#: ../src/main.c:273
 msgid "Game over!"
 msgstr ""
 
-#: ../src/main.c:253
+#: ../src/main.c:275
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/main.c:255
+#: ../src/main.c:277
 msgid "_New Game"
 msgstr ""
 
-#: ../src/main.c:267
+#: ../src/main.c:289
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:270
+#: ../src/main.c:292
 msgid "Game type:"
 msgstr ""
 
-#: ../src/main.c:277
+#: ../src/main.c:299
 msgid "Congratulations!"
 msgstr ""
 
-#: ../src/main.c:278
+#: ../src/main.c:300
 msgid "Your score is the best!"
 msgstr ""
 
-#: ../src/main.c:279
+#: ../src/main.c:301
 msgid "Your score has made the top ten."
 msgstr ""
 
-#: ../src/main.c:423
+#: ../src/main.c:445
 msgid "There is a game saved, do you want restore it?"
 msgstr ""
 
@@ -92,27 +92,26 @@ msgstr ""
 msgid "Paused"
 msgstr ""
 
-#: ../src/board_engine.c:517 ../data/gweled.ui.h:15
+#: ../src/board_engine.c:517 ../data/gweled.ui.h:17
 msgid "_Pause"
 msgstr ""
 
-#: ../src/board_engine.c:581
+#: ../src/board_engine.c:580
 msgid "time's up #"
 msgstr ""
 
 #. TRANSLATORS: # is replaced with !!
-#: ../src/board_engine.c:747 ../src/board_engine.c:772
+#: ../src/board_engine.c:763 ../src/board_engine.c:788
 msgid "no moves left #"
 msgstr ""
 
-#: ../src/board_engine.c:805 ../src/board_engine.c:881
-#: ../src/board_engine.c:974
+#: ../src/board_engine.c:823 ../src/board_engine.c:901
+#: ../src/board_engine.c:994
 #, c-format
 msgid "Level %d"
 msgstr ""
 
-#. draw bonus message in game
-#: ../src/board_engine.c:809
+#: ../src/board_engine.c:828
 #, c-format
 msgid "bonus x%d"
 msgstr ""
@@ -136,7 +135,7 @@ msgid "<span weight=\"bold\">Board size</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:2
-msgid "<span weight=\"bold\">Difficulty level</span>"
+msgid "<span weight=\"bold\">Game mode</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:3
@@ -144,54 +143,62 @@ msgid "<span weight=\"bold\">Sound</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:4
-msgid "Large"
+msgid "Endless"
 msgstr ""
 
 #: ../data/gweled.ui.h:5
-msgid "Medium"
+msgid "In this mode the game never ends, but scores will not be recorded!"
 msgstr ""
 
 #: ../data/gweled.ui.h:6
-msgid "Normal"
+msgid "Large"
 msgstr ""
 
 #: ../data/gweled.ui.h:7
-msgid "Pauses the game for you can return to it later"
+msgid "Medium"
 msgstr ""
 
 #: ../data/gweled.ui.h:8
-msgid "Play background music"
+msgid "Normal"
 msgstr ""
 
 #: ../data/gweled.ui.h:9
-msgid "Play sound effects"
+msgid "Pauses the game for you can return to it later"
 msgstr ""
 
 #: ../data/gweled.ui.h:10
-msgid "Preferences"
+msgid "Play background music"
 msgstr ""
 
 #: ../data/gweled.ui.h:11
-msgid "Small"
+msgid "Play sound effects"
 msgstr ""
 
 #: ../data/gweled.ui.h:12
-msgid "Timed"
+msgid "Preferences"
 msgstr ""
 
 #: ../data/gweled.ui.h:13
-msgid "_Game"
+msgid "Small"
 msgstr ""
 
 #: ../data/gweled.ui.h:14
-msgid "_Help"
+msgid "Timed"
+msgstr ""
+
+#: ../data/gweled.ui.h:15
+msgid "_Game"
 msgstr ""
 
 #: ../data/gweled.ui.h:16
+msgid "_Help"
+msgstr ""
+
+#: ../data/gweled.ui.h:18
 msgid "_Scores"
 msgstr ""
 
-#: ../data/gweled.ui.h:17
+#: ../data/gweled.ui.h:19
 msgid "_Settings"
 msgstr ""
 
