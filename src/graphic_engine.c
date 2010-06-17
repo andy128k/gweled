@@ -284,4 +284,19 @@ gweled_gems_fall_into_place (gboolean with_delay)
     }
 }
 
+void
+gweled_set_objects_size (gint size)
+{
+    gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
+					     BOARD_WIDTH * size,
+					     BOARD_HEIGHT * size);
+	g_object_unref (G_OBJECT (g_buffer_pixmap));
+	g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
+				    BOARD_WIDTH * size,
+				    BOARD_HEIGHT * size, -1);
+	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
+				      BOARD_WIDTH * size,
+				      BOARD_HEIGHT * size);
 
+	gweled_load_pixmaps ();
+}

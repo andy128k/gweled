@@ -54,4 +54,7 @@ gweled_draw_character (int x, int y, int layer, char character);
 void
 gweled_draw_board (void);
 
+void
+gweled_set_objects_size (gint size);
+
 #endif

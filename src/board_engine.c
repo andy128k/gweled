@@ -515,9 +515,11 @@ board_set_pause(gboolean value)
     }
     else {
         gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Pause"));
-        if(last_text != NULL)
+        if(last_text != NULL) {
             gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
-        g_free(last_text);
+            g_free(last_text);
+            last_text = NULL;
+        }
         sge_set_layer_visibility(1, TRUE);
         sge_set_layer_visibility(2, TRUE);
         sge_destroy_all_objects_on_level(3);
@@ -598,7 +600,7 @@ board_engine_loop (gpointer data)
 						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
 
-    //g_debug("Current state: %s", state[gi_state]);
+    g_debug("Current state: %s", state[gi_state]);
 
     if(hint_timeout && gi_gem_clicked) {
         g_source_remove(hint_timeout);
@@ -855,7 +857,7 @@ board_engine_loop (gpointer data)
 	if(gi_state == _IDLE && gi_gem_clicked == FALSE && !hint_timeout)
 	    hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
 
-	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.game_mode == TIMED_MODE && gi_game_paused) || !prefs.game_mode == TIMED_MODE))
+	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.game_mode == TIMED_MODE && gi_game_paused) || !(prefs.game_mode == TIMED_MODE)))
     {
         board_engine_id = 0;
         //g_debug("Board engine timer stopped");

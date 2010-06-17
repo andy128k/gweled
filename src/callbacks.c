@@ -59,6 +59,8 @@ SAMPLE *click_sfx;
 
 static gint gi_dragging = 0;
 
+static gboolean game_mode_changed = FALSE;
+
 void
 on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -278,34 +280,10 @@ drawing_area_motion_event_cb (GtkWidget * widget, GdkEventMotion * event, gpoint
 }
 
 gboolean
-on_app1_delete_event (GtkWidget * widget, GdkEvent * event, gpointer user_data)
+on_app_delete_event (GtkWidget * widget, GdkEvent * event, gpointer user_data)
 {
-    GtkWidget *box;
-    gint response;
+    on_quit1_activate (NULL, NULL);
 
-    if (gi_game_running) {
-        box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
-                          GTK_DIALOG_DESTROY_WITH_PARENT,
-                          GTK_MESSAGE_QUESTION,
-                          GTK_BUTTONS_YES_NO,
-                          _("Do you want to save the current game?"));
-
-        gtk_dialog_set_default_response (GTK_DIALOG (box),
-                         GTK_RESPONSE_NO);
-        response = gtk_dialog_run (GTK_DIALOG (box));
-        gtk_widget_destroy (box);
-
-        if (response == GTK_RESPONSE_YES)
-            save_current_game();
-        else {
-            gchar *filename;
-
-            filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
-            unlink(filename);
-        }
-    }
-
-	gtk_main_quit ();
 	return FALSE;
 }
 
@@ -320,23 +298,28 @@ void
 on_closebutton1_clicked (GtkButton * button, gpointer user_data)
 {
 	save_preferences();
+
+	if (gi_game_running && game_mode_changed == TRUE) {
+		sge_destroy_all_objects ();
+		gweled_draw_board ();
+		gweled_start_new_game ();
+		respawn_board_engine_loop();
+		game_mode_changed = FALSE;
+	}
+
+    // unpause the game if running
+    if(gi_game_running)
+	    board_set_pause(FALSE);
+
 	gtk_widget_hide (gtk_widget_get_toplevel (GTK_WIDGET (button)));
 }
 
 void
 on_gamemodeRadio_toggled (GtkToggleButton * togglebutton, gweled_game_mode game_mode)
 {
-	if (gtk_toggle_button_get_active (togglebutton))
-	{
+	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.game_mode = game_mode;
-
-		if (gi_game_running) {
-			sge_destroy_all_objects ();
-			gweled_draw_board ();
-			gweled_start_new_game ();
-			board_set_pause(FALSE);
-			respawn_board_engine_loop();
-		}
+		game_mode_changed = TRUE;
 	}
 }
 
@@ -364,18 +347,7 @@ on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.tile_size = 32;
 
-		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * prefs.tile_size,
-					     BOARD_HEIGHT * prefs.tile_size);
-		g_object_unref (G_OBJECT (g_buffer_pixmap));
-		g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * prefs.tile_size,
-				    BOARD_HEIGHT * prefs.tile_size, -1);
-		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * prefs.tile_size,
-				      BOARD_HEIGHT * prefs.tile_size);
-
-		gweled_load_pixmaps ();
+		gweled_set_objects_size (prefs.tile_size);
 	}
 }
 
@@ -385,19 +357,7 @@ on_mediumRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.tile_size = 48;
 
-		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * prefs.tile_size,
-					     BOARD_HEIGHT * prefs.tile_size);
-		g_object_unref (G_OBJECT (g_buffer_pixmap));
-		g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * prefs.tile_size,
-				    BOARD_HEIGHT * prefs.tile_size, -1);
-
-		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * prefs.tile_size,
-				      BOARD_HEIGHT * prefs.tile_size);
-
-		gweled_load_pixmaps ();
+		gweled_set_objects_size (prefs.tile_size);
 	}
 }
 
@@ -407,40 +367,24 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.tile_size = 64;
 
-		gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * prefs.tile_size,
-					     BOARD_HEIGHT * prefs.tile_size);
-		g_object_unref (G_OBJECT (g_buffer_pixmap));
-		g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * prefs.tile_size,
-				    BOARD_HEIGHT * prefs.tile_size, -1);
-
-		sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * prefs.tile_size,
-				      BOARD_HEIGHT * prefs.tile_size);
-
-		gweled_load_pixmaps ();
+		gweled_set_objects_size (prefs.tile_size);
 	}
 }
 
 void
 on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-	if (gtk_toggle_button_get_active (togglebutton)) {
+	if (gtk_toggle_button_get_active (togglebutton))
 		music_play();
-	}
-	else {
+	else
 		music_stop();
-	}
 }
 
 void
 on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-	if (gtk_toggle_button_get_active (togglebutton)) {
+	if (gtk_toggle_button_get_active (togglebutton))
 		prefs.sounds_on = TRUE;
-	}
-	else {
+	else
 		prefs.sounds_on = FALSE;
-	}
 }
