@@ -326,7 +326,7 @@ show_hiscores (gint pos, gboolean endofgame)
 void mikmod_thread(void *ptr)
 {
 	while (1) {
-	    g_usleep(10000);
+	    g_usleep(100000);
 		MikMod_Update();
     }
 }
@@ -405,21 +405,14 @@ int main (int argc, char **argv)
 
 	// load sound fx
     swap_sfx = Sample_Load(DATADIR "/sounds/gweled/swap.wav");
-    if (!swap_sfx) {
+    if (!swap_sfx)
         g_warning("Could not load swap.wav, reason: %s", MikMod_strerror(MikMod_errno));
 
-    }
     click_sfx = Sample_Load(DATADIR "/sounds/gweled/click.wav");
-    if (!click_sfx) {
+    if (!click_sfx)
         g_warning("Could not load click.wav, reason: %s", MikMod_strerror(MikMod_errno));
-    }
 
-    MikMod_SetNumVoices(-1, 4);
-	Voice_SetVolume(0, 255);
-	Voice_SetVolume(1, 255);
-	Voice_SetVolume(2, 255);
-	Voice_SetVolume(3, 255);
-
+    MikMod_SetNumVoices(-1, 2);
     MikMod_EnableOutput();
 
     pthread_create(&thread, NULL, (void *)&music_thread, NULL);

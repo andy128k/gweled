@@ -40,15 +40,13 @@ void music_init()
     MikMod_RegisterDriver(&drv_oss);
     MikMod_RegisterDriver(&drv_nos);
 
-    /* register all the module loaders */
-    MikMod_RegisterAllLoaders();
+    /* register only the s3m module loader */
+    MikMod_RegisterLoader(&load_s3m);
 
     /* initialize the library */
     if (MikMod_Init(""))
-	{
-        fprintf(stderr, "Could not initialize sound, reason: %s\n", MikMod_strerror(MikMod_errno));
-        //return; don't fail on sound problems
-    }
+        g_printerr("Could not initialize sound, reason: %s\n", MikMod_strerror(MikMod_errno));
+
     is_playing = FALSE;
 
 }
@@ -75,7 +73,7 @@ void music_play()
 			is_playing = TRUE;
 
     	} else
-    	    fprintf(stderr, "Could not load module, reason: %s\n", MikMod_strerror(MikMod_errno));
+    	    g_printerr("Could not load module, reason: %s\n", MikMod_strerror(MikMod_errno));
 	}
 }
 
