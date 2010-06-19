@@ -1,3 +1,14 @@
+0.9
+    Features:
+        * New endless game type (also called relax mode)
+        * Save and resume game between program closing
+        * Various graphic effects
+        * Hint after 15 seconds of inactivity
+        * Added 22px and 64px application icons
+
+    Bugs fixed:
+        * LP #578999: Fixed untranslatable strings in src/games-scores-dialog.c
+
 0.8
     Features:
         * Pause support (LP #195206)

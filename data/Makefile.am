@@ -1,7 +1,9 @@
 icons = \
     apps_16x16_gweled.png \
+    apps_22x22_gweled.png \
     apps_24x24_gweled.png \
 	apps_48x48_gweled.png \
+	apps_64x64_gweled.png \
 	apps_scalable_gweled.svg
 
 gladedir = $(datadir)/gweled/
