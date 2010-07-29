@@ -127,9 +127,9 @@ void load_preferences(void)
 	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
 	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
 
-	    if(prefs.tile_size < 32)
+	    if(prefs.tile_size <= 32)
 	        prefs.tile_size = 32;
-	    else if(prefs.tile_size > 64)
+	    else if(prefs.tile_size >= 64)
 	        prefs.tile_size = 64;
 	    else
 	        prefs.tile_size = 48;
