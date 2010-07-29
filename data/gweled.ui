@@ -195,11 +195,11 @@
             <property name="visible">True</property>
             <property name="border_width">5</property>
             <property name="n_rows">3</property>
-            <property name="row_spacing">18</property>
+            <property name="row_spacing">10</property>
             <child>
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
-                <property name="spacing">6</property>
+                <property name="spacing">3</property>
                 <child>
                   <object class="GtkLabel" id="label18">
                     <property name="visible">True</property>
@@ -283,7 +283,7 @@
             <child>
               <object class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
-                <property name="spacing">6</property>
+                <property name="spacing">3</property>
                 <child>
                   <object class="GtkLabel" id="label19">
                     <property name="visible">True</property>
@@ -371,7 +371,7 @@
             <child>
               <object class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="spacing">6</property>
+                <property name="spacing">3</property>
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
