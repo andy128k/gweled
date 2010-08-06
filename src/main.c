@@ -33,13 +33,10 @@
 #include "games-scores.h"
 #include "games-scores-dialog.h"
 
-#include <pthread.h>
-#include <mikmod.h>
-
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
-#include "music.h"
+#include "sound.h"
 #include "main.h"
 
 // GLOBALS
@@ -53,13 +50,14 @@ GtkWidget *g_progress_bar;
 GtkWidget *g_score_label;
 GtkWidget *g_bonus_label;
 GtkWidget *g_menu_pause;
+GtkWidget *g_pref_music_button;
+GtkWidget *g_pref_sounds_button;
 GdkPixmap *g_buffer_pixmap = NULL;
 GRand *g_random_generator;
 
 guint board_engine_id;
 
 GweledPrefs prefs;
-pthread_t thread;
 
 static const GamesScoresCategory scorecats[] = {
   {"Normal", NC_("game type", "Normal")  },
@@ -67,8 +65,6 @@ static const GamesScoresCategory scorecats[] = {
 };
 
 GamesScores *highscores;
-
-SAMPLE *swap_sfx, *click_sfx;
 
 extern gint gi_game_running;
 
@@ -323,14 +319,6 @@ show_hiscores (gint pos, gboolean endofgame)
   return result;
 }
 
-void mikmod_thread(void *ptr)
-{
-	while (1) {
-	    g_usleep(100000);
-		MikMod_Update();
-    }
-}
-
 int main (int argc, char **argv)
 {
 	GError* error = NULL;
@@ -358,7 +346,6 @@ int main (int argc, char **argv)
 
 	gtk_window_set_default_icon_name ("gweled");
 
-    music_init ();
 	sge_init ();
 
 	g_random_generator = g_rand_new_with_seed (time (NULL));
@@ -376,6 +363,8 @@ int main (int argc, char **argv)
     g_score_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel"));
     g_drawing_area = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "boardDrawingarea"));
     g_menu_pause = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "pause1"));
+    g_pref_music_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "music_checkbutton"));
+    g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
 
 	load_preferences();
 	init_pref_window();
@@ -403,22 +392,20 @@ int main (int argc, char **argv)
 
 	gi_game_running = 0;
 
-	// load sound fx
-    swap_sfx = Sample_Load(DATADIR "/sounds/gweled/swap.wav");
-    if (!swap_sfx)
-        g_warning("Could not load swap.wav, reason: %s", MikMod_strerror(MikMod_errno));
+	if(prefs.music_on || prefs.sounds_on) {
+	    sound_init();
+	    if(sound_get_enabled() == FALSE) {
+	        gtk_widget_set_sensitive(g_pref_music_button, FALSE);
+	        gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
+	    }
+	}
 
-    click_sfx = Sample_Load(DATADIR "/sounds/gweled/click.wav");
-    if (!click_sfx)
-        g_warning("Could not load click.wav, reason: %s", MikMod_strerror(MikMod_errno));
 
-    MikMod_SetNumVoices(-1, 2);
-    MikMod_EnableOutput();
-
-    pthread_create(&thread, NULL, (void *)&music_thread, NULL);
+	if (prefs.sounds_on)
+	    sound_load_samples();
 
 	if (prefs.music_on)
-		music_play();
+		sound_music_play();
 
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 			      BOARD_WIDTH * prefs.tile_size,
@@ -452,22 +439,13 @@ int main (int argc, char **argv)
 
 	gtk_main ();
 
-    MikMod_DisableOutput();
+    sound_destroy();
 
 	sge_destroy ();
 	if(board_engine_id)
 	    g_source_remove (board_engine_id);
 	g_rand_free (g_random_generator);
 	g_object_unref(G_OBJECT(gweled_xml));
-
-	music_stop();
-
-	if(swap_sfx)
-		Sample_Free(swap_sfx);
-	if(click_sfx)
-		Sample_Free(click_sfx);
-
-	MikMod_Exit();
 
 	return 0;
 }

@@ -21,7 +21,7 @@ gweled_SOURCES = \
 	graphic_engine.c graphic_engine.h \
 	sge_core.c sge_core.h \
 	sge_utils.c sge_utils.h \
-	music.c music.h \
+	sound.c sound.h \
 	games-score.c games-score.h \
 	games-scores.c games-scores.h \
 	games-scores-backend.c games-scores-backend.h \

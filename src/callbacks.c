@@ -24,10 +24,9 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include <mikmod.h>
 
 #include "main.h"
-#include "music.h"
+#include "sound.h"
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
@@ -43,6 +42,8 @@ extern GtkWidget *g_score_window;
 extern GtkWidget *g_drawing_area;
 extern GdkPixmap *g_buffer_pixmap;
 extern GtkWidget *g_menu_pause;
+extern GtkWidget *g_pref_music_button;
+extern GtkWidget *g_pref_sounds_button;
 
 extern gint gi_gem_clicked;
 extern gint gi_x_click;
@@ -54,8 +55,6 @@ extern gint gi_y_drag;
 
 extern guint board_engine_id;
 extern GweledPrefs prefs;
-
-SAMPLE *click_sfx;
 
 static gint gi_dragging = 0;
 
@@ -234,8 +233,8 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 			gi_gem_clicked = -1;
 			gi_dragging = -1;
 
-			if(click_sfx && prefs.sounds_on == TRUE)
-				Sample_Play(click_sfx, 0, 0);
+			if(prefs.sounds_on)
+			    sound_play_sample(CLICK_EVENT);
 		}
 		break;
 
@@ -374,17 +373,41 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 void
 on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-	if (gtk_toggle_button_get_active (togglebutton))
-		music_play();
-	else
-		music_stop();
+	if (gtk_toggle_button_get_active (togglebutton)) {
+	    prefs.music_on = TRUE;
+	    if(sound_get_enabled() == FALSE) {
+	        sound_init();
+		    if(sound_get_enabled() == FALSE) {
+	            gtk_widget_set_sensitive(g_pref_music_button, FALSE);
+	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
+	        }
+		}
+		sound_music_play();
+	} else {
+	    prefs.music_on = FALSE;
+		sound_music_stop();
+		if(prefs.sounds_on == FALSE)
+		    sound_destroy();
+    }
 }
 
 void
 on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
-	if (gtk_toggle_button_get_active (togglebutton))
+	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.sounds_on = TRUE;
-	else
+		if(sound_get_enabled() == FALSE) {
+	        sound_init();
+		    if(sound_get_enabled() == FALSE) {
+	            gtk_widget_set_sensitive(g_pref_music_button, FALSE);
+	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
+	        }
+		}
+		sound_load_samples();
+	} else {
 		prefs.sounds_on = FALSE;
+		sound_unload_samples();
+		if(prefs.music_on == FALSE)
+		    sound_destroy();
+    }
 }

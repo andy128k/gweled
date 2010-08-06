@@ -18,10 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <mikmod.h>
+#ifndef _SOUND_H_
+#define _SOUND_H_
 
-void music_init();
-void music_thread(void *ptr);
-void music_play();
-void music_stop();
-int music_isplaying();
+#include <glib.h>
+
+typedef enum e_gweled_sound_samples
+{
+    CLICK_EVENT,
+    SWAP_EVENT
+} gweled_sound_samples;
+
+void sound_init(void);
+void sound_music_play(void);
+void sound_music_stop(void);
+void sound_load_samples(void);
+void sound_unload_samples(void);
+void sound_play_sample(gweled_sound_samples sample);
+void sound_destroy(void);
+gboolean sound_get_enabled();
+
+#endif

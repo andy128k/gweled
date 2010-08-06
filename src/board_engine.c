@@ -30,7 +30,6 @@
 #include <gtk/gtk.h>
 #include <glib/gprintf.h>
 #include <glib/gi18n-lib.h>
-#include <mikmod.h>
 
 #include "games-scores.h"
 
@@ -39,6 +38,7 @@
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
+#include "sound.h"
 
 #define FIRST_BONUS_AT	100	// needs tweaking
 #define NB_BONUS_GEMS	8	// same
@@ -62,8 +62,6 @@ typedef struct s_alignment {
 	gint direction;
 	gint length;
 } T_Alignment;
-
-SAMPLE *swap_sfx;
 
 gint gi_score, gi_current_score, gi_game_running, gi_game_paused;
 
@@ -659,8 +657,8 @@ board_engine_loop (gpointer data)
 				sge_object_move_to (cursor[1],
 						x1 * prefs.tile_size,
 						y1 * prefs.tile_size);
-				if(swap_sfx && prefs.sounds_on == TRUE)
-				Sample_Play(swap_sfx, 0, 0);
+				if(prefs.sounds_on == TRUE)
+				    sound_play_sample(SWAP_EVENT);
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
 				if (cursor[1]) {
