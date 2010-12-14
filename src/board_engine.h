@@ -44,7 +44,6 @@ typedef struct s_gweled_gamestate
     gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
     gint gi_score;
     gint gi_total_gems_removed;
-    gint gi_gems_removed_per_move;
     gint gi_bonus_multiply;
     gint gi_previous_bonus_at;
     gint gi_next_bonus_at;

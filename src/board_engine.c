@@ -66,7 +66,7 @@ typedef struct s_alignment {
 gint gi_score, gi_current_score, gi_game_running, gi_game_paused;
 
 gint gi_total_gems_removed;
-gint gi_gems_removed_per_move;
+gint gi_score_per_move;
 
 guint hint_timeout;
 
@@ -281,6 +281,7 @@ void
 delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 {
 	gint i, i_total_score;
+    gint gi_gems_removed = 0;
 	int xsize, ysize, xhotspot, yhotspot, xpos, ypos;
 	char *buffer;
 	T_Alignment *alignment;
@@ -294,7 +295,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 		yhotspot = (alignment->y * prefs.tile_size + prefs.tile_size / 2);
 		for (i = alignment->x; i < alignment->x + alignment->length; i++) {
 			if (gpc_game_board[i][alignment->y] != -1) {
-				gi_gems_removed_per_move++;
+				gi_gems_removed++;
 				gi_nb_of_tiles[gpc_game_board[i][alignment->y]]--;
 				gpc_game_board[i][alignment->y] = -1;
 			}
@@ -304,19 +305,23 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 		yhotspot = (alignment->y * prefs.tile_size + alignment->length * prefs.tile_size / 2);
 		for (i = alignment->y; i < alignment->y + alignment->length; i++) {
 			if (gpc_game_board[alignment->x][i] != -1) {
-				gi_gems_removed_per_move++;
+				gi_gems_removed++;
 				gi_nb_of_tiles[gpc_game_board[alignment->x][i]]--;
 				gpc_game_board[alignment->x][i] = -1;
 			}
 		}
 	}
     //compute score
-	if (alignment->length == 1)	//bonus mode
+	if (alignment->length == 1) {	//bonus mode
 		i_total_score = 10 * g_rand_int_range (g_random_generator, 1, 2);
-	else
-		i_total_score = 10 * (gi_gems_removed_per_move - 2) * (gi_bonus_multiply >> 1);
-
-	if (g_do_not_score == FALSE) {
+    }
+	else {
+		i_total_score = 10 * (gi_bonus_multiply >> 1) * (gi_gems_removed - 2) + gi_score_per_move;
+        gi_score_per_move = i_total_score;
+    }
+    if (g_do_not_score == FALSE) {
+        gi_total_gems_removed += gi_gems_removed;
+        g_print("Score: %d Gems removed: %d\n", i_total_score, gi_gems_removed);
 		gi_score += i_total_score;
         //display score
 		buffer = g_strdup_printf ("%d", i_total_score);
@@ -721,7 +726,7 @@ board_engine_loop (gpointer data)
 
 				gi_state = _ILLEGAL_MOVE;
 			} else {
-				gi_gems_removed_per_move = 0;
+                gi_score_per_move = 0;
 				gi_state = _MARK_ALIGNED_GEMS;
 			}
 			// fadeout cursors
@@ -745,8 +750,6 @@ board_engine_loop (gpointer data)
 		if (gweled_check_for_alignments () == TRUE) {
 			gweled_take_down_deleted_gems ();
 			gweled_remove_gems_and_update_score ();
-			if (g_do_not_score == FALSE)
-				gi_total_gems_removed += gi_gems_removed_per_move;
 			if (gi_total_gems_removed <= gi_next_bonus_at)
 				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
 			else
@@ -878,7 +881,7 @@ gweled_start_new_game (void)
     gi_game_paused = 0;
 	gi_score = 0;
 	gi_current_score = 0;
-	gi_gems_removed_per_move = 0;
+    gi_score_per_move = 0;
 	gi_bonus_multiply = 3;
 	gi_level = 1;
 	gi_previous_bonus_at = 0;
@@ -923,15 +926,16 @@ gweled_start_new_game (void)
 	};
 	g_do_not_score = FALSE;
 
-//test pattern for a known bug
-/*
-gpc_game_board[0][7] = 0;
-gpc_game_board[1][7] = 0;
-gpc_game_board[2][7] = 1;
-gpc_game_board[3][7] = 0;
-gpc_game_board[4][7] = 1;
-gpc_game_board[5][7] = 1;
-*/
+    //test pattern for a known bug
+
+    gpc_game_board[0][7] = 0;
+    gpc_game_board[1][7] = 0;
+    gpc_game_board[2][7] = 1;
+    gpc_game_board[3][7] = 0;
+    gpc_game_board[4][7] = 1;
+    gpc_game_board[5][7] = 1;
+
+
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
@@ -949,9 +953,9 @@ GweledGameState gweled_get_current_game(void)
     GweledGameState game;
     int i, j;
 
+    // TODO: copy the current game type
     game.gi_score = gi_score;
     game.gi_total_gems_removed = gi_total_gems_removed;
-    game.gi_gems_removed_per_move = gi_gems_removed_per_move;
     game.gi_bonus_multiply = gi_bonus_multiply;
     game.gi_previous_bonus_at = gi_previous_bonus_at;
     game.gi_next_bonus_at = gi_next_bonus_at;
@@ -973,7 +977,6 @@ void gweled_set_previous_game(GweledGameState game)
 
     gi_score = game.gi_score;
     gi_total_gems_removed = game.gi_total_gems_removed;
-    gi_gems_removed_per_move = game.gi_gems_removed_per_move;
     gi_bonus_multiply = game.gi_bonus_multiply;
     gi_previous_bonus_at = game.gi_previous_bonus_at;
     gi_next_bonus_at = game.gi_next_bonus_at;
