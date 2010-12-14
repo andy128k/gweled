@@ -750,17 +750,20 @@ board_engine_loop (gpointer data)
 		if (gweled_check_for_alignments () == TRUE) {
 			gweled_take_down_deleted_gems ();
 			gweled_remove_gems_and_update_score ();
-			if (gi_total_gems_removed <= gi_next_bonus_at)
-				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
-			else
-				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), 1.0);
 
+            if(prefs.game_mode != ENDLESS_MODE) {
+                if (gi_total_gems_removed <= gi_next_bonus_at)
+				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
+			    else
+				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), 1.0);
+
+                gi_state = _BOARD_REFILLING;
+            }
 			gweled_refill_board ();
 			gweled_gems_fall_into_place (FALSE);
-			gi_state = _BOARD_REFILLING;
 		} else {
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
-				if ((gi_next_bonus_at == FIRST_BONUS_AT) || (prefs.game_mode != ENDLESS_MODE)) {
+				if ((gi_next_bonus_at == FIRST_BONUS_AT) && (prefs.game_mode != ENDLESS_MODE)) {
 					gint i, j;
                     // TRANSLATORS: # is replaced with !!
 					gweled_draw_game_message (_("no moves left #"), 1);
@@ -811,26 +814,21 @@ board_engine_loop (gpointer data)
 		break;
 
 	case _BOARD_REFILLING:
-		if (!sge_objects_are_moving_on_layer (1)) {
+        if (!sge_objects_are_moving_on_layer (1)) {
 			if (gi_total_gems_removed >= gi_next_bonus_at) {
 				gi_previous_bonus_at = gi_next_bonus_at;
 				gi_next_bonus_at *= 2;
+                
 				if (prefs.game_mode == TIMED_MODE)
 					g_steps_for_timer = (gi_next_bonus_at - gi_previous_bonus_at) / TOTAL_STEPS_FOR_TIMER + 1;
 
-				if(prefs.game_mode == ENDLESS_MODE)
-				    gi_bonus_multiply++;
-
+                // draw bonus message and new level in game
+                gi_bonus_multiply++;
                 gi_level++;
-
-				g_sprintf(msg_buffer, _("Level %d"), gi_level);
-	            gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), msg_buffer);
-
-                // draw bonus message in game
-                if(prefs.game_mode != ENDLESS_MODE) {
-				    g_sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
-				    gweled_draw_game_message (msg_buffer, 2);
-				}
+                g_sprintf(msg_buffer, _("Level %d"), gi_level);
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), msg_buffer);
+				g_sprintf (msg_buffer, _("bonus x%d"), gi_bonus_multiply >> 1);
+				gweled_draw_game_message (msg_buffer, 2);
 
 				gweled_delete_gems_for_bonus ();
 				gweled_take_down_deleted_gems ();
@@ -899,11 +897,14 @@ gweled_start_new_game (void)
         hint_timeout = 0;
     }
 
-	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
-	gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
-    gchar *text = g_strdup_printf(_("Level %d"), 1);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
-	g_free(text);
+    if(prefs.game_mode != ENDLESS_MODE) {
+        gchar *text = g_strdup_printf(_("Level %d"), 1);
+	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
+	    g_free(text);
+    }    
+
+    gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
 
 	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
