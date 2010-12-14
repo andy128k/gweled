@@ -181,6 +181,7 @@ void load_previous_game(void)
     gchar *filename;
     FILE *stream;
     GweledGameState game;
+    gint ret;
 
     filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
 
@@ -188,10 +189,11 @@ void load_previous_game(void)
 
     if(stream)
     {
-        fread(&game, sizeof(GweledGameState), 1, stream);
+        ret = fread(&game, sizeof(GweledGameState), 1, stream);
         fclose(stream);
-
-        gweled_set_previous_game(game);
+        
+        if(ret == 1)
+            gweled_set_previous_game(game);
     }
 
 }
