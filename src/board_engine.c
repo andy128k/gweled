@@ -954,7 +954,7 @@ GweledGameState gweled_get_current_game(void)
     GweledGameState game;
     int i, j;
 
-    // TODO: copy the current game type
+    game.game_mode = prefs.game_mode;
     game.gi_score = gi_score;
     game.gi_total_gems_removed = gi_total_gems_removed;
     game.gi_bonus_multiply = gi_bonus_multiply;
@@ -976,6 +976,7 @@ void gweled_set_previous_game(GweledGameState game)
     gchar *text_buffer;
     int i, j;
 
+    prefs.game_mode = game.game_mode;
     gi_score = game.gi_score;
     gi_total_gems_removed = game.gi_total_gems_removed;
     gi_bonus_multiply = game.gi_bonus_multiply;
@@ -984,20 +985,23 @@ void gweled_set_previous_game(GweledGameState game)
     gi_level = game.gi_level;
     gi_trigger_bonus = game.gi_trigger_bonus;
     g_steps_for_timer = game.g_steps_for_timer;
-
     gi_current_score = gi_score;
 
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar),
+    // update game mode preferences
+    init_pref_window();
+
+    if(prefs.game_mode != ENDLESS_MODE) {
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar),
                                 (float)(gi_total_gems_removed -gi_previous_bonus_at)
                                 / (float)(gi_next_bonus_at - gi_previous_bonus_at));
-
+        text_buffer = g_strdup_printf(_("Level %d"), gi_level);
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text_buffer);
+        g_free(text_buffer);
+    }
+    
     text_buffer = g_strdup_printf("<span weight=\"bold\">%06d</span>", gi_current_score);
     gtk_label_set_markup (GTK_LABEL(g_score_label), text_buffer);
-    g_free(text_buffer);
-
-    text_buffer = g_strdup_printf(_("Level %d"), gi_level);
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text_buffer);
-    g_free(text_buffer);
+    g_free(text_buffer);    
 
     sge_destroy_all_objects ();
     gweled_draw_board ();

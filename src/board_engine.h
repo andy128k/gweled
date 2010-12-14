@@ -42,6 +42,7 @@ typedef struct s_gweled_prefs
 typedef struct s_gweled_gamestate
 {
     gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
+    gweled_game_mode game_mode;
     gint gi_score;
     gint gi_total_gems_removed;
     gint gi_bonus_multiply;
