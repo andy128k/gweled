@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-11 21:02+0100\n"
+"POT-Creation-Date: 2011-01-09 18:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,39 +27,39 @@ msgctxt "game type"
 msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:269
+#: ../src/main.c:271
 msgid "Game over!"
 msgstr ""
 
-#: ../src/main.c:271
+#: ../src/main.c:273
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/main.c:273
+#: ../src/main.c:275
 msgid "_New Game"
 msgstr ""
 
-#: ../src/main.c:285
+#: ../src/main.c:287
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:288
+#: ../src/main.c:290
 msgid "Game type:"
 msgstr ""
 
-#: ../src/main.c:295
+#: ../src/main.c:297
 msgid "Congratulations!"
 msgstr ""
 
-#: ../src/main.c:296
+#: ../src/main.c:298
 msgid "Your score is the best!"
 msgstr ""
 
-#: ../src/main.c:297
+#: ../src/main.c:299
 msgid "Your score has made the top ten."
 msgstr ""
 
-#: ../src/main.c:425
+#: ../src/main.c:427
 msgid "There is a game saved, do you want restore it?"
 msgstr ""
 
@@ -81,40 +81,22 @@ msgid ""
 "Mine\")"
 msgstr ""
 
-#: ../src/board_engine.c:500
+#: ../src/board_engine.c:504
 msgid "_Resume"
 msgstr ""
 
-#: ../src/board_engine.c:501
-msgid "paused"
-msgstr ""
-
-#: ../src/board_engine.c:503
+#: ../src/board_engine.c:507
 msgid "Paused"
 msgstr ""
 
-#: ../src/board_engine.c:516 ../data/gweled.ui.h:18
+#: ../src/board_engine.c:520 ../data/gweled.ui.h:18
 msgid "_Pause"
 msgstr ""
 
-#: ../src/board_engine.c:581
-msgid "time's up #"
-msgstr ""
-
-#. TRANSLATORS: # is replaced with !!
-#: ../src/board_engine.c:764 ../src/board_engine.c:789
-msgid "no moves left #"
-msgstr ""
-
-#: ../src/board_engine.c:824 ../src/board_engine.c:902
-#: ../src/board_engine.c:999
+#: ../src/board_engine.c:828 ../src/board_engine.c:901
+#: ../src/board_engine.c:997
 #, c-format
 msgid "Level %d"
-msgstr ""
-
-#: ../src/board_engine.c:829
-#, c-format
-msgid "bonus x%d"
 msgstr ""
 
 #. Note that this assumes the default style is plain.
