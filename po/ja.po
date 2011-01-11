@@ -1,4 +1,4 @@
-# French translation for gweled
+# Japanese translation for gweled
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gweled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-01-09 18:29+0100\n"
-"PO-Revision-Date: 2011-01-10 17:14+0000\n"
-"Last-Translator: Fabien LOISON (FLOZz) <flo@flogisoft.com>\n"
-"Language-Team: French <fr@li.org>\n"
+"PO-Revision-Date: 2010-06-28 03:42+0000\n"
+"Last-Translator: execjosh <Unknown>\n"
+"Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,202 +20,193 @@ msgstr ""
 #: ../src/main.c:63
 msgctxt "game type"
 msgid "Normal"
-msgstr "Normal"
+msgstr "ノーマル"
 
 #: ../src/main.c:64
 msgctxt "game type"
 msgid "Timed"
-msgstr "Contre la montre"
+msgstr "タイムアタック"
 
 #: ../src/main.c:271
 msgid "Game over!"
-msgstr "Perdu !"
+msgstr "ゲーム終了！"
 
 #: ../src/main.c:273
 msgid "Great work, but unfortunately your score did not make the top ten."
-msgstr ""
-"Bien joué, mais malheureusement votre score n'entre pas dans le top 10."
+msgstr "よく頑張りましたね。でも残念ながら、トップ１０にはランクインできませんでした。"
 
 #: ../src/main.c:275
 msgid "_New Game"
-msgstr "_Nouvelle partie"
+msgstr "新しいゲーム(_N)"
 
 #: ../src/main.c:287
 msgid "Gweled Scores"
-msgstr "Scores Gweled"
+msgstr "Gweledのハイスコア"
 
 #: ../src/main.c:290
 msgid "Game type:"
-msgstr "Type de jeu :"
+msgstr "ゲームタイプ:"
 
 #: ../src/main.c:297
 msgid "Congratulations!"
-msgstr "Félicitations !"
+msgstr "おめでとう！"
 
 #: ../src/main.c:298
 msgid "Your score is the best!"
-msgstr "Votre score est le meilleur !"
+msgstr "あなたがトップになりました！"
 
 #: ../src/main.c:299
 msgid "Your score has made the top ten."
-msgstr "Votre score est entré au top 10."
+msgstr "トップ１０にランクインしました。"
 
 #: ../src/main.c:427
 msgid "There is a game saved, do you want restore it?"
-msgstr "Il existe un jeu sauvegardé, voulez vous le continuer ?"
+msgstr "以前からの保存ゲームがあります。再開しますか？"
 
 #: ../src/callbacks.c:74
 msgid "Do you really want to abort this game?"
-msgstr "Voulez-vous vraiment arrêter cette partie ?"
+msgstr "本当に終了しますか？"
 
 #: ../src/callbacks.c:142
 msgid "Do you want to save the current game?"
-msgstr "Voulez-vous sauver le jeu courant ?"
+msgstr "今のゲームを保存しますか？"
 
 #: ../src/callbacks.c:176
 msgid "translator-credits"
 msgstr ""
+"This is a dummy translation so that the credits are counted as translated.\n"
+"\n"
 "Launchpad Contributions:\n"
-"  Fabien LOISON (FLOZz) https://launchpad.net/~flozz\n"
-"  Ptitphysik https://launchpad.net/~amalpeyre\n"
-"  Thibault Févry https://launchpad.net/~thibaultfevry\n"
-"  Weegee https://launchpad.net/~weegee\n"
-"  zzz https://launchpad.net/~th-bertiez"
+"  execjosh https://launchpad.net/~execjosh"
 
 #: ../src/callbacks.c:181
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
 msgstr ""
-"Une adaptation pour GNOME du jeu \"Bejeweled\" (alias \"Diamond Mine\") "
-"disponible sur PalmOS/Windows/Java game"
+"「Bejeweled」（別名「Diamond Mine」）というPalmOS/Windows/JavaのゲームをGNOME向けにポートしたものです。"
 
 #: ../src/board_engine.c:504
 msgid "_Resume"
-msgstr "_Reprendre"
+msgstr "再開(_R)"
 
 #: ../src/board_engine.c:507
 msgid "Paused"
-msgstr "En pause"
+msgstr "一時停止中"
 
 #: ../src/board_engine.c:520 ../data/gweled.ui.h:18
 msgid "_Pause"
-msgstr "_Pause"
+msgstr "一時停止(_P)"
 
 #: ../src/board_engine.c:828 ../src/board_engine.c:901
 #: ../src/board_engine.c:997
 #, c-format
 msgid "Level %d"
-msgstr "Niveau %d"
+msgstr "レベル%d"
 
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
 msgid "Score"
-msgstr "Score"
+msgstr "スコア"
 
 #: ../src/games-scores-dialog.c:437
 msgid "New Game"
-msgstr "Nouvelle partie"
+msgstr "新ゲーム"
 
 #: ../src/games-scores-dialog.c:537
 msgid "Name"
-msgstr "Nom"
+msgstr "名前"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
 msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Taille du plateau</span>"
+msgstr "<span weight=\"bold\">ゲーム盤の大きさ</span>"
 
 #: ../data/gweled.ui.h:2
 msgid "<span weight=\"bold\">Game mode</span>"
-msgstr "<span weight=\"bold\">Mode de jeu</span>"
+msgstr "<span weight=\"bold\">ゲームモード</span>"
 
 #: ../data/gweled.ui.h:3
 msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Son</span>"
+msgstr "<span weight=\"bold\">サウンド</span>"
 
 #: ../data/gweled.ui.h:4
 msgid "Endless"
-msgstr "Infini"
+msgstr "エンドレス"
 
 #: ../data/gweled.ui.h:5
 msgid "In this mode the game never ends, but scores will not be recorded!"
-msgstr ""
-"Dans ce mode le jeu ne s'arrête jamais, mais les points ne seront pas "
-"enregistrés !"
+msgstr "このモードでは、スコアは記録できませんが、ゲームが永遠に続きます。"
 
 #: ../data/gweled.ui.h:6
 msgid "Large"
-msgstr "Grand"
+msgstr "大"
 
 #: ../data/gweled.ui.h:7
 msgid "Medium"
-msgstr "Moyen"
+msgstr "中"
 
 #: ../data/gweled.ui.h:8
 msgid "Normal"
-msgstr "Normal"
+msgstr "ノーマル"
 
 #: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
-msgstr "Mettre le jeu en pause pour continuer plus tard"
+msgstr "ゲームを一時停止します。"
 
 #: ../data/gweled.ui.h:10
 msgid "Play background music"
-msgstr "Jouer la musique de fond"
+msgstr "BGMを有効にする"
 
 #: ../data/gweled.ui.h:11
 msgid "Play sound effects"
-msgstr "Jouer les effets sonores"
+msgstr "SFXを有効にする"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
-msgstr "Préférences"
+msgstr "設定"
 
 #: ../data/gweled.ui.h:13
 msgid "Score:"
-msgstr "Score :"
+msgstr ""
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
-msgstr "Petit"
+msgstr "小"
 
 #: ../data/gweled.ui.h:15
 msgid "Timed"
-msgstr "Contre la montre"
+msgstr "タイムアタック"
 
 #: ../data/gweled.ui.h:16
 msgid "_Game"
-msgstr "_Jeu"
+msgstr "ゲーム(_G)"
 
 #: ../data/gweled.ui.h:17
 msgid "_Help"
-msgstr "_Aide"
+msgstr "ヘルプ(_H)"
 
 #: ../data/gweled.ui.h:19
 msgid "_Scores"
-msgstr "_Scores"
+msgstr "ハイスコア(_S)"
 
 #: ../data/gweled.ui.h:20
 msgid "_Settings"
-msgstr "_Paramètres"
+msgstr "設定(_S)"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr "Jouer à un casse tête similaire à \"Diamond Mine\""
-
-#~ msgid "paused"
-#~ msgstr "en pause"
+msgstr "「Diamond Mine」に似たパズルゲームで遊んでみよう"
 
 #, c-format
 #~ msgid "bonus x%d"
-#~ msgstr "bonus x%d"
+#~ msgstr "ボーナス×%d"
 
-#~ msgid "<span weight=\"bold\">Difficulty level</span>"
-#~ msgstr "<span weight=\"bold\">Niveau de difficulté</span>"
+#~ msgid "paused"
+#~ msgstr "一時停止中"
 
 #~ msgid "time's up #"
-#~ msgstr "temps écoulé #"
+#~ msgstr "時間切れ#"
 
 #~ msgid "no moves left #"
-#~ msgstr "aucun mouvement restant #"
+#~ msgstr "もう何もできません#"

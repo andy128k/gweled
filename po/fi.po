@@ -7,174 +7,198 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-05-05 11:48+0200\n"
-"PO-Revision-Date: 2010-05-07 13:38+0000\n"
+"POT-Creation-Date: 2011-01-09 18:29+0100\n"
+"PO-Revision-Date: 2010-05-11 19:01+0000\n"
 "Last-Translator: Katja Viljakainen <fly5@kapsi.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-05-11 16:12+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-01-11 23:28+0000\n"
+"X-Generator: Launchpad (build 12176)\n"
 
-#: ../src/main.c:65
+#: ../src/main.c:63
 msgctxt "game type"
 msgid "Normal"
 msgstr "Tavallinen"
 
-#: ../src/main.c:66
+#: ../src/main.c:64
 msgctxt "game type"
 msgid "Timed"
 msgstr "Ajastettu"
 
-#: ../src/main.c:212
+#: ../src/main.c:271
 msgid "Game over!"
 msgstr "Peli päättyi!"
 
-#: ../src/main.c:214
+#: ../src/main.c:273
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 "Hyvin pelattu, mutta valitettavasti tuloksesi ei päässyt top-10 listalle."
 
-#: ../src/main.c:216
+#: ../src/main.c:275
 msgid "_New Game"
 msgstr "_Uusi peli"
 
-#: ../src/main.c:228
+#: ../src/main.c:287
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:231
+#: ../src/main.c:290
 msgid "Game type:"
 msgstr "Pelityyppi:"
 
-#: ../src/main.c:238
+#: ../src/main.c:297
 msgid "Congratulations!"
 msgstr "Onneksi olkoon!"
 
-#: ../src/main.c:239
+#: ../src/main.c:298
 msgid "Your score is the best!"
 msgstr "Teit parhaan tuloksen!"
 
-#: ../src/main.c:240
+#: ../src/main.c:299
 msgid "Your score has made the top ten."
 msgstr "Tuloksesi pääsi top-10 listalle."
 
-#: ../src/callbacks.c:73
+#: ../src/main.c:427
+msgid "There is a game saved, do you want restore it?"
+msgstr ""
+
+#: ../src/callbacks.c:74
 msgid "Do you really want to abort this game?"
 msgstr "Haluatko varmasti lopettaa pelin?"
 
-#: ../src/callbacks.c:150
+#: ../src/callbacks.c:142
+msgid "Do you want to save the current game?"
+msgstr ""
+
+#: ../src/callbacks.c:176
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Katja Viljakainen https://launchpad.net/~katja-viljakainen"
 
-#: ../src/callbacks.c:155
+#: ../src/callbacks.c:181
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
 msgstr ""
 
-#: ../src/board_engine.c:488
+#: ../src/board_engine.c:504
 msgid "_Resume"
 msgstr "_Jatka"
 
-#: ../src/board_engine.c:489
-msgid "paused"
-msgstr ""
-
-#: ../src/board_engine.c:491
+#: ../src/board_engine.c:507
 msgid "Paused"
 msgstr ""
 
-#: ../src/board_engine.c:496 ../data/gweled.ui.h:15
+#: ../src/board_engine.c:520 ../data/gweled.ui.h:18
 msgid "_Pause"
 msgstr ""
 
-#: ../src/board_engine.c:539
-msgid "time's up #"
-msgstr ""
-
-#: ../src/board_engine.c:690 ../src/board_engine.c:715
-msgid "no moves left #"
-msgstr ""
-
-#: ../src/board_engine.c:748 ../src/board_engine.c:815
+#: ../src/board_engine.c:828 ../src/board_engine.c:901
+#: ../src/board_engine.c:997
 #, c-format
 msgid "Level %d"
 msgstr "Taso %d"
 
-#. draw bonus message in game
-#: ../src/board_engine.c:752
-#, c-format
-msgid "bonus x%d"
-msgstr "bonus x%d"
+#. Note that this assumes the default style is plain.
+#: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
+msgid "Score"
+msgstr ""
 
+#: ../src/games-scores-dialog.c:437
+msgid "New Game"
+msgstr ""
+
+#: ../src/games-scores-dialog.c:537
+msgid "Name"
+msgstr ""
+
+#. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
 msgid "<span weight=\"bold\">Board size</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:2
-msgid "<span weight=\"bold\">Difficulty level</span>"
-msgstr "<span weight=\"bold\">Vaikeustaso</span>"
+msgid "<span weight=\"bold\">Game mode</span>"
+msgstr ""
 
 #: ../data/gweled.ui.h:3
 msgid "<span weight=\"bold\">Sound</span>"
 msgstr ""
 
 #: ../data/gweled.ui.h:4
+msgid "Endless"
+msgstr ""
+
+#: ../data/gweled.ui.h:5
+msgid "In this mode the game never ends, but scores will not be recorded!"
+msgstr ""
+
+#: ../data/gweled.ui.h:6
 msgid "Large"
 msgstr "Suuri"
 
-#: ../data/gweled.ui.h:5
+#: ../data/gweled.ui.h:7
 msgid "Medium"
 msgstr "Keskikokoinen"
 
-#: ../data/gweled.ui.h:6
+#: ../data/gweled.ui.h:8
 msgid "Normal"
 msgstr "Tavallinen"
 
-#: ../data/gweled.ui.h:7
+#: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
 msgstr ""
 
-#: ../data/gweled.ui.h:8
+#: ../data/gweled.ui.h:10
 msgid "Play background music"
 msgstr ""
 
-#: ../data/gweled.ui.h:9
+#: ../data/gweled.ui.h:11
 msgid "Play sound effects"
 msgstr ""
 
-#: ../data/gweled.ui.h:10
+#: ../data/gweled.ui.h:12
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: ../data/gweled.ui.h:11
+#: ../data/gweled.ui.h:13
+msgid "Score:"
+msgstr ""
+
+#: ../data/gweled.ui.h:14
 msgid "Small"
 msgstr "Pieni"
 
-#: ../data/gweled.ui.h:12
+#: ../data/gweled.ui.h:15
 msgid "Timed"
 msgstr "Ajastettu"
 
-#: ../data/gweled.ui.h:13
+#: ../data/gweled.ui.h:16
 msgid "_Game"
 msgstr "_Peli"
 
-#: ../data/gweled.ui.h:14
+#: ../data/gweled.ui.h:17
 msgid "_Help"
 msgstr "_Ohje"
 
-#: ../data/gweled.ui.h:16
+#: ../data/gweled.ui.h:19
 msgid "_Scores"
 msgstr ""
 
-#: ../data/gweled.ui.h:17
+#: ../data/gweled.ui.h:20
 msgid "_Settings"
 msgstr "_Asetukset"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Pelaa \"Diamond Mine\":n kaltaista pulmapeliä"
+
+#~ msgid "<span weight=\"bold\">Difficulty level</span>"
+#~ msgstr "<span weight=\"bold\">Vaikeustaso</span>"
+
+#, c-format
+#~ msgid "bonus x%d"
+#~ msgstr "bonus x%d"
