@@ -1,15 +1,35 @@
-0.9
+== 0.9 ==
     Features:
         * New endless game type (also called relax mode)
         * Save and resume game between program closing
-        * Various graphic effects
+        * Various new graphic effects
         * Hint after 15 seconds of inactivity
         * Added 22px and 64px application icons
+        * Level system (replace bonus-only target)
 
     Bugs fixed:
         * LP #578999: Fixed untranslatable strings in src/games-scores-dialog.c
+        * LP #345304: Gweled segfaults on sound initialization (with no audio devices)
+        * LP #614135: Gweled grabs /dev/dsp even if it doesn't play sounds
 
-0.8
+    Translations:
+        * New Brazilian Portuguese [pt_BR] translation (almost complete)
+        * New Croatian [hr] translation (incomplete)
+        * New Dutch [nl] translation (complete)
+        * New Georgian [ka] translation (complete)
+        * New Hebrew [he] translation (almost complete)
+        * New Japanese [ja] translation (almost complete)
+        * New Malay [ms] translation (incomplete)
+        * New Polish [pl] translation (complete)
+        * New Ukrainian [uk] translation (almost complete)
+
+        * Updated French [fr] translation (complete)
+        * Updated German [de] translation (almost complete)
+        * Updated Italian [it] translation (complete)
+        * Updated Russian [ru] translation (complete)
+        * Updated Spanish [es] translation (complete)
+
+== 0.8 ==
     Features:
         * Pause support (LP #195206)
         * Plain text config file (LP #563135)
@@ -49,7 +69,7 @@
         manually from home directory to new path and change file name from
         ".gweled" to "gweled.conf".
 
-0.7
+== 0.7 ==
     Features:
         * Remember config in a config file
         * Music (Autonomus by Skaven, this mod was used in the original Bejeweled)
@@ -61,7 +81,7 @@
         * Debian bug #286874: Fix for the timed game (reported by Sebastien Loss, fixed by Neil Moore)
         * debug patch for GCC4 (Adrian Reber)
 
-0.6
+== 0.6 ==
     Features:
         * display the timed hiscore table when in timed mode (this is a bit confusing since it's not visible anywhere that you are in timed mode).
         * highlight the drop target when dragging
@@ -72,11 +92,11 @@
         * fixed the hiscore table display when there are less than 10 entries recorded
         * fixed a crash in the drag'n'drop code
 
-0.5
+== 0.5 ==
     * timed game
     * drag'n drop to swap gems
 
-0.4
+== 0.4 ==
     * removed the toolbar (as suggested by Eugenia Loli-Queru)
     * applied a preliminary patch for timed game (by David Meggy), not usable yet
     * applied patch to unselect the selected gem (Pat Rondon)
@@ -84,7 +104,7 @@
     * switch to libglade
     * provide a spec file (Marc Deslauriers)
 
-0.3
+== 0.3 ==
     * png icon for the window
     * svg file for the cursor and the background tiles
     * remove the unnecessary and intrusive "illegal move" message
@@ -96,7 +116,7 @@
     * instant-apply board size setting (SVG finally pays)
     * do not loose before the first bonus
 
-0.2
+== 0.2 ==
     * first public release
     * fix the score (1 small bug left though)
     * move the score above the board
@@ -107,6 +127,6 @@
     * rewrite the graphic engine (split the graphic core and the game engine)
     * integrate properly with Gnome 2 (menu entry)
 
-0.1
+== 0.1 ==
     * private release for Laura
     * the game works
