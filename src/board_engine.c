@@ -818,7 +818,7 @@ board_engine_loop (gpointer data)
 			if (gi_total_gems_removed >= gi_next_bonus_at) {
 				gi_previous_bonus_at = gi_next_bonus_at;
 				gi_next_bonus_at *= 2;
-                
+
 				if (prefs.game_mode == TIMED_MODE)
 					g_steps_for_timer = (gi_next_bonus_at - gi_previous_bonus_at) / TOTAL_STEPS_FOR_TIMER + 1;
 
@@ -902,7 +902,7 @@ gweled_start_new_game (void)
 	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
 	    g_free(text);
-    }    
+    }
 
     gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
 
@@ -928,14 +928,14 @@ gweled_start_new_game (void)
 	g_do_not_score = FALSE;
 
     //test pattern for a known bug
-
+/*
     gpc_game_board[0][7] = 0;
     gpc_game_board[1][7] = 0;
     gpc_game_board[2][7] = 1;
     gpc_game_board[3][7] = 0;
     gpc_game_board[4][7] = 1;
     gpc_game_board[5][7] = 1;
-
+*/
 
 
 	for (i = 0; i < BOARD_WIDTH; i++)
@@ -998,10 +998,10 @@ void gweled_set_previous_game(GweledGameState game)
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text_buffer);
         g_free(text_buffer);
     }
-    
+
     text_buffer = g_strdup_printf("<span weight=\"bold\">%06d</span>", gi_current_score);
     gtk_label_set_markup (GTK_LABEL(g_score_label), text_buffer);
-    g_free(text_buffer);    
+    g_free(text_buffer);
 
     sge_destroy_all_objects ();
     gweled_draw_board ();
