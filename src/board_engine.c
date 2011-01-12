@@ -317,7 +317,8 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
     }
 	else {
 		i_total_score = 10 * (gi_bonus_multiply >> 1) * (gi_gems_removed - 2) + gi_score_per_move;
-        gi_score_per_move = i_total_score;
+        if(g_do_not_score == TRUE)
+            gi_score_per_move = i_total_score;
     }
     if (g_do_not_score == FALSE) {
         gi_total_gems_removed += gi_gems_removed;
@@ -903,6 +904,12 @@ gweled_start_new_game (void)
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
 	    g_free(text);
     }
+    else
+    {
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
+    }
+
 
     gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
 
