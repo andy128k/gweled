@@ -1024,10 +1024,25 @@ void gweled_set_previous_game(GweledGameState game)
     gi_state = _MARK_ALIGNED_GEMS;
 
     respawn_board_engine_loop();
-
+    
     gtk_widget_set_sensitive(g_menu_pause, TRUE);
+    
+    welcome_screen_visibility (FALSE);
 
     gi_game_running = TRUE;
     gi_game_paused = FALSE;
 
+}
+
+
+void gweled_stop_game()
+{
+    board_set_pause(FALSE);
+    respawn_board_engine_loop();
+    gi_game_running = 0;
+	sge_destroy_all_objects ();
+
+    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
+    gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
 }

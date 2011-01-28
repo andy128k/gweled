@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-11 21:02+0100\n"
+"POT-Creation-Date: 2011-01-28 01:12+0100\n"
 "PO-Revision-Date: 2009-03-06 22:43+0100\n"
 "Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -16,50 +16,62 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.c:63
+#: ../src/main.c:65
 msgctxt "game type"
 msgid "Normal"
 msgstr "Normale"
 
-#: ../src/main.c:64
+#: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
 msgstr "Temporizzato"
 
-#: ../src/main.c:269
+#: ../src/main.c:246
 msgid "Game over!"
 msgstr "Partita terminata!"
 
-#: ../src/main.c:271
+#: ../src/main.c:248
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 "Ottimo lavoro, ma sfortunatamente il tuo punteggio non rientra nei primi 10."
 
-#: ../src/main.c:273
+#: ../src/main.c:250
 msgid "_New Game"
 msgstr "_Nuovo gioco"
 
-#: ../src/main.c:285
+#: ../src/main.c:262
 msgid "Gweled Scores"
 msgstr "Punteggi di Gweled"
 
-#: ../src/main.c:288
+#: ../src/main.c:265
 msgid "Game type:"
 msgstr "Tipo di gioco:"
 
-#: ../src/main.c:295
+#: ../src/main.c:272
 msgid "Congratulations!"
 msgstr "Congratulazioni!"
 
-#: ../src/main.c:296
+#: ../src/main.c:273
 msgid "Your score is the best!"
 msgstr "Il tuo punteggio è il migliore!"
 
-#: ../src/main.c:297
+#: ../src/main.c:274
 msgid "Your score has made the top ten."
 msgstr "Il tuo punteggio rientra nei primi 10."
 
-#: ../src/main.c:425
+#: ../src/main.c:363
+msgid "Get as many point as you can. The game ends if you out of moves."
+msgstr "Ottieni più punti che puoi. Il gioco finisce se non hai più mosse disponibili."
+
+#: ../src/main.c:365
+msgid "Get as many points as you can, but you are limited on time."
+msgstr "Ottieni più punti che puoi, ma sei limitato nel tempo."
+
+#: ../src/main.c:367
+msgid "Game will never and. Your scores will not be registered."
+msgstr "Il gioco non finirà mai. I tuoi punteggi non verranno registrati."
+
+#: ../src/main.c:427
 msgid "There is a game saved, do you want restore it?"
 msgstr "È presente una partita salvata, riprenderla?"
 
@@ -67,15 +79,15 @@ msgstr "È presente una partita salvata, riprenderla?"
 msgid "Do you really want to abort this game?"
 msgstr "Si è sicuri di voler abbandonare il gioco?"
 
-#: ../src/callbacks.c:142
+#: ../src/callbacks.c:139
 msgid "Do you want to save the current game?"
 msgstr "Salvare la partita corrente?"
 
-#: ../src/callbacks.c:176
+#: ../src/callbacks.c:173
 msgid "translator-credits"
 msgstr "Daniele Napolitano <dnax88@gmail.com>"
 
-#: ../src/callbacks.c:181
+#: ../src/callbacks.c:178
 msgid ""
 "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
 "Mine\")"
@@ -83,41 +95,23 @@ msgstr ""
 "Un port GNOME del gioco \"Bejeweled\" per PalmOS/Windows/Java (anche "
 "\"Diamond Mine\")"
 
-#: ../src/board_engine.c:500
+#: ../src/board_engine.c:505
 msgid "_Resume"
 msgstr "_Riprendi"
 
-#: ../src/board_engine.c:501
-msgid "paused"
-msgstr "in pausa"
-
-#: ../src/board_engine.c:503
+#: ../src/board_engine.c:508
 msgid "Paused"
 msgstr "In pausa"
 
-#: ../src/board_engine.c:516 ../data/gweled.ui.h:18
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
 msgid "_Pause"
 msgstr "_Pausa"
 
-#: ../src/board_engine.c:581
-msgid "time's up #"
-msgstr "tempo scaduto #"
-
-#. TRANSLATORS: # is replaced with !!
-#: ../src/board_engine.c:764 ../src/board_engine.c:789
-msgid "no moves left #"
-msgstr "mosse esaurite #"
-
-#: ../src/board_engine.c:824 ../src/board_engine.c:902
-#: ../src/board_engine.c:999
+#: ../src/board_engine.c:829 ../src/board_engine.c:902
+#: ../src/board_engine.c:1004
 #, c-format
 msgid "Level %d"
 msgstr "Livello %d"
-
-#: ../src/board_engine.c:829
-#, c-format
-msgid "bonus x%d"
-msgstr "bonus x%d"
 
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
@@ -134,38 +128,36 @@ msgstr "Nome"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
+msgid "<b>Endless</b>"
+msgstr "<b>Senza fine</b>"
+
+#: ../data/gweled.ui.h:2
+msgid "<b>Normal</b>"
+msgstr "<b>Normale</b>"
+
+#: ../data/gweled.ui.h:3
+msgid "<b>Timed</b>"
+msgstr "<b>Temporizzato</b>"
+
+#: ../data/gweled.ui.h:4
+msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Benvenuto in Gweled!</span>"
+
+#: ../data/gweled.ui.h:5
 msgid "<span weight=\"bold\">Board size</span>"
 msgstr "<span weight=\"bold\">Dimensione</span>"
 
-#: ../data/gweled.ui.h:2
-msgid "<span weight=\"bold\">Game mode</span>"
-msgstr "<span weight=\"bold\">Modalità di gioco</span>"
-
-#: ../data/gweled.ui.h:3
+#: ../data/gweled.ui.h:6
 msgid "<span weight=\"bold\">Sound</span>"
 msgstr "<span weight=\"bold\">Suono</span>"
 
-#: ../data/gweled.ui.h:4
-msgid "Endless"
-msgstr "Senza fine"
-
-#: ../data/gweled.ui.h:5
-msgid "In this mode the game never ends, but scores will not be recorded!"
-msgstr ""
-"In questa modalità il gioco non finisce mai, ma il punteggio non verrà "
-"memorizzato!"
-
-#: ../data/gweled.ui.h:6
+#: ../data/gweled.ui.h:7
 msgid "Large"
 msgstr "Grande"
 
-#: ../data/gweled.ui.h:7
+#: ../data/gweled.ui.h:8
 msgid "Medium"
 msgstr "Medio"
-
-#: ../data/gweled.ui.h:8
-msgid "Normal"
-msgstr "Normale"
 
 #: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
@@ -192,25 +184,39 @@ msgid "Small"
 msgstr "Piccolo"
 
 #: ../data/gweled.ui.h:15
-msgid "Timed"
-msgstr "Temporizzato"
-
-#: ../data/gweled.ui.h:16
 msgid "_Game"
 msgstr "_Gioco"
 
-#: ../data/gweled.ui.h:17
+#: ../data/gweled.ui.h:16
 msgid "_Help"
 msgstr "_Aiuto"
 
-#: ../data/gweled.ui.h:19
+#: ../data/gweled.ui.h:18
 msgid "_Scores"
 msgstr "_Punteggi"
 
-#: ../data/gweled.ui.h:20
+#: ../data/gweled.ui.h:19
 msgid "_Settings"
 msgstr "_Impostazioni"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Gioca ad un rompicapo simile a \"Diamond Mine\""
+
+#~ msgid "paused"
+#~ msgstr "in pausa"
+
+#~ msgid "time's up #"
+#~ msgstr "tempo scaduto #"
+
+#~ msgid "no moves left #"
+#~ msgstr "mosse esaurite #"
+
+#~ msgid "bonus x%d"
+#~ msgstr "bonus x%d"
+
+#~ msgid "Endless"
+#~ msgstr "Senza fine"
+
+#~ msgid "Timed"
+#~ msgstr "Temporizzato"

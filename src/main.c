@@ -52,6 +52,8 @@ GtkWidget *g_bonus_label;
 GtkWidget *g_menu_pause;
 GtkWidget *g_pref_music_button;
 GtkWidget *g_pref_sounds_button;
+GtkWidget *g_alignment_welcome;
+
 GdkPixmap *g_buffer_pixmap = NULL;
 GRand *g_random_generator;
 
@@ -68,8 +70,6 @@ GamesScores *highscores;
 
 extern gint gi_game_running;
 
-const gchar* game_modes_strv[] = {"normal", "timed", "endless"};
-
 void save_preferences(void)
 {
 	gchar *filename, *configstr;
@@ -82,7 +82,6 @@ void save_preferences(void)
     config = g_key_file_new();
 
 	g_key_file_set_integer(config, "General", "tile_size", prefs.tile_size);
-	g_key_file_set_string(config, "General", "game_mode", game_modes_strv[prefs.game_mode]);
 	g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
 	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
 
@@ -108,7 +107,6 @@ void load_preferences(void)
 	char *filename;
 	GKeyFile *config;
 	GError *error = NULL;
-	char *game_mode;
 
 	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
 
@@ -119,7 +117,6 @@ void load_preferences(void)
     if(error == NULL && g_key_file_has_group(config, "General")) {
 
 	    prefs.tile_size = g_key_file_get_integer(config, "General", "tile_size", NULL);
-	    game_mode = g_key_file_get_string(config, "General", "game_mode", NULL);
 	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
 	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
 
@@ -130,15 +127,6 @@ void load_preferences(void)
 	    else
 	        prefs.tile_size = 48;
 
-	    if(g_strcmp0("timed", game_mode) == 0)
-	        prefs.game_mode = TIMED_MODE;
-	    else if(g_strcmp0("endless", game_mode) == 0)
-	        prefs.game_mode = ENDLESS_MODE;
-	    else
-	        prefs.game_mode = NORMAL_MODE;
-
-	   g_free(game_mode);
-
     } else {
         if (error) {
             g_printerr("Error loading config file: %s\n", error->message);
@@ -146,7 +134,6 @@ void load_preferences(void)
         }
 
 		prefs.tile_size = 48;
-		prefs.game_mode = NORMAL_MODE;
 		prefs.music_on = TRUE;
 		prefs.sounds_on = TRUE;
 
@@ -202,24 +189,6 @@ void init_pref_window(void)
 {
 	GtkWidget *radio_button = NULL;
 
-    // Game type
-	switch (prefs.game_mode)
-	{
-	    case NORMAL_MODE:
-		    radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "normalRadiobutton"));
-		    break;
-	    case TIMED_MODE:
-	        radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "timedRadiobutton"));
-	        break;
-	    case ENDLESS_MODE:
-	        radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "endlessRadiobutton"));
-	        break;
-	}
-	if (radio_button)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
-
-    // Board size
-	radio_button = NULL;
 	switch (prefs.tile_size) {
 	case 32:
 		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "smallRadiobutton"));
@@ -247,6 +216,12 @@ void init_pref_window(void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
+}
+
+void welcome_screen_visibility(gboolean value)
+{
+    gtk_widget_set_visible (g_alignment_welcome, value);
+    gtk_widget_set_visible (g_drawing_area, !value);
 }
 
 gint
@@ -321,12 +296,27 @@ show_hiscores (gint pos, gboolean endofgame)
   return result;
 }
 
+static void set_welcome_button_label(GtkWidget *label, gchar *text)
+{
+    gchar     *markup;
+    GdkColor  *color;
+
+    color = &label->style->fg[GTK_STATE_INSENSITIVE];
+    markup = g_markup_printf_escaped ("<span size=\"small\" foreground=\"#%.2x%.2x%.2x\">%s</span>",
+                                                  color->red,
+                                                  color->green,
+                                                  color->blue,
+                                                  text);
+
+    gtk_label_set_markup (GTK_LABEL (label), markup);
+}
+
 int main (int argc, char **argv)
 {
-	GError* error = NULL;
+	GError    *error = NULL;
 	GtkWidget *box;
-	gchar *filename;
-	gint response;
+	gchar     *filename;
+	gint       response;
 
 	/* gettext */
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -367,6 +357,14 @@ int main (int argc, char **argv)
     g_menu_pause = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "pause1"));
     g_pref_music_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "music_checkbutton"));
     g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
+    g_alignment_welcome = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "alignmentWelcome"));
+
+    set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescNormal")),
+                             _("Get as many point as you can. The game ends if you out of moves."));
+    set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescTimed")),
+                             _("Get as many points as you can, but you are limited on time."));
+    set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescEndless")),
+                             _("Game will never end. Your scores will not be registered."));       
 
 	load_preferences();
 	init_pref_window();
@@ -379,12 +377,17 @@ int main (int argc, char **argv)
 	gtk_window_set_resizable (GTK_WINDOW (g_main_window), FALSE);
 	gtk_widget_show (g_main_window);
 
-	gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-				     BOARD_WIDTH * prefs.tile_size,
-				     BOARD_HEIGHT * prefs.tile_size);
+    welcome_screen_visibility(TRUE);
 
-	g_buffer_pixmap =
-	    gdk_pixmap_new (g_drawing_area->window,
+    gtk_widget_set_size_request (g_drawing_area,
+                                 BOARD_WIDTH * prefs.tile_size,
+			                     BOARD_HEIGHT * prefs.tile_size);
+
+    gtk_widget_set_size_request (g_alignment_welcome,
+                                 BOARD_WIDTH * prefs.tile_size,
+			                     BOARD_HEIGHT * prefs.tile_size);
+
+    g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
 			    BOARD_WIDTH * prefs.tile_size,
 			    BOARD_HEIGHT * prefs.tile_size, -1);
 
@@ -412,9 +415,6 @@ int main (int argc, char **argv)
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 			      BOARD_WIDTH * prefs.tile_size,
 			      BOARD_HEIGHT * prefs.tile_size);
-
-	gweled_draw_board ();
-	gweled_draw_message ("gweled");
 
     // check for previous saved game
     filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);

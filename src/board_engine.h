@@ -71,4 +71,7 @@ gweled_get_current_game(void);
 void
 gweled_set_previous_game(GweledGameState game);
 
+void
+gweled_stop_game();
+
 #endif

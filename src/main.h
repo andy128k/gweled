@@ -32,6 +32,9 @@ load_preferences(void);
 void
 save_current_game();
 
+void
+welcome_screen_visibility (gboolean value);
+
 gint
 show_hiscores (gint pos, gboolean endofgame);
 

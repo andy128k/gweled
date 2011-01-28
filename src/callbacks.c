@@ -82,12 +82,9 @@ on_new1_activate (GtkMenuItem * menuitem, gpointer user_data)
 			return;
 	}
 
-    respawn_board_engine_loop();
+    gweled_stop_game ();
 
-	sge_destroy_all_objects ();
-	gweled_draw_board ();
-	gweled_start_new_game ();
-	gtk_widget_set_sensitive(g_menu_pause, TRUE);
+    welcome_screen_visibility (TRUE);
 }
 
 void
@@ -298,14 +295,6 @@ on_closebutton1_clicked (GtkButton * button, gpointer user_data)
 {
 	save_preferences();
 
-	if (gi_game_running && game_mode_changed == TRUE) {
-		sge_destroy_all_objects ();
-		gweled_draw_board ();
-		gweled_start_new_game ();
-		respawn_board_engine_loop();
-		game_mode_changed = FALSE;
-	}
-
     // unpause the game if running
     if(gi_game_running)
 	    board_set_pause(FALSE);
@@ -313,31 +302,37 @@ on_closebutton1_clicked (GtkButton * button, gpointer user_data)
 	gtk_widget_hide (gtk_widget_get_toplevel (GTK_WIDGET (button)));
 }
 
-void
-on_gamemodeRadio_toggled (GtkToggleButton * togglebutton, gweled_game_mode game_mode)
+void on_buttonNormal_clicked (GtkButton * button, gpointer user_data)
 {
-	if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.game_mode = game_mode;
-		game_mode_changed = TRUE;
-	}
+    prefs.game_mode = NORMAL_MODE;
+    welcome_screen_visibility(FALSE);
+
+    gweled_draw_board ();
+    gweled_start_new_game ();
+    respawn_board_engine_loop();
+    gtk_widget_set_sensitive(g_menu_pause, TRUE);
 }
 
-void
-on_normalRadio_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+void on_buttonTimed_clicked (GtkButton * button, gpointer user_data)
 {
-    on_gamemodeRadio_toggled(togglebutton, NORMAL_MODE);
+    prefs.game_mode = TIMED_MODE;
+    welcome_screen_visibility(FALSE);
+
+    gweled_draw_board ();
+    gweled_start_new_game ();
+    respawn_board_engine_loop();
+    gtk_widget_set_sensitive(g_menu_pause, TRUE);
 }
 
-void
-on_timedRadio_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+void on_buttonEndless_clicked (GtkButton * button, gpointer user_data)
 {
-    on_gamemodeRadio_toggled(togglebutton, TIMED_MODE);
-}
+    prefs.game_mode = ENDLESS_MODE;
+    welcome_screen_visibility(FALSE);
 
-void
-on_endlessRadio_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-    on_gamemodeRadio_toggled(togglebutton, ENDLESS_MODE);
+    gweled_draw_board ();
+    gweled_start_new_game ();
+    respawn_board_engine_loop();
+    gtk_widget_set_sensitive(g_menu_pause, TRUE);
 }
 
 void
