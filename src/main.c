@@ -218,10 +218,44 @@ void init_pref_window(void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
 }
 
-void welcome_screen_visibility(gboolean value)
+void welcome_screen_visibility (gboolean value)
 {
     gtk_widget_set_visible (g_alignment_welcome, value);
     gtk_widget_set_visible (g_drawing_area, !value);
+
+    if(value == TRUE) {
+
+        // set the label with value for word wrap
+        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescNormal")), BOARD_WIDTH * prefs.tile_size - 30, -1);
+        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescTimed")), BOARD_WIDTH * prefs.tile_size - 30, -1);
+        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescEndless")), BOARD_WIDTH * prefs.tile_size - 30, -1);
+
+        // if window is small, reduce spaces
+        if(prefs.tile_size < 48) {
+
+            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 10);
+            gtk_widget_hide(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
+            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 0);
+            gtk_container_set_border_width( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 0);
+
+        }
+        else if(prefs.tile_size > 48) {
+
+            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 70);
+            gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
+            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 12);
+            gtk_container_set_border_width( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 30);
+
+        }
+        else {
+
+            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 40);
+            gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
+            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 12);
+            gtk_container_set_border_width( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 12);
+
+        }
+    }
 }
 
 gint
