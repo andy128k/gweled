@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-28 01:34+0100\n"
+"POT-Creation-Date: 2011-03-31 00:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,51 +27,51 @@ msgctxt "game type"
 msgid "Timed"
 msgstr ""
 
-#: ../src/main.c:246
+#: ../src/main.c:280
 msgid "Game over!"
 msgstr ""
 
-#: ../src/main.c:248
+#: ../src/main.c:282
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 
-#: ../src/main.c:250
+#: ../src/main.c:284
 msgid "_New Game"
 msgstr ""
 
-#: ../src/main.c:262
+#: ../src/main.c:296
 msgid "Gweled Scores"
 msgstr ""
 
-#: ../src/main.c:265
+#: ../src/main.c:299
 msgid "Game type:"
 msgstr ""
 
-#: ../src/main.c:272
+#: ../src/main.c:306
 msgid "Congratulations!"
 msgstr ""
 
-#: ../src/main.c:273
+#: ../src/main.c:307
 msgid "Your score is the best!"
 msgstr ""
 
-#: ../src/main.c:274
+#: ../src/main.c:308
 msgid "Your score has made the top ten."
 msgstr ""
 
-#: ../src/main.c:363
+#: ../src/main.c:397
 msgid "Get as many point as you can. The game ends if you out of moves."
 msgstr ""
 
-#: ../src/main.c:365
+#: ../src/main.c:399
 msgid "Get as many points as you can, but you are limited on time."
 msgstr ""
 
-#: ../src/main.c:367
+#: ../src/main.c:401
 msgid "Game will never end. Your scores will not be registered."
 msgstr ""
 
-#: ../src/main.c:427
+#: ../src/main.c:461
 msgid "There is a game saved, do you want restore it?"
 msgstr ""
 
@@ -88,9 +88,7 @@ msgid "translator-credits"
 msgstr ""
 
 #: ../src/callbacks.c:178
-msgid ""
-"A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
-"Mine\")"
+msgid "A puzzle game with gems"
 msgstr ""
 
 #: ../src/board_engine.c:505
