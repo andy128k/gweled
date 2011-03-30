@@ -175,10 +175,10 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
     gtk_show_about_dialog (GTK_WINDOW(g_main_window),
              "authors", authors,
 		     "translator-credits", g_strcmp0("translator-credits", translator_credits) ? translator_credits : NULL,
-             "comments", _("A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond Mine\")"),
+             "comments", _("A puzzle game with gems"),
              "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010 Daniele Napolitano",
              "version", VERSION,
-             "website", "https://launchpad.net/gweled",
+             "website", "http://gweled.org",
 		     "logo-icon-name", "gweled",
              NULL);
 }
