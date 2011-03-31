@@ -1,3 +1,13 @@
+== 0.9.1 ==
+    Features:
+        * Show game-type choice at startup (alias welcome screen)
+          https://blueprints.launchpad.net/gweled/+spec/game-type-choice-at-startup
+    
+    Translations:
+        * New Slovenian [sl] translation (almost complete)
+        * Malay [ms] translation almost completed     
+        * Updated the others
+
 == 0.9 ==
     Features:
         * New endless game type (also called relax mode)
