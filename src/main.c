@@ -236,7 +236,7 @@ void welcome_screen_visibility (gboolean value)
             gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 10);
             gtk_widget_hide(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
             gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 0);
-            gtk_container_set_border_width( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 0);
+            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 0);
 
         }
         else if(prefs.tile_size > 48) {
@@ -244,7 +244,7 @@ void welcome_screen_visibility (gboolean value)
             gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 70);
             gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
             gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 12);
-            gtk_container_set_border_width( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 30);
+            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 30);
 
         }
         else {
@@ -252,7 +252,7 @@ void welcome_screen_visibility (gboolean value)
             gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 40);
             gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
             gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 12);
-            gtk_container_set_border_width( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 12);
+            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 12);
 
         }
     }
