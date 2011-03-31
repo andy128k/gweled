@@ -7,59 +7,74 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-01-09 18:29+0100\n"
-"PO-Revision-Date: 2010-12-24 13:32+0000\n"
+"POT-Creation-Date: 2011-03-31 00:33+0200\n"
+"PO-Revision-Date: 2011-02-06 19:27+0000\n"
 "Last-Translator: Ivo <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-01-11 23:28+0000\n"
-"X-Generator: Launchpad (build 12176)\n"
+"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
+"X-Generator: Launchpad (build 12696)\n"
 
-#: ../src/main.c:63
+#: ../src/main.c:65
 msgctxt "game type"
 msgid "Normal"
 msgstr "Standaard"
 
-#: ../src/main.c:64
+#: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
 msgstr "Met Tijdslimiet"
 
-#: ../src/main.c:271
+#: ../src/main.c:280
 msgid "Game over!"
 msgstr "Spel afgelopen!"
 
-#: ../src/main.c:273
+#: ../src/main.c:282
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr "Goed gedaan, maar helaas zit uw score niet bij de top tien."
 
-#: ../src/main.c:275
+#: ../src/main.c:284
 msgid "_New Game"
 msgstr "_Nieuw spel"
 
-#: ../src/main.c:287
+#: ../src/main.c:296
 msgid "Gweled Scores"
 msgstr "Gweled Scores"
 
-#: ../src/main.c:290
+#: ../src/main.c:299
 msgid "Game type:"
 msgstr "Speltype:"
 
-#: ../src/main.c:297
+#: ../src/main.c:306
 msgid "Congratulations!"
 msgstr "Gefeliciteerd!"
 
-#: ../src/main.c:298
+#: ../src/main.c:307
 msgid "Your score is the best!"
 msgstr "U heeft de beste score!"
 
-#: ../src/main.c:299
+#: ../src/main.c:308
 msgid "Your score has made the top ten."
 msgstr "Uw score zit bij de top tien."
 
-#: ../src/main.c:427
+#: ../src/main.c:397
+msgid "Get as many point as you can. The game ends if you out of moves."
+msgstr ""
+"Spaar zoveel mogelijk punten als je kan. Het spel eindigt wanneer je geen "
+"zetten meer kunt doen."
+
+#: ../src/main.c:399
+msgid "Get as many points as you can, but you are limited on time."
+msgstr ""
+"Spaar zoveel mogelijk punten als je kan, maar het spel is beperkt door tijd."
+
+#: ../src/main.c:401
+msgid "Game will never end. Your scores will not be registered."
+msgstr "Het spel zal nooit eindigen. Je score zal niet worden opgeslagen."
+
+#: ../src/main.c:461
 msgid "There is a game saved, do you want restore it?"
 msgstr "Er is een opgeslagen spel, wilt u deze hervatten?"
 
@@ -67,40 +82,37 @@ msgstr "Er is een opgeslagen spel, wilt u deze hervatten?"
 msgid "Do you really want to abort this game?"
 msgstr "Wilt u het spel echt verlaten?"
 
-#: ../src/callbacks.c:142
+#: ../src/callbacks.c:139
 msgid "Do you want to save the current game?"
 msgstr "Wilt u het momentele spel opslaan?"
 
-#: ../src/callbacks.c:176
+#: ../src/callbacks.c:173
 msgid "translator-credits"
 msgstr ""
 "This is a dummy translation so that the credits are counted as translated.\n"
 "\n"
 "Launchpad Contributions:\n"
+"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  Ivo https://launchpad.net/~van-hoi"
 
-#: ../src/callbacks.c:181
-msgid ""
-"A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
-"Mine\")"
+#: ../src/callbacks.c:178
+msgid "A puzzle game with gems"
 msgstr ""
-"Een GNOME port van het PalmOS/Windows/Java spel \"Bejeweled\" (ook wel "
-"\"Diamond Mine\" genoemd)"
 
-#: ../src/board_engine.c:504
+#: ../src/board_engine.c:505
 msgid "_Resume"
 msgstr "_Hervatten"
 
-#: ../src/board_engine.c:507
+#: ../src/board_engine.c:508
 msgid "Paused"
 msgstr "Gepauzeerd"
 
-#: ../src/board_engine.c:520 ../data/gweled.ui.h:18
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
 msgid "_Pause"
 msgstr "_Pauze"
 
-#: ../src/board_engine.c:828 ../src/board_engine.c:901
-#: ../src/board_engine.c:997
+#: ../src/board_engine.c:829 ../src/board_engine.c:902
+#: ../src/board_engine.c:1004
 #, c-format
 msgid "Level %d"
 msgstr "Level %d"
@@ -120,38 +132,36 @@ msgstr "Naam"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
+msgid "<b>Endless</b>"
+msgstr "<b>Eindeloos</b>"
+
+#: ../data/gweled.ui.h:2
+msgid "<b>Normal</b>"
+msgstr "<b>Normaal</b>"
+
+#: ../data/gweled.ui.h:3
+msgid "<b>Timed</b>"
+msgstr "<b>Met Tijdslimiet</b>"
+
+#: ../data/gweled.ui.h:4
+msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Welkom bij Gweled!</span>"
+
+#: ../data/gweled.ui.h:5
 msgid "<span weight=\"bold\">Board size</span>"
 msgstr "<span weight=\"bold\">Bord grootte</span>"
 
-#: ../data/gweled.ui.h:2
-msgid "<span weight=\"bold\">Game mode</span>"
-msgstr "<span weight=\"bold\">Spel modus</span>"
-
-#: ../data/gweled.ui.h:3
+#: ../data/gweled.ui.h:6
 msgid "<span weight=\"bold\">Sound</span>"
 msgstr "<span weight=\"bold\">Geluid</span>"
 
-#: ../data/gweled.ui.h:4
-msgid "Endless"
-msgstr "Eindeloos"
-
-#: ../data/gweled.ui.h:5
-msgid "In this mode the game never ends, but scores will not be recorded!"
-msgstr ""
-"In deze modus zal het spel nooit eindigen, maar de score zal niet worden "
-"opgeslagen!"
-
-#: ../data/gweled.ui.h:6
+#: ../data/gweled.ui.h:7
 msgid "Large"
 msgstr "Groot"
 
-#: ../data/gweled.ui.h:7
+#: ../data/gweled.ui.h:8
 msgid "Medium"
 msgstr "Gemiddeld"
-
-#: ../data/gweled.ui.h:8
-msgid "Normal"
-msgstr "Normaal"
 
 #: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
@@ -178,22 +188,18 @@ msgid "Small"
 msgstr "Klein"
 
 #: ../data/gweled.ui.h:15
-msgid "Timed"
-msgstr "Met Tijdslimiet"
-
-#: ../data/gweled.ui.h:16
 msgid "_Game"
 msgstr "_Spel"
 
-#: ../data/gweled.ui.h:17
+#: ../data/gweled.ui.h:16
 msgid "_Help"
 msgstr "_Hulp"
 
-#: ../data/gweled.ui.h:19
+#: ../data/gweled.ui.h:18
 msgid "_Scores"
 msgstr "_Scores"
 
-#: ../data/gweled.ui.h:20
+#: ../data/gweled.ui.h:19
 msgid "_Settings"
 msgstr "_Instellingen"
 
@@ -207,6 +213,33 @@ msgstr "Speel een puzzelspel vergelijkbaar met \"Diamond Mine\""
 #~ msgid "paused"
 #~ msgstr "Gepauzeerd"
 
+#~ msgid ""
+#~ "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
+#~ "Mine\")"
+#~ msgstr ""
+#~ "Een GNOME port van het PalmOS/Windows/Java spel \"Bejeweled\" (ook wel "
+#~ "\"Diamond Mine\" genoemd)"
+
 #, c-format
 #~ msgid "bonus x%d"
 #~ msgstr "Bonus x%d"
+
+#~ msgid "<span weight=\"bold\">Game mode</span>"
+#~ msgstr "<span weight=\"bold\">Spel modus</span>"
+
+#~ msgid "Endless"
+#~ msgstr "Eindeloos"
+
+#~ msgid "Normal"
+#~ msgstr "Normaal"
+
+#~ msgid "no moves left #"
+#~ msgstr "Geen zetten meer over!!"
+
+#~ msgid "In this mode the game never ends, but scores will not be recorded!"
+#~ msgstr ""
+#~ "In deze modus zal het spel nooit eindigen, maar de score zal niet worden "
+#~ "opgeslagen!"
+
+#~ msgid "Timed"
+#~ msgstr "Met Tijdslimiet"
