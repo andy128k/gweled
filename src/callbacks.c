@@ -343,6 +343,9 @@ on_smallRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 
 		gweled_set_objects_size (prefs.tile_size);
 	}
+
+	if(!gi_game_running)
+        welcome_screen_visibility(TRUE);
 }
 
 void
@@ -353,6 +356,9 @@ on_mediumRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 
 		gweled_set_objects_size (prefs.tile_size);
 	}
+
+	if(!gi_game_running)
+        welcome_screen_visibility(TRUE);
 }
 
 void
@@ -363,6 +369,9 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 
 		gweled_set_objects_size (prefs.tile_size);
 	}
+
+    if(!gi_game_running)
+        welcome_screen_visibility(TRUE);
 }
 
 void
