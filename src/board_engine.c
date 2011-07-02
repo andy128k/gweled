@@ -764,7 +764,7 @@ board_engine_loop (gpointer data)
 			gweled_gems_fall_into_place (FALSE);
 		} else {
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
-				if ((gi_next_bonus_at == FIRST_BONUS_AT) && (prefs.game_mode != ENDLESS_MODE)) {
+				if ((gi_level == 1) || (prefs.game_mode == ENDLESS_MODE) || (prefs.game_mode == TIMED_MODE)) {
 					gint i, j;
                     // TRANSLATORS: # is replaced with !!
 					gweled_draw_game_message ("no moves left #", 1);
@@ -792,6 +792,7 @@ board_engine_loop (gpointer data)
 					gweled_gems_fall_into_place (FALSE);
 					gi_state = _MARK_ALIGNED_GEMS;
 				} else {
+				    // Game over
 					gweled_draw_message ("no moves left #");
 					gi_game_running = 0;
 					score.plain = gi_score;
