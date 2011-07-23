@@ -49,6 +49,7 @@ void sound_init()
     MikMod_RegisterDriver(&drv_alsa);
     MikMod_RegisterDriver(&drv_oss);
     MikMod_RegisterDriver(&drv_nos);
+    MikMod_RegisterDriver(drv_pas);
 
     /* register only the s3m module loader */
     MikMod_RegisterLoader(&load_s3m);
