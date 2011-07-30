@@ -29,7 +29,8 @@ typedef enum e_gweled_sound_samples
     SWAP_EVENT
 } gweled_sound_samples;
 
-void sound_init(void);
+//void sound_init(void);
+void sound_init(GdkScreen *screen);
 void sound_music_play(void);
 void sound_music_stop(void);
 void sound_load_samples(void);

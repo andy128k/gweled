@@ -18,7 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <mikmod.h>
+//#include <mikmod.h>
+
+#include <canberra-gtk.h>
 #include <pthread.h>
 #include <glib.h>
 
@@ -34,27 +36,28 @@ static SAMPLE *click_sfx = NULL;
 static gboolean is_playing;
 static gboolean sound_available;
 
-void sound_thread(void *ptr)
+/*void sound_thread(void *ptr)
 {
 	while (1) {
 	    g_usleep(10000);
 		MikMod_Update();
     }
-}
+}*/
 
-void sound_init()
+/*void sound_init()
 {
-    /* register all the drivers */
+    /* register all the drivers 
     MikMod_RegisterDriver(&drv_esd);
     MikMod_RegisterDriver(&drv_alsa);
     MikMod_RegisterDriver(&drv_oss);
     MikMod_RegisterDriver(&drv_nos);
-    MikMod_RegisterDriver(drv_pas);
+    MikMod_RegisterDriver(&drv_pas);
+    MikMod_RegisterAllDrivers();
 
-    /* register only the s3m module loader */
+    /* register only the s3m module loader 
     MikMod_RegisterLoader(&load_s3m);
 
-    /* initialize the library */
+    /* initialize the library 
     if (MikMod_Init("")) {
         g_printerr("Could not initialize sound, reason: %s\n", MikMod_strerror(MikMod_errno));
         MikMod_Exit();
@@ -67,12 +70,45 @@ void sound_init()
     }
 
     is_playing = FALSE;
+} */
+
+void sound_init(GdkScreen *screen)
+{
+    ca_context *context;
+
+    if (screen == NULL)
+	sreen = gdk_screen_get_default();
+
+    if(GPOINTER_TO_INT (g_object_get_data(G_OBJECT (screen), "games-sound-initialized")))
+	return;
+
+    g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
+	gdk_display_get_name(gdk_screen_get_display(screen)),
+	gdk_screen_get_number(screen));
+
+    context = ca_gtk_context_get_for_screen (screen);
+
+    if (!context)
+	return;
+
+    ca_context_change_props (context, CA_PROP_MEDIA_ROLE, "game", NULL);
+
+    g_object_set_data(G_OBJECT (screen), "games-sound-initialized", GINT_TO_POINTER(TRUE));
 }
 
 
-void sound_music_play()
+void sound_music_play(gtkWidget *game_window)
 {
-	if (!is_playing && sound_available) {
+    char sound_name[] = "autonom.ogg";
+    char path[] = 
+    int play_status;
+
+    play_status = ca_gtk_play_for_widget (game_window, 0, CA_PROP_MEDIA_NAME, 						sound_name, CA_PROP_MEDIA_FILENAME, path,
+					NULL);
+
+    gprint("libcanberra playing sound %s [file %s]: %s\n", sound_name, path, 			ca_strerror (play_status));
+
+	/*if (!is_playing && sound_available) {
 	    // load module
 	    module = Player_Load(DATADIR "/sounds/gweled/autonom.s3m", 64, 0);
     	if (module) {
@@ -82,7 +118,7 @@ void sound_music_play()
 
     	} else
     	    g_printerr("Could not load module, reason: %s\n", MikMod_strerror(MikMod_errno));
-	}
+	}*/
 }
 
 void sound_music_stop()
