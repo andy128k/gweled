@@ -74,33 +74,35 @@ static gboolean sound_available;
 
 void sound_init(GdkScreen *screen)
 {
-    ca_context *context;
+    ca_context *context = NULL;
 
     if (screen == NULL)
 	sreen = gdk_screen_get_default();
 
-    if(GPOINTER_TO_INT (g_object_get_data(G_OBJECT (screen), "games-sound-initialized")))
+    if(sound_available == TRUE)
 	return;
 
     g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
 	gdk_display_get_name(gdk_screen_get_display(screen)),
 	gdk_screen_get_number(screen));
 
-    context = ca_gtk_context_get_for_screen (screen);
+    context = ca_gtk_context_get_for_screen (*screen);
 
-    if (!context)
+    if (!context){
+	sound_available = FALSE;
 	return;
+	}
 
     ca_context_change_props (context, CA_PROP_MEDIA_ROLE, "game", NULL);
 
-    g_object_set_data(G_OBJECT (screen), "games-sound-initialized", GINT_TO_POINTER(TRUE));
+    sound_available = TRUE;
 }
 
 
 void sound_music_play(gtkWidget *game_window)
 {
     char sound_name[] = "autonom.ogg";
-    char path[] = 
+    char path[] = DATADIR "/sounds/gweled/";
     int play_status;
 
     play_status = ca_gtk_play_for_widget (game_window, 0, CA_PROP_MEDIA_NAME, 						sound_name, CA_PROP_MEDIA_FILENAME, path,
@@ -121,6 +123,7 @@ void sound_music_play(gtkWidget *game_window)
 	}*/
 }
 
+/* Stop playing music 
 void sound_music_stop()
 {
 	if (is_playing && sound_available) {
@@ -131,41 +134,10 @@ void sound_music_stop()
 	    	is_playing = FALSE;
 		}
 	}
-}
-
-// load sound fx
-void sound_load_samples()
-{
-    if (sound_available == FALSE)
-        return;
-
-    if (!swap_sfx)
-        swap_sfx = Sample_Load(DATADIR "/sounds/gweled/swap.wav");
-    if (!swap_sfx)
-        g_warning("Could not load swap.wav, reason: %s", MikMod_strerror(MikMod_errno));
-
-    if (!click_sfx)
-        click_sfx = Sample_Load(DATADIR "/sounds/gweled/click.wav");
-    if (!click_sfx)
-        g_warning("Could not load click.wav, reason: %s", MikMod_strerror(MikMod_errno));
-
-    MikMod_SetNumVoices(-1, 2);
-}
-
-void sound_unload_samples()
-{
-    if (swap_sfx) {
-		Sample_Free(swap_sfx);
-		swap_sfx = NULL;
-	}
-	if (click_sfx) {
-		Sample_Free(click_sfx);
-		click_sfx = NULL;
-	}
-}
+}*/
 
 // play sound fx
-void sound_play_sample(gweled_sound_samples sample)
+/*void sound_play_sample(gweled_sound_samples sample)
 {
     if (sound_available == FALSE)
         return;
@@ -197,7 +169,7 @@ void sound_destroy()
 
 	    sound_available = FALSE;
 	}
-}
+}*/
 
 gboolean sound_get_enabled()
 {
