@@ -29,12 +29,13 @@
 
 static pthread_t thread;
 
-static MODULE *module;
-static SAMPLE *swap_sfx = NULL;
-static SAMPLE *click_sfx = NULL;
+//static MODULE *module;
+//static SAMPLE *swap_sfx = NULL;
+//static SAMPLE *click_sfx = NULL;
 
 static gboolean is_playing;
 static gboolean sound_available;
+ca_context *context = NULL;
 
 /*void sound_thread(void *ptr)
 {
@@ -74,10 +75,8 @@ static gboolean sound_available;
 
 void sound_init(GdkScreen *screen)
 {
-    ca_context *context = NULL;
-
     if (screen == NULL)
-	sreen = gdk_screen_get_default();
+	screen = gdk_screen_get_default();
 
     if(sound_available == TRUE)
 	return;
@@ -86,7 +85,7 @@ void sound_init(GdkScreen *screen)
 	gdk_display_get_name(gdk_screen_get_display(screen)),
 	gdk_screen_get_number(screen));
 
-    context = ca_gtk_context_get_for_screen (*screen);
+    context = ca_gtk_context_get_for_screen (screen);
 
     if (!context){
 	sound_available = FALSE;
@@ -99,7 +98,7 @@ void sound_init(GdkScreen *screen)
 }
 
 
-void sound_music_play(gtkWidget *game_window)
+void sound_music_play(GtkWidget *game_window)
 {
     char sound_name[] = "autonom.ogg";
     char path[] = DATADIR "/sounds/gweled/";
@@ -123,18 +122,11 @@ void sound_music_play(gtkWidget *game_window)
 	}*/
 }
 
-/* Stop playing music 
+/* Stop playing music*/ 
 void sound_music_stop()
 {
-	if (is_playing && sound_available) {
-    	if (module)
-		{
-	    	Player_Stop();
-	    	Player_Free(module);
-	    	is_playing = FALSE;
-		}
-	}
-}*/
+	ca_context_cancel(context, 0);
+}
 
 // play sound fx
 /*void sound_play_sample(gweled_sound_samples sample)

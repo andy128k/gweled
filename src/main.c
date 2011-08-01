@@ -432,7 +432,7 @@ int main (int argc, char **argv)
 	gi_game_running = 0;
 
 	if(prefs.music_on || prefs.sounds_on) {
-	    sound_init();
+	    sound_init(gdk_screen_get_default());
 	    if(sound_get_enabled() == FALSE) {
 	        gtk_widget_set_sensitive(g_pref_music_button, FALSE);
 	        gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
@@ -440,11 +440,8 @@ int main (int argc, char **argv)
 	}
 
 
-	if (prefs.sounds_on)
-	    sound_load_samples();
-
 	if (prefs.music_on)
-		sound_music_play();
+		sound_music_play(g_main_window);
 
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 			      BOARD_WIDTH * prefs.tile_size,
@@ -475,7 +472,7 @@ int main (int argc, char **argv)
 
 	gtk_main ();
 
-    sound_destroy();
+    //sound_destroy();
 
 	sge_destroy ();
 	if(board_engine_id)

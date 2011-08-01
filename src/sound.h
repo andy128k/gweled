@@ -32,8 +32,8 @@ typedef enum e_gweled_sound_samples
 //void sound_init(void);
 void sound_init(GdkScreen *);
 //void sound_music_play(void);
-void sound_music_play(ftkWidget *);
-//void sound_music_stop(void);
+void sound_music_play(GtkWidget *);
+void sound_music_stop(void);
 //void sound_play_sample(gweled_sound_samples sample);
 //void sound_destroy(void);
 gboolean sound_get_enabled();
