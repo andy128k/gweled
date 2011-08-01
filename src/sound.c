@@ -19,7 +19,6 @@
  */
 
 //#include <mikmod.h>
-
 #include <canberra-gtk.h>
 #include <pthread.h>
 #include <glib.h>
@@ -35,7 +34,7 @@ static pthread_t thread;
 
 static gboolean is_playing;
 static gboolean sound_available;
-ca_context *context = NULL;
+static ca_context *context = NULL;
 
 /*void sound_thread(void *ptr)
 {
@@ -78,21 +77,20 @@ void sound_init(GdkScreen *screen)
     if (screen == NULL)
 	screen = gdk_screen_get_default();
 
+    if(context = NULL)
+    context = ca_gtk_context_get_for_screen(screen);
+
     if(sound_available == TRUE)
 	return;
 
-    g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
+    /*g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
 	gdk_display_get_name(gdk_screen_get_display(screen)),
-	gdk_screen_get_number(screen));
-
-    context = ca_gtk_context_get_for_screen (screen);
+	gdk_screen_get_number(screen));*/
 
     if (!context){
 	sound_available = FALSE;
 	return;
 	}
-
-    ca_context_change_props (context, CA_PROP_MEDIA_ROLE, "game", NULL);
 
     sound_available = TRUE;
 }
@@ -100,6 +98,10 @@ void sound_init(GdkScreen *screen)
 
 void sound_music_play(GtkWidget *game_window)
 {
+    static ca_proplist *gameBoard = NULL;
+    ca_gtk_proplist_set_for_widget (gameBoard, game_window);
+
+
     char sound_name[] = "autonom.ogg";
     char path[] = DATADIR "/sounds/gweled/";
     int play_status;

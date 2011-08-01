@@ -28,12 +28,28 @@ PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.14,,
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
+### Check for canberra-gtk >= 2.06 ###
+#PKG_CHECK_MODULES(CANBERRA_GTK, libcanberra-gtk ,,
+#	AC_MSG_ERROR([canberra-gtk 0.26+ is required to compile gweled]))
+#
+#AC_SUBST(CANBERRA_GTK_CFLAGS)
+#AC_SUBST(CANBERRA_GTK_LIBS)
+
 #### Check for librsvg 2.0 ####
 PKG_CHECK_MODULES(RSVG, librsvg-2.0,,
 	AC_MSG_ERROR([librsvg-2.0 is required to compile gweled]))
 
 AC_SUBST(RSVG_CFLAGS)
 AC_SUBST(RSVG_LIBS)
+
+### Check for canberra-gtk.h header ###
+AC_CHECK_HEADER(canberra-gtk.h,, AC_MSG_ERROR([libcanberra is required to compile gweled]))
+
+CANBERRA_GTK_CFLAGS=`libcanberra-gtk-config --cflags`
+CANBERRA_GTK_LIBS=`libcanberra-gtk-config --libs`
+AC_SUBST(CANBERRA_GTK_CFLAGS)
+AC_SUBST(CANBERRA_GTK_LIBS)
+
 
 #### Check for mikmod.h header ####
 AC_CHECK_HEADER(mikmod.h,, AC_MSG_ERROR([libmikmod is required to compile gweled]))
@@ -43,6 +59,7 @@ MIKMOD_LIBS=`libmikmod-config --libs`
 AC_SUBST(MIKMOD_CFLAGS)
 AC_SUBST(MIKMOD_LIBS)
 
+### Check for pthread.h ###
 AC_CHECK_HEADER(pthread.h, [],
                   AC_MSG_ERROR([*** Cannot find pthread.h header]))
 AC_CHECK_LIB(pthread, pthread_create,

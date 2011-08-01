@@ -20,7 +20,6 @@
 
 #ifndef _SOUND_H_
 #define _SOUND_H_
-
 #include <glib.h>
 
 typedef enum e_gweled_sound_samples
