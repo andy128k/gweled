@@ -57,16 +57,12 @@ void sound_init(GdkScreen *screen)
 
 void sound_music_play(GtkWidget *game_window)
 {
-    ca_proplist *p = NULL;
-    ca_proplist_create(&p);
-    ca_gtk_proplist_set_for_widget (p, game_window);
-
-
     char sound_name[] = "autonom.ogg";
     char path[] = DATADIR"/sounds/gweled/autonom.ogg";
     int play_status;
 
     play_status = ca_gtk_play_for_widget (game_window, 0, CA_PROP_MEDIA_NAME, 						sound_name, CA_PROP_MEDIA_FILENAME, path,
+					CA_PROP_MEDIA_ROLE, "game",
 					NULL);
 
     g_print("libcanberra playing sound %s [file %s]: %s\n", sound_name, path, 			ca_strerror (play_status));
