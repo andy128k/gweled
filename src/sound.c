@@ -39,10 +39,8 @@ void sound_init(GdkScreen *screen)
     if (screen == NULL)
 	screen = gdk_screen_get_default();
 
-    if(context = NULL)
+    if(context == NULL)
     context = ca_gtk_context_get_for_screen(screen);
-
-    
 
     g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
 	gdk_display_get_name(gdk_screen_get_display(screen)),
