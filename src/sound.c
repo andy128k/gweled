@@ -74,14 +74,16 @@ static ca_context *context = NULL;
 
 void sound_init(GdkScreen *screen)
 {
+    if(sound_available == TRUE)
+	return;
+    
     if (screen == NULL)
 	screen = gdk_screen_get_default();
 
     if(context = NULL)
     context = ca_gtk_context_get_for_screen(screen);
 
-    if(sound_available == TRUE)
-	return;
+    
 
     /*g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
 	gdk_display_get_name(gdk_screen_get_display(screen)),
@@ -98,30 +100,19 @@ void sound_init(GdkScreen *screen)
 
 void sound_music_play(GtkWidget *game_window)
 {
-    static ca_proplist *gameBoard = NULL;
-    ca_gtk_proplist_set_for_widget (gameBoard, game_window);
+    ca_proplist *p = NULL;
+    ca_proplist_create(&p);
+    ca_gtk_proplist_set_for_widget (p, game_window);
 
 
     char sound_name[] = "autonom.ogg";
-    char path[] = DATADIR "/sounds/gweled/";
+    char path[] = DATADIR"/sounds/gweled/autonom.ogg";
     int play_status;
 
     play_status = ca_gtk_play_for_widget (game_window, 0, CA_PROP_MEDIA_NAME, 						sound_name, CA_PROP_MEDIA_FILENAME, path,
 					NULL);
 
-    gprint("libcanberra playing sound %s [file %s]: %s\n", sound_name, path, 			ca_strerror (play_status));
-
-	/*if (!is_playing && sound_available) {
-	    // load module
-	    module = Player_Load(DATADIR "/sounds/gweled/autonom.s3m", 64, 0);
-    	if (module) {
-    	    Player_Start(module);
-			Player_SetVolume(64);
-			is_playing = TRUE;
-
-    	} else
-    	    g_printerr("Could not load module, reason: %s\n", MikMod_strerror(MikMod_errno));
-	}*/
+    g_print("libcanberra playing sound %s [file %s]: %s\n", sound_name, path, 			ca_strerror (play_status));
 }
 
 /* Stop playing music*/ 
