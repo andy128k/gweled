@@ -1041,7 +1041,7 @@ void gweled_stop_game()
     board_set_pause(FALSE);
     respawn_board_engine_loop();
     gi_game_running = 0;
-	sge_destroy_all_objects ();
+    sge_destroy_all_objects();
 
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);

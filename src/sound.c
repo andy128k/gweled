@@ -94,24 +94,18 @@ void sound_music_stop()
                 Sample_Play(swap_sfx, 0, 0);
             break;
     }
-}
+}*/
 
 void sound_destroy()
 {
     if (sound_available) {
         sound_music_stop();
-
-        pthread_cancel(thread);
-        pthread_join(thread, NULL);
-
-        sound_unload_samples();
-
-        MikMod_DisableOutput();
-	    MikMod_Exit();
-
-	    sound_available = FALSE;
 	}
-}*/
+
+	g_free(context);
+	
+        sound_available = FALSE;
+}
 
 gboolean sound_get_enabled()
 {

@@ -472,7 +472,7 @@ int main (int argc, char **argv)
 
 	gtk_main ();
 
-    //sound_destroy();
+    sound_destroy();
 
 	sge_destroy ();
 	if(board_engine_id)
