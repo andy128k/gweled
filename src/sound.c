@@ -19,6 +19,7 @@
  */
 
 #include <canberra-gtk.h>
+//#include <canberra.h>
 #include <pthread.h>
 #include <glib.h>
 
@@ -75,22 +76,38 @@ void sound_music_stop()
 }
 
 // play sound fx
-/*void sound_play_sample(gweled_sound_samples sample)
+void sound_play_sample(gweled_sound_samples sample)
 {
+    char click_name[] = "click.ogg";
+    char swap_name[] = "swap.ogg";
+    char click_path[] = DATADIR"/sounds/gweled/click.ogg";
+    char swap_path[] = DATADIR"/sounds/gweled/swap.ogg";
+    int play_status;
+
     if (sound_available == FALSE)
         return;
 
     switch (sample) {
         case CLICK_EVENT:
-            if(click_sfx)
-                Sample_Play(click_sfx, 0, 0);
+            play_status = ca_gtk_play_for_event(gtk_get_current_event(), 0,
+			CA_PROP_MEDIA_FILENAME, click_name,
+			CA_PROP_MEDIA_FILENAME, click_path,
+			CA_PROP_EVENT_ID, "click-event",
+			CA_PROP_EVENT_DESCRIPTION, "click event happened",
+			NULL);
+            g_print("libcanberra playing sound %s [file: %s]; %s\n", click_name, 			click_path, ca_strerror(play_status));
             break;
         case SWAP_EVENT:
-            if(swap_sfx)
-                Sample_Play(swap_sfx, 0, 0);
+            play_status = ca_context_play(context, 0,
+			CA_PROP_MEDIA_FILENAME, swap_name,
+			CA_PROP_MEDIA_FILENAME, swap_path,
+			CA_PROP_EVENT_ID, "swap-event",
+			CA_PROP_EVENT_DESCRIPTION, "swap event happened",
+			NULL);
+            g_print("libcanberra playing sound %s [file: %s]; %s\n", swap_name, 			swap_path, ca_strerror(play_status));
             break;
     }
-}*/
+}
 
 void sound_destroy()
 {
