@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-//#include <mikmod.h>
 #include <canberra-gtk.h>
 #include <pthread.h>
 #include <glib.h>
@@ -28,49 +27,9 @@
 
 static pthread_t thread;
 
-//static MODULE *module;
-//static SAMPLE *swap_sfx = NULL;
-//static SAMPLE *click_sfx = NULL;
-
 static gboolean is_playing;
 static gboolean sound_available;
 static ca_context *context = NULL;
-
-/*void sound_thread(void *ptr)
-{
-	while (1) {
-	    g_usleep(10000);
-		MikMod_Update();
-    }
-}*/
-
-/*void sound_init()
-{
-    /* register all the drivers 
-    MikMod_RegisterDriver(&drv_esd);
-    MikMod_RegisterDriver(&drv_alsa);
-    MikMod_RegisterDriver(&drv_oss);
-    MikMod_RegisterDriver(&drv_nos);
-    MikMod_RegisterDriver(&drv_pas);
-    MikMod_RegisterAllDrivers();
-
-    /* register only the s3m module loader 
-    MikMod_RegisterLoader(&load_s3m);
-
-    /* initialize the library 
-    if (MikMod_Init("")) {
-        g_printerr("Could not initialize sound, reason: %s\n", MikMod_strerror(MikMod_errno));
-        MikMod_Exit();
-        sound_available = FALSE;
-    } else {
-        sound_available = TRUE;
-        MikMod_EnableOutput();
-        pthread_create(&thread, NULL, (void *)&sound_thread, NULL);
-        g_print("Audio driver choosen: %s\n", md_driver->Name);
-    }
-
-    is_playing = FALSE;
-} */
 
 void sound_init(GdkScreen *screen)
 {
@@ -85,9 +44,9 @@ void sound_init(GdkScreen *screen)
 
     
 
-    /*g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
+    g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
 	gdk_display_get_name(gdk_screen_get_display(screen)),
-	gdk_screen_get_number(screen));*/
+	gdk_screen_get_number(screen));
 
     if (!context){
 	sound_available = FALSE;
