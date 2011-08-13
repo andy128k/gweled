@@ -388,10 +388,7 @@ on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 		sound_music_play(g_main_window);
 	} else {
 	    prefs.music_on = FALSE;
-		sound_music_stop();
-		//if(prefs.sounds_on == FALSE)
-		//    sound_destroy();
-    }
+		sound_music_stop();}
 }
 
 void
@@ -406,11 +403,6 @@ on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_dat
 	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	        }
 		}
-		//sound_load_samples();
-	} /*else {
-		prefs.sounds_on = FALSE;
-		sound_unload_samples();
-		if(prefs.music_on == FALSE)
-		    sound_destroy();
-    }*/
+	} 
+	else prefs.sounds_on = FALSE;
 }
