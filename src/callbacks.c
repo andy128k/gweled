@@ -230,7 +230,7 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 			gi_dragging = -1;
 
 			if(prefs.sounds_on)
-			    sound_play_sample(CLICK_EVENT);
+			    sound_effect_play(CLICK_EVENT);
 		}
 		break;
 

@@ -19,7 +19,6 @@
  */
 
 #include <canberra-gtk.h>
-//#include <canberra.h>
 #include <pthread.h>
 #include <glib.h>
 
@@ -76,7 +75,7 @@ void sound_music_stop()
 }
 
 // play sound fx
-void sound_play_sample(gweled_sound_samples sample)
+void sound_effect_play(gweled_sound_effects effect)
 {
     char click_name[] = "click.ogg";
     char swap_name[] = "swap.ogg";
@@ -87,7 +86,7 @@ void sound_play_sample(gweled_sound_samples sample)
     if (sound_available == FALSE)
         return;
 
-    switch (sample) {
+    switch (effect) {
         case CLICK_EVENT:
             play_status = ca_gtk_play_for_event(gtk_get_current_event(), 0,
 			CA_PROP_MEDIA_FILENAME, click_name,
