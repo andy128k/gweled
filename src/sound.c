@@ -25,11 +25,20 @@
 #include "sound.h"
 #include "board_engine.h"
 
-static pthread_t thread;
+/* The time interval in milliseconds between music play iterations */
+#define MS_BETWEEN_PLAY 500
 
+static pthread_t thread;
 static gboolean is_playing;
 static gboolean sound_available;
 static ca_context *context = NULL;
+
+/* Structure for repeatable sounds */
+typedef struct {
+  GtkWidget *widget;
+  guint play_interval;
+} GweledRepeatableSound;
+
 
 void sound_init(GdkScreen *screen)
 {
@@ -57,14 +66,31 @@ void sound_init(GdkScreen *screen)
 
 void sound_music_play(GtkWidget *game_window)
 {
+    /* declare necessary variables */
+    GweledRepeatableSound *repeatable_sound;
     char sound_name[] = "autonom.ogg";
     char path[] = DATADIR"/sounds/gweled/autonom.ogg";
     int play_status;
+    ca_proplist *music_proplist;
+    
+    /* allocate memory and fill the repeatable_sound */
+    repeatable_sound = g_slice_new0(GweledRepeatableSound);
+    repeatable_sound->widget = game_window;
+    repeatable_sound->play_interval = MS_BETWEEN_PLAY;
 
-    play_status = ca_gtk_play_for_widget (game_window, 0, CA_PROP_MEDIA_NAME, 						sound_name, CA_PROP_MEDIA_FILENAME, path,
-					CA_PROP_MEDIA_ROLE, "game",
-					NULL);
+    /* create the property list */
+    ca_proplist_create (&music_proplist);
 
+    /* fill the property list */
+    ca_gtk_proplist_set_for_widget(music_proplist, game_window);
+    ca_proplist_sets(music_proplist, CA_PROP_MEDIA_NAME, sound_name);
+    ca_proplist_sets(music_proplist, CA_PROP_MEDIA_FILENAME, path);
+    ca_proplist_sets(music_proplist, CA_PROP_MEDIA_ROLE, "game");
+
+    /* play the music and get the status */
+    play_status = ca_context_play_full(context, 0, music_proplist, music_finished_playing_cb, repeatable_sound);
+
+    /* print the status of the playback to the terminal */
     g_print("libcanberra playing sound %s [file %s]: %s\n", sound_name, path, 			ca_strerror (play_status));
 }
 
@@ -74,7 +100,32 @@ void sound_music_stop()
 	ca_context_cancel(context, 0);
 }
 
-// play sound fx
+/* Callback when music finished playing */
+static void music_finished_playing_cb(ca_context *c, uint32_t id, int errno, gpointer user_data){
+
+    GweledRepeatableSound *repeatable_sound = user_data;
+
+    /* Check to see if the playback was successful */
+    if(errno != CA_SUCCESS){
+    g_print("Error:%s", ca_strerror(errno));
+    return;
+    }
+
+    /* set up loop to play music */
+    g_timeout_add(repeatable_sound->play_interval, playing_timeout_cb, 			user_data);	
+}
+
+/* Callback to replay music */
+static gboolean playing_timeout_cb(gpointer data)
+{
+    GweledRepeatableSound *repeatable_sound = data;
+
+    sound_music_play(repeatable_sound->widget);
+
+}
+
+
+/* Play sound fx */
 void sound_effect_play(gweled_sound_effects effect)
 {
     char click_name[] = "click.ogg";
@@ -114,7 +165,7 @@ void sound_destroy()
         sound_music_stop();
 	}
 
-	g_free(context);
+	ca_context_destroy(context);
 	
         sound_available = FALSE;
 }
