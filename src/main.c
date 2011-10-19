@@ -394,11 +394,11 @@ int main (int argc, char **argv)
     g_alignment_welcome = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "alignmentWelcome"));
 
     set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescNormal")),
-                             _("Get as many point as you can. The game ends if you out of moves."));
+                             _("Get as many points as you can. The game ends if you run out of moves."));
     set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescTimed")),
-                             _("Get as many points as you can, but you are limited on time."));
+                             _("Get as many points as you can. The game ends if you run out of time."));
     set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescEndless")),
-                             _("Game will never end. Your scores will not be registered."));       
+                             _("The game never ends, but your score will not be saved."));       
 
 	load_preferences();
 	init_pref_window();
