@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2011-11-04 05:32+0000\n"
+"X-Generator: Launchpad (build 14231)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -89,8 +89,7 @@ msgstr ""
 "This is a dummy translation so that the credits are counted as translated.\n"
 "\n"
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
-"  execjosh https://launchpad.net/~execjosh"
+"  Daniele Napolitano https://launchpad.net/~dnax88"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
@@ -203,37 +202,3 @@ msgstr "設定(_S)"
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "「Diamond Mine」に似たパズルゲームで遊んでみよう"
-
-#, c-format
-#~ msgid "bonus x%d"
-#~ msgstr "ボーナス×%d"
-
-#~ msgid "Endless"
-#~ msgstr "エンドレス"
-
-#~ msgid "<span weight=\"bold\">Game mode</span>"
-#~ msgstr "<span weight=\"bold\">ゲームモード</span>"
-
-#~ msgid "Timed"
-#~ msgstr "タイムアタック"
-
-#~ msgid "Normal"
-#~ msgstr "ノーマル"
-
-#~ msgid "paused"
-#~ msgstr "一時停止中"
-
-#~ msgid ""
-#~ "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
-#~ "Mine\")"
-#~ msgstr ""
-#~ "「Bejeweled」（別名「Diamond Mine」）というPalmOS/Windows/JavaのゲームをGNOME向けにポートしたものです。"
-
-#~ msgid "time's up #"
-#~ msgstr "時間切れ#"
-
-#~ msgid "In this mode the game never ends, but scores will not be recorded!"
-#~ msgstr "このモードでは、スコアは記録できませんが、ゲームが永遠に続きます。"
-
-#~ msgid "no moves left #"
-#~ msgstr "もう何もできません#"

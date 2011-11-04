@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-01-12 04:41+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"PO-Revision-Date: 2011-04-10 09:27+0000\n"
+"Last-Translator: zeugma <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2011-11-04 05:32+0000\n"
+"X-Generator: Launchpad (build 14231)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -42,7 +42,7 @@ msgstr "_Yeni Oyun"
 
 #: ../src/main.c:296
 msgid "Gweled Scores"
-msgstr ""
+msgstr "Gweled Skorlar"
 
 #: ../src/main.c:299
 msgid "Game type:"
@@ -111,20 +111,20 @@ msgstr "_Duraklat"
 #: ../src/board_engine.c:1004
 #, c-format
 msgid "Level %d"
-msgstr ""
+msgstr "Seviye %d"
 
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
 msgid "Score"
-msgstr ""
+msgstr "Skor"
 
 #: ../src/games-scores-dialog.c:437
 msgid "New Game"
-msgstr ""
+msgstr "Yeni Oyun"
 
 #: ../src/games-scores-dialog.c:537
 msgid "Name"
-msgstr ""
+msgstr "İsim"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
@@ -133,7 +133,7 @@ msgstr ""
 
 #: ../data/gweled.ui.h:2
 msgid "<b>Normal</b>"
-msgstr ""
+msgstr "<b>Normal</b>"
 
 #: ../data/gweled.ui.h:3
 msgid "<b>Timed</b>"
@@ -153,11 +153,11 @@ msgstr ""
 
 #: ../data/gweled.ui.h:7
 msgid "Large"
-msgstr ""
+msgstr "Büyük"
 
 #: ../data/gweled.ui.h:8
 msgid "Medium"
-msgstr ""
+msgstr "Orta"
 
 #: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
@@ -173,11 +173,11 @@ msgstr ""
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 #: ../data/gweled.ui.h:13
 msgid "Score:"
-msgstr ""
+msgstr "Skor:"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
@@ -202,15 +202,3 @@ msgstr "_Ayarlar"
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr ""
-
-#~ msgid "paused"
-#~ msgstr "duraklatıldı"
-
-#~ msgid "Highscores"
-#~ msgstr "Yüksek Puanlar"
-
-#~ msgid "Normal"
-#~ msgstr "Normal"
-
-#~ msgid "Timed"
-#~ msgstr "Süreli"

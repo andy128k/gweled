@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-02-08 21:50+0000\n"
+"PO-Revision-Date: 2011-04-02 08:20+0000\n"
 "Last-Translator: R33D3M33R <Unknown>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2011-11-04 05:32+0000\n"
+"X-Generator: Launchpad (build 14231)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -92,7 +92,7 @@ msgstr ""
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "Sestavljanka z dragulji"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
@@ -201,26 +201,3 @@ msgstr "Na_stavitve"
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Igrajte igro ugank podobno igri \"Diamond mine\""
-
-#~ msgid ""
-#~ "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
-#~ "Mine\")"
-#~ msgstr ""
-#~ "Predelava PalmOS/Windows/Java igre \"Bejeweled\" (znan tudi kot \"Diamond "
-#~ "Mine\") za GNOME"
-
-#~ msgid "In this mode the game never ends, but scores will not be recorded!"
-#~ msgstr ""
-#~ "V tem načinu se igra nikoli ne konča, se pa tudi ne zabeležijo rezultati!"
-
-#~ msgid "Endless"
-#~ msgstr "Neskončno"
-
-#~ msgid "<span weight=\"bold\">Game mode</span>"
-#~ msgstr "<span weight=\"bold\">Vrsta igre</span>"
-
-#~ msgid "Normal"
-#~ msgstr "Običajna"
-
-#~ msgid "Timed"
-#~ msgstr "Časovno omejena"

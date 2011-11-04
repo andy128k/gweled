@@ -1,18 +1,18 @@
-# Polish translation for gweled
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Hungarian translation for gweled
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
 # This file is distributed under the same license as the gweled package.
-# Piotr Sokół <psokol@jabster.pl>, 2010, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-10-12 21:18+0000\n"
-"Last-Translator: Qba <Unknown>\n"
-"Language-Team: Polish <>\n"
+"PO-Revision-Date: 2011-10-23 15:21+0000\n"
+"Last-Translator: Úr Balázs <urbalazs@gmail.com>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2011-11-04 05:32+0000\n"
 "X-Generator: Launchpad (build 14231)\n"
@@ -20,192 +20,185 @@ msgstr ""
 #: ../src/main.c:65
 msgctxt "game type"
 msgid "Normal"
-msgstr "Zwykły"
+msgstr "Normál"
 
 #: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
-msgstr "Na czas"
+msgstr "Időre megy"
 
 #: ../src/main.c:280
 msgid "Game over!"
-msgstr "Koniec gry!"
+msgstr "Vége a játéknak!"
 
 #: ../src/main.c:282
 msgid "Great work, but unfortunately your score did not make the top ten."
-msgstr "Świetnie, ale wynik niestety nie znalazł się w pierwszej dziesiątce."
+msgstr "Remek munka, de a pontszáma sajnos nincs benne az első tízben."
 
 #: ../src/main.c:284
 msgid "_New Game"
-msgstr "_Nowa"
+msgstr "Ú_j játék"
 
 #: ../src/main.c:296
 msgid "Gweled Scores"
-msgstr "Wyniki"
+msgstr "Gweled pontok"
 
 #: ../src/main.c:299
 msgid "Game type:"
-msgstr "Tryb:"
+msgstr "Játéktípus:"
 
 #: ../src/main.c:306
 msgid "Congratulations!"
-msgstr "Gratulacje!"
+msgstr "Gratulálunk!"
 
 #: ../src/main.c:307
 msgid "Your score is the best!"
-msgstr "Najlepszy wynik!"
+msgstr "Pontszáma a legjobb!"
 
 #: ../src/main.c:308
 msgid "Your score has made the top ten."
-msgstr "Wynik w pierwszej dziesiątce."
+msgstr "Pontszáma benne van az első tízben."
 
 #: ../src/main.c:397
 msgid "Get as many point as you can. The game ends if you out of moves."
 msgstr ""
-"Rozpoczyna rozgrywkę, która kończy się gdy zabraknie dalszych ruchów."
+"Szerezzen annyi pontot, amennyit csak tud. A játéknak akkor van vége, ha "
+"nincs több lépés."
 
 #: ../src/main.c:399
 msgid "Get as many points as you can, but you are limited on time."
-msgstr ""
-"Rozpoczyna rozgrywkę, w której celem jest zdobycie największej liczby "
-"punktów w ograniczonym czasie."
+msgstr "Szerezzen annyi pontot, amennyit csak tud, de az időhatáron belül."
 
 #: ../src/main.c:401
 msgid "Game will never end. Your scores will not be registered."
-msgstr ""
-"Rozpoczyna rozgrywkę, która nigdy się nie kończy i której wynik nie zostanie "
-"zapisany."
+msgstr "A játék sosem ér véget. A pontszáma nem lesz eltárolva."
 
 #: ../src/main.c:461
 msgid "There is a game saved, do you want restore it?"
-msgstr "Wczytać zapisany stan gry?"
+msgstr "Van elmentett játék, szeretné folytatni?"
 
 #: ../src/callbacks.c:74
 msgid "Do you really want to abort this game?"
-msgstr "Anulować rozgrywkę?"
+msgstr "Biztosan abbahagyja ezt a játékot?"
 
 #: ../src/callbacks.c:139
 msgid "Do you want to save the current game?"
-msgstr "Zapisać bieżącą rozgrywkę?"
+msgstr "Szeretné elmenteni az aktuális játékot?"
 
 #: ../src/callbacks.c:173
 msgid "translator-credits"
 msgstr ""
-"This is a dummy translation so that the credits are counted as translated.\n"
-"\n"
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
-"  Piotr Sokół https://launchpad.net/~psokol\n"
-"  Qba https://launchpad.net/~qba100"
+"  Úr Balázs https://launchpad.net/~urbalazs"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr "Gra logiczna z klejnotami"
+msgstr "Puzzle-játék drágakövekkel"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
-msgstr "_Wznów"
+msgstr "_Folytatás"
 
 #: ../src/board_engine.c:508
 msgid "Paused"
-msgstr "Wstrzymano"
+msgstr "Szüneteltetve"
 
 #: ../src/board_engine.c:521 ../data/gweled.ui.h:17
 msgid "_Pause"
-msgstr "_Wstrzymaj"
+msgstr "_Szünet"
 
 #: ../src/board_engine.c:829 ../src/board_engine.c:902
 #: ../src/board_engine.c:1004
 #, c-format
 msgid "Level %d"
-msgstr "Poziom %d"
+msgstr "%d. szint"
 
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
 msgid "Score"
-msgstr "Wynik"
+msgstr "Pontszám"
 
 #: ../src/games-scores-dialog.c:437
 msgid "New Game"
-msgstr "Nowa gra"
+msgstr "Új játék"
 
 #: ../src/games-scores-dialog.c:537
 msgid "Name"
-msgstr "Nazwa"
+msgstr "Név"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
 msgid "<b>Endless</b>"
-msgstr "<b>Bez końca</b>"
+msgstr "<b>Végtelen</b>"
 
 #: ../data/gweled.ui.h:2
 msgid "<b>Normal</b>"
-msgstr "<b>Zwykły</b>"
+msgstr "<b>Normál</b>"
 
 #: ../data/gweled.ui.h:3
 msgid "<b>Timed</b>"
-msgstr "<b>Na czas</b>"
+msgstr "<b>Időzített</b>"
 
 #: ../data/gweled.ui.h:4
 msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr "<span size=\"x-large\" weight=\"bold\">Witamy w Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Üdvözli a Gweled!</span>"
 
 #: ../data/gweled.ui.h:5
 msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Rozmiar planszy</span>"
+msgstr "<span weight=\"bold\">Táblaméret</span>"
 
 #: ../data/gweled.ui.h:6
 msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Dźwięk</span>"
+msgstr "<span weight=\"bold\">Hang</span>"
 
 #: ../data/gweled.ui.h:7
 msgid "Large"
-msgstr "Duży"
+msgstr "Nagy"
 
 #: ../data/gweled.ui.h:8
 msgid "Medium"
-msgstr "Średni"
+msgstr "Közepes"
 
 #: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
-msgstr "Wstrzymuje rozgrywkę w celu jej późniejszego wznowienia"
+msgstr "Játék szüneteltetése, hogy később vissza tudjon térni"
 
 #: ../data/gweled.ui.h:10
 msgid "Play background music"
-msgstr "Odtwarzanie muzyki"
+msgstr "Háttérzene lejátszása"
 
 #: ../data/gweled.ui.h:11
 msgid "Play sound effects"
-msgstr "Odtwarzanie efektów dźwiękowych"
+msgstr "Hanghatások lejátszása"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
-msgstr "Preferencje"
+msgstr "Beállítások"
 
 #: ../data/gweled.ui.h:13
 msgid "Score:"
-msgstr "Wynik:"
+msgstr "Pontszám:"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
-msgstr "Mały"
+msgstr "Kicsi"
 
 #: ../data/gweled.ui.h:15
 msgid "_Game"
-msgstr "_Gra"
+msgstr "_Játék"
 
 #: ../data/gweled.ui.h:16
 msgid "_Help"
-msgstr "Pomo_c"
+msgstr "_Súgó"
 
 #: ../data/gweled.ui.h:18
 msgid "_Scores"
-msgstr "_Wyniki"
+msgstr "_Pontszámok"
 
 #: ../data/gweled.ui.h:19
 msgid "_Settings"
-msgstr "_Ustawienia"
+msgstr "_Beállítások"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr "Gra typu „połącz trzy”."
+msgstr "A „Diamond Mine”-hoz hasonló logikai játék"
