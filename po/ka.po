@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-01-12 03:01+0000\n"
+"POT-Creation-Date: 2011-10-31 11:05+0100\n"
+"PO-Revision-Date: 2011-11-06 15:01+0000\n"
 "Last-Translator: Giorgi Maghlakelidze <acidlabz@gmail.com>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-04 05:32+0000\n"
+"X-Launchpad-Export-Date: 2011-11-07 05:53+0000\n"
 "X-Generator: Launchpad (build 14231)\n"
 
 #: ../src/main.c:65
@@ -60,15 +60,15 @@ msgid "Your score has made the top ten."
 msgstr "თქვენი ქულები საუკეთესო ათეულშია."
 
 #: ../src/main.c:397
-msgid "Get as many point as you can. The game ends if you out of moves."
+msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 
 #: ../src/main.c:399
-msgid "Get as many points as you can, but you are limited on time."
+msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
 
 #: ../src/main.c:401
-msgid "Game will never end. Your scores will not be registered."
+msgid "The game never ends, but your score will not be saved."
 msgstr ""
 
 #: ../src/main.c:461
@@ -107,8 +107,8 @@ msgstr "შეჩერებული"
 msgid "_Pause"
 msgstr "_შეჩერება"
 
-#: ../src/board_engine.c:829 ../src/board_engine.c:902
-#: ../src/board_engine.c:1004
+#: ../src/board_engine.c:830 ../src/board_engine.c:903
+#: ../src/board_engine.c:1005
 #, c-format
 msgid "Level %d"
 msgstr "დონე %d"
