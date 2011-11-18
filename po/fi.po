@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-10-31 11:05+0100\n"
-"PO-Revision-Date: 2011-11-06 15:01+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"PO-Revision-Date: 2011-11-17 14:46+0000\n"
+"Last-Translator: Rami Selin <rami.selin@gmail.com>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-07 05:53+0000\n"
-"X-Generator: Launchpad (build 14231)\n"
+"X-Launchpad-Export-Date: 2011-11-18 05:36+0000\n"
+"X-Generator: Launchpad (build 14299)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -63,14 +63,17 @@ msgstr "Tuloksesi pääsi top-10 listalle."
 #: ../src/main.c:397
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Kerää mahdollisimman paljon pisteitä. Peli päättyy, jos sinulta loppuu "
+"siirrot."
 
 #: ../src/main.c:399
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
+"Kerää mahdollisimman paljon pisteitä. Peli päättyy, jos sinulta loppuu aika."
 
 #: ../src/main.c:401
 msgid "The game never ends, but your score will not be saved."
-msgstr ""
+msgstr "Peli ei pääty koskaan, mutta pisteitäsi ei tallenneta."
 
 #: ../src/main.c:461
 msgid "There is a game saved, do you want restore it?"
@@ -89,12 +92,13 @@ msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Katja Viljakainen https://launchpad.net/~katja-viljakainen\n"
+"  Rami Selin https://launchpad.net/~rami-selin\n"
 "  Timo Jyrinki https://launchpad.net/~timo-jyrinki\n"
 "  Tomi Juntunen https://launchpad.net/~tojuntu"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "Pulmapeli jalokivillä"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
@@ -117,7 +121,7 @@ msgstr "Taso %d"
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
 msgid "Score"
-msgstr ""
+msgstr "Pisteet"
 
 #: ../src/games-scores-dialog.c:437
 msgid "New Game"
@@ -130,19 +134,19 @@ msgstr "Nimi"
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
 msgid "<b>Endless</b>"
-msgstr ""
+msgstr "<b>Päättymätön</b>"
 
 #: ../data/gweled.ui.h:2
 msgid "<b>Normal</b>"
-msgstr ""
+msgstr "<b>Tavallinen</b>"
 
 #: ../data/gweled.ui.h:3
 msgid "<b>Timed</b>"
-msgstr ""
+msgstr "<b>Ajastettu</b>"
 
 #: ../data/gweled.ui.h:4
 msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr ""
+msgstr "<span size=\"x-large\" weight=\"bold\">Tervetuloa Gwelediin!</span>"
 
 #: ../data/gweled.ui.h:5
 msgid "<span weight=\"bold\">Board size</span>"
@@ -162,7 +166,7 @@ msgstr "Keskikokoinen"
 
 #: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
-msgstr ""
+msgstr "Pysäyttää pelin, jotta voit palata siihen myöhemmin"
 
 #: ../data/gweled.ui.h:10
 msgid "Play background music"
@@ -178,7 +182,7 @@ msgstr "Asetukset"
 
 #: ../data/gweled.ui.h:13
 msgid "Score:"
-msgstr ""
+msgstr "Pisteet:"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"

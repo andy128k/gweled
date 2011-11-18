@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-10-31 11:05+0100\n"
-"PO-Revision-Date: 2011-11-06 15:01+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"PO-Revision-Date: 2011-11-17 20:30+0000\n"
+"Last-Translator: Ivo <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-07 05:53+0000\n"
-"X-Generator: Launchpad (build 14231)\n"
+"X-Launchpad-Export-Date: 2011-11-18 05:36+0000\n"
+"X-Generator: Launchpad (build 14299)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -62,14 +62,19 @@ msgstr "Uw score zit bij de top tien."
 #: ../src/main.c:397
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Verzamel zoveel mogelijk punten. Het spel eindigt als u geen zetten meer "
+"over heeft."
 
 #: ../src/main.c:399
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
+"Verzamel zoveel mogelijk punten. Het spel eindigt als u geen zetten meer "
+"over heeft."
 
 #: ../src/main.c:401
 msgid "The game never ends, but your score will not be saved."
 msgstr ""
+"Het spel zal nooit eindigen, maar uw score zal niet worden opgeslagen."
 
 #: ../src/main.c:461
 msgid "There is a game saved, do you want restore it?"
