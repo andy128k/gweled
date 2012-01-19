@@ -18,9 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+
+#include <config.h>
 
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
@@ -231,7 +230,7 @@ drawing_area_button_event_cb (GtkWidget * widget, GdkEventButton * event, gpoint
 			gi_dragging = -1;
 
 			if(prefs.sounds_on)
-			    sound_play_sample(CLICK_EVENT);
+			    sound_effect_play(CLICK_EVENT);
 		}
 		break;
 
@@ -380,19 +379,16 @@ on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data
 	if (gtk_toggle_button_get_active (togglebutton)) {
 	    prefs.music_on = TRUE;
 	    if(sound_get_enabled() == FALSE) {
-	        sound_init();
+	        sound_init(gdk_screen_get_default());
 		    if(sound_get_enabled() == FALSE) {
 	            gtk_widget_set_sensitive(g_pref_music_button, FALSE);
 	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	        }
 		}
-		sound_music_play();
+		sound_music_play(g_main_window);
 	} else {
 	    prefs.music_on = FALSE;
-		sound_music_stop();
-		if(prefs.sounds_on == FALSE)
-		    sound_destroy();
-    }
+		sound_music_stop();}
 }
 
 void
@@ -401,17 +397,12 @@ on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_dat
 	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.sounds_on = TRUE;
 		if(sound_get_enabled() == FALSE) {
-	        sound_init();
+	        sound_init(gdk_screen_get_default());
 		    if(sound_get_enabled() == FALSE) {
 	            gtk_widget_set_sensitive(g_pref_music_button, FALSE);
 	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	        }
 		}
-		sound_load_samples();
-	} else {
-		prefs.sounds_on = FALSE;
-		sound_unload_samples();
-		if(prefs.music_on == FALSE)
-		    sound_destroy();
-    }
+	} 
+	else prefs.sounds_on = FALSE;
 }

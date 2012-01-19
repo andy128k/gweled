@@ -22,6 +22,7 @@
 #define _GWELED_MAIN_H_
 
 #include <glib.h>
+#include <gdk/gdk.h>
 
 void
 save_preferences(void);

@@ -19,7 +19,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 /* for memset and strlen */
@@ -663,8 +663,9 @@ board_engine_loop (gpointer data)
 				sge_object_move_to (cursor[1],
 						x1 * prefs.tile_size,
 						y1 * prefs.tile_size);
-				if(prefs.sounds_on == TRUE)
-				    sound_play_sample(SWAP_EVENT);
+				if(prefs.sounds_on == TRUE){
+				    sound_effect_play(SWAP_EVENT);
+				}
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
 				if (cursor[1]) {
@@ -1041,7 +1042,7 @@ void gweled_stop_game()
     board_set_pause(FALSE);
     respawn_board_engine_loop();
     gi_game_running = 0;
-	sge_destroy_all_objects ();
+    sge_destroy_all_objects();
 
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);

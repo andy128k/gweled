@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
 
+
 #include "sge_utils.h"
 
 GdkPixbuf *

@@ -20,22 +20,22 @@
 
 #ifndef _SOUND_H_
 #define _SOUND_H_
-
 #include <glib.h>
+#include <canberra.h>
 
-typedef enum e_gweled_sound_samples
+typedef enum e_gweled_sound_effects
 {
     CLICK_EVENT,
     SWAP_EVENT
-} gweled_sound_samples;
+} gweled_sound_effects;
 
-void sound_init(void);
-void sound_music_play(void);
+void sound_init(GdkScreen *);
+void sound_music_play(GtkWidget *);
 void sound_music_stop(void);
-void sound_load_samples(void);
-void sound_unload_samples(void);
-void sound_play_sample(gweled_sound_samples sample);
+void sound_effect_play(gweled_sound_effects);
 void sound_destroy(void);
 gboolean sound_get_enabled();
+static void music_finished_playing_cb(ca_context *, uint32_t, int, gpointer);
+static gboolean playing_timeout_cb(gpointer);
 
 #endif
