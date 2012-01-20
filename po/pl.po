@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-31 11:05+0100\n"
+"POT-Creation-Date: 2012-01-19 19:50+0000\n"
 "PO-Revision-Date: 2011-11-06 15:01+0000\n"
 "Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Polish <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-11-07 05:53+0000\n"
-"X-Generator: Launchpad (build 14231)\n"
+"X-Launchpad-Export-Date: 2012-01-20 05:06+0000\n"
+"X-Generator: Launchpad (build 14700)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -71,19 +71,19 @@ msgstr ""
 msgid "The game never ends, but your score will not be saved."
 msgstr ""
 
-#: ../src/main.c:461
+#: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
 msgstr "Wczytać zapisany stan gry?"
 
-#: ../src/callbacks.c:74
+#: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr "Anulować rozgrywkę?"
 
-#: ../src/callbacks.c:139
+#: ../src/callbacks.c:138
 msgid "Do you want to save the current game?"
 msgstr "Zapisać bieżącą rozgrywkę?"
 
-#: ../src/callbacks.c:173
+#: ../src/callbacks.c:172
 msgid "translator-credits"
 msgstr ""
 "This is a dummy translation so that the credits are counted as translated.\n"
@@ -92,7 +92,7 @@ msgstr ""
 "  Piotr Sokół https://launchpad.net/~psokol\n"
 "  Qba https://launchpad.net/~qba100"
 
-#: ../src/callbacks.c:178
+#: ../src/callbacks.c:177
 msgid "A puzzle game with gems"
 msgstr "Gra logiczna z klejnotami"
 
@@ -104,12 +104,12 @@ msgstr "_Wznów"
 msgid "Paused"
 msgstr "Wstrzymano"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "_Wstrzymaj"
 
-#: ../src/board_engine.c:830 ../src/board_engine.c:903
-#: ../src/board_engine.c:1005
+#: ../src/board_engine.c:831 ../src/board_engine.c:904
+#: ../src/board_engine.c:1006
 #, c-format
 msgid "Level %d"
 msgstr "Poziom %d"
@@ -129,76 +129,76 @@ msgstr "Nazwa"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
-msgid "<b>Endless</b>"
-msgstr "<b>Bez końca</b>"
+msgid "_Game"
+msgstr "_Gra"
 
 #: ../data/gweled.ui.h:2
-msgid "<b>Normal</b>"
-msgstr "<b>Zwykły</b>"
-
-#: ../data/gweled.ui.h:3
-msgid "<b>Timed</b>"
-msgstr "<b>Na czas</b>"
-
-#: ../data/gweled.ui.h:4
-msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr "<span size=\"x-large\" weight=\"bold\">Witamy w Gweled!</span>"
-
-#: ../data/gweled.ui.h:5
-msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Rozmiar planszy</span>"
-
-#: ../data/gweled.ui.h:6
-msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Dźwięk</span>"
-
-#: ../data/gweled.ui.h:7
-msgid "Large"
-msgstr "Duży"
-
-#: ../data/gweled.ui.h:8
-msgid "Medium"
-msgstr "Średni"
-
-#: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
 msgstr "Wstrzymuje rozgrywkę w celu jej późniejszego wznowienia"
 
+#: ../data/gweled.ui.h:4
+msgid "_Scores"
+msgstr "_Wyniki"
+
+#: ../data/gweled.ui.h:5
+msgid "_Settings"
+msgstr "_Ustawienia"
+
+#: ../data/gweled.ui.h:6
+msgid "_Help"
+msgstr "Pomo_c"
+
+#: ../data/gweled.ui.h:7
+msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Witamy w Gweled!</span>"
+
+#: ../data/gweled.ui.h:8
+msgid "<b>Normal</b>"
+msgstr "<b>Zwykły</b>"
+
+#: ../data/gweled.ui.h:9
+msgid "<b>Timed</b>"
+msgstr "<b>Na czas</b>"
+
 #: ../data/gweled.ui.h:10
-msgid "Play background music"
-msgstr "Odtwarzanie muzyki"
+msgid "<b>Endless</b>"
+msgstr "<b>Bez końca</b>"
 
 #: ../data/gweled.ui.h:11
-msgid "Play sound effects"
-msgstr "Odtwarzanie efektów dźwiękowych"
+msgid "Score:"
+msgstr "Wynik:"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
 msgstr "Preferencje"
 
 #: ../data/gweled.ui.h:13
-msgid "Score:"
-msgstr "Wynik:"
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr "<span weight=\"bold\">Rozmiar planszy</span>"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
 msgstr "Mały"
 
 #: ../data/gweled.ui.h:15
-msgid "_Game"
-msgstr "_Gra"
+msgid "Medium"
+msgstr "Średni"
 
 #: ../data/gweled.ui.h:16
-msgid "_Help"
-msgstr "Pomo_c"
+msgid "Large"
+msgstr "Duży"
+
+#: ../data/gweled.ui.h:17
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr "<span weight=\"bold\">Dźwięk</span>"
 
 #: ../data/gweled.ui.h:18
-msgid "_Scores"
-msgstr "_Wyniki"
+msgid "Play background music"
+msgstr "Odtwarzanie muzyki"
 
 #: ../data/gweled.ui.h:19
-msgid "_Settings"
-msgstr "_Ustawienia"
+msgid "Play sound effects"
+msgstr "Odtwarzanie efektów dźwiękowych"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
