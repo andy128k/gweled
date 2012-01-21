@@ -166,6 +166,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 	const gchar *authors[] = {
 	    "Sebastien Delestaing <sebdelestaing@free.fr>",
 	    "Daniele Napolitano <dnax88@gmail.com>",
+	    "Wesley Ellis",
 	    NULL
 	};
 
