@@ -19,7 +19,6 @@
  */
 
 #include <canberra-gtk.h>
-#include <pthread.h>
 #include <glib.h>
 
 #include "sound.h"
@@ -28,7 +27,6 @@
 /* The time interval in milliseconds between music play iterations */
 #define MS_BETWEEN_PLAY 500
 
-static pthread_t thread;
 static gboolean is_playing;
 static gboolean sound_available;
 static ca_context *context = NULL;
