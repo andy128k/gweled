@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-01-21 01:22+0000\n"
-"PO-Revision-Date: 2011-11-06 15:01+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"PO-Revision-Date: 2012-04-24 07:58+0000\n"
+"Last-Translator: luyikei <luyikei@live.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Launchpad-Export-Date: 2012-04-25 05:04+0000\n"
+"X-Generator: Launchpad (build 15139)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -61,15 +61,15 @@ msgstr "トップ１０にランクインしました。"
 
 #: ../src/main.c:397
 msgid "Get as many points as you can. The game ends if you run out of moves."
-msgstr ""
+msgstr "あなたはできるだけ多くのポイントをとってください。ゲームは動きが尽きた時点で終了します。"
 
 #: ../src/main.c:399
 msgid "Get as many points as you can. The game ends if you run out of time."
-msgstr ""
+msgstr "あなたはできるだけ多くのポイントをとってください。ゲームは時間が不足した時点で終了します。"
 
 #: ../src/main.c:401
 msgid "The game never ends, but your score will not be saved."
-msgstr ""
+msgstr "ゲームが終わることはありませんが、あなたのスコアは保存されません。"
 
 #: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
@@ -89,12 +89,11 @@ msgstr ""
 "This is a dummy translation so that the credits are counted as translated.\n"
 "\n"
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
-"  execjosh https://launchpad.net/~execjosh"
+"  luyikei https://launchpad.net/~luyikei"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "宝石のパズルゲーム"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
@@ -150,23 +149,23 @@ msgstr "ヘルプ(_H)"
 
 #: ../data/gweled.ui.h:7
 msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr ""
+msgstr "<span size=\"x-large\" weight=\"bold\">Gweledへようこそ！</span>"
 
 #: ../data/gweled.ui.h:8
 msgid "<b>Normal</b>"
-msgstr ""
+msgstr "<b>通常</b>"
 
 #: ../data/gweled.ui.h:9
 msgid "<b>Timed</b>"
-msgstr ""
+msgstr "<b>時間制限</b>"
 
 #: ../data/gweled.ui.h:10
 msgid "<b>Endless</b>"
-msgstr ""
+msgstr "<b>エンドレス/b>"
 
 #: ../data/gweled.ui.h:11
 msgid "Score:"
-msgstr ""
+msgstr "スコア:"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
