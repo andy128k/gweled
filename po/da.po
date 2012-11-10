@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-01-21 01:22+0000\n"
-"PO-Revision-Date: 2011-07-24 23:24+0000\n"
-"Last-Translator: Joe Hansen <Unknown>\n"
+"PO-Revision-Date: 2012-11-09 23:12+0000\n"
+"Last-Translator: Kaki <karsten.r.s@kaki.dk>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:36+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Launchpad-Export-Date: 2012-11-10 05:17+0000\n"
+"X-Generator: Launchpad (build 16251)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -62,14 +62,18 @@ msgstr "Dit resultat kom på top ti."
 #: ../src/main.c:397
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Saml så mange point som du kan. Spillet slutter, når du ikke har flere "
+"muligheder for at flytte."
 
 #: ../src/main.c:399
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
+"Saml så mange point som du kan. Spillet slutter, når du ikke har mere tid "
+"tilbage."
 
 #: ../src/main.c:401
 msgid "The game never ends, but your score will not be saved."
-msgstr ""
+msgstr "Spillet slutter aldrig, men din score bliver ikke gemt."
 
 #: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
@@ -87,7 +91,8 @@ msgstr "Ønsker du at gemme det aktuelle spil?"
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Joe Hansen https://launchpad.net/~joedalton2"
+"  Joe Hansen https://launchpad.net/~joedalton2\n"
+"  Kaki https://launchpad.net/~karsten-r-s"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
