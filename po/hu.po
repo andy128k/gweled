@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-01-21 01:22+0000\n"
-"PO-Revision-Date: 2011-10-23 15:21+0000\n"
+"PO-Revision-Date: 2013-03-30 11:34+0000\n"
 "Last-Translator: Úr Balázs <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Launchpad-Export-Date: 2013-03-31 05:34+0000\n"
+"X-Generator: Launchpad (build 16546)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -25,7 +25,7 @@ msgstr "Normál"
 #: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
-msgstr "Időre megy"
+msgstr "Időzített"
 
 #: ../src/main.c:280
 msgid "Game over!"
@@ -62,14 +62,18 @@ msgstr "Pontszáma benne van az első tízben."
 #: ../src/main.c:397
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Szerezzen annyit pontot, amennyit csak tud. A játéknak akkor van vége, ha "
+"már nem tud többet lépni."
 
 #: ../src/main.c:399
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
+"Szerezzen annyit pontot, amennyit csak tud. A játéknak akkor van vége, ha "
+"elfogy az ideje."
 
 #: ../src/main.c:401
 msgid "The game never ends, but your score will not be saved."
-msgstr ""
+msgstr "A játéknak sosincs vége, de a pontszáma nem lesz elmentve."
 
 #: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
