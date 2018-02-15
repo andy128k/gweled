@@ -18,10 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <gtk/gtk.h>
+#ifndef _SGE_UTILS_H_
+#define _SGE_UTILS_H_
 
 GdkPixbuf*
 sge_load_file_to_pixbuf (char *filename);
 
 GdkPixbuf*
 sge_load_svg_to_pixbuf (char *filename, int width, int height);
+
+#endif
