@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-03-26 16:47+0000\n"
+"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"PO-Revision-Date: 2011-11-06 15:01+0000\n"
 "Last-Translator: zvacet <ikoli@yahoo.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
+"X-Generator: Launchpad (build 14700)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -25,7 +25,7 @@ msgstr ""
 #: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
-msgstr ""
+msgstr "Vremenski ograničeno"
 
 #: ../src/main.c:280
 msgid "Game over!"
@@ -60,26 +60,26 @@ msgid "Your score has made the top ten."
 msgstr ""
 
 #: ../src/main.c:397
-msgid "Get as many point as you can. The game ends if you out of moves."
+msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 
 #: ../src/main.c:399
-msgid "Get as many points as you can, but you are limited on time."
-msgstr "Sakupite što više bodova,ali ograničeni ste vremenom."
+msgid "Get as many points as you can. The game ends if you run out of time."
+msgstr ""
 
 #: ../src/main.c:401
-msgid "Game will never end. Your scores will not be registered."
-msgstr "Igra neće nikada završiti.Vaši rezultati neće biti registrirani."
+msgid "The game never ends, but your score will not be saved."
+msgstr ""
 
-#: ../src/main.c:461
+#: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
 msgstr "Postoji spremljena igra,želite li je obnoviti?"
 
-#: ../src/callbacks.c:74
+#: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr "Želite li prekinuti ovu igru?"
 
-#: ../src/callbacks.c:139
+#: ../src/callbacks.c:138
 msgid "Do you want to save the current game?"
 msgstr "Želite li sačuvati trenutnu igru?"
 
@@ -101,12 +101,12 @@ msgstr ""
 msgid "Paused"
 msgstr ""
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr ""
 
-#: ../src/board_engine.c:829 ../src/board_engine.c:902
-#: ../src/board_engine.c:1004
+#: ../src/board_engine.c:831 ../src/board_engine.c:904
+#: ../src/board_engine.c:1006
 #, c-format
 msgid "Level %d"
 msgstr "Razina%d"
@@ -126,84 +126,77 @@ msgstr ""
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
-msgid "<b>Endless</b>"
-msgstr "<b>Beskrajno</b>"
+msgid "_Game"
+msgstr ""
 
 #: ../data/gweled.ui.h:2
-msgid "<b>Normal</b>"
-msgstr "<b>Normalno</b>"
-
-#: ../data/gweled.ui.h:3
-msgid "<b>Timed</b>"
-msgstr ""
-
-#: ../data/gweled.ui.h:4
-msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr "<span size=\"x-large\" weight=\"bold\">Dobrodošli u Gweled!</span>"
-
-#: ../data/gweled.ui.h:5
-msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Veličina ploče</span>"
-
-#: ../data/gweled.ui.h:6
-msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Zvuk</span>"
-
-#: ../data/gweled.ui.h:7
-msgid "Large"
-msgstr ""
-
-#: ../data/gweled.ui.h:8
-msgid "Medium"
-msgstr ""
-
-#: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
 msgstr ""
 
+#: ../data/gweled.ui.h:4
+msgid "_Scores"
+msgstr ""
+
+#: ../data/gweled.ui.h:5
+msgid "_Settings"
+msgstr ""
+
+#: ../data/gweled.ui.h:6
+msgid "_Help"
+msgstr ""
+
+#: ../data/gweled.ui.h:7
+msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Dobrodošli u Gweled!</span>"
+
+#: ../data/gweled.ui.h:8
+msgid "<b>Normal</b>"
+msgstr "<b>Normalno</b>"
+
+#: ../data/gweled.ui.h:9
+msgid "<b>Timed</b>"
+msgstr "<b>Vremenski ograničeno</b>"
+
 #: ../data/gweled.ui.h:10
-msgid "Play background music"
-msgstr "Sviraj pozadinsku glazbu"
+msgid "<b>Endless</b>"
+msgstr "<b>Beskrajno</b>"
 
 #: ../data/gweled.ui.h:11
-msgid "Play sound effects"
-msgstr "Sviraj zvučne efekte"
+msgid "Score:"
+msgstr ""
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
 msgstr ""
 
 #: ../data/gweled.ui.h:13
-msgid "Score:"
-msgstr ""
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr "<span weight=\"bold\">Veličina ploče</span>"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
 msgstr ""
 
 #: ../data/gweled.ui.h:15
-msgid "_Game"
+msgid "Medium"
 msgstr ""
 
 #: ../data/gweled.ui.h:16
-msgid "_Help"
+msgid "Large"
 msgstr ""
+
+#: ../data/gweled.ui.h:17
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr "<span weight=\"bold\">Zvuk</span>"
 
 #: ../data/gweled.ui.h:18
-msgid "_Scores"
-msgstr ""
+msgid "Play background music"
+msgstr "Sviraj pozadinsku glazbu"
 
 #: ../data/gweled.ui.h:19
-msgid "_Settings"
-msgstr ""
+msgid "Play sound effects"
+msgstr "Sviraj zvučne efekte"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr ""
-
-#, c-format
-#~ msgid "bonus x%d"
-#~ msgstr "bonus x%d"
-
-#~ msgid "In this mode the game never ends, but scores will not be recorded!"
-#~ msgstr "U ovom načinu igra nikada ne prestaje,ali rezultati se ne bilježe!"

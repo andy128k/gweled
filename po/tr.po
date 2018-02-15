@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-01-12 04:41+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"PO-Revision-Date: 2011-11-18 12:59+0000\n"
+"Last-Translator: Mesut Yaver <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
+"X-Generator: Launchpad (build 14700)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -42,7 +42,7 @@ msgstr "_Yeni Oyun"
 
 #: ../src/main.c:296
 msgid "Gweled Scores"
-msgstr ""
+msgstr "Gweled Skorları"
 
 #: ../src/main.c:299
 msgid "Game type:"
@@ -61,39 +61,40 @@ msgid "Your score has made the top ten."
 msgstr "Puanınız en iyi on listesine girdi."
 
 #: ../src/main.c:397
-msgid "Get as many point as you can. The game ends if you out of moves."
+msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Olabildiğince puan toplayın. Yapacak hamleniz kalmadığında oyun biter."
 
 #: ../src/main.c:399
-msgid "Get as many points as you can, but you are limited on time."
-msgstr ""
+msgid "Get as many points as you can. The game ends if you run out of time."
+msgstr "Olabildiğince puan toplayın. Süreniz dolduğunda oyun biter."
 
 #: ../src/main.c:401
-msgid "Game will never end. Your scores will not be registered."
-msgstr ""
+msgid "The game never ends, but your score will not be saved."
+msgstr "Oyun asla bitmeyecek, ama skorunuz da kaydedilmeyecek."
 
-#: ../src/main.c:461
+#: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
-msgstr ""
+msgstr "Kaydedilmiş bir oyun var, onu yüklemek ister misiniz?"
 
-#: ../src/callbacks.c:74
+#: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
-msgstr ""
+msgstr "Bu oyunu gerçekten durdurmak istiyor musunuz?"
 
-#: ../src/callbacks.c:139
+#: ../src/callbacks.c:138
 msgid "Do you want to save the current game?"
-msgstr ""
+msgstr "Mevcut oyunu kaydetmek istiyor musunuz?"
 
 #: ../src/callbacks.c:173
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
+"  Mesut Yaver https://launchpad.net/~afg-mesut\n"
 "  zeugma https://launchpad.net/~sunder67"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "Taşlı bir yapboz oyunu"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
@@ -103,114 +104,102 @@ msgstr "_Devam Et"
 msgid "Paused"
 msgstr "Duraklatıldı"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
 msgid "_Pause"
-msgstr "_Duraklat"
+msgstr "Durakla_t"
 
-#: ../src/board_engine.c:829 ../src/board_engine.c:902
-#: ../src/board_engine.c:1004
+#: ../src/board_engine.c:831 ../src/board_engine.c:904
+#: ../src/board_engine.c:1006
 #, c-format
 msgid "Level %d"
-msgstr ""
+msgstr "Seviye %d"
 
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
 msgid "Score"
-msgstr ""
+msgstr "Skor"
 
 #: ../src/games-scores-dialog.c:437
 msgid "New Game"
-msgstr ""
+msgstr "Yeni Oyun"
 
 #: ../src/games-scores-dialog.c:537
 msgid "Name"
-msgstr ""
+msgstr "İsim"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
-msgid "<b>Endless</b>"
-msgstr ""
+msgid "_Game"
+msgstr "_Oyun"
 
 #: ../data/gweled.ui.h:2
-msgid "<b>Normal</b>"
-msgstr ""
-
-#: ../data/gweled.ui.h:3
-msgid "<b>Timed</b>"
-msgstr ""
+msgid "Pauses the game for you can return to it later"
+msgstr "Daha sonra geri dönebilmeniz için oyunu duraklatır"
 
 #: ../data/gweled.ui.h:4
-msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr ""
+msgid "_Scores"
+msgstr "_Puanlar"
 
 #: ../data/gweled.ui.h:5
-msgid "<span weight=\"bold\">Board size</span>"
-msgstr ""
+msgid "_Settings"
+msgstr "_Ayarlar"
 
 #: ../data/gweled.ui.h:6
-msgid "<span weight=\"bold\">Sound</span>"
-msgstr ""
+msgid "_Help"
+msgstr "Yardı_m"
 
 #: ../data/gweled.ui.h:7
-msgid "Large"
-msgstr ""
+msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Gweled'e Hoşgeldiniz!</span>"
 
 #: ../data/gweled.ui.h:8
-msgid "Medium"
-msgstr ""
+msgid "<b>Normal</b>"
+msgstr "<b>Normal</b>"
 
 #: ../data/gweled.ui.h:9
-msgid "Pauses the game for you can return to it later"
-msgstr ""
+msgid "<b>Timed</b>"
+msgstr "<b>Süreli</b>"
 
 #: ../data/gweled.ui.h:10
-msgid "Play background music"
-msgstr ""
+msgid "<b>Endless</b>"
+msgstr "<b>Sonsuz</b>"
 
 #: ../data/gweled.ui.h:11
-msgid "Play sound effects"
-msgstr ""
+msgid "Score:"
+msgstr "Skor:"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 #: ../data/gweled.ui.h:13
-msgid "Score:"
-msgstr ""
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr "<span weight=\"bold\">Tahta boyutu</span>"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
 msgstr "Küçük"
 
 #: ../data/gweled.ui.h:15
-msgid "_Game"
-msgstr "_Oyun"
+msgid "Medium"
+msgstr "Orta"
 
 #: ../data/gweled.ui.h:16
-msgid "_Help"
-msgstr "_Yardım"
+msgid "Large"
+msgstr "Büyük"
+
+#: ../data/gweled.ui.h:17
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr "<span weight=\"bold\">Ses</span>"
 
 #: ../data/gweled.ui.h:18
-msgid "_Scores"
-msgstr "_Puanlar"
+msgid "Play background music"
+msgstr "Arka plan müziği çal"
 
 #: ../data/gweled.ui.h:19
-msgid "_Settings"
-msgstr "_Ayarlar"
+msgid "Play sound effects"
+msgstr "Ses efektlerini çal"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr ""
-
-#~ msgid "paused"
-#~ msgstr "duraklatıldı"
-
-#~ msgid "Highscores"
-#~ msgstr "Yüksek Puanlar"
-
-#~ msgid "Normal"
-#~ msgstr "Normal"
-
-#~ msgid "Timed"
-#~ msgstr "Süreli"
+msgstr "\"Diamond Mine\" benzeri bir yapboz oyunu oyna"

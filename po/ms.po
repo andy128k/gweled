@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-02-04 16:13+0000\n"
+"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"PO-Revision-Date: 2011-11-14 09:53+0000\n"
 "Last-Translator: abuyop <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
+"X-Generator: Launchpad (build 14700)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -60,30 +60,30 @@ msgid "Your score has made the top ten."
 msgstr "Skor anda mencapai kedudukan sepuluh terbaik"
 
 #: ../src/main.c:397
-msgid "Get as many point as you can. The game ends if you out of moves."
+msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
-"Dapatkan sebanyak mungkin mata yang boleh. Permainan akan tamat jika anda "
-"kehabisan pergerakan."
+"Dapatkan sebanyak mungkin mata yang boleh. Permainan tamat jika anda "
+"ketiadaan gerakan."
 
 #: ../src/main.c:399
-msgid "Get as many points as you can, but you are limited on time."
+msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
-"Dapatkan sebanyak mungkin mata yang boleh, tetapi anda diberikan masa yang "
-"terhad."
+"Dapatkan sebanyak mungkin mata yang boleh. Permainan tamat jika anda "
+"kehabisan masa."
 
 #: ../src/main.c:401
-msgid "Game will never end. Your scores will not be registered."
-msgstr "Permainan tidak akan tama. Skor anda tidak akan didaftarkan."
+msgid "The game never ends, but your score will not be saved."
+msgstr "Permainan tidak akan tamat tetapi mata anda tidak akan disimpan."
 
-#: ../src/main.c:461
+#: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
 msgstr "Terdapat permainan tersimpan, adakah anda ingin memulihkannya?"
 
-#: ../src/callbacks.c:74
+#: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr "Adakah anda ingin mengabaikan permainan ini?"
 
-#: ../src/callbacks.c:139
+#: ../src/callbacks.c:138
 msgid "Do you want to save the current game?"
 msgstr "Adakah anda ingin menyimpan permainan semasa?"
 
@@ -93,12 +93,11 @@ msgstr ""
 "This is a dummy translation so that the credits are counted as translated.\n"
 "\n"
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  abuyop https://launchpad.net/~abuyop"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "Permainan teka-teki menggunakan permata"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
@@ -108,12 +107,12 @@ msgstr "_Sambung semula"
 msgid "Paused"
 msgstr "Dijedakan"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "_Jeda"
 
-#: ../src/board_engine.c:829 ../src/board_engine.c:902
-#: ../src/board_engine.c:1004
+#: ../src/board_engine.c:831 ../src/board_engine.c:904
+#: ../src/board_engine.c:1006
 #, c-format
 msgid "Level %d"
 msgstr "Aras %d"
@@ -133,102 +132,78 @@ msgstr "Nama"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
-msgid "<b>Endless</b>"
-msgstr "<b>Tiada Had</b>"
+msgid "_Game"
+msgstr "_Permainan"
 
 #: ../data/gweled.ui.h:2
-msgid "<b>Normal</b>"
-msgstr "<b>Biasa</b>"
-
-#: ../data/gweled.ui.h:3
-msgid "<b>Timed</b>"
-msgstr "<b>Bermasa</b>"
+msgid "Pauses the game for you can return to it later"
+msgstr "Jedakan permainan supaya anda boleh teruskannya kemudian"
 
 #: ../data/gweled.ui.h:4
+msgid "_Scores"
+msgstr "_Skor"
+
+#: ../data/gweled.ui.h:5
+msgid "_Settings"
+msgstr "_Tetapan"
+
+#: ../data/gweled.ui.h:6
+msgid "_Help"
+msgstr "_Bantuan"
+
+#: ../data/gweled.ui.h:7
 msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
 msgstr ""
 "<span size=\"x-large\" weight=\"bold\">Selamat datang keGweled!</span>"
 
-#: ../data/gweled.ui.h:5
-msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Saiz papan</span>"
-
-#: ../data/gweled.ui.h:6
-msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Bunyi</span>"
-
-#: ../data/gweled.ui.h:7
-msgid "Large"
-msgstr "Besar"
-
 #: ../data/gweled.ui.h:8
-msgid "Medium"
-msgstr "Sederhana"
+msgid "<b>Normal</b>"
+msgstr "<b>Biasa</b>"
 
 #: ../data/gweled.ui.h:9
-msgid "Pauses the game for you can return to it later"
-msgstr "Jedakan permainan supaya anda boleh teruskannya kemudian"
+msgid "<b>Timed</b>"
+msgstr "<b>Bermasa</b>"
 
 #: ../data/gweled.ui.h:10
-msgid "Play background music"
-msgstr "Main muzik latar belakang"
+msgid "<b>Endless</b>"
+msgstr "<b>Tiada Had</b>"
 
 #: ../data/gweled.ui.h:11
-msgid "Play sound effects"
-msgstr "Main kesan bunyi"
+msgid "Score:"
+msgstr "Skor:"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
 msgstr "Keutamaan"
 
 #: ../data/gweled.ui.h:13
-msgid "Score:"
-msgstr "Skor:"
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr "<span weight=\"bold\">Saiz papan</span>"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
 msgstr "Kecil"
 
 #: ../data/gweled.ui.h:15
-msgid "_Game"
-msgstr "_Permainan"
+msgid "Medium"
+msgstr "Sederhana"
 
 #: ../data/gweled.ui.h:16
-msgid "_Help"
-msgstr "_Bantuan"
+msgid "Large"
+msgstr "Besar"
+
+#: ../data/gweled.ui.h:17
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr "<span weight=\"bold\">Bunyi</span>"
 
 #: ../data/gweled.ui.h:18
-msgid "_Scores"
-msgstr "_Skor"
+msgid "Play background music"
+msgstr "Main muzik latar belakang"
 
 #: ../data/gweled.ui.h:19
-msgid "_Settings"
-msgstr "_Tetapan"
+msgid "Play sound effects"
+msgstr "Main kesan bunyi"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Main permainan teka-teki yang seakan dengan \"Diamond Mine\""
-
-#~ msgid ""
-#~ "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
-#~ "Mine\")"
-#~ msgstr ""
-#~ "Port GNOME untuk permainan \"Bejeweled\" PalmOS/Windows/Java (atau \"Diamond "
-#~ "Mine\")"
-
-#~ msgid "<span weight=\"bold\">Game mode</span>"
-#~ msgstr "<span weight=\"bold\">Mod permainan</span>"
-
-#~ msgid "Endless"
-#~ msgstr "Tidak henti-henti"
-
-#~ msgid "Normal"
-#~ msgstr "Biasa"
-
-#~ msgid "In this mode the game never ends, but scores will not be recorded!"
-#~ msgstr ""
-#~ "Didalam mod ini permainan tidak akan tamat, tetapi skor tidak akan "
-#~ "direkodkan!"
-
-#~ msgid "Timed"
-#~ msgstr "Bermasa"

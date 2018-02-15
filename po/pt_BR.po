@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2011-03-31 00:33+0200\n"
-"PO-Revision-Date: 2011-03-01 02:09+0000\n"
-"Last-Translator: Rafael Canovas <rafanovas@hotmail.com>\n"
+"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"PO-Revision-Date: 2011-11-06 15:01+0000\n"
+"Last-Translator: Rafael Canovas <rafaelcanovas@myself.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-31 09:28+0000\n"
-"X-Generator: Launchpad (build 12696)\n"
+"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
+"X-Generator: Launchpad (build 14700)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -62,28 +62,26 @@ msgid "Your score has made the top ten."
 msgstr "Sua pontuação está entre as dez melhores."
 
 #: ../src/main.c:397
-msgid "Get as many point as you can. The game ends if you out of moves."
+msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
-"Consiga o máximo de pontos possível. O jogo acaba se os movimentos se "
-"esgotarem."
 
 #: ../src/main.c:399
-msgid "Get as many points as you can, but you are limited on time."
-msgstr "Consiga o máximo de pontos possível, dentro do tempo limite."
+msgid "Get as many points as you can. The game ends if you run out of time."
+msgstr ""
 
 #: ../src/main.c:401
-msgid "Game will never end. Your scores will not be registered."
-msgstr "O jogo nunca acabará. Suas pontuações não serão registradas."
+msgid "The game never ends, but your score will not be saved."
+msgstr ""
 
-#: ../src/main.c:461
+#: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
 msgstr "Há  um jogo salvo, você deseja restaura-lo?"
 
-#: ../src/callbacks.c:74
+#: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr "Deseja realmente cancelar esse jogo?"
 
-#: ../src/callbacks.c:139
+#: ../src/callbacks.c:138
 msgid "Do you want to save the current game?"
 msgstr "Você quer gravar este jogo?"
 
@@ -94,12 +92,11 @@ msgstr ""
 "\n"
 "Launchpad Contributions:\n"
 "  Ivo https://launchpad.net/~van-hoi\n"
-"  Pedro Folha https://launchpad.net/~pedrovi\n"
-"  Rafael Canovas https://launchpad.net/~rafanovas"
+"  Pedro Folha https://launchpad.net/~pedrovi"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "Um jogo de puzzle com gemas"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
@@ -109,12 +106,12 @@ msgstr "Continua_r"
 msgid "Paused"
 msgstr "Pausado"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:17
+#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "_Pausar"
 
-#: ../src/board_engine.c:829 ../src/board_engine.c:902
-#: ../src/board_engine.c:1004
+#: ../src/board_engine.c:831 ../src/board_engine.c:904
+#: ../src/board_engine.c:1006
 #, c-format
 msgid "Level %d"
 msgstr "Nível %d"
@@ -134,115 +131,77 @@ msgstr "Nome"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
-msgid "<b>Endless</b>"
-msgstr "<b>Interminável</b>"
+msgid "_Game"
+msgstr "_Partida"
 
 #: ../data/gweled.ui.h:2
-msgid "<b>Normal</b>"
-msgstr "<b>Normal</b>"
-
-#: ../data/gweled.ui.h:3
-msgid "<b>Timed</b>"
-msgstr "<b>Cronometrado</b>"
-
-#: ../data/gweled.ui.h:4
-msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr "<span size=\"x-large\" weight=\"bold\">Bem-vindo ao Gweled!</span>"
-
-#: ../data/gweled.ui.h:5
-msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Tamanho do tabuleiro</span>"
-
-#: ../data/gweled.ui.h:6
-msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Som</span>"
-
-#: ../data/gweled.ui.h:7
-msgid "Large"
-msgstr "Grande"
-
-#: ../data/gweled.ui.h:8
-msgid "Medium"
-msgstr "Médio"
-
-#: ../data/gweled.ui.h:9
 msgid "Pauses the game for you can return to it later"
 msgstr "Pausa o jogo para você poder joga-lo depois"
 
+#: ../data/gweled.ui.h:4
+msgid "_Scores"
+msgstr "Pontuaçõe_s"
+
+#: ../data/gweled.ui.h:5
+msgid "_Settings"
+msgstr "Configuraçõe_s"
+
+#: ../data/gweled.ui.h:6
+msgid "_Help"
+msgstr "A_juda"
+
+#: ../data/gweled.ui.h:7
+msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Bem-vindo ao Gweled!</span>"
+
+#: ../data/gweled.ui.h:8
+msgid "<b>Normal</b>"
+msgstr "<b>Normal</b>"
+
+#: ../data/gweled.ui.h:9
+msgid "<b>Timed</b>"
+msgstr "<b>Cronometrado</b>"
+
 #: ../data/gweled.ui.h:10
-msgid "Play background music"
-msgstr "Reproduz a musica de fundo"
+msgid "<b>Endless</b>"
+msgstr "<b>Interminável</b>"
 
 #: ../data/gweled.ui.h:11
-msgid "Play sound effects"
-msgstr "Reproduz os efeitos sonoros"
+msgid "Score:"
+msgstr "Placar:"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
 msgstr "Preferências"
 
 #: ../data/gweled.ui.h:13
-msgid "Score:"
-msgstr "Placar:"
+msgid "<span weight=\"bold\">Board size</span>"
+msgstr "<span weight=\"bold\">Tamanho do tabuleiro</span>"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
 msgstr "Pequeno"
 
 #: ../data/gweled.ui.h:15
-msgid "_Game"
-msgstr "_Partida"
+msgid "Medium"
+msgstr "Médio"
 
 #: ../data/gweled.ui.h:16
-msgid "_Help"
-msgstr "A_juda"
+msgid "Large"
+msgstr "Grande"
+
+#: ../data/gweled.ui.h:17
+msgid "<span weight=\"bold\">Sound</span>"
+msgstr "<span weight=\"bold\">Som</span>"
 
 #: ../data/gweled.ui.h:18
-msgid "_Scores"
-msgstr "Pontuaçõe_s"
+msgid "Play background music"
+msgstr "Reproduz a musica de fundo"
 
 #: ../data/gweled.ui.h:19
-msgid "_Settings"
-msgstr "Configuraçõe_s"
+msgid "Play sound effects"
+msgstr "Reproduz os efeitos sonoros"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Jogue um jogo de quebra-cabeça similar ao \"Diamond Mine\""
-
-#~ msgid "time's up #"
-#~ msgstr "Seu tempo acabou #"
-
-#~ msgid "paused"
-#~ msgstr "pausado"
-
-#, c-format
-#~ msgid "bonus x%d"
-#~ msgstr "bonus x%d"
-
-#~ msgid "<span weight=\"bold\">Difficulty level</span>"
-#~ msgstr "<span weight=\"bold\">Nivel de dificuldade</span>"
-
-#~ msgid "Timed"
-#~ msgstr "Com tempo"
-
-#~ msgid "Normal"
-#~ msgstr "Normal"
-
-#~ msgid "no moves left #"
-#~ msgstr "sem mais movimentos #"
-
-#~ msgid "In this mode the game never ends, but scores will not be recorded!"
-#~ msgstr "Neste modo o jogo nunca termina, mas a pontuação  não será gravada!"
-
-#~ msgid "Endless"
-#~ msgstr "Sem fim"
-
-#~ msgid "<span weight=\"bold\">Game mode</span>"
-#~ msgstr "<span weight=\"bold\">Tipo de Jogo</span>"
-
-#~ msgid ""
-#~ "A GNOME port of the PalmOS/Windows/Java game \"Bejeweled\" (aka \"Diamond "
-#~ "Mine\")"
-#~ msgstr ""
-#~ "Um porte  PalmOS/Windows/Java para GNOME do jogo \"Bejeweled\" (também "
-#~ "conhecido como \"Diamond Mine\")"

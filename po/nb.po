@@ -1,204 +1,205 @@
-# Georgian translation for gweled
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Norwegian Bokmal translation for gweled
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
 # This file is distributed under the same license as the gweled package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-01-21 01:22+0000\n"
-"PO-Revision-Date: 2011-11-06 15:01+0000\n"
-"Last-Translator: Giorgi Maghlakelidze <acidlabz@gmail.com>\n"
-"Language-Team: Georgian <ka@li.org>\n"
+"PO-Revision-Date: 2012-12-27 09:19+0000\n"
+"Last-Translator: Hans Joachim Desserud <Unknown>\n"
+"Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:36+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Launchpad-Export-Date: 2012-12-28 05:16+0000\n"
+"X-Generator: Launchpad (build 16378)\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
 msgid "Normal"
-msgstr "ჩვეულებრივი"
+msgstr "Normal"
 
 #: ../src/main.c:66
 msgctxt "game type"
 msgid "Timed"
-msgstr "დროზე"
+msgstr "Med tidsbegrensning"
 
 #: ../src/main.c:280
 msgid "Game over!"
-msgstr "თამაში დასრულებულია!"
+msgstr "Spillet er slutt!"
 
 #: ../src/main.c:282
 msgid "Great work, but unfortunately your score did not make the top ten."
-msgstr "კარგი შედეგია, მაგრამ საუკეთესო ათეულში ვერ მიაღწია."
+msgstr ""
+"Godt gjort, men dessverre nådde ikke poengsummen din opp blant de ti beste."
 
 #: ../src/main.c:284
 msgid "_New Game"
-msgstr "_ახალი თამაში"
+msgstr "_Nytt spill"
 
 #: ../src/main.c:296
 msgid "Gweled Scores"
-msgstr "Gweled ქულები"
+msgstr "Gweled resultater"
 
 #: ../src/main.c:299
 msgid "Game type:"
-msgstr "თამაშის სახეობა:"
+msgstr "Spilltype:"
 
 #: ../src/main.c:306
 msgid "Congratulations!"
-msgstr "გილოცავთ!"
+msgstr "Gratulerer!"
 
 #: ../src/main.c:307
 msgid "Your score is the best!"
-msgstr "თქვენი ქულები საუკეთესოა!"
+msgstr "Din poengsum er den beste!"
 
 #: ../src/main.c:308
 msgid "Your score has made the top ten."
-msgstr "თქვენი ქულები საუკეთესო ათეულშია."
+msgstr "Din poengsum er blant de ti beste."
 
 #: ../src/main.c:397
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Oppnå så mange poeng som mulig. Spillet er slutt når du slipper opp for "
+"muligheter til å flytte."
 
 #: ../src/main.c:399
 msgid "Get as many points as you can. The game ends if you run out of time."
-msgstr ""
+msgstr "Oppnå så mange poeng som mulig. Spillet er slutt når tiden er ute."
 
 #: ../src/main.c:401
 msgid "The game never ends, but your score will not be saved."
-msgstr ""
+msgstr "Spillet slutter aldri, men poengsummen vil ikke bli lagret."
 
 #: ../src/main.c:458
 msgid "There is a game saved, do you want restore it?"
-msgstr "თქვენი თამაში შენახულია. გსურთ განაგრძოთ?"
+msgstr "Det er et lagret spill, vil du gjenoppta det?"
 
 #: ../src/callbacks.c:73
 msgid "Do you really want to abort this game?"
-msgstr "დანამდვილებით გსურთ დაასრულოთ თამაში?"
+msgstr "Vil du virkelig avbryte spillet?"
 
 #: ../src/callbacks.c:138
 msgid "Do you want to save the current game?"
-msgstr "გსურთ მიმდინარე თამაშის შენახვა?"
+msgstr "Vil du lagre gjeldende spill?"
 
 #: ../src/callbacks.c:173
 msgid "translator-credits"
 msgstr ""
-"This is a dummy translation so that the credits are counted as translated.\n"
-"\n"
 "Launchpad Contributions:\n"
-"  Giorgi Maghlakelidze https://launchpad.net/~dracid"
+"  Hans Joachim Desserud https://launchpad.net/~hjd"
 
 #: ../src/callbacks.c:178
 msgid "A puzzle game with gems"
-msgstr ""
+msgstr "Puslespill med juveler"
 
 #: ../src/board_engine.c:505
 msgid "_Resume"
-msgstr "_გაგრძელება"
+msgstr "_Fortsett"
 
 #: ../src/board_engine.c:508
 msgid "Paused"
-msgstr "შეჩერებული"
+msgstr "Pauset"
 
 #: ../src/board_engine.c:521 ../data/gweled.ui.h:3
 msgid "_Pause"
-msgstr "_შეჩერება"
+msgstr "_Pause"
 
 #: ../src/board_engine.c:831 ../src/board_engine.c:904
 #: ../src/board_engine.c:1006
 #, c-format
 msgid "Level %d"
-msgstr "დონე %d"
+msgstr "Nivå %d"
 
 #. Note that this assumes the default style is plain.
 #: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
 msgid "Score"
-msgstr "ქულა"
+msgstr "Poeng"
 
 #: ../src/games-scores-dialog.c:437
 msgid "New Game"
-msgstr "ახალი თამაში"
+msgstr "Nytt spill"
 
 #: ../src/games-scores-dialog.c:537
 msgid "Name"
-msgstr "სახელი"
+msgstr "Navn"
 
 #. FIXME: There is basically no range checking.
 #: ../data/gweled.ui.h:1
 msgid "_Game"
-msgstr "_თამაში"
+msgstr "_Spill"
 
 #: ../data/gweled.ui.h:2
 msgid "Pauses the game for you can return to it later"
-msgstr "თამაშს აჩერებს რათა შეგეძლოთ მისი მოგვიანებით გაგრძელება"
+msgstr "Pauser spillet så du kan komme tilbake til det senere."
 
 #: ../data/gweled.ui.h:4
 msgid "_Scores"
-msgstr "_ქულათა ჯამი"
+msgstr "_Poeng"
 
 #: ../data/gweled.ui.h:5
 msgid "_Settings"
-msgstr "_გამართვა"
+msgstr "_Innstillinger"
 
 #: ../data/gweled.ui.h:6
 msgid "_Help"
-msgstr "_დახმარება"
+msgstr "_Hjelp"
 
 #: ../data/gweled.ui.h:7
 msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr ""
+msgstr "<span size=\"x-large\" weight=\"bold\">Velkommen til Gweled!</span>"
 
 #: ../data/gweled.ui.h:8
 msgid "<b>Normal</b>"
-msgstr ""
+msgstr "<b>Normal</b>"
 
 #: ../data/gweled.ui.h:9
 msgid "<b>Timed</b>"
-msgstr ""
+msgstr "<b>Med tidsbegrensning</b>"
 
 #: ../data/gweled.ui.h:10
 msgid "<b>Endless</b>"
-msgstr ""
+msgstr "<b>Uendelig</b>"
 
 #: ../data/gweled.ui.h:11
 msgid "Score:"
-msgstr "ქულები:"
+msgstr "Poeng:"
 
 #: ../data/gweled.ui.h:12
 msgid "Preferences"
-msgstr "გამართვა"
+msgstr "Brukervalg"
 
 #: ../data/gweled.ui.h:13
 msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">დაფის ზომა</span>"
+msgstr "<span weight=\"bold\">Brettstrørrelse</span>"
 
 #: ../data/gweled.ui.h:14
 msgid "Small"
-msgstr "პატარა"
+msgstr "Lite"
 
 #: ../data/gweled.ui.h:15
 msgid "Medium"
-msgstr "საშუალო"
+msgstr "Middels"
 
 #: ../data/gweled.ui.h:16
 msgid "Large"
-msgstr "დიდი"
+msgstr "Stort"
 
 #: ../data/gweled.ui.h:17
 msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">ხმა</span>"
+msgstr "<span weight=\"bold\">Lyd</span>"
 
 #: ../data/gweled.ui.h:18
 msgid "Play background music"
-msgstr "ფონური მუსიკის დაკვრა"
+msgstr "Spill bakgrunnsmusikk"
 
 #: ../data/gweled.ui.h:19
 msgid "Play sound effects"
-msgstr "ხმის ეფექტების დაკვრა"
+msgstr "Spill lydeffekter"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr "ითამაშეთ \"Diamond Mine\"-ის მსგავსი თამაში"
+msgstr "Spill et puslespill likt spillet \"Diamond Mine\""
