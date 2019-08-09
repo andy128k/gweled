@@ -84,6 +84,7 @@ void save_preferences(void)
 	g_key_file_set_integer(config, "General", "tile_size", prefs.tile_size);
 	g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
 	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
+	g_key_file_set_boolean(config, "General", "hints_off", prefs.hints_off);
 
     configstr = g_key_file_to_data(config, NULL, NULL);
 
@@ -119,6 +120,7 @@ void load_preferences(void)
 	    prefs.tile_size = g_key_file_get_integer(config, "General", "tile_size", NULL);
 	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
 	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
+	    prefs.hints_off = g_key_file_get_boolean(config, "General", "hints_off", NULL);
 
 	    if(prefs.tile_size <= 32)
 	        prefs.tile_size = 32;
@@ -136,6 +138,7 @@ void load_preferences(void)
 		prefs.tile_size = 48;
 		prefs.music_on = TRUE;
 		prefs.sounds_on = TRUE;
+		prefs.hints_off = FALSE;
 
 		save_preferences();
 	}
@@ -178,7 +181,7 @@ void load_previous_game(void)
     {
         ret = fread(&game, sizeof(GweledGameState), 1, stream);
         fclose(stream);
-        
+
         if(ret == 1)
             gweled_set_previous_game(game);
     }
@@ -216,6 +219,14 @@ void init_pref_window(void)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
 	else
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
+
+	// HINTS
+	radio_button = GTK_WIDGET(gtk_builder_get_object(gweled_xml, "hints_checkbutton"));
+	if(prefs.hints_off) {
+	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), TRUE);
+	} else {
+	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), FALSE);
+	}
 }
 
 void welcome_screen_visibility (gboolean value)
@@ -398,7 +409,7 @@ int main (int argc, char **argv)
     set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescTimed")),
                              _("Get as many points as you can. The game ends if you run out of time."));
     set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescEndless")),
-                             _("The game never ends, but your score will not be saved."));       
+                             _("The game never ends, but your score will not be saved."));
 
 	load_preferences();
 	init_pref_window();

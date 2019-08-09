@@ -508,10 +508,7 @@ board_set_pause(gboolean value)
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
         sge_set_layer_visibility(1, FALSE);
         sge_set_layer_visibility(2, FALSE);
-        if(hint_timeout) {
-            g_source_remove(hint_timeout);
-            hint_timeout = 0;
-        }
+        gweled_set_hints_active(FALSE);
         if(sge_object_exists(g_hint_object)) {
             sge_destroy_object (g_hint_object, NULL);
             g_hint_object = NULL;
@@ -607,8 +604,7 @@ board_engine_loop (gpointer data)
     //g_debug("Current state: %s", state[gi_state]);
 
     if(hint_timeout && gi_gem_clicked) {
-        g_source_remove(hint_timeout);
-        hint_timeout = 0;
+        gweled_set_hints_active(FALSE);
         if(g_hint_object && sge_object_exists(g_hint_object)) {
             sge_destroy_object (g_hint_object, NULL);
             g_hint_object = NULL;
@@ -856,8 +852,8 @@ board_engine_loop (gpointer data)
 		break;
 	}
 
-	if(gi_state == _IDLE && gi_gem_clicked == FALSE && !hint_timeout)
-	    hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
+	if(gi_state == _IDLE && gi_gem_clicked == FALSE && !hint_timeout && !prefs.hints_off)
+	    gweled_set_hints_active(TRUE);
 
 	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.game_mode == TIMED_MODE && gi_game_paused) || !(prefs.game_mode == TIMED_MODE)))
     {
@@ -895,10 +891,7 @@ gweled_start_new_game (void)
 	else
 		gi_total_gems_removed = 0;
 
-	if(hint_timeout) {
-        g_source_remove(hint_timeout);
-        hint_timeout = 0;
-    }
+	gweled_set_hints_active(FALSE);
 
     if(prefs.game_mode != ENDLESS_MODE) {
         gchar *text = g_strdup_printf(_("Level %d"), 1);
@@ -1026,9 +1019,9 @@ void gweled_set_previous_game(GweledGameState game)
     gi_state = _MARK_ALIGNED_GEMS;
 
     respawn_board_engine_loop();
-    
+
     gtk_widget_set_sensitive(g_menu_pause, TRUE);
-    
+
     welcome_screen_visibility (FALSE);
 
     gi_game_running = TRUE;
@@ -1047,4 +1040,18 @@ void gweled_stop_game()
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
     gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
+}
+
+void gweled_set_hints_active(gboolean yn)
+{
+    if(yn) {
+	if(!hint_timeout) {
+	    hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
+	}
+    } else {
+	if(hint_timeout) {
+	    g_source_remove(hint_timeout);
+	    hint_timeout = 0;
+	}
+    }
 }

@@ -404,6 +404,19 @@ on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_dat
 	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	        }
 		}
-	} 
+	}
 	else prefs.sounds_on = FALSE;
+}
+
+void
+on_hints_checkbutton_toggled (GtkToggleButton *togglebutton, gpointer *data)
+{
+    if (gtk_toggle_button_get_active (togglebutton)) {
+		prefs.hints_off = TRUE;
+		gweled_set_hints_active(FALSE);
+	}
+	else {
+	    prefs.hints_off = FALSE;
+	    gweled_set_hints_active(TRUE);
+	}
 }

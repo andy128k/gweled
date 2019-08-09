@@ -37,6 +37,7 @@ typedef struct s_gweled_prefs
 	gint tile_size;
 	gboolean music_on;
 	gboolean sounds_on;
+	gboolean hints_off;
 }GweledPrefs;
 
 typedef struct s_gweled_gamestate
@@ -60,6 +61,7 @@ void gweled_swap_gems(gint x1, gint y1, gint x2, gint y2);
 void gweled_refill_board(void);
 
 void board_set_pause(gboolean value);
+void gweled_set_hints_active(gboolean yn);
 
 gboolean board_get_pause(void);
 
