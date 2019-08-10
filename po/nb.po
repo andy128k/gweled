@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-10 05:12+0200\n"
 "PO-Revision-Date: 2012-12-27 09:19+0000\n"
 "Last-Translator: Hans Joachim Desserud <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,54 +28,54 @@ msgctxt "game type"
 msgid "Timed"
 msgstr "Med tidsbegrensning"
 
-#: ../src/main.c:280
+#: ../src/main.c:291
 msgid "Game over!"
 msgstr "Spillet er slutt!"
 
-#: ../src/main.c:282
+#: ../src/main.c:293
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 "Godt gjort, men dessverre nådde ikke poengsummen din opp blant de ti beste."
 
-#: ../src/main.c:284
+#: ../src/main.c:295
 msgid "_New Game"
 msgstr "_Nytt spill"
 
-#: ../src/main.c:296
+#: ../src/main.c:307
 msgid "Gweled Scores"
 msgstr "Gweled resultater"
 
-#: ../src/main.c:299
+#: ../src/main.c:310
 msgid "Game type:"
 msgstr "Spilltype:"
 
-#: ../src/main.c:306
+#: ../src/main.c:317
 msgid "Congratulations!"
 msgstr "Gratulerer!"
 
-#: ../src/main.c:307
+#: ../src/main.c:318
 msgid "Your score is the best!"
 msgstr "Din poengsum er den beste!"
 
-#: ../src/main.c:308
+#: ../src/main.c:319
 msgid "Your score has made the top ten."
 msgstr "Din poengsum er blant de ti beste."
 
-#: ../src/main.c:397
+#: ../src/main.c:408
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 "Oppnå så mange poeng som mulig. Spillet er slutt når du slipper opp for "
 "muligheter til å flytte."
 
-#: ../src/main.c:399
+#: ../src/main.c:410
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr "Oppnå så mange poeng som mulig. Spillet er slutt når tiden er ute."
 
-#: ../src/main.c:401
+#: ../src/main.c:412
 msgid "The game never ends, but your score will not be saved."
 msgstr "Spillet slutter aldri, men poengsummen vil ikke bli lagret."
 
-#: ../src/main.c:458
+#: ../src/main.c:469
 msgid "There is a game saved, do you want restore it?"
 msgstr "Det er et lagret spill, vil du gjenoppta det?"
 
@@ -104,12 +105,12 @@ msgstr "_Fortsett"
 msgid "Paused"
 msgstr "Pauset"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
+#: ../src/board_engine.c:518 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "_Pause"
 
-#: ../src/board_engine.c:831 ../src/board_engine.c:904
-#: ../src/board_engine.c:1006
+#: ../src/board_engine.c:827 ../src/board_engine.c:897
+#: ../src/board_engine.c:999
 #, c-format
 msgid "Level %d"
 msgstr "Nivå %d"
@@ -199,6 +200,15 @@ msgstr "Spill bakgrunnsmusikk"
 #: ../data/gweled.ui.h:19
 msgid "Play sound effects"
 msgstr "Spill lydeffekter"
+
+#: ../data/gweled.ui.h:20
+#, fuzzy
+msgid "<span weight=\"bold\">Miscellaneous</span>"
+msgstr "<span weight=\"bold\">Lyd</span>"
+
+#: ../data/gweled.ui.h:21
+msgid "Disable hints"
+msgstr ""
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""

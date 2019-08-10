@@ -7,11 +7,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-10 05:12+0200\n"
 "PO-Revision-Date: 2013-07-20 06:46+0000\n"
 "Last-Translator: Sergey Shlyapugin <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,56 +29,56 @@ msgctxt "game type"
 msgid "Timed"
 msgstr "На время"
 
-#: ../src/main.c:280
+#: ../src/main.c:291
 msgid "Game over!"
 msgstr "Игра окончена."
 
-#: ../src/main.c:282
+#: ../src/main.c:293
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 "К сожалению, ваш результат недостаточен для попадания в десятку лучших."
 
-#: ../src/main.c:284
+#: ../src/main.c:295
 msgid "_New Game"
 msgstr "_Новая игра"
 
-#: ../src/main.c:296
+#: ../src/main.c:307
 msgid "Gweled Scores"
 msgstr "Таблица рекордов Gweled"
 
-#: ../src/main.c:299
+#: ../src/main.c:310
 msgid "Game type:"
 msgstr "Тип игры:"
 
-#: ../src/main.c:306
+#: ../src/main.c:317
 msgid "Congratulations!"
 msgstr "Поздравления!"
 
-#: ../src/main.c:307
+#: ../src/main.c:318
 msgid "Your score is the best!"
 msgstr "Ваш результат - лучший!"
 
-#: ../src/main.c:308
+#: ../src/main.c:319
 msgid "Your score has made the top ten."
 msgstr "Ваш результат попал в десятку лучших."
 
-#: ../src/main.c:397
+#: ../src/main.c:408
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 "Получите столько очков, сколько сможете.\r\n"
 "Игра завершиться когда у вас кончаться ходы."
 
-#: ../src/main.c:399
+#: ../src/main.c:410
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
 "Получите как можно больше очков. Игра заканчивается, если у вас не останется "
 "времени."
 
-#: ../src/main.c:401
+#: ../src/main.c:412
 msgid "The game never ends, but your score will not be saved."
 msgstr "Игра никогда не закончиться, но ваш счет не будет сохранён."
 
-#: ../src/main.c:458
+#: ../src/main.c:469
 msgid "There is a game saved, do you want restore it?"
 msgstr "Игра была сохранена, вы хотите запустить ее?"
 
@@ -115,12 +116,12 @@ msgstr "_Продолжить"
 msgid "Paused"
 msgstr "Игра приостановлена"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
+#: ../src/board_engine.c:518 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "_Приостановить"
 
-#: ../src/board_engine.c:831 ../src/board_engine.c:904
-#: ../src/board_engine.c:1006
+#: ../src/board_engine.c:827 ../src/board_engine.c:897
+#: ../src/board_engine.c:999
 #, c-format
 msgid "Level %d"
 msgstr "Уровень %d"
@@ -211,6 +212,15 @@ msgstr "Воспроизводить фоновую музыку"
 #: ../data/gweled.ui.h:19
 msgid "Play sound effects"
 msgstr "Воспроизводить звуковые эффекты"
+
+#: ../data/gweled.ui.h:20
+#, fuzzy
+msgid "<span weight=\"bold\">Miscellaneous</span>"
+msgstr "<span weight=\"bold\">Звук</span>"
+
+#: ../data/gweled.ui.h:21
+msgid "Disable hints"
+msgstr ""
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""

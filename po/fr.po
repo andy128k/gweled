@@ -6,16 +6,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-01-21 01:22+0000\n"
-"PO-Revision-Date: 2011-11-19 10:03+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-10 05:12+0200\n"
+"PO-Revision-Date: 2019-08-10 05:16+0200\n"
 "Last-Translator: satbadkd <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2012-01-22 05:36+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-KeywordsList: _;NC_:1c,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: src\n"
+"X-Poedit-SearchPath-1: data\n"
+"X-Poedit-SearchPath-2: data/gweled.desktop.in\n"
 
 #: ../src/main.c:65
 msgctxt "game type"
@@ -27,56 +33,56 @@ msgctxt "game type"
 msgid "Timed"
 msgstr "Contre la montre"
 
-#: ../src/main.c:280
+#: ../src/main.c:291
 msgid "Game over!"
 msgstr "Perdu !"
 
-#: ../src/main.c:282
+#: ../src/main.c:293
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr ""
 "Bien joué, mais malheureusement votre score n'entre pas dans le top 10."
 
-#: ../src/main.c:284
+#: ../src/main.c:295
 msgid "_New Game"
 msgstr "_Nouvelle partie"
 
-#: ../src/main.c:296
+#: ../src/main.c:307
 msgid "Gweled Scores"
 msgstr "Scores Gweled"
 
-#: ../src/main.c:299
+#: ../src/main.c:310
 msgid "Game type:"
 msgstr "Type de jeu :"
 
-#: ../src/main.c:306
+#: ../src/main.c:317
 msgid "Congratulations!"
 msgstr "Félicitations !"
 
-#: ../src/main.c:307
+#: ../src/main.c:318
 msgid "Your score is the best!"
 msgstr "Vous avez fait le meilleur score !"
 
-#: ../src/main.c:308
+#: ../src/main.c:319
 msgid "Your score has made the top ten."
 msgstr "Votre score est entré dans le top 10."
 
-#: ../src/main.c:397
+#: ../src/main.c:408
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 "Essayez d'avoir le score le plus grand possible. Le jeu prend fin quand il "
 "n'y a plus de mouvements possible."
 
-#: ../src/main.c:399
+#: ../src/main.c:410
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
 "Essayez d'avoir le score le plus grand possible. Le jeu prend fin quand le "
 "chrono arrive à 0."
 
-#: ../src/main.c:401
+#: ../src/main.c:412
 msgid "The game never ends, but your score will not be saved."
 msgstr "Le jeu ne prend jamais fin, mais votre score ne sera pas enregistré."
 
-#: ../src/main.c:458
+#: ../src/main.c:469
 msgid "There is a game saved, do you want restore it?"
 msgstr "Il existe une partie sauvegardée, voulez vous la continuer ?"
 
@@ -110,12 +116,12 @@ msgstr "_Reprendre"
 msgid "Paused"
 msgstr "En pause"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
+#: ../src/board_engine.c:518 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "_Pause"
 
-#: ../src/board_engine.c:831 ../src/board_engine.c:904
-#: ../src/board_engine.c:1006
+#: ../src/board_engine.c:827 ../src/board_engine.c:897
+#: ../src/board_engine.c:999
 #, c-format
 msgid "Level %d"
 msgstr "Niveau %d"
@@ -156,8 +162,7 @@ msgstr "_Aide"
 
 #: ../data/gweled.ui.h:7
 msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr ""
-"<span size=\"x-large\" weight=\"bold\">Bienvenue dans Gweled !</span>"
+msgstr "<span size=\"x-large\" weight=\"bold\">Bienvenue dans Gweled !</span>"
 
 #: ../data/gweled.ui.h:8
 msgid "<b>Normal</b>"
@@ -206,6 +211,14 @@ msgstr "Jouer la musique de fond"
 #: ../data/gweled.ui.h:19
 msgid "Play sound effects"
 msgstr "Jouer les effets sonores"
+
+#: ../data/gweled.ui.h:20
+msgid "<span weight=\"bold\">Miscellaneous</span>"
+msgstr "<span weight=\"bold\">Divers</span>"
+
+#: ../data/gweled.ui.h:21
+msgid "Disable hints"
+msgstr "Désactiver les astuces"
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""

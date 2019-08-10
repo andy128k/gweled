@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-10 05:12+0200\n"
 "PO-Revision-Date: 2012-08-13 04:18+0000\n"
 "Last-Translator: Wang Dianjin <Unknown>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,51 +28,51 @@ msgctxt "game type"
 msgid "Timed"
 msgstr "限时模式"
 
-#: ../src/main.c:280
+#: ../src/main.c:291
 msgid "Game over!"
 msgstr "游戏结束！"
 
-#: ../src/main.c:282
+#: ../src/main.c:293
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr "赞啊，但您还没有入围前十名。"
 
-#: ../src/main.c:284
+#: ../src/main.c:295
 msgid "_New Game"
 msgstr "新游戏(_N)"
 
-#: ../src/main.c:296
+#: ../src/main.c:307
 msgid "Gweled Scores"
 msgstr "Gweled 排分榜"
 
-#: ../src/main.c:299
+#: ../src/main.c:310
 msgid "Game type:"
 msgstr "游戏类型："
 
-#: ../src/main.c:306
+#: ../src/main.c:317
 msgid "Congratulations!"
 msgstr "恭喜！"
 
-#: ../src/main.c:307
+#: ../src/main.c:318
 msgid "Your score is the best!"
 msgstr "您的成绩是最好的！"
 
-#: ../src/main.c:308
+#: ../src/main.c:319
 msgid "Your score has made the top ten."
 msgstr "您已经入围前十名。"
 
-#: ../src/main.c:397
+#: ../src/main.c:408
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr "拼命夺分吧。直到僵局游戏才结束。"
 
-#: ../src/main.c:399
+#: ../src/main.c:410
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr "拼命夺分吧。直到时间用光游戏才结束。"
 
-#: ../src/main.c:401
+#: ../src/main.c:412
 msgid "The game never ends, but your score will not be saved."
 msgstr "游戏永不结束，但您的分数不会保存。"
 
-#: ../src/main.c:458
+#: ../src/main.c:469
 msgid "There is a game saved, do you want restore it?"
 msgstr "有一个保存的游戏，您要恢复它吗？"
 
@@ -101,12 +102,12 @@ msgstr "恢复(_R)"
 msgid "Paused"
 msgstr "已暂停"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
+#: ../src/board_engine.c:518 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "暂停(_P)"
 
-#: ../src/board_engine.c:831 ../src/board_engine.c:904
-#: ../src/board_engine.c:1006
+#: ../src/board_engine.c:827 ../src/board_engine.c:897
+#: ../src/board_engine.c:999
 #, c-format
 msgid "Level %d"
 msgstr "级别 %d"
@@ -196,6 +197,15 @@ msgstr "播放背景音乐"
 #: ../data/gweled.ui.h:19
 msgid "Play sound effects"
 msgstr "播放声音效果"
+
+#: ../data/gweled.ui.h:20
+#, fuzzy
+msgid "<span weight=\"bold\">Miscellaneous</span>"
+msgstr "<span weight=\"bold\">声音</span>"
+
+#: ../data/gweled.ui.h:21
+msgid "Disable hints"
+msgstr ""
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
