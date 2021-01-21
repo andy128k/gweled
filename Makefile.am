@@ -12,7 +12,7 @@ pixmap_DATA = pixmaps/cursor.svg pixmaps/font_24_20.png pixmaps/font_48_40.png \
               pixmaps/sparkle_48.png pixmaps/sparkle_64.png
 
 soundsdir   = $(datadir)/sounds/$(PACKAGE)
-sounds_DATA = sounds/autonom.ogg sounds/click.ogg sounds/swap.ogg
+sounds_DATA = sounds/click.ogg sounds/swap.ogg
 
 EXTRA_DIST = $(sounds_DATA) \
              $(pixmap_DATA)

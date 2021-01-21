@@ -50,7 +50,6 @@ GtkWidget *g_progress_bar;
 GtkWidget *g_score_label;
 GtkWidget *g_bonus_label;
 GtkWidget *g_menu_pause;
-GtkWidget *g_pref_music_button;
 GtkWidget *g_pref_sounds_button;
 GtkWidget *g_alignment_welcome;
 
@@ -82,7 +81,6 @@ void save_preferences(void)
     config = g_key_file_new();
 
 	g_key_file_set_integer(config, "General", "tile_size", prefs.tile_size);
-	g_key_file_set_boolean(config, "General", "music_on", prefs.music_on);
 	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
 
     configstr = g_key_file_to_data(config, NULL, NULL);
@@ -117,7 +115,6 @@ void load_preferences(void)
     if(error == NULL && g_key_file_has_group(config, "General")) {
 
 	    prefs.tile_size = g_key_file_get_integer(config, "General", "tile_size", NULL);
-	    prefs.music_on = g_key_file_get_boolean(config, "General", "music_on", NULL);
 	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
 
 	    if(prefs.tile_size <= 32)
@@ -134,7 +131,6 @@ void load_preferences(void)
         }
 
 		prefs.tile_size = 48;
-		prefs.music_on = TRUE;
 		prefs.sounds_on = TRUE;
 
 		save_preferences();
@@ -202,13 +198,6 @@ void init_pref_window(void)
 	}
 	if (radio_button)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
-
-	//Is the music playing at start ?
-	radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "music_checkbutton"));
-	if (prefs.music_on)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
 
 	// Sounds
 	radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
@@ -389,7 +378,6 @@ int main (int argc, char **argv)
     g_score_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel"));
     g_drawing_area = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "boardDrawingarea"));
     g_menu_pause = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "pause1"));
-    g_pref_music_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "music_checkbutton"));
     g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
     g_alignment_welcome = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "alignmentWelcome"));
 
@@ -431,17 +419,12 @@ int main (int argc, char **argv)
 
 	gi_game_running = 0;
 
-	if(prefs.music_on || prefs.sounds_on) {
+	if(prefs.sounds_on) {
 	    sound_init(gdk_screen_get_default());
 	    if(sound_get_enabled() == FALSE) {
-	        gtk_widget_set_sensitive(g_pref_music_button, FALSE);
 	        gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	    }
 	}
-
-
-	if (prefs.music_on)
-		sound_music_play(g_main_window);
 
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 			      BOARD_WIDTH * prefs.tile_size,
@@ -471,8 +454,6 @@ int main (int argc, char **argv)
 	g_free(filename);
 
 	gtk_main ();
-
-    sound_destroy();
 
 	sge_destroy ();
 	if(board_engine_id)

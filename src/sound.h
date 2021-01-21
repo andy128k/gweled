@@ -30,12 +30,8 @@ typedef enum e_gweled_sound_effects
 } gweled_sound_effects;
 
 void sound_init(GdkScreen *);
-void sound_music_play(GtkWidget *);
-void sound_music_stop(void);
 void sound_effect_play(gweled_sound_effects);
-void sound_destroy(void);
 gboolean sound_get_enabled();
-static void music_finished_playing_cb(ca_context *, uint32_t, int, gpointer);
-static gboolean playing_timeout_cb(gpointer);
+void sound_destroy(void);
 
 #endif

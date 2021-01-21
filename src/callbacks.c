@@ -375,24 +375,6 @@ on_largeRadiobutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 }
 
 void
-on_music_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
-{
-	if (gtk_toggle_button_get_active (togglebutton)) {
-	    prefs.music_on = TRUE;
-	    if(sound_get_enabled() == FALSE) {
-	        sound_init(gdk_screen_get_default());
-		    if(sound_get_enabled() == FALSE) {
-	            gtk_widget_set_sensitive(g_pref_music_button, FALSE);
-	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
-	        }
-		}
-		sound_music_play(g_main_window);
-	} else {
-	    prefs.music_on = FALSE;
-		sound_music_stop();}
-}
-
-void
 on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
 	if (gtk_toggle_button_get_active (togglebutton)) {
@@ -400,7 +382,6 @@ on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_dat
 		if(sound_get_enabled() == FALSE) {
 	        sound_init(gdk_screen_get_default());
 		    if(sound_get_enabled() == FALSE) {
-	            gtk_widget_set_sensitive(g_pref_music_button, FALSE);
 	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	        }
 		}
