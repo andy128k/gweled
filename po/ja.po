@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-01-21 01:22+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-10 05:12+0200\n"
 "PO-Revision-Date: 2012-04-24 07:58+0000\n"
 "Last-Translator: luyikei <luyikei@live.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,51 +28,57 @@ msgctxt "game type"
 msgid "Timed"
 msgstr "タイムアタック"
 
-#: ../src/main.c:280
+#: ../src/main.c:291
 msgid "Game over!"
 msgstr "ゲーム終了！"
 
-#: ../src/main.c:282
+#: ../src/main.c:293
 msgid "Great work, but unfortunately your score did not make the top ten."
-msgstr "よく頑張りましたね。でも残念ながら、トップ１０にはランクインできませんでした。"
+msgstr ""
+"よく頑張りましたね。でも残念ながら、トップ１０にはランクインできませんでし"
+"た。"
 
-#: ../src/main.c:284
+#: ../src/main.c:295
 msgid "_New Game"
 msgstr "新しいゲーム(_N)"
 
-#: ../src/main.c:296
+#: ../src/main.c:307
 msgid "Gweled Scores"
 msgstr "Gweledのハイスコア"
 
-#: ../src/main.c:299
+#: ../src/main.c:310
 msgid "Game type:"
 msgstr "ゲームタイプ:"
 
-#: ../src/main.c:306
+#: ../src/main.c:317
 msgid "Congratulations!"
 msgstr "おめでとう！"
 
-#: ../src/main.c:307
+#: ../src/main.c:318
 msgid "Your score is the best!"
 msgstr "あなたがトップになりました！"
 
-#: ../src/main.c:308
+#: ../src/main.c:319
 msgid "Your score has made the top ten."
 msgstr "トップ１０にランクインしました。"
 
-#: ../src/main.c:397
+#: ../src/main.c:408
 msgid "Get as many points as you can. The game ends if you run out of moves."
-msgstr "あなたはできるだけ多くのポイントをとってください。ゲームは動きが尽きた時点で終了します。"
+msgstr ""
+"あなたはできるだけ多くのポイントをとってください。ゲームは動きが尽きた時点で"
+"終了します。"
 
-#: ../src/main.c:399
+#: ../src/main.c:410
 msgid "Get as many points as you can. The game ends if you run out of time."
-msgstr "あなたはできるだけ多くのポイントをとってください。ゲームは時間が不足した時点で終了します。"
+msgstr ""
+"あなたはできるだけ多くのポイントをとってください。ゲームは時間が不足した時点"
+"で終了します。"
 
-#: ../src/main.c:401
+#: ../src/main.c:412
 msgid "The game never ends, but your score will not be saved."
 msgstr "ゲームが終わることはありませんが、あなたのスコアは保存されません。"
 
-#: ../src/main.c:458
+#: ../src/main.c:469
 msgid "There is a game saved, do you want restore it?"
 msgstr "以前からの保存ゲームがあります。再開しますか？"
 
@@ -103,12 +110,12 @@ msgstr "再開(_R)"
 msgid "Paused"
 msgstr "一時停止中"
 
-#: ../src/board_engine.c:521 ../data/gweled.ui.h:3
+#: ../src/board_engine.c:518 ../data/gweled.ui.h:3
 msgid "_Pause"
 msgstr "一時停止(_P)"
 
-#: ../src/board_engine.c:831 ../src/board_engine.c:904
-#: ../src/board_engine.c:1006
+#: ../src/board_engine.c:827 ../src/board_engine.c:897
+#: ../src/board_engine.c:999
 #, c-format
 msgid "Level %d"
 msgstr "レベル%d"
@@ -198,6 +205,15 @@ msgstr "BGMを有効にする"
 #: ../data/gweled.ui.h:19
 msgid "Play sound effects"
 msgstr "SFXを有効にする"
+
+#: ../data/gweled.ui.h:20
+#, fuzzy
+msgid "<span weight=\"bold\">Miscellaneous</span>"
+msgstr "<span weight=\"bold\">サウンド</span>"
+
+#: ../data/gweled.ui.h:21
+msgid "Disable hints"
+msgstr ""
 
 #: ../data/gweled.desktop.in.h:1
 msgid "Play a puzzle game similar to \"Diamond Mine\""
