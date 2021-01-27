@@ -32,6 +32,10 @@
 #define ACCELERATION	1.0
 #define SGE_TIMER_INTERVAL  20
 
+#define MAX_OPACITY 255
+#define STEP_OPACITY 10
+#define BLINK_OPACITY 155
+
 // LOCAL FUNCTIONS
 void invalidate_objects_above (T_SGEObject * object);
 void invalidate_background_beneath (T_SGEObject * object);
@@ -91,7 +95,7 @@ draw_object (gpointer object, gpointer user_data)
 
 		} else {
 
-            if (SGE_OBJECT(object)->opacity < 255
+            if (SGE_OBJECT(object)->opacity < MAX_OPACITY
                 || SGE_OBJECT(object)->zoom != 1.0)
             {
 
@@ -207,16 +211,16 @@ draw_object (gpointer object, gpointer user_data)
         invalidate_background_beneath (SGE_OBJECT(object));
     }
     if(SGE_OBJECT(object)->blink) {
-        if(SGE_OBJECT(object)->saturation >= 2.0)
+        if(SGE_OBJECT(object)->opacity >= MAX_OPACITY)
             SGE_OBJECT(object)->blink_increase = FALSE;
 
-        if(SGE_OBJECT(object)->saturation <= 0.4)
+        if(SGE_OBJECT(object)->opacity <= BLINK_OPACITY)
             SGE_OBJECT(object)->blink_increase = TRUE;
 
         if(SGE_OBJECT(object)->blink_increase)
-            SGE_OBJECT(object)->saturation += 0.2;
+            SGE_OBJECT(object)->opacity += STEP_OPACITY;
         else
-            SGE_OBJECT(object)->saturation -= 0.2;
+            SGE_OBJECT(object)->opacity -= STEP_OPACITY;
 
          invalidate_background_beneath (SGE_OBJECT(object));
     }
@@ -500,7 +504,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     object->dest_y = 0;
 
     object->y_delay = 0;
-    object->opacity = 255;
+    object->opacity = MAX_OPACITY;
     object->fadeout = FALSE;
     object->zoom = 1.0;
     object->zoomout = FALSE;
@@ -770,6 +774,7 @@ void sge_object_blink_start (T_SGEObject *object)
 void sge_object_blink_stop (T_SGEObject *object)
 {
     object->blink = FALSE;
+    object->opacity = MAX_OPACITY;
 }
 
 void sge_object_animate (T_SGEObject *object, gboolean repeat)
