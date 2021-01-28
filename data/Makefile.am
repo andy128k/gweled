@@ -21,13 +21,22 @@ $(desktop_DATA): %.desktop: %.desktop.in
 	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 
+# AppData
+appdatadir = $(datadir)/appdata
+appdata_in_files = gweled.appdata.xml.in
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+$(appdata_DATA): $(appdata_in_files)
+	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
+
+
 EXTRA_DIST = \
       $(icon_DATA)      \
       $(glade_DATA)     \
       $(NULL)
       
 CLEANFILES = 			\
-        $(DESKTOP_FILES)
+        $(DESKTOP_FILES)        \
+	$(appdata_DATA)
 
 DISTCLEANFILES = 		\
         $(DESKTOP_FILES)  

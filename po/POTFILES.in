@@ -5,3 +5,4 @@ src/board_engine.c
 src/games-scores-dialog.c
 data/gweled.ui
 data/gweled.desktop.in
+data/gweled.appdata.xml.in
