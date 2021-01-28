@@ -2,24 +2,35 @@ icons = \
     apps_16x16_gweled.png \
     apps_22x22_gweled.png \
     apps_24x24_gweled.png \
-	apps_48x48_gweled.png \
-	apps_64x64_gweled.png \
-	apps_scalable_gweled.svg
+    apps_48x48_gweled.png \
+    apps_64x64_gweled.png \
+    apps_scalable_gweled.svg
 
 gladedir = $(datadir)/gweled/
 glade_DATA = 	\
 	gweled.ui
 
-@INTLTOOL_DESKTOP_RULE@
+# .desktop file
+DESKTOP_IN_FILES= gweled.desktop.in
+DESKTOP_FILES= $(DESKTOP_IN_FILES:.desktop.in=.desktop)
+
 desktopdir = $(datadir)/applications
-desktop_in_files = gweled.desktop.in
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+desktop_DATA = $(DESKTOP_FILES)
+
+$(desktop_DATA): %.desktop: %.desktop.in
+	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
+
 
 EXTRA_DIST = \
       $(icon_DATA)      \
       $(glade_DATA)     \
-      $(desktop_DATA)   \
       $(NULL)
+      
+CLEANFILES = 			\
+        $(DESKTOP_FILES)
+
+DISTCLEANFILES = 		\
+        $(DESKTOP_FILES)  
 
 
 ###############################################################################

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-10 05:12+0200\n"
+"POT-Creation-Date: 2021-01-28 21:08+0100\n"
 "PO-Revision-Date: 2012-11-01 17:42+0000\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian translators\n"
@@ -17,197 +17,216 @@ msgstr ""
 "X-Launchpad-Export-Date: 2012-11-02 05:23+0000\n"
 "X-Generator: Launchpad (build 16218)\n"
 
-#: ../src/main.c:65
-msgctxt "game type"
-msgid "Normal"
-msgstr "Обична"
-
-#: ../src/main.c:66
-msgctxt "game type"
-msgid "Timed"
-msgstr "На време"
-
-#: ../src/main.c:291
+#: src/main.c:280
 msgid "Game over!"
 msgstr "Крај игре!"
 
-#: ../src/main.c:293
+#: src/main.c:282
 msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr "Одличан посао, али на жалост ваш резултат није ушао у најбољих 10."
 
-#: ../src/main.c:295
+#: src/main.c:284
 msgid "_New Game"
 msgstr "_Нова игра"
 
-#: ../src/main.c:307
+#: src/main.c:296
 msgid "Gweled Scores"
 msgstr "Резултати Гвеледа"
 
-#: ../src/main.c:310
+#: src/main.c:299
 msgid "Game type:"
 msgstr "Врста игре:"
 
-#: ../src/main.c:317
+#: src/main.c:306
 msgid "Congratulations!"
 msgstr "Честитамо!"
 
-#: ../src/main.c:318
+#: src/main.c:307
 msgid "Your score is the best!"
 msgstr "Ваш резултат је најбољи!"
 
-#: ../src/main.c:319
+#: src/main.c:308
 msgid "Your score has made the top ten."
 msgstr "Ваш резултат је ушао у најбољих 10."
 
-#: ../src/main.c:408
+#: src/main.c:396
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 "Сакупите што можете више поена. Игра се завршава када вам понестане потеза."
 
-#: ../src/main.c:410
+#: src/main.c:398
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
 "Сакупите што можете више поена. Игра се завршава када вам понестане времена."
 
-#: ../src/main.c:412
+#: src/main.c:400
 msgid "The game never ends, but your score will not be saved."
 msgstr "Игра се неће никада завршити, али ваш резултат неће бити сачуван."
 
-#: ../src/main.c:469
+#: src/main.c:452
 msgid "There is a game saved, do you want restore it?"
 msgstr "Постоји једна игра сачувана, да ли желите да је повратите?"
 
-#: ../src/callbacks.c:73
+#: src/callbacks.c:73
 msgid "Do you really want to abort this game?"
 msgstr "Да ли заиста желите да прекинете ову игру?"
 
-#: ../src/callbacks.c:138
+#: src/callbacks.c:138
 msgid "Do you want to save the current game?"
 msgstr "Да ли желите да сачувате текућу игру?"
 
-#: ../src/callbacks.c:173
+#: src/callbacks.c:173
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Мирослав Николић https://launchpad.net/~lipek"
 
-#: ../src/callbacks.c:178
+#: src/callbacks.c:178
 msgid "A puzzle game with gems"
 msgstr "Игра слагалица са драгуљима"
 
-#: ../src/board_engine.c:505
+#: src/board_engine.c:505
 msgid "_Resume"
 msgstr "_Настави"
 
-#: ../src/board_engine.c:508
+#: src/board_engine.c:508
 msgid "Paused"
 msgstr "Паузирано"
 
-#: ../src/board_engine.c:518 ../data/gweled.ui.h:3
+#: src/board_engine.c:518 data/gweled.ui:44
 msgid "_Pause"
 msgstr "_Паузирај"
 
-#: ../src/board_engine.c:827 ../src/board_engine.c:897
-#: ../src/board_engine.c:999
+#: src/board_engine.c:827 src/board_engine.c:897 src/board_engine.c:999
 #, c-format
 msgid "Level %d"
 msgstr "Ниво %d"
 
-#. Note that this assumes the default style is plain.
-#: ../src/games-scores-dialog.c:118 ../src/games-scores-dialog.c:545
+#: src/games-scores-dialog.c:118 src/games-scores-dialog.c:545
 msgid "Score"
 msgstr "Резултат"
 
-#: ../src/games-scores-dialog.c:437
+#: src/games-scores-dialog.c:437
 msgid "New Game"
 msgstr "Нова игра"
 
-#: ../src/games-scores-dialog.c:537
+#: src/games-scores-dialog.c:537
 msgid "Name"
 msgstr "Назив"
 
-#. FIXME: There is basically no range checking.
-#: ../data/gweled.ui.h:1
+#: data/gweled.ui:24
 msgid "_Game"
 msgstr "_Игра"
 
-#: ../data/gweled.ui.h:2
+#: data/gweled.ui:43
 msgid "Pauses the game for you can return to it later"
 msgstr "Паузирајте игру да бисте касније могли да јој се вратите"
 
-#: ../data/gweled.ui.h:4
+#: data/gweled.ui:58
 msgid "_Scores"
 msgstr "_Резултати"
 
-#: ../data/gweled.ui.h:5
+#: data/gweled.ui:85
 msgid "_Settings"
 msgstr "_Подешавања"
 
-#: ../data/gweled.ui.h:6
+#: data/gweled.ui:106
 msgid "_Help"
 msgstr "По_моћ"
 
-#: ../data/gweled.ui.h:7
-msgid "<span size=\"x-large\" weight=\"bold\">Welcome on Gweled!</span>"
-msgstr "<span size=\"x-large\" weight=\"bold\">Добродошли у Гвелед!</span>"
+#: data/gweled.ui:175
+msgid "Welcome to Gweled!"
+msgstr ""
 
-#: ../data/gweled.ui.h:8
-msgid "<b>Normal</b>"
-msgstr "<b>Као увек</b>"
+#: data/gweled.ui:219
+#, fuzzy
+msgid "Normal"
+msgstr "Обична"
 
-#: ../data/gweled.ui.h:9
-msgid "<b>Timed</b>"
-msgstr "<b>На време</b>"
+#: data/gweled.ui:270
+#, fuzzy
+msgid "Timed"
+msgstr "На време"
 
-#: ../data/gweled.ui.h:10
-msgid "<b>Endless</b>"
-msgstr "<b>До бесвести</b>"
+#: data/gweled.ui:322
+#, fuzzy
+msgid "Endless"
+msgstr "До бесвести"
 
-#: ../data/gweled.ui.h:11
+#: data/gweled.ui:382
 msgid "Score:"
 msgstr "Резултат:"
 
-#: ../data/gweled.ui.h:12
+#: data/gweled.ui:415
 msgid "Preferences"
 msgstr "Поставке"
 
-#: ../data/gweled.ui.h:13
-msgid "<span weight=\"bold\">Board size</span>"
-msgstr "<span weight=\"bold\">Величина табле</span>"
+#: data/gweled.ui:439
+msgid "Board size"
+msgstr ""
 
-#: ../data/gweled.ui.h:14
+#: data/gweled.ui:456
 msgid "Small"
 msgstr "Мала"
 
-#: ../data/gweled.ui.h:15
+#: data/gweled.ui:477
 msgid "Medium"
 msgstr "Средња"
 
-#: ../data/gweled.ui.h:16
+#: data/gweled.ui:499
 msgid "Large"
 msgstr "Велика"
 
-#: ../data/gweled.ui.h:17
-msgid "<span weight=\"bold\">Sound</span>"
-msgstr "<span weight=\"bold\">Звук</span>"
+#: data/gweled.ui:525
+msgid "Sound"
+msgstr ""
 
-#: ../data/gweled.ui.h:18
-msgid "Play background music"
-msgstr "Пусти музику у позадини"
-
-#: ../data/gweled.ui.h:19
+#: data/gweled.ui:542
 msgid "Play sound effects"
 msgstr "Пусти звучне ефекте"
 
-#: ../data/gweled.ui.h:20
-#, fuzzy
-msgid "<span weight=\"bold\">Miscellaneous</span>"
-msgstr "<span weight=\"bold\">Звук</span>"
+#: data/gweled.ui:573
+msgid "Miscellaneous"
+msgstr ""
 
-#: ../data/gweled.ui.h:21
+#: data/gweled.ui:590
 msgid "Disable hints"
 msgstr ""
 
-#: ../data/gweled.desktop.in.h:1
+#: data/gweled.desktop.in:3
+#, fuzzy
+msgid "Gweled"
+msgstr "Резултати Гвеледа"
+
+#: data/gweled.desktop.in:4
 msgid "Play a puzzle game similar to \"Diamond Mine\""
 msgstr "Играјте игру слагалица сличној „Дијамантским минама“"
+
+#. TRANSLATORS: Do NOT translate or transliterate this text!
+#. This is an icon file name
+#: data/gweled.desktop.in:8
+msgid "gweled"
+msgstr ""
+
+#, fuzzy
+#~ msgid "<span size=\"x-large\" weight=\"bold\">Welcome to Gweled!</span>"
+#~ msgstr "<span size=\"x-large\" weight=\"bold\">Добродошли у Гвелед!</span>"
+
+#~ msgid "<b>Normal</b>"
+#~ msgstr "<b>Као увек</b>"
+
+#~ msgid "<b>Timed</b>"
+#~ msgstr "<b>На време</b>"
+
+#~ msgid "<span weight=\"bold\">Board size</span>"
+#~ msgstr "<span weight=\"bold\">Величина табле</span>"
+
+#~ msgid "<span weight=\"bold\">Sound</span>"
+#~ msgstr "<span weight=\"bold\">Звук</span>"
+
+#, fuzzy
+#~ msgid "<span weight=\"bold\">Miscellaneous</span>"
+#~ msgstr "<span weight=\"bold\">Звук</span>"
+
+#~ msgid "Play background music"
+#~ msgstr "Пусти музику у позадини"

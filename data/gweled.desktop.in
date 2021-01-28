@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Gweled
-_Comment=Play a puzzle game similar to "Diamond Mine"
+Comment=Play a puzzle game similar to "Diamond Mine"
 Exec=gweled
+# TRANSLATORS: Do NOT translate or transliterate this text!
+# This is an icon file name
 Icon=gweled
 Terminal=false
 Type=Application

@@ -37,9 +37,9 @@ dnl Initialize intltool
 GETTEXT_PACKAGE=gweled
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
-
-IT_PROG_INTLTOOL([0.40.0])
-AM_GLIB_GNU_GETTEXT
+ 
+AM_GNU_GETTEXT_VERSION([0.19.8])
+AM_GNU_GETTEXT([external])
 
 #### Check for GTK+ >= 2.14 ####
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.14,,
@@ -105,12 +105,14 @@ AC_SUBST(scores_group)
 AC_SUBST(scores_user)
 AC_SUBST(scoredir)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
-data/Makefile
 po/Makefile.in
+data/Makefile
 ])
+
+AC_OUTPUT
 
 echo "
 Configuration:
