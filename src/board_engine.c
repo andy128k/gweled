@@ -571,7 +571,7 @@ board_engine_loop (gpointer data)
 	if(gi_current_score < gi_score)
 	{
 		gi_current_score += 10;
-		g_sprintf (msg_buffer, "<span weight=\"bold\">%06d</span>", gi_current_score);
+		g_sprintf (msg_buffer, "%06d", gi_current_score);
 		gtk_label_set_markup ((GtkLabel *) g_score_label, msg_buffer);
 	}
 
@@ -906,7 +906,7 @@ gweled_start_new_game (void)
     }
 
 
-    gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
+    gtk_label_set_markup ((GtkLabel *) g_score_label, "000000");
 
 	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
@@ -1001,7 +1001,7 @@ void gweled_set_previous_game(GweledGameState game)
         g_free(text_buffer);
     }
 
-    text_buffer = g_strdup_printf("<span weight=\"bold\">%06d</span>", gi_current_score);
+    text_buffer = g_strdup_printf("%06d", gi_current_score);
     gtk_label_set_markup (GTK_LABEL(g_score_label), text_buffer);
     g_free(text_buffer);
 
@@ -1039,7 +1039,7 @@ void gweled_stop_game()
 
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
-    gtk_label_set_markup ((GtkLabel *) g_score_label, "<span weight=\"bold\">000000</span>");
+    gtk_label_set_markup ((GtkLabel *) g_score_label, "000000");
 }
 
 void gweled_set_hints_active(gboolean yn)

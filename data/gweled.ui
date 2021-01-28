@@ -172,8 +172,11 @@
                         <child>
                           <object class="GtkLabel" id="label7">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">&lt;span size="x-large" weight="bold"&gt;Welcome to Gweled!&lt;/span&gt;</property>
-                            <property name="use_markup">True</property>
+                            <property name="label" translatable="yes">Welcome to Gweled!</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                              <attribute name="scale" value="1.5"/>
+                            </attributes>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -213,8 +216,10 @@
                                   <object class="GtkLabel" id="label8">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Normal&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
+                                    <property name="label" translatable="yes">Normal</property>
+                                    <attributes>
+                                      <attribute name="weight" value="bold"/>
+                                    </attributes>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -262,8 +267,10 @@
                                   <object class="GtkLabel" id="label3">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Timed&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
+                                    <property name="label" translatable="yes">Timed</property>
+                                    <attributes>
+                                      <attribute name="weight" value="bold"/>
+                                    </attributes>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -312,8 +319,10 @@
                                   <object class="GtkLabel" id="label5">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">&lt;b&gt;Endless&lt;/b&gt;</property>
-                                    <property name="use_markup">True</property>
+                                    <property name="label" translatable="yes">Endless</property>
+                                    <attributes>
+                                      <attribute name="weight" value="bold"/>
+                                    </attributes>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -381,8 +390,10 @@
             <child>
               <object class="GtkLabel" id="scoreLabel">
                 <property name="visible">True</property>
-                <property name="label">&lt;span weight="bold"&gt; 000000&lt;/span&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="label">000000</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -425,8 +436,10 @@
                   <object class="GtkLabel" id="label19">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
-                    <property name="label" translatable="yes">&lt;span weight="bold"&gt;Board size&lt;/span&gt;</property>
-                    <property name="use_markup">True</property>
+                    <property name="label" translatable="yes">Board size</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -509,8 +522,10 @@
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
-                    <property name="label" translatable="yes">&lt;span weight="bold"&gt;Sound&lt;/span&gt;</property>
-                    <property name="use_markup">True</property>
+                    <property name="label" translatable="yes">Sound</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -555,8 +570,10 @@
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
-                    <property name="label" translatable="yes">&lt;span weight="bold"&gt;Miscellaneous&lt;/span&gt;</property>
-                    <property name="use_markup">True</property>
+                    <property name="label" translatable="yes">Miscellaneous</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
