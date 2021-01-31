@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2011-11-17 20:47+0000\n"
 "Last-Translator: Juan Gacitua <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -84,7 +84,7 @@ msgstr "¿Quiere guardar la partida actual?"
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Almorca https://launchpad.net/~almorca\n"
+"  Alejandro Moreno Calvo https://launchpad.net/~almorca\n"
 "  Antonio Caro https://launchpad.net/~antonio-gon\n"
 "  DiegoJ https://launchpad.net/~diegojromerolopez\n"
 "  Juan Gacitua https://launchpad.net/~jotafrisco"
@@ -198,7 +198,7 @@ msgstr "Varios"
 msgid "Disable hints"
 msgstr "Desactivar los consejos"
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr "Gweled"
 
@@ -212,3 +212,15 @@ msgstr "Juegue a un juego de rompecabezas similar a «Diamond Mine»"
 msgid "gweled"
 msgstr ""
 
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
+msgstr ""

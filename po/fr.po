@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2019-08-10 05:16+0200\n"
 "Last-Translator: satbadkd <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -203,7 +203,7 @@ msgstr ""
 msgid "Disable hints"
 msgstr "Désactiver les astuces"
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr "Gweled"
 
@@ -215,4 +215,17 @@ msgstr "Jouer à un casse tête similaire à \"Diamond Mine\""
 #. This is an icon file name
 #: data/gweled.desktop.in:8
 msgid "gweled"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
 msgstr ""

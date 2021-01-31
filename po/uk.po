@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
-"PO-Revision-Date: 2011-11-06 15:01+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
+"PO-Revision-Date: 2021-01-30 11:49+0000\n"
+"Last-Translator: Ruslan Kvitnevyi <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
+"X-Launchpad-Export-Date: 2021-01-31 04:37+0000\n"
 "X-Generator: Launchpad (build 14700)\n"
 
 #: src/main.c:280
@@ -40,7 +40,7 @@ msgstr "Тип гри:"
 
 #: src/main.c:306
 msgid "Congratulations!"
-msgstr "Поздоровляю!"
+msgstr "Вітаємо!"
 
 #: src/main.c:307
 msgid "Your score is the best!"
@@ -81,6 +81,7 @@ msgstr ""
 "\n"
 "Launchpad Contributions:\n"
 "  Ivo https://launchpad.net/~van-hoi\n"
+"  Ruslan Kvitnevyi https://launchpad.net/~kv1to4ka\n"
 "  Sergiy Gavrylov https://launchpad.net/~gavro"
 
 #: src/callbacks.c:178
@@ -138,20 +139,17 @@ msgstr "_Довідка"
 
 #: data/gweled.ui:175
 msgid "Welcome to Gweled!"
-msgstr ""
+msgstr "Ласкаво просимо до Gweled!"
 
 #: data/gweled.ui:219
-#, fuzzy
 msgid "Normal"
 msgstr "Стандартний"
 
 #: data/gweled.ui:270
-#, fuzzy
 msgid "Timed"
 msgstr "З лімітом часу"
 
 #: data/gweled.ui:322
-#, fuzzy
 msgid "Endless"
 msgstr "Безконечно"
 
@@ -161,11 +159,11 @@ msgstr "Очок:"
 
 #: data/gweled.ui:415
 msgid "Preferences"
-msgstr "Параметри"
+msgstr "Уподобання"
 
 #: data/gweled.ui:439
 msgid "Board size"
-msgstr ""
+msgstr "Розмір поля"
 
 #: data/gweled.ui:456
 msgid "Small"
@@ -181,7 +179,7 @@ msgstr "Великі"
 
 #: data/gweled.ui:525
 msgid "Sound"
-msgstr ""
+msgstr "Звук"
 
 #: data/gweled.ui:542
 msgid "Play sound effects"
@@ -195,10 +193,9 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
-#, fuzzy
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
-msgstr "Таблиця рекордів Gweled"
+msgstr "Gweled"
 
 #: data/gweled.desktop.in:4
 msgid "Play a puzzle game similar to \"Diamond Mine\""
@@ -210,26 +207,15 @@ msgstr "Логічна гра схожа на \"Diamond Mine\""
 msgid "gweled"
 msgstr ""
 
-#, fuzzy
-#~ msgid "<span size=\"x-large\" weight=\"bold\">Welcome to Gweled!</span>"
-#~ msgstr ""
-#~ "<span size=\"x-large\" weight=\"bold\">Ласкаво просимо до Gweled!</span>"
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
 
-#~ msgid "<b>Normal</b>"
-#~ msgstr "<b>Звичайно</b>"
-
-#~ msgid "<b>Timed</b>"
-#~ msgstr "<b>Час вийшов</b>"
-
-#~ msgid "<span weight=\"bold\">Board size</span>"
-#~ msgstr "<span weight=\"bold\">Розмір поля</span>"
-
-#~ msgid "<span weight=\"bold\">Sound</span>"
-#~ msgstr "<span weight=\"bold\">Звук</span>"
-
-#, fuzzy
-#~ msgid "<span weight=\"bold\">Miscellaneous</span>"
-#~ msgstr "<span weight=\"bold\">Звук</span>"
-
-#~ msgid "Play background music"
-#~ msgstr "Відтворювати фонову музику"
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
+msgstr ""

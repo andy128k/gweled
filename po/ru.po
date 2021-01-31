@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2013-07-20 06:46+0000\n"
 "Last-Translator: Sergey Shlyapugin <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -55,7 +55,7 @@ msgstr "Ваш результат попал в десятку лучших."
 #: src/main.c:396
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
-"Получите столько очков, сколько сможете.\r\n"
+"Получите столько очков, сколько сможете.\n"
 "Игра завершиться когда у вас кончаться ходы."
 
 #: src/main.c:398
@@ -85,7 +85,6 @@ msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Alexander 'FONTER' Zinin https://launchpad.net/~spore-09\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  Ergonaut https://launchpad.net/~egronaut\n"
 "  Igor Shtompel https://launchpad.net/~keepercoder\n"
 "  KroArtem https://launchpad.net/~kroartem\n"
@@ -203,8 +202,7 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
-#, fuzzy
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr "Gweled"
 
@@ -218,3 +216,15 @@ msgstr "Играть в логическую игру похожую на игр
 msgid "gweled"
 msgstr ""
 
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
+msgstr ""

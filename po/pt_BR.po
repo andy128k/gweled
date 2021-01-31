@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
-"PO-Revision-Date: 2011-11-06 15:01+0000\n"
-"Last-Translator: Rafael Canovas <rafaelcanovas@myself.com>\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
+"PO-Revision-Date: 2019-09-29 19:38+0000\n"
+"Last-Translator: biguibi <Unknown>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:37+0000\n"
-"X-Generator: Launchpad (build 14700)\n"
+"X-Launchpad-Export-Date: 2019-09-30 05:56+0000\n"
+"X-Generator: Launchpad (build 19065)\n"
 
 #: src/main.c:280
 msgid "Game over!"
@@ -55,14 +55,16 @@ msgstr "Sua pontuação está entre as dez melhores."
 #: src/main.c:396
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
+"Consiga o máximo de pontos possíveis, o jogo acaba quando nenhuma ação for "
+"possível."
 
 #: src/main.c:398
 msgid "Get as many points as you can. The game ends if you run out of time."
-msgstr ""
+msgstr "Consiga o máximo de pontos possíveis dentro de um tempo limite."
 
 #: src/main.c:400
 msgid "The game never ends, but your score will not be saved."
-msgstr ""
+msgstr "O jogo nunca acaba e sua pontuação não será salva."
 
 #: src/main.c:452
 msgid "There is a game saved, do you want restore it?"
@@ -83,7 +85,9 @@ msgstr ""
 "\n"
 "Launchpad Contributions:\n"
 "  Ivo https://launchpad.net/~van-hoi\n"
-"  Pedro Folha https://launchpad.net/~pedrovi"
+"  Pedro Folha https://launchpad.net/~pedrovi\n"
+"  Rafael Canovas https://launchpad.net/~rafanovas\n"
+"  biguibi https://launchpad.net/~biguibi"
 
 #: src/callbacks.c:178
 msgid "A puzzle game with gems"
@@ -194,7 +198,7 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr "Gweled"
 
@@ -206,4 +210,17 @@ msgstr "Jogue um jogo de quebra-cabeça similar ao \"Diamond Mine\""
 #. This is an icon file name
 #: data/gweled.desktop.in:8
 msgid "gweled"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
 msgstr ""

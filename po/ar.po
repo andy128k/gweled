@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2011-01-12 03:48+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
+"Last-Translator: MaXeR\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -81,7 +81,6 @@ msgstr ""
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  MaXeR https://launchpad.net/~themaxer"
 
 #: src/callbacks.c:178
@@ -110,18 +109,16 @@ msgid "Score"
 msgstr ""
 
 #: src/games-scores-dialog.c:437
-#, fuzzy
 msgid "New Game"
-msgstr "_لعبة جديدة"
+msgstr "لعبة جديدة"
 
 #: src/games-scores-dialog.c:537
 msgid "Name"
 msgstr ""
 
 #: data/gweled.ui:24
-#, fuzzy
 msgid "_Game"
-msgstr "_لعبة جديدة"
+msgstr "_لعبه"
 
 #: data/gweled.ui:43
 msgid "Pauses the game for you can return to it later"
@@ -144,12 +141,10 @@ msgid "Welcome to Gweled!"
 msgstr ""
 
 #: data/gweled.ui:219
-#, fuzzy
 msgid "Normal"
 msgstr "طبيعي"
 
 #: data/gweled.ui:270
-#, fuzzy
 msgid "Timed"
 msgstr "مؤقتة"
 
@@ -197,7 +192,7 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr ""
 
@@ -209,4 +204,17 @@ msgstr ""
 #. This is an icon file name
 #: data/gweled.desktop.in:8
 msgid "gweled"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
 msgstr ""

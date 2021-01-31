@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2011-11-06 15:01+0000\n"
 "Last-Translator: zvacet <ikoli@yahoo.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -19,9 +19,8 @@ msgstr ""
 "X-Generator: Launchpad (build 14700)\n"
 
 #: src/main.c:280
-#, fuzzy
 msgid "Game over!"
-msgstr "Tip igre:"
+msgstr "Game over!"
 
 #: src/main.c:282
 msgid "Great work, but unfortunately your score did not make the top ten."
@@ -48,7 +47,6 @@ msgid "Your score is the best!"
 msgstr "Vaš rezultat je najbolji!"
 
 #: src/main.c:308
-#, fuzzy
 msgid "Your score has made the top ten."
 msgstr "Vaš rezultat je najbolji!"
 
@@ -125,9 +123,8 @@ msgid "Pauses the game for you can return to it later"
 msgstr ""
 
 #: data/gweled.ui:58
-#, fuzzy
 msgid "_Scores"
-msgstr "Rezulat"
+msgstr "_Rezulat"
 
 #: data/gweled.ui:85
 msgid "_Settings"
@@ -154,7 +151,6 @@ msgid "Endless"
 msgstr "Beskrajno"
 
 #: data/gweled.ui:382
-#, fuzzy
 msgid "Score:"
 msgstr "Rezulat"
 
@@ -194,7 +190,7 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr "Gweled"
 
@@ -206,4 +202,17 @@ msgstr ""
 #. This is an icon file name
 #: data/gweled.desktop.in:8
 msgid "gweled"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
 msgstr ""

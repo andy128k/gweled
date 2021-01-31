@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
-"PO-Revision-Date: 2012-03-16 00:15+0000\n"
-"Last-Translator: Nicola Corti <Unknown>\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
+"PO-Revision-Date: 2021-01-31 00:00+0000\n"
+"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-03-17 05:01+0000\n"
-"X-Generator: Launchpad (build 14951)\n"
+"X-Launchpad-Export-Date: 2021-01-30 06:24+0000\n"
+"X-Generator: Launchpad (build e00fb96b2e64b75333d0178ec15cb78e5aadb64d)\n"
 
 #: src/main.c:280
 msgid "Game over!"
@@ -68,11 +68,11 @@ msgstr "Il gioco non finisce mai, ma il tuo punteggio non viene salvato."
 
 #: src/main.c:452
 msgid "There is a game saved, do you want restore it?"
-msgstr "È presente una partita salvata, riprenderla?"
+msgstr "È presente una partita salvata, vuoi riprenderla?"
 
 #: src/callbacks.c:73
 msgid "Do you really want to abort this game?"
-msgstr "Si è sicuri di voler abbandonare il gioco?"
+msgstr "Sei sicuro di voler abbandonare il gioco?"
 
 #: src/callbacks.c:138
 msgid "Do you want to save the current game?"
@@ -194,9 +194,9 @@ msgstr "Varie"
 
 #: data/gweled.ui:590
 msgid "Disable hints"
-msgstr ""
+msgstr "Disabilita i suggerimenti"
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr "Gweled"
 
@@ -208,4 +208,22 @@ msgstr "Gioca ad un rompicapo simile a \"Diamond Mine\""
 #. This is an icon file name
 #: data/gweled.desktop.in:8
 msgid "gweled"
+msgstr "gweled"
+
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr "Un gioco di puzzle strategico in tempo reale simile a Bejeweled"
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
 msgstr ""
+"Gweled è una versione GTK di un popolare gioco per PalmOS /Windows/Java "
+"chiamato \"Bejeweled\", originariamente scritto da Sebastien Delestaing. Lo "
+"scopo del gioco è allineare 3 o più gemme, sia verticalmente che "
+"orizzontalmente scambiando gemme adiacenti. Il gioco finisce quando non ci  "
+"ono più mosse possibili."

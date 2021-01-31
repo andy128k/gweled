@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2012-11-01 17:42+0000\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian translators\n"
@@ -136,20 +136,17 @@ msgstr "По_моћ"
 
 #: data/gweled.ui:175
 msgid "Welcome to Gweled!"
-msgstr ""
+msgstr "Добродошли у Гвелед!"
 
 #: data/gweled.ui:219
-#, fuzzy
 msgid "Normal"
 msgstr "Обична"
 
 #: data/gweled.ui:270
-#, fuzzy
 msgid "Timed"
 msgstr "На време"
 
 #: data/gweled.ui:322
-#, fuzzy
 msgid "Endless"
 msgstr "До бесвести"
 
@@ -163,7 +160,7 @@ msgstr "Поставке"
 
 #: data/gweled.ui:439
 msgid "Board size"
-msgstr ""
+msgstr "Величина табле"
 
 #: data/gweled.ui:456
 msgid "Small"
@@ -179,7 +176,7 @@ msgstr "Велика"
 
 #: data/gweled.ui:525
 msgid "Sound"
-msgstr ""
+msgstr "Звук"
 
 #: data/gweled.ui:542
 msgid "Play sound effects"
@@ -193,10 +190,9 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
-#, fuzzy
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
-msgstr "Резултати Гвеледа"
+msgstr "Gweled"
 
 #: data/gweled.desktop.in:4
 msgid "Play a puzzle game similar to \"Diamond Mine\""
@@ -208,25 +204,15 @@ msgstr "Играјте игру слагалица сличној „Дијам�
 msgid "gweled"
 msgstr ""
 
-#, fuzzy
-#~ msgid "<span size=\"x-large\" weight=\"bold\">Welcome to Gweled!</span>"
-#~ msgstr "<span size=\"x-large\" weight=\"bold\">Добродошли у Гвелед!</span>"
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
 
-#~ msgid "<b>Normal</b>"
-#~ msgstr "<b>Као увек</b>"
-
-#~ msgid "<b>Timed</b>"
-#~ msgstr "<b>На време</b>"
-
-#~ msgid "<span weight=\"bold\">Board size</span>"
-#~ msgstr "<span weight=\"bold\">Величина табле</span>"
-
-#~ msgid "<span weight=\"bold\">Sound</span>"
-#~ msgstr "<span weight=\"bold\">Звук</span>"
-
-#, fuzzy
-#~ msgid "<span weight=\"bold\">Miscellaneous</span>"
-#~ msgstr "<span weight=\"bold\">Звук</span>"
-
-#~ msgid "Play background music"
-#~ msgstr "Пусти музику у позадини"
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
+msgstr ""

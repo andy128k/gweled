@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2012-10-12 06:16+0000\n"
 "Last-Translator: Andrej Znidarsic <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -81,8 +81,7 @@ msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Andrej Mernik https://launchpad.net/~r33d3m33r\n"
-"  Andrej Znidarsic https://launchpad.net/~andrej.znidarsic\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88"
+"  Andrej Znidarsic https://launchpad.net/~andrej.znidarsic"
 
 #: src/callbacks.c:178
 msgid "A puzzle game with gems"
@@ -139,20 +138,17 @@ msgstr "Pomo_č"
 
 #: data/gweled.ui:175
 msgid "Welcome to Gweled!"
-msgstr ""
+msgstr "Dobrodošli v Gweled!"
 
 #: data/gweled.ui:219
-#, fuzzy
 msgid "Normal"
 msgstr "Običajna"
 
 #: data/gweled.ui:270
-#, fuzzy
 msgid "Timed"
 msgstr "Časovno omejena"
 
 #: data/gweled.ui:322
-#, fuzzy
 msgid "Endless"
 msgstr "Brez konca"
 
@@ -166,7 +162,7 @@ msgstr "Možnosti"
 
 #: data/gweled.ui:439
 msgid "Board size"
-msgstr ""
+msgstr "Velikost plošče"
 
 #: data/gweled.ui:456
 msgid "Small"
@@ -182,7 +178,7 @@ msgstr "Velika"
 
 #: data/gweled.ui:525
 msgid "Sound"
-msgstr ""
+msgstr "Zvok"
 
 #: data/gweled.ui:542
 msgid "Play sound effects"
@@ -196,10 +192,9 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
-#, fuzzy
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
-msgstr "Rezultati gweled"
+msgstr "Gweled"
 
 #: data/gweled.desktop.in:4
 msgid "Play a puzzle game similar to \"Diamond Mine\""
@@ -211,25 +206,15 @@ msgstr "Igrajte igro ugank podobno igri \"Diamond mine\""
 msgid "gweled"
 msgstr ""
 
-#, fuzzy
-#~ msgid "<span size=\"x-large\" weight=\"bold\">Welcome to Gweled!</span>"
-#~ msgstr "<span size=\"x-large\" weight=\"bold\">Dobrodošli v Gweled!</span>"
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
 
-#~ msgid "<b>Normal</b>"
-#~ msgstr "<b>Običajno</b>"
-
-#~ msgid "<b>Timed</b>"
-#~ msgstr "<b>Časovno omejeno</b>"
-
-#~ msgid "<span weight=\"bold\">Board size</span>"
-#~ msgstr "<span weight=\"bold\">Velikost plošče</span>"
-
-#~ msgid "<span weight=\"bold\">Sound</span>"
-#~ msgstr "<span weight=\"bold\">Zvok</span>"
-
-#, fuzzy
-#~ msgid "<span weight=\"bold\">Miscellaneous</span>"
-#~ msgstr "<span weight=\"bold\">Zvok</span>"
-
-#~ msgid "Play background music"
-#~ msgstr "Predvajaj glasbo v ozadju"
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
+msgstr ""

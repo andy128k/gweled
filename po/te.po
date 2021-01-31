@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 21:08+0100\n"
+"POT-Creation-Date: 2021-01-28 20:00+0100\n"
 "PO-Revision-Date: 2013-11-29 17:17+0000\n"
 "Last-Translator: Akela <sdakela@gmail.com>\n"
 "Language-Team: Telugu <te@li.org>\n"
@@ -27,7 +27,6 @@ msgid "Great work, but unfortunately your score did not make the top ten."
 msgstr "మీరు బాగా ఆడారు, కానీ దురదృష్ట వశాత్తు మీ స్కోరు పై పదిలో లేదు."
 
 #: src/main.c:284
-#, fuzzy
 msgid "_New Game"
 msgstr "_కొత్త ఆట"
 
@@ -109,7 +108,7 @@ msgstr ""
 #: src/games-scores-dialog.c:437
 #, fuzzy
 msgid "New Game"
-msgstr "_కొత్త ఆట"
+msgstr "కొత్త గేమ్"
 
 #: src/games-scores-dialog.c:537
 msgid "Name"
@@ -118,7 +117,7 @@ msgstr ""
 #: data/gweled.ui:24
 #, fuzzy
 msgid "_Game"
-msgstr "_కొత్త ఆట"
+msgstr "_గేమ్"
 
 #: data/gweled.ui:43
 msgid "Pauses the game for you can return to it later"
@@ -141,7 +140,6 @@ msgid "Welcome to Gweled!"
 msgstr ""
 
 #: data/gweled.ui:219
-#, fuzzy
 msgid "Normal"
 msgstr "సాధారణ"
 
@@ -193,7 +191,7 @@ msgstr ""
 msgid "Disable hints"
 msgstr ""
 
-#: data/gweled.desktop.in:3
+#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
 msgid "Gweled"
 msgstr ""
 
@@ -205,4 +203,17 @@ msgstr ""
 #. This is an icon file name
 #: data/gweled.desktop.in:8
 msgid "gweled"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:9
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr ""
+
+#: data/gweled.appdata.xml.in:11
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
 msgstr ""
