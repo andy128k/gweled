@@ -867,7 +867,7 @@ board_engine_loop (gpointer data)
 void respawn_board_engine_loop()
 {
     if(!board_engine_id)
-        board_engine_id = g_timeout_add (100, board_engine_loop, NULL);
+        board_engine_id = g_timeout_add (50, board_engine_loop, NULL);
 }
 
 void
