@@ -503,6 +503,7 @@ board_set_pause(gboolean value)
 
     if(value == TRUE) {
         gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
+        // Currently not translatable because I only have basic ASCII characters.
         gweled_draw_message("paused");
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
@@ -580,6 +581,7 @@ board_engine_loop (gpointer data)
 	{
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
+      // Currently not translatable because I only have basic ASCII characters.
 			gweled_draw_message ("time's up #");
 			gi_game_running = 0;
  			score.plain = gi_score;
@@ -789,7 +791,8 @@ board_engine_loop (gpointer data)
 					gweled_gems_fall_into_place (FALSE);
 					gi_state = _MARK_ALIGNED_GEMS;
 				} else {
-				    // Game over
+				  // Game over
+          // Currently not translatable because I only have basic ASCII characters.
 					gweled_draw_message ("no moves left #");
 					gi_game_running = 0;
 					score.plain = gi_score;
