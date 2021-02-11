@@ -12,15 +12,15 @@
   </description>
 
   <url type="bugtracker">https://bugs.launchpad.net/gweled</url>
-  <url type="homepage">http://gweled.org/</url>
+  <url type="homepage">https://gweled.org/</url>
   
   <updatecontact>dnax88@gmail.com</updatecontact>
 
   <screenshots>
-    <screenshot type="default" width="400" height="491">https://gweled.org/images/screen1.png</screenshot>
+    <screenshot type="default">https://gweled.org/images/screen1.png</screenshot>
   </screenshots>
 
-  <translation type="gettext">curtail</translation>
+  <translation type="gettext">gweled</translation>
  
   <project_group>GNOME</project_group>
 </component>
