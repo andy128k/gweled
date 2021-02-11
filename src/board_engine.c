@@ -976,6 +976,8 @@ GweledGameState gweled_get_current_game(void)
     return game;
 }
 
+extern void init_pref_window(void);
+
 void gweled_set_previous_game(GweledGameState game)
 {
     gchar *text_buffer;
