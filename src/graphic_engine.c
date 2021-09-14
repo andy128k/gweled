@@ -117,7 +117,7 @@ gweled_load_pixmaps (void)
 	g_free(filename);
 	gi_sparkle_pixbuf = sge_register_pixbuf (pixbuf, gi_sparkle_pixbuf);
 
-	filename = g_strdup_printf ("gweled/powerglow_%d.png", prefs.tile_size);
+	filename = g_strdup_printf ("gweled/sparkle_%d.png", prefs.tile_size);
 	pixbuf = sge_load_file_to_pixbuf (filename);
 	if (pixbuf == NULL)
 		exit (-1);
