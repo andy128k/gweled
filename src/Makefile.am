@@ -1,16 +1,16 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
-    -DDATADIR=\""$(datadir)"\"  \
-	-DPACKAGE_DATA_DIR=\""$(datadir)/gweled"\"  \
-	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
-	-DSCOREDIR=\""$(scoredir)"\"
-
-AM_CFLAGS = 		  \
-    @GTK_CFLAGS@      \
-	@RSVG_CFLAGS@	  \
-	@CANBERRA_CFLAGS@ \
-	@CANBERRA_GTK_CFLAGS@	
+gweled_CFLAGS =           \
+    @GTK_CFLAGS@          \
+	@RSVG_CFLAGS@	      \
+	@CANBERRA_CFLAGS@     \
+	@CANBERRA_GTK_CFLAGS@ \
+	-DDATADIR=\""$(datadir)"\"                    \
+    -DDATADIR=\""$(datadir)"\"                    \
+	-DPACKAGE_DATA_DIR=\""$(datadir)/gweled"\"    \
+	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"  \
+	-DSCOREDIR=\""$(scoredir)"\"                  \
+	$(NULL)
 
 bin_PROGRAMS = gweled
 
@@ -30,5 +30,10 @@ gweled_SOURCES = \
 	games-scores-dialog-private.h
 
 gweled_LDADD = @GTK_LIBS@ @RSVG_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@
+
+CLEANFILES =            \
+    $(BUILT_SOURCES)    \
+    *~                  \
+    $(NULL)
 
 

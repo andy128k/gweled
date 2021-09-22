@@ -1,31 +1,31 @@
-dnl Process this file with autoconf to produce a configure script.
+AC_INIT([gweled],
+        [0.9.1],
+        [https://bugs.launchpad.net/gweled/+filebug],
+        [gweled])
+        
+AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_SRCDIR(src/main.c)
+AC_CONFIG_MACRO_DIR([m4])
 
-AC_INIT([Gweled], [0.9.1], , gweled, [http://gweled.org])
-AM_INIT_AUTOMAKE()
-AM_MAINTAINER_MODE
-AM_CONFIG_HEADER(config.h)
+AC_CANONICAL_TARGET
 
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE([enable])
 # Use AM_SILENT_RULES if present
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
+
+dnl make sure we keep ACLOCAL_FLAGS around for maintainer builds to work
+AC_SUBST(ACLOCAL_AMFLAGS, "\${ACLOCAL_FLAGS}")
 
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
-
-
-# Check for library functions
-# ===========================
-
-AC_CHECK_FUNCS([ftruncate memset select strchr], [],
-               [AC_MSG_ERROR([cannot find required function])])
-AC_CHECK_FUNCS([fork select]) 
-AC_CHECK_FUNCS([alarm getpwuid getenv setenv close hstrerror kill socketpair])
-
-AC_FUNC_FORK
-AC_TYPE_OFF_T
-AC_TYPE_SSIZE_T
-AC_TYPE_UID_T
 AC_HEADER_STDC
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+CFLAGS="${CFLAGS} -Wall"
 
 # Check for header files
 # ======================
