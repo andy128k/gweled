@@ -186,7 +186,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 gboolean
 drawing_area_expose_event_cb (GtkWidget * widget, GdkEventExpose * event, gpointer user_data)
 {
-	gdk_draw_drawable (GDK_DRAWABLE (widget->window),
+	gdk_draw_drawable (GDK_DRAWABLE (gtk_widget_get_parent_window(widget)),
 			   widget->style->fg_gc[gtk_widget_get_state (widget)],
 			   g_buffer_pixmap, event->area.x, event->area.y,
 			   event->area.x, event->area.y, event->area.width,

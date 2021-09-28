@@ -69,7 +69,8 @@ GamesScores *highscores;
 
 extern gint gi_game_running;
 
-void save_preferences(void)
+void
+save_preferences(void)
 {
 	gchar *filename, *configstr;
 	GKeyFile *config;
@@ -334,8 +335,10 @@ static void set_welcome_button_label(GtkWidget *label, gchar *text)
 {
     gchar     *markup;
     GdkColor  *color;
+    GValue    *value;
 
-    color = &label->style->fg[GTK_STATE_INSENSITIVE];
+    gtk_widget_style_get_property(label, "fg[GTK_STATE_INSENSITIVE]", value);
+    color = (GdkColor *) g_value_get_boxed(value);
     markup = g_markup_printf_escaped ("<span size=\"small\" foreground=\"#%.2x%.2x%.2x\">%s</span>",
                                                   color->red,
                                                   color->green,
@@ -420,7 +423,7 @@ int main (int argc, char **argv)
                                  BOARD_WIDTH * prefs.tile_size,
 			                     BOARD_HEIGHT * prefs.tile_size);
 
-    g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
+    g_buffer_pixmap = gdk_pixmap_new (gtk_widget_get_parent_window(g_drawing_area),
 			    BOARD_WIDTH * prefs.tile_size,
 			    BOARD_HEIGHT * prefs.tile_size, -1);
 
