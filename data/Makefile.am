@@ -6,10 +6,6 @@ icons = \
     apps_64x64_gweled.png \
     apps_scalable_gweled.svg
 
-gladedir = $(datadir)/gweled/
-glade_DATA = 	\
-	gweled.ui
-
 # .desktop file
 DESKTOP_IN_FILES= gweled.desktop.in
 DESKTOP_FILES= $(DESKTOP_IN_FILES:.desktop.in=.desktop)
@@ -31,7 +27,6 @@ $(appdata_DATA): $(appdata_in_files)
 
 EXTRA_DIST = \
       $(icon_DATA)      \
-      $(glade_DATA)     \
       $(NULL)
       
 CLEANFILES = 			\

@@ -1,7 +1,6 @@
 /* Gweled
  *
- * Copyright (C) 2003-2005 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
- * Copyright (C) 2010 Daniele Napolitano <dnax88@gmail.com>
+ * Copyright (C) 2021 Daniele Napolitano <dnax88@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,44 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef _GRAPHIC_ENGINE_H
-#define _GRAPHIC_ENGINE_H
+#ifndef _GWELED_GUI_H_
+#define _GWELED_GUI_H_
 
 #include <glib.h>
-#include "sge_core.h"
 
-#define FONT_WIDTH    24
-#define FONT_HEIGHT   20
-
+void gweled_ui_init(GApplication *app);
 
 void
-gweled_load_font (void);
+welcome_screen_visibility (gboolean value);
 
-void
-gweled_load_pixmaps (void);
-
-void
-gweled_init_glyphs (void);
-
-void
-gweled_draw_message (gchar *in_message);
-
-void
-gweled_draw_game_message (gchar *in_message, int timing);
-
-void
-gweled_draw_message_at (gchar *in_message, gint msg_x, gint msg_y);
-
-void
-gweled_gems_fall_into_place (gboolean with_delay);
-
-T_SGEObject*
-gweled_draw_character (int x, int y, int layer, char character);
-
-void
-gweled_draw_board (void);
-
-void
-gweled_set_objects_size (gint size);
+gint
+show_hiscores (gint pos, gboolean endofgame);
 
 #endif

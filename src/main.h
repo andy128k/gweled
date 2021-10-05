@@ -21,9 +21,6 @@
 #ifndef _GWELED_MAIN_H_
 #define _GWELED_MAIN_H_
 
-#include <glib.h>
-#include <gdk/gdk.h>
-
 void
 save_preferences(void);
 
@@ -34,9 +31,6 @@ void
 save_current_game();
 
 void
-welcome_screen_visibility (gboolean value);
-
-gint
-show_hiscores (gint pos, gboolean endofgame);
+load_previous_game();
 
 #endif

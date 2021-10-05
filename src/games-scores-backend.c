@@ -62,7 +62,7 @@ games_scores_backend_class_init (GamesScoresBackendClass * klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
-  g_type_class_add_private (klass, sizeof (GamesScoresBackendPrivate));
+  //g_type_class_add_private (klass, sizeof (GamesScoresBackendPrivate));
   oclass->finalize = games_scores_backend_finalize;
 }
 

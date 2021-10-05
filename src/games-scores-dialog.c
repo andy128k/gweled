@@ -21,7 +21,8 @@
 
 #include <config.h>
 
-#include <glib/gi18n.h>
+#include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 
 #include "games-scores-dialog.h"
@@ -43,13 +44,18 @@ games_scores_dialog_finalize (GObject *o)
   if (dialog->_priv->catindices)
     g_hash_table_destroy (dialog->_priv->catindices);
 
-  G_OBJECT_CLASS (games_scores_dialog_parent_class)->finalize (o);
+  //G_OBJECT_CLASS (games_scores_dialog_parent_class)->finalize (o);
 }
 
 static void
 games_scores_dialog_class_init (GamesScoresDialogClass *klass)
 {
-  g_type_class_add_private (klass, sizeof (GamesScoresDialogPrivate));
+
+  //G_DEFINE_TYPE_WITH_CODE (GamesScoresDialogClass, klass, G_TYPE_OBJECT,
+  //                         G_ADD_PRIVATE (GamesScoresDialog))
+
+
+  //g_type_class_add_private (klass, sizeof (GamesScoresDialogPrivate));
 
   G_OBJECT_CLASS (klass)->finalize = games_scores_dialog_finalize;
 }
@@ -78,7 +84,7 @@ static void games_scores_dialog_add_category (GamesScoresDialog *self,
 			 GINT_TO_POINTER (self->_priv->catcounter),
 			 k);
   self->_priv->catcounter++;
-  gtk_combo_box_append_text (GTK_COMBO_BOX (self->_priv->combo), name);
+  gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (self->_priv->combo), name);
 }
 
 /* This is a helper function for loading the initial list of categories
@@ -411,8 +417,8 @@ void games_scores_dialog_set_hilight (GamesScoresDialog *self, guint pos)
 void games_scores_dialog_set_buttons (GamesScoresDialog *self, guint buttons)
 {
   /* Remove an existing buttons. */
-  gtk_container_foreach (GTK_CONTAINER (gtk_dialog_get_action_area (GTK_DIALOG (self))),
-                         (GtkCallback) (gtk_widget_destroy), NULL);
+  //gtk_container_foreach (GTK_CONTAINER (gtk_dialog_get_action_area (GTK_DIALOG (self))),
+  //                       (GtkCallback) (gtk_widget_destroy), NULL);
 
   /* The default is a single close button, suitable for the scores
      menu item. */
@@ -420,14 +426,14 @@ void games_scores_dialog_set_buttons (GamesScoresDialog *self, guint buttons)
 	buttons = GAMES_SCORES_CLOSE_BUTTON;
 
   if (buttons & GAMES_SCORES_QUIT_BUTTON) {
-	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_QUIT,
+	gtk_dialog_add_button (GTK_DIALOG (self), _("_Quit"),
 	                       GTK_RESPONSE_REJECT);
       gtk_dialog_set_default_response (GTK_DIALOG (self),
 	       			         GTK_RESPONSE_REJECT);
   }
 
   if (buttons & GAMES_SCORES_UNDO_BUTTON) {
-	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_UNDO,
+	gtk_dialog_add_button (GTK_DIALOG (self), _("_Undo"),
 	                       GTK_RESPONSE_DELETE_EVENT);
       gtk_dialog_set_default_response (GTK_DIALOG (self),
 	       			         GTK_RESPONSE_DELETE_EVENT);
@@ -441,7 +447,7 @@ void games_scores_dialog_set_buttons (GamesScoresDialog *self, guint buttons)
   }
 
   if (buttons & GAMES_SCORES_CLOSE_BUTTON) {
-	gtk_dialog_add_button (GTK_DIALOG (self), GTK_STOCK_CLOSE,
+	gtk_dialog_add_button (GTK_DIALOG (self), _("_Close"),
 	                       GTK_RESPONSE_CLOSE);
       gtk_dialog_set_default_response (GTK_DIALOG (self),
 	       			         GTK_RESPONSE_CLOSE);
@@ -471,8 +477,9 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
   self->_priv->catcounter = 0;
   self->_priv->hilight = 0;
   self->_priv->sethilight = -1;
-
-  gtk_dialog_set_has_separator (GTK_DIALOG (self), FALSE);
+    
+  // FIXME: Deprecated  
+  //gtk_dialog_set_has_separator (GTK_DIALOG (self), FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (self), 5);
   gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))), 2);
 
@@ -481,7 +488,7 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
   g_signal_connect (G_OBJECT (self), "hide",
 		      G_CALLBACK (games_scores_dialog_hide), NULL);
 
-  vbox = gtk_vbox_new (FALSE, 6);
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
   gtk_box_pack_end (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))),
                     vbox, TRUE, TRUE, 0);
@@ -501,10 +508,10 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
 	                   GTK_JUSTIFY_CENTER);
   gtk_box_pack_start (GTK_BOX (vbox), self->_priv->message, FALSE, FALSE, 0);
 
-  self->_priv->hdiv = gtk_hseparator_new ();
+  self->_priv->hdiv = gtk_separator_new  (GTK_ORIENTATION_HORIZONTAL);
   gtk_box_pack_start (GTK_BOX (vbox), self->_priv->hdiv, FALSE, FALSE, 0);
 
-  self->_priv->catbar = gtk_hbox_new (FALSE, 12);
+  self->_priv->catbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
   gtk_box_pack_start (GTK_BOX (vbox), self->_priv->catbar, FALSE, FALSE, 0);
 
   self->_priv->label = gtk_label_new (NULL);
@@ -512,8 +519,8 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
   gtk_box_pack_start (GTK_BOX (self->_priv->catbar), self->_priv->label,
 			FALSE, FALSE, 0);
 
-  self->_priv->combo = gtk_combo_box_new_text ();
-  gtk_combo_box_set_focus_on_click (GTK_COMBO_BOX (self->_priv->combo), FALSE);
+  self->_priv->combo = gtk_combo_box_new  ();
+  gtk_widget_set_focus_on_click (GTK_WIDGET (self->_priv->combo), FALSE);
   gtk_box_pack_start (GTK_BOX (self->_priv->catbar),
 			self->_priv->combo, TRUE, TRUE, 0);
   gtk_label_set_mnemonic_widget (GTK_LABEL (self->_priv->label), self->_priv->combo);

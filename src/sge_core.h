@@ -48,7 +48,7 @@ typedef struct s_sge_object
 	gboolean animation_repeat;
 	gint needs_drawing;
 	gint pixbuf_id;
-	GdkPixmap *pre_rendered;
+	//GdkPixmap *pre_rendered;
 	gint (*stop_condition)(struct s_sge_object *);
 	GFunc stop_callback;
 }T_SGEObject;
@@ -57,7 +57,7 @@ typedef struct s_sge_object
 
 void sge_init(void);
 void sge_destroy(void);
-void sge_set_drawing_area(GtkWidget *drawing_area, GdkPixmap *pixmap_buffer, gint width, gint height);
+void sge_set_drawing_area(GtkWidget *drawing_area, GdkPixbuf *pixmap_buffer, gint width, gint height);
 
 gint sge_register_pixbuf(GdkPixbuf *pixbuf, int index);
 

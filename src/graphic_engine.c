@@ -37,7 +37,7 @@ extern GRand *g_random_generator;
 extern GdkPixbuf *g_gems_pixbuf[7];
 extern GtkWidget *g_drawing_area;
 extern GtkWidget *g_alignment_welcome;
-extern GdkPixmap *g_buffer_pixmap;
+//extern GdkPixmap *g_buffer_pixmap;
 extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 
 extern GweledPrefs prefs;
@@ -291,17 +291,17 @@ gweled_set_objects_size (gint size)
     gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
 					     BOARD_WIDTH * size,
 					     BOARD_HEIGHT * size);
-    gtk_widget_set_size_request (g_alignment_welcome,
+    /*gtk_widget_set_size_request (g_alignment_welcome,
                                  BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);
+			                     BOARD_HEIGHT * prefs.tile_size);*/
 
-    g_object_unref (G_OBJECT (g_buffer_pixmap));
+    /*g_object_unref (G_OBJECT (g_buffer_pixmap));
 	g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
 				    BOARD_WIDTH * size,
 				    BOARD_HEIGHT * size, -1);
 	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
 				      BOARD_WIDTH * size,
-				      BOARD_HEIGHT * size);
+				      BOARD_HEIGHT * size);*/
 
 	gweled_load_pixmaps ();
 }

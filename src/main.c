@@ -27,47 +27,23 @@
 #endif
 
 #include <stdio.h>
-#include <gtk/gtk.h>
+
+#include <glib.h>
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
 
-#include "games-scores.h"
-#include "games-scores-dialog.h"
 
-#include "sge_core.h"
+#include "gweled-gui.h"
+
+//#include "sge_core.h"
 #include "board_engine.h"
-#include "graphic_engine.h"
-#include "sound.h"
 #include "main.h"
 
-// GLOBALS
-GtkBuilder *gweled_xml;
-GtkWidget *g_main_window;
-GtkWidget *g_pref_window;
-GtkWidget *g_score_window;
-
-GtkWidget *g_drawing_area;
-GtkWidget *g_progress_bar;
-GtkWidget *g_score_label;
-GtkWidget *g_bonus_label;
-GtkWidget *g_menu_pause;
-GtkWidget *g_pref_sounds_button;
-GtkWidget *g_alignment_welcome;
-
-GdkPixmap *g_buffer_pixmap = NULL;
-GRand *g_random_generator;
-
+// Globals
 guint board_engine_id;
 
 GweledPrefs prefs;
 
-static const GamesScoresCategory scorecats[] = {
-  {"Normal", NC_("game type", "Normal")  },
-  {"Timed",  NC_("game type", "Timed") }
-};
-
-GamesScores *highscores;
-
-extern gint gi_game_running;
 
 void
 save_preferences(void)
@@ -75,7 +51,6 @@ save_preferences(void)
 	gchar *filename, *configstr;
 	GKeyFile *config;
 	FILE *configfile;
-	GError *error = NULL;
 
 	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
 
@@ -163,7 +138,8 @@ void save_current_game(void)
     }
 }
 
-void load_previous_game(void)
+void
+load_previous_game()
 {
     gchar *filename;
     FILE *stream;
@@ -185,176 +161,26 @@ void load_previous_game(void)
 
 }
 
-void init_pref_window(void)
+static void
+gweled_activate_cb (GApplication *app, gpointer user_data)
 {
-	GtkWidget *radio_button = NULL;
+    g_set_application_name("Gweled");
 
-	switch (prefs.tile_size) {
-	case 32:
-		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "smallRadiobutton"));
-		break;
-	case 48:
-		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "mediumRadiobutton"));
-		break;
-	case 64:
-		radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "largeRadiobutton"));
-		break;
-	}
-	if (radio_button)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
+    gtk_window_set_default_icon_name ("gweled");
 
-	// Sounds
-	radio_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
-	if (prefs.sounds_on)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
+    /* Initialize the GUI */
+    gweled_ui_init(app);
 
-	// HINTS
-	radio_button = GTK_WIDGET(gtk_builder_get_object(gweled_xml, "hints_checkbutton"));
-	if(prefs.hints_off) {
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), TRUE);
-	} else {
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), FALSE);
-	}
+    /* Enter in the main loop */
+    gtk_main();
 }
 
-void welcome_screen_visibility (gboolean value)
-{
-    gtk_widget_set_visible (g_alignment_welcome, value);
-    gtk_widget_set_visible (g_drawing_area, !value);
-
-    if(value == TRUE) {
-
-        // set the label with value for word wrap
-        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescNormal")), BOARD_WIDTH * prefs.tile_size - 30, -1);
-        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescTimed")), BOARD_WIDTH * prefs.tile_size - 30, -1);
-        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescEndless")), BOARD_WIDTH * prefs.tile_size - 30, -1);
-
-        // if window is small, reduce spaces
-        if(prefs.tile_size < 48) {
-
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 10);
-            gtk_widget_hide(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 0);
-            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 0);
-
-        }
-        else if(prefs.tile_size > 48) {
-
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 70);
-            gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 12);
-            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 30);
-
-        }
-        else {
-
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 40);
-            gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel2")));
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (gweled_xml, "hbox2")), 12);
-            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (gweled_xml, "vboxWelcome")), 12);
-
-        }
-    }
-}
-
-gint
-show_hiscores (gint pos, gboolean endofgame)
-{
-  gchar *message;
-  static GtkWidget *scoresdialog = NULL;
-  static GtkWidget *sorrydialog = NULL;
-  GtkWidget *dialog;
-  gint result;
-
-  if (endofgame && (pos <= 0)) {
-    if (sorrydialog != NULL) {
-      gtk_window_present (GTK_WINDOW (sorrydialog));
-    } else {
-      sorrydialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (g_main_window),
-							GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_INFO,
-							GTK_BUTTONS_NONE,
-							"<b>%s</b>\n%s",
-							_
-							("Game over!"),
-							_
-							("Great work, but unfortunately your score did not make the top ten."));
-      gtk_dialog_add_buttons (GTK_DIALOG (sorrydialog), GTK_STOCK_QUIT,
-			      GTK_RESPONSE_REJECT, _("_New Game"),
-			      GTK_RESPONSE_ACCEPT, NULL);
-      gtk_dialog_set_default_response (GTK_DIALOG (sorrydialog),
-				       GTK_RESPONSE_ACCEPT);
-      gtk_window_set_title (GTK_WINDOW (sorrydialog), "");
-    }
-    dialog = sorrydialog;
-  } else {
-
-    if (scoresdialog != NULL) {
-      gtk_window_present (GTK_WINDOW (scoresdialog));
-    } else {
-      scoresdialog = games_scores_dialog_new (GTK_WINDOW (g_main_window), highscores, _("Gweled Scores"));
-      games_scores_dialog_set_category_description (GAMES_SCORES_DIALOG
-						    (scoresdialog),
-						    _("Game type:"));
-    }
-
-    if (pos > 0) {
-      games_scores_dialog_set_hilight (GAMES_SCORES_DIALOG (scoresdialog),
-				       pos);
-      message = g_strdup_printf ("<b>%s</b>\n\n%s",
-				 _("Congratulations!"),
-				 pos == 1 ? _("Your score is the best!") :
-                                 _("Your score has made the top ten."));
-      games_scores_dialog_set_message (GAMES_SCORES_DIALOG (scoresdialog),
-				       message);
-      g_free (message);
-    } else {
-      games_scores_dialog_set_message (GAMES_SCORES_DIALOG (scoresdialog),
-				       NULL);
-    }
-
-    if (endofgame) {
-      games_scores_dialog_set_buttons (GAMES_SCORES_DIALOG (scoresdialog),
-				       GAMES_SCORES_QUIT_BUTTON |
-				       GAMES_SCORES_NEW_GAME_BUTTON);
-    } else {
-      games_scores_dialog_set_buttons (GAMES_SCORES_DIALOG (scoresdialog), 0);
-    }
-    dialog = scoresdialog;
-  }
-
-  result = gtk_dialog_run (GTK_DIALOG (dialog));
-  gtk_widget_hide (dialog);
-
-  return result;
-}
-
-static void set_welcome_button_label(GtkWidget *label, gchar *text)
-{
-    gchar     *markup;
-    GdkColor  *color;
-    GValue    *value;
-
-    gtk_widget_style_get_property(label, "fg[GTK_STATE_INSENSITIVE]", value);
-    color = (GdkColor *) g_value_get_boxed(value);
-    markup = g_markup_printf_escaped ("<span size=\"small\" foreground=\"#%.2x%.2x%.2x\">%s</span>",
-                                                  color->red,
-                                                  color->green,
-                                                  color->blue,
-                                                  text);
-
-    gtk_label_set_markup (GTK_LABEL (label), markup);
-}
 
 int main (int argc, char **argv)
 {
-	GError    *error = NULL;
-	GtkWidget *box;
-	gchar     *filename;
-	gint       response;
-
+	GtkApplication *app;
+	int status;
+	
 	/* gettext */
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
@@ -362,119 +188,18 @@ int main (int argc, char **argv)
 
     // needed for scores handling
     setgid_io_init();
+	
+	app = gtk_application_new ("org.gweled", G_APPLICATION_FLAGS_NONE);
+	
+	g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
 
-	g_set_application_name("Gweled");
+	status = g_application_run (G_APPLICATION (app), argc, argv);
+    g_object_unref (app);
 
-	gtk_init(&argc, &argv);
-
-	highscores = games_scores_new ("gweled",
-                                 scorecats, G_N_ELEMENTS (scorecats),
-                                 "game type", NULL,
-                                 0 /* default category */,
-                                 GAMES_SCORES_STYLE_PLAIN_DESCENDING);
-
-	gtk_window_set_default_icon_name ("gweled");
-
-	sge_init ();
-
-	g_random_generator = g_rand_new_with_seed (time (NULL));
-
-    gweled_xml = gtk_builder_new ();
-    if (!gtk_builder_add_from_file (gweled_xml, PACKAGE_DATA_DIR "/gweled.ui", &error))
-    {
-        g_error ("Couldn't load builder file: %s", error->message);
-        g_error_free (error);
-    }
-    g_pref_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "preferencesDialog"));
-    g_main_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "gweledApp"));
-    g_score_window = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "highscoresDialog"));
-    g_progress_bar = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "bonusProgressbar"));
-    g_score_label = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "scoreLabel"));
-    g_drawing_area = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "boardDrawingarea"));
-    g_menu_pause = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "pause1"));
-    g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "sounds_checkbutton"));
-    g_alignment_welcome = GTK_WIDGET (gtk_builder_get_object (gweled_xml, "alignmentWelcome"));
-
-    set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescNormal")),
-                             _("Get as many points as you can. The game ends if you run out of moves."));
-    set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescTimed")),
-                             _("Get as many points as you can. The game ends if you run out of time."));
-    set_welcome_button_label (GTK_WIDGET (gtk_builder_get_object (gweled_xml, "labelDescEndless")),
-                             _("The game never ends, but your score will not be saved."));
-
-	load_preferences();
-	init_pref_window();
-
-	gtk_builder_connect_signals(gweled_xml, NULL);
-
-	gtk_widget_add_events (GTK_WIDGET (g_drawing_area),
-			       GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_MOTION_MASK);
-
-	gtk_window_set_resizable (GTK_WINDOW (g_main_window), FALSE);
-	gtk_widget_show (g_main_window);
-
-    welcome_screen_visibility(TRUE);
-
-    gtk_widget_set_size_request (g_drawing_area,
-                                 BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);
-
-    gtk_widget_set_size_request (g_alignment_welcome,
-                                 BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);
-
-    g_buffer_pixmap = gdk_pixmap_new (gtk_widget_get_parent_window(g_drawing_area),
-			    BOARD_WIDTH * prefs.tile_size,
-			    BOARD_HEIGHT * prefs.tile_size, -1);
-
-	gweled_init_glyphs ();
-	gweled_load_pixmaps ();
-	gweled_load_font ();
-
-	gi_game_running = 0;
-
-	if(prefs.sounds_on) {
-	    sound_init(gdk_screen_get_default());
-	    if(sound_get_enabled() == FALSE) {
-	        gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
-	    }
-	}
-
-	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-			      BOARD_WIDTH * prefs.tile_size,
-			      BOARD_HEIGHT * prefs.tile_size);
-
-    // check for previous saved game
-    filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
-
-	if(g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
-	    box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
-                          GTK_DIALOG_DESTROY_WITH_PARENT,
-                          GTK_MESSAGE_QUESTION,
-                          GTK_BUTTONS_YES_NO,
-                          _("There is a game saved, do you want restore it?"));
-
-        gtk_dialog_set_default_response (GTK_DIALOG (box),
-                         GTK_RESPONSE_NO);
-        response = gtk_dialog_run (GTK_DIALOG (box));
-        gtk_widget_destroy (box);
-
-        if (response == GTK_RESPONSE_YES)
-            load_previous_game();
-        else
-            unlink(filename);
-	}
-
-	g_free(filename);
-
-	gtk_main ();
-
-	sge_destroy ();
+	//sge_destroy ();
 	if(board_engine_id)
 	    g_source_remove (board_engine_id);
-	g_rand_free (g_random_generator);
-	g_object_unref(G_OBJECT(gweled_xml));
 
-	return 0;
+	return status;
 }
 

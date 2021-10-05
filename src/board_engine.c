@@ -33,7 +33,7 @@
 
 #include "games-scores.h"
 
-#include "main.h"
+#include "gweled-gui.h"
 
 #include "sge_core.h"
 #include "board_engine.h"
@@ -102,7 +102,7 @@ static GList *g_alignment_list;
 extern GRand *g_random_generator;
 extern GtkWidget *g_progress_bar;
 extern GtkWidget *g_score_label;
-extern GtkWidget *g_menu_pause;
+extern GtkWidget *g_pause_game_btn;
 
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
@@ -502,7 +502,8 @@ board_set_pause(gboolean value)
     gi_game_paused = value;
 
     if(value == TRUE) {
-        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Resume"));
+    	gtk_button_set_label(GTK_BUTTON(g_pause_game_btn), _("_Resume"));
+
         // Currently not translatable because I only have basic ASCII characters.
         gweled_draw_message("paused");
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(g_progress_bar)));
@@ -516,7 +517,8 @@ board_set_pause(gboolean value)
         }
     }
     else {
-        gtk_menu_item_set_label(GTK_MENU_ITEM(g_menu_pause), _("_Pause"));
+        gtk_button_set_label(GTK_BUTTON(g_pause_game_btn), _("_Pause"));
+        
         if(last_text != NULL) {
             gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
             g_free(last_text);
@@ -1024,8 +1026,6 @@ void gweled_set_previous_game(GweledGameState game)
     gi_state = _MARK_ALIGNED_GEMS;
 
     respawn_board_engine_loop();
-
-    gtk_widget_set_sensitive(g_menu_pause, TRUE);
 
     welcome_screen_visibility (FALSE);
 

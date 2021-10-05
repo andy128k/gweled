@@ -41,8 +41,10 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 AM_GNU_GETTEXT_VERSION([0.19.8])
 AM_GNU_GETTEXT([external])
 
+AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, glib-compile-resources)
+
 #### Check for GTK+ >= 2.14 ####
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.14,,
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.20,,
 	AC_MSG_ERROR([GTK+-2.14 is required to compile gweled]))
 
 AC_SUBST(GTK_CFLAGS)
@@ -65,7 +67,7 @@ AC_SUBST(CANBERRA_LIBS)
 ### Check for libcanberra-gtk.h header ###
 AC_CHECK_HEADER([canberra.h], [],
                   AC_MSG_ERROR([*** Cannot find canberra-gtk.h header]))
-AC_CHECK_LIB(canberra-gtk, ca_gtk_proplist_set_for_widget, [],
+AC_CHECK_LIB(canberra-gtk3, ca_gtk_proplist_set_for_widget, [],
                  AC_MSG_ERROR([*** Cannot find canberra_gtk library]))
 AC_SUBST(CANBERRA_GTK_CFLAGS)
 AC_SUBST(CANBERRA_GTK_LIBS)
