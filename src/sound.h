@@ -27,11 +27,18 @@ typedef enum e_gweled_sound_effects
 {
     CLICK_EVENT,
     SWAP_EVENT
-} gweled_sound_effects;
+} GweledSoundEffects;
 
-void sound_init(GdkScreen *);
-void sound_effect_play(gweled_sound_effects);
-gboolean sound_get_enabled();
-void sound_destroy(void);
+void
+sound_init(GdkScreen *);
+
+void
+sound_effect_play(GweledSoundEffects);
+
+gboolean
+sound_get_enabled();
+
+void
+sound_destroy(void);
 
 #endif

@@ -23,45 +23,32 @@
 #include "sound.h"
 #include "board_engine.h"
 
-/* The time interval in milliseconds between music play iterations */
-#define MS_BETWEEN_PLAY 500
-
-static gboolean is_playing;
 static gboolean sound_available;
 static ca_context *context = NULL;
 
-/* Structure for repeatable sounds */
-typedef struct {
-  GtkWidget *widget;
-  guint play_interval;
-} GweledRepeatableSound;
-
-
-void sound_init(GdkScreen *screen)
+void
+sound_init(GdkScreen *screen)
 {
     if(sound_available == TRUE)
 	return;
     
     if (screen == NULL)
-	screen = gdk_screen_get_default();
+	    screen = gdk_screen_get_default();
 
     if(context == NULL)
-    context = ca_gtk_context_get_for_screen(screen);
-
-    g_print("Initializing canberra-gtk context for display %s on screen %d\n", 
-	gdk_display_get_name(gdk_screen_get_display(screen)),
-	gdk_screen_get_number(screen));
+        context = ca_gtk_context_get_for_screen(screen);
 
     if (!context){
-	sound_available = FALSE;
-	return;
+	    sound_available = FALSE;
+	    return;
 	}
 
     sound_available = TRUE;
 }
 
 /* Play sound fx */
-void sound_effect_play(gweled_sound_effects effect)
+void
+sound_effect_play(GweledSoundEffects effect)
 {
     char click_name[] = "click.ogg";
     char swap_name[] = "swap.ogg";
@@ -80,7 +67,8 @@ void sound_effect_play(gweled_sound_effects effect)
 			CA_PROP_EVENT_ID, "click-event",
 			CA_PROP_EVENT_DESCRIPTION, "click event happened",
 			NULL);
-            g_print("libcanberra playing sound %s [file: %s]; %s\n", click_name, 			click_path, ca_strerror(play_status));
+            g_print("libcanberra playing sound %s [file: %s]; %s\n", click_name, 
+            			click_path, ca_strerror(play_status));
             break;
         case SWAP_EVENT:
             play_status = ca_context_play(context, 0,
@@ -89,19 +77,22 @@ void sound_effect_play(gweled_sound_effects effect)
 			CA_PROP_EVENT_ID, "swap-event",
 			CA_PROP_EVENT_DESCRIPTION, "swap event happened",
 			NULL);
-            g_print("libcanberra playing sound %s [file: %s]; %s\n", swap_name, 			swap_path, ca_strerror(play_status));
+            g_print("libcanberra playing sound %s [file: %s]; %s\n", swap_name,
+             			swap_path, ca_strerror(play_status));
             break;
     }
 }
 
-void sound_destroy()
+void
+sound_destroy()
 {
   ca_context_destroy(context);
   sound_available = FALSE;
 }
 
 
-gboolean sound_get_enabled()
+gboolean
+sound_get_enabled()
 {
     return sound_available;
 }
