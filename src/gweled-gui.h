@@ -22,7 +22,11 @@
 
 #include <glib.h>
 
-void gweled_ui_init(GApplication *app);
+void
+gweled_ui_init(GApplication *app);
+
+void
+gweled_setup_game_window(gboolean playing);
 
 void
 welcome_screen_visibility (gboolean value);

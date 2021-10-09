@@ -160,16 +160,13 @@ on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
 {
     prefs.game_mode = GPOINTER_TO_UINT (game_mode);
     welcome_screen_visibility(FALSE);
+    
+    gweled_setup_game_window(TRUE);
 
     gweled_draw_board ();
     gweled_start_new_game ();
     respawn_board_engine_loop();
-    gtk_widget_set_sensitive(g_pause_game_btn, TRUE);
-
-    gtk_widget_show(GTK_WIDGET(g_new_game));
-    gtk_widget_show(GTK_WIDGET(g_pause_game_btn));
 }
-
 
 
 void
@@ -366,6 +363,22 @@ show_hiscores (gint pos, gboolean endofgame)
 
 
 void
+gweled_setup_game_window(gboolean playing)
+{
+    if (playing) {
+        gtk_widget_set_sensitive(g_pause_game_btn, TRUE);
+        gtk_widget_show(GTK_WIDGET(g_new_game));
+        gtk_widget_show(GTK_WIDGET(g_pause_game_btn));
+    }
+    else {
+        // Hide Play/Pause buttons.
+        gtk_widget_hide(GTK_WIDGET(g_new_game));
+        gtk_widget_hide(GTK_WIDGET(g_pause_game_btn));
+    }
+}
+
+
+void
 welcome_screen_visibility (gboolean value)
 {
     if(value == FALSE) {
@@ -373,9 +386,7 @@ welcome_screen_visibility (gboolean value)
         return;
     }
     
-    // Hide Play/Pause buttons.
-    gtk_widget_hide(GTK_WIDGET(g_new_game));
-    gtk_widget_hide(GTK_WIDGET(g_pause_game_btn));
+    gweled_setup_game_window(FALSE);
     
     // Set welcome screen visible
     gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "welcome_screen");

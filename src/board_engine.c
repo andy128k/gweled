@@ -1001,9 +1001,6 @@ void gweled_set_previous_game(GweledGameState game)
     g_steps_for_timer = game.g_steps_for_timer;
     gi_current_score = gi_score;
 
-    // update game mode preferences
-    init_pref_window();
-
     if(prefs.game_mode != ENDLESS_MODE) {
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar),
                                 (float)(gi_total_gems_removed -gi_previous_bonus_at)
@@ -1018,6 +1015,10 @@ void gweled_set_previous_game(GweledGameState game)
     g_free(text_buffer);
 
     sge_destroy_all_objects ();
+
+    gweled_setup_game_window (TRUE);
+    welcome_screen_visibility (FALSE);
+
     gweled_draw_board ();
 
     for (i = 0; i < BOARD_WIDTH; i++)
@@ -1032,11 +1033,8 @@ void gweled_set_previous_game(GweledGameState game)
 
     respawn_board_engine_loop();
 
-    welcome_screen_visibility (FALSE);
-
     gi_game_running = TRUE;
     gi_game_paused = FALSE;
-
 }
 
 
