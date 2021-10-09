@@ -34,7 +34,6 @@
 #include "board_engine.h"
 #include "graphic_engine.h"
 
-extern gint gi_game_running;
 extern gchar gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 extern GRand *g_random_generator;
 extern GdkPixbuf *g_gems_pixbuf[7];
@@ -216,7 +215,6 @@ gweled_draw_board (void)
             clutter_actor_add_child (g_actor_layers[0],
                                      CLUTTER_ACTOR (tmp));
 		}
-ì
 }
 
 T_SGEObject *

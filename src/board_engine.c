@@ -63,7 +63,7 @@ typedef struct s_alignment {
 	gint length;
 } T_Alignment;
 
-gint gi_score, gi_current_score, gi_game_running, gi_game_paused;
+gint gi_score, gi_current_score, gi_game_running = 0, gi_game_paused;
 
 gint gi_total_gems_removed;
 gint gi_score_per_move;

@@ -67,7 +67,6 @@ static const GamesScoresCategory scorecats[] = {
 };
 
 
-extern gint gi_game_running;
 extern GweledPrefs prefs;
 
 #define GWELED_RESOURCE_BASE "/org/gweled/"
@@ -107,7 +106,7 @@ on_scores_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_da
 void
 on_preferences_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
 {
-	if(gi_game_running && !board_get_pause()) 
+	if(is_game_running() && !board_get_pause()) 
 	    board_set_pause(TRUE);
 	
 	gtk_widget_show (g_pref_window);
@@ -119,7 +118,7 @@ on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 	GtkWidget *dialog;
 	gint response;
 
-	if (gi_game_running) {
+	if (is_game_running()) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
@@ -144,7 +143,7 @@ void
 on_pause_activate_cb (GtkWidget *button, gpointer user_data)
 {
 
-    if(!gi_game_running) return;
+    if(!is_game_running()) return;
 
     if ( board_get_pause() ) {
 	    board_set_pause(FALSE);
@@ -178,7 +177,7 @@ on_window_unfocus_cb (GtkWidget *widget,
                       GdkEvent  *event,
                       gpointer   user_data)
 {
-    if (gi_game_running && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
+    if (is_game_running() && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
         board_set_pause(TRUE);
 }
 
@@ -191,7 +190,7 @@ on_prefs_tilesize_toggled_cb (GtkToggleButton *togglebutton, gpointer user_data)
 		gweled_set_objects_size (prefs.tile_size);
 	}
 
-    if(!gi_game_running)
+    if(!is_game_running())
         welcome_screen_visibility(TRUE);
 }
 
@@ -230,7 +229,7 @@ on_prefs_close_cb (GtkWidget *widget, gpointer user_data)
 	save_preferences();
 
     // unpause the game if running
-    if(gi_game_running)
+    if(is_game_running())
 	    board_set_pause(FALSE);
 
 	gtk_widget_hide (g_pref_window);
@@ -414,7 +413,7 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
     GtkWidget *dialog;
     gint response;
 
-    if (gi_game_running) {
+    if (is_game_running()) {
         dialog = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
                           GTK_DIALOG_DESTROY_WITH_PARENT,
                           GTK_MESSAGE_QUESTION,
@@ -534,8 +533,6 @@ gweled_ui_init (GApplication *app)
 	gweled_init_glyphs ();
 	gweled_load_pixmaps ();
 	gweled_load_font ();
-
-	gi_game_running = 0;
 
     // Init sound
 	if(prefs.sounds_on) {
