@@ -57,6 +57,20 @@ PKG_CHECK_MODULES(RSVG, librsvg-2.0,,
 AC_SUBST(RSVG_CFLAGS)
 AC_SUBST(RSVG_LIBS)
 
+#### Check for clutter ####
+PKG_CHECK_MODULES(CLUTTER, clutter-1.0,,
+	AC_MSG_ERROR([clutter-1.0 is required to compile gweled]))
+
+AC_SUBST(CLUTTER_CFLAGS)
+AC_SUBST(CLUTTER_LIBS)
+
+#### Check for clutter-gtk ####
+PKG_CHECK_MODULES(CLUTTER_GTK, clutter-gtk-1.0,,
+	AC_MSG_ERROR([clutter-gtk-1.0 is required to compile gweled]))
+
+AC_SUBST(CLUTTER_GTK_CFLAGS)
+AC_SUBST(CLUTTER_GTK_LIBS)
+
 #### Check for libcanberra ####
 PKG_CHECK_MODULES(CANBERRA, libcanberra,,
 	AC_MSG_ERROR([libcanberra is required to compile gweled]))

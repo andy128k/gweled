@@ -25,6 +25,9 @@
 
 #include <gtk/gtk.h>
 
+#include <clutter/clutter.h>
+#include <clutter-gtk/clutter-gtk.h>
+
 #include "sge_core.h"
 #include "sge_utils.h"
 
@@ -35,10 +38,15 @@ extern gint gi_game_running;
 extern gchar gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 extern GRand *g_random_generator;
 extern GdkPixbuf *g_gems_pixbuf[7];
-extern GtkWidget *g_drawing_area;
-extern GtkWidget *g_alignment_welcome;
-//extern GdkPixmap *g_buffer_pixmap;
+extern GtkWidget *g_main_game_stack;
+extern GtkWidget *g_clutter;
+extern GtkWidget *g_welcome_box;
+
 extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
+
+extern ClutterActor *g_stage;
+
+extern ClutterActor *g_actor_layers[5];
 
 extern GweledPrefs prefs;
 
@@ -49,6 +57,7 @@ gint gi_charset_pixbuf[50];
 gint gi_cursor_pixbuf = -1;
 gint gi_sparkle_pixbuf = -1;
 gint gi_powerglow_pixbuf = -1;
+
 
 void
 gweled_load_font (void)
@@ -187,12 +196,27 @@ void
 gweled_draw_board (void)
 {
 	gint i, j;
+	ClutterActor *tmp;
+	GError *error;
 
 	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			sge_create_object (i * prefs.tile_size,
-					   j * prefs.tile_size, 0,
-					   gi_tiles_bg_pixbuf[(i + j) % 2]);
+		for (j = 0; j < BOARD_HEIGHT; j++) {
+
+	        tmp = gtk_clutter_texture_new ();
+            gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (tmp),
+                                                 GDK_PIXBUF(sge_get_pixbuf(gi_tiles_bg_pixbuf[(i + j) % 2])), &error);
+	        clutter_actor_set_size (CLUTTER_ACTOR(tmp),
+                                    prefs.tile_size,
+                                    prefs.tile_size);                     
+            clutter_actor_set_position (CLUTTER_ACTOR (tmp),
+                                        i * prefs.tile_size,
+                                        j * prefs.tile_size);
+            clutter_actor_show (CLUTTER_ACTOR (tmp));
+
+            clutter_actor_add_child (g_actor_layers[0],
+                                     CLUTTER_ACTOR (tmp));
+		}
+ì
 }
 
 T_SGEObject *
@@ -266,42 +290,37 @@ void
 gweled_gems_fall_into_place (gboolean with_delay)
 {
 	gint i, j;
-    //g_debug("gweled_gems_fall_into_place():");
+    g_print("gweled_gems_fall_into_place()\n");
+   
 
     for (j = 0; j < BOARD_HEIGHT; j++) {
         for (i = 0; i < BOARD_WIDTH; i++) {
 
-            //g_print("%s\e[0m|", gems[SGE_OBJECT(g_gem_objects[i][j])->pixbuf_id]);
-            if(with_delay)
-                sge_object_fall_to_with_delay(g_gem_objects[i][j],
-                                              j * prefs.tile_size,
-                                              (BOARD_HEIGHT - j)*i);
+            if (with_delay)
+                sge_object_fall_to_with_delay (g_gem_objects[i][j],
+                                               j * prefs.tile_size, 200);
             else
                 sge_object_fall_to (g_gem_objects[i][j],
                                     j * prefs.tile_size);
-
         }
 		//g_print("\n\e[0m");
     }
+
 }
 
 void
 gweled_set_objects_size (gint size)
 {
-    gtk_widget_set_size_request (GTK_WIDGET (g_drawing_area),
-					     BOARD_WIDTH * size,
-					     BOARD_HEIGHT * size);
-    /*gtk_widget_set_size_request (g_alignment_welcome,
-                                 BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);*/
+    gtk_widget_set_size_request (g_welcome_box,
+                                 BOARD_WIDTH * size,
+			                     BOARD_HEIGHT * size);
+			                              
+	gtk_widget_set_size_request (g_clutter,
+                                 BOARD_WIDTH * size,
+			                     BOARD_HEIGHT * size);
 
-    /*g_object_unref (G_OBJECT (g_buffer_pixmap));
-	g_buffer_pixmap = gdk_pixmap_new (g_drawing_area->window,
-				    BOARD_WIDTH * size,
-				    BOARD_HEIGHT * size, -1);
-	sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-				      BOARD_WIDTH * size,
-				      BOARD_HEIGHT * size);*/
+    
+	// TODO: resize the clutter stage
 
 	gweled_load_pixmaps ();
 }

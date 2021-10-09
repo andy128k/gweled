@@ -31,25 +31,13 @@ sge_load_svg_to_pixbuf (char *filename, int width,
 	gchar *full_pathname;
 	GdkPixbuf *pixbuf = NULL;
 	GError *error = NULL;
-	GFile *file;
 
-	full_pathname = g_strconcat(DATADIR "/pixmaps/",
+	full_pathname = g_strconcat(DATADIR G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S,
 	                            filename,
 	                            NULL );
 	if (g_file_test(full_pathname, G_FILE_TEST_IS_REGULAR)) {
-		pixbuf = rsvg_pixbuf_from_file_at_size (full_pathname, width,
+		pixbuf = gdk_pixbuf_new_from_file_at_size (full_pathname, width,
 						   height, &error);
-		if (pixbuf == NULL) {
-			// Some versions of librsvg need URI instead of path.
-			// https://gitlab.gnome.org/GNOME/librsvg/issues/198
-			g_clear_error (&error);
-			file = g_file_new_for_path (full_pathname);
-			g_free (full_pathname);
-			full_pathname = g_file_get_uri (file);
-			g_object_unref (file);
-			pixbuf = rsvg_pixbuf_from_file_at_size (full_pathname, width,
-							   height, &error);
-		}
 		if (pixbuf == NULL)
 			g_error_free (error);
 
@@ -67,7 +55,7 @@ sge_load_file_to_pixbuf (char *filename)
 	gchar *full_pathname;
 	GdkPixbuf *pixbuf = NULL;
 
-	full_pathname = g_strconcat(DATADIR "/pixmaps/",
+	full_pathname = g_strconcat(DATADIR G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S,
 	                            filename,
 	                            NULL );
 	if (g_file_test(full_pathname, G_FILE_TEST_IS_REGULAR)) {

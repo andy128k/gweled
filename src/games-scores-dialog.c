@@ -50,14 +50,12 @@ games_scores_dialog_finalize (GObject *o)
 static void
 games_scores_dialog_class_init (GamesScoresDialogClass *klass)
 {
-
-  //G_DEFINE_TYPE_WITH_CODE (GamesScoresDialogClass, klass, G_TYPE_OBJECT,
-  //                         G_ADD_PRIVATE (GamesScoresDialog))
-
-
-  //g_type_class_add_private (klass, sizeof (GamesScoresDialogPrivate));
-
-  G_OBJECT_CLASS (klass)->finalize = games_scores_dialog_finalize;
+    g_print("games_scores_dialog_class_init\n");
+    
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    object_class->finalize = games_scores_dialog_finalize;
+    
+        g_print("games_scores_dialog_class_init END\n");
 }
 
 /**
@@ -454,13 +452,16 @@ void games_scores_dialog_set_buttons (GamesScoresDialog *self, guint buttons)
   }
 }
 
-static void games_scores_dialog_init (GamesScoresDialog *self)
+static void
+games_scores_dialog_init (GamesScoresDialog *self)
 {
   GtkWidget *vbox;
   GtkWidget *scroll;
   GtkWidget *listview;
   GtkTreeViewColumn *column;
   GtkCellRenderer *renderer;
+  
+  g_print("games_scores_dialog_init\n");
 
   self->_priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GAMES_TYPE_SCORES_DIALOG,
 					     GamesScoresDialogPrivate);
@@ -477,6 +478,8 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
   self->_priv->catcounter = 0;
   self->_priv->hilight = 0;
   self->_priv->sethilight = -1;
+  
+
     
   // FIXME: Deprecated  
   //gtk_dialog_set_has_separator (GTK_DIALOG (self), FALSE);
@@ -487,12 +490,14 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
 		      G_CALLBACK (games_scores_dialog_show), NULL);
   g_signal_connect (G_OBJECT (self), "hide",
 		      G_CALLBACK (games_scores_dialog_hide), NULL);
-
+      g_print("games_scores_dialog_init PRIMA\n");
   vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+        g_print("games_scores_dialog_init MEZZO\n");
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
-  gtk_box_pack_end (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))),
+        g_print("games_scores_dialog_init DOPO\n");
+  gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (self))),
                     vbox, TRUE, TRUE, 0);
-
+        g_print("games_scores_dialog_init FINE\n");
   scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
 				    GTK_POLICY_AUTOMATIC,
@@ -565,10 +570,14 @@ static void games_scores_dialog_init (GamesScoresDialog *self)
   gtk_window_set_destroy_with_parent (GTK_WINDOW (self), TRUE);
 
   gtk_widget_grab_focus (self->_priv->combo);
+  
+
 
   gtk_widget_show_all (vbox);
   gtk_widget_hide (self->_priv->hdiv);
   gtk_widget_hide (self->_priv->message);
+  
+  g_print("games_scores_dialog_init END\n");
 }
 
 /* FIXME: There is basically no range checking. */

@@ -247,7 +247,7 @@ void
 gweled_refill_board (void)
 {
 	gint i, j, k;
-	//g_debug("gweled_refill_board():");
+	g_debug("gweled_refill_board():");
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
@@ -332,8 +332,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 			xpos = xhotspot - xsize / 2 + i * FONT_WIDTH;
 			ypos = yhotspot - ysize / 2;
 			object = gweled_draw_character (xpos, ypos, 4, buffer[i]);
-			object->vy = -1.0;
-			sge_object_set_lifetime (object, 1);	//1s
+			sge_object_fly_away(object);
 		}
 		g_free (buffer);
 	}
@@ -538,6 +537,12 @@ board_get_pause()
 }
 
 gboolean
+is_game_running() {
+    return gi_game_running;
+}
+
+
+gboolean
 hint_callback (gpointer data)
 {
 	gint x, y;
@@ -605,7 +610,7 @@ board_engine_loop (gpointer data)
 						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
 
-    //g_debug("Current state: %s", state[gi_state]);
+    g_debug("Current state: %s\n", state[gi_state]);
 
     if(hint_timeout && gi_gem_clicked) {
         gweled_set_hints_active(FALSE);
@@ -646,8 +651,8 @@ board_engine_loop (gpointer data)
 				if (cursor[1])
 					sge_destroy_object (cursor[1], NULL);
 				cursor[1] = sge_create_object (prefs.tile_size * x2,
-						prefs.tile_size * y2,
-						2, gi_cursor_pixbuf);
+                                               prefs.tile_size * y2,
+                                               2, gi_cursor_pixbuf);
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],

@@ -63,7 +63,11 @@ void gweled_refill_board(void);
 void board_set_pause(gboolean value);
 void gweled_set_hints_active(gboolean yn);
 
-gboolean board_get_pause(void);
+gboolean
+board_get_pause(void);
+
+gboolean
+is_game_running(void);
 
 void respawn_board_engine_loop();
 

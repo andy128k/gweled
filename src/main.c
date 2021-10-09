@@ -31,7 +31,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
+#include <clutter-gtk/clutter-gtk.h>
 
 #include "gweled-gui.h"
 
@@ -167,7 +167,11 @@ gweled_activate_cb (GApplication *app, gpointer user_data)
     g_set_application_name("Gweled");
 
     gtk_window_set_default_icon_name ("gweled");
-
+    
+    g_object_set (gtk_settings_get_default (),
+                    "gtk-application-prefer-dark-theme", TRUE,
+                    NULL);
+    
     /* Initialize the GUI */
     gweled_ui_init(app);
 
@@ -179,6 +183,7 @@ gweled_activate_cb (GApplication *app, gpointer user_data)
 int main (int argc, char **argv)
 {
 	GtkApplication *app;
+	GError *error = NULL;
 	int status;
 	
 	/* gettext */
@@ -192,6 +197,25 @@ int main (int argc, char **argv)
 	app = gtk_application_new ("org.gweled", G_APPLICATION_FLAGS_NONE);
 	
 	g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
+	
+    if (gtk_clutter_init_with_args (&argc, &argv,
+                                    NULL,
+                                    NULL,
+                                    NULL,
+                                    &error) != CLUTTER_INIT_SUCCESS)
+    {
+    
+        if (error) {
+            g_critical ("Unable to initialize Clutter-GTK: %s", error->message);
+            g_error_free (error);
+            return EXIT_FAILURE;
+          }
+          else
+            g_error ("Unable to initialize Clutter-GTK");
+    }
+    
+    /* calling gtk_clutter_init* multiple times should be safe */
+    g_assert (gtk_clutter_init (NULL, NULL) == CLUTTER_INIT_SUCCESS);
 
 	status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);

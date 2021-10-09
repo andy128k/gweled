@@ -25,269 +25,55 @@
  * 3 -> text
  */
 
+
 #include <gtk/gtk.h>
+#include <clutter/clutter.h>
+#include <clutter-gtk/clutter-gtk.h>
 #include <math.h>
+
+#include "board_engine.h"
+#include "graphic_engine.h"
+#include "sound.h"
 #include "sge_core.h"
 
 #define ACCELERATION	1.0
 #define SGE_TIMER_INTERVAL  20
 
-#define MAX_OPACITY 255
-#define STEP_OPACITY 10
-#define BLINK_OPACITY 155
-
-// LOCAL FUNCTIONS
-void invalidate_objects_above (T_SGEObject * object);
-void invalidate_background_beneath (T_SGEObject * object);
-
 // LOCAL VARS
-static GRand *g_rand_generator;
-static guint g_main_loop_id;
 static GList *g_object_list;
-//static GdkPixmap *g_pixmap_buffer;
 static GdkPixbuf **g_pixbufs;
-static gint g_width, g_height;
 static gint gi_nb_pixbufs;
 
-static GtkWidget *g_drawing_area = NULL;
+extern gint gi_gem_clicked;
+extern gint gi_x_click;
+extern gint gi_y_click;
 
-static gboolean layers_visibility[5] = {TRUE, TRUE, TRUE, TRUE, TRUE};
+extern gint gi_gem_dragged;
+extern gint gi_x_drag;
+extern gint gi_y_drag;
+
+extern GtkWidget *g_clutter;
+extern ClutterActor *g_stage;
+
+extern GweledPrefs prefs;
+
+static gint gi_dragging = 0;
+
+ClutterActor *g_actor_layers[5] = {NULL, NULL, NULL, NULL, NULL};
+
+ClutterTimeline *timeline;
+
+
+GdkPixbuf *
+sge_get_pixbuf(gint index) {
+    return g_pixbufs[index];
+}
 
 // helper functions
 gint
 compare_by_layer (gconstpointer a, gconstpointer b)
 {
 	return SGE_OBJECT(a)->layer - SGE_OBJECT(b)->layer;
-}
-
-// main loop functions
-void
-draw_object (gpointer object, gpointer user_data)
-{
-	/*int x, y;
-	GdkGC *gc;
-	GdkPixbuf *pixbuffer;
-
-
-    if((SGE_OBJECT(object)->fadeout && SGE_OBJECT(object)->opacity <= 0)
-    || (SGE_OBJECT(object)->zoomout && SGE_OBJECT(object)->zoom <= 0))
-    {
-	    sge_destroy_object (SGE_OBJECT(object), NULL);
-        return;
-    }
-
-    if ((int) SGE_OBJECT(object)->needs_drawing
-        && layers_visibility[SGE_OBJECT(object)->layer]
-        && SGE_OBJECT(object)->opacity > 0) {
-
-		x = (int) SGE_OBJECT(object)->x;
-		y = (int) SGE_OBJECT(object)->y;
-
-		if (SGE_OBJECT(object)->pre_rendered) {
-			gc = gdk_gc_new (GDK_DRAWABLE (g_pixmap_buffer));
-			gdk_draw_drawable (GDK_DRAWABLE (g_pixmap_buffer),
-					   gc,
-					   GDK_DRAWABLE (SGE_OBJECT(object)->pre_rendered),
-					   0, 0, x, y,
-					   SGE_OBJECT(object)->width,
-					   SGE_OBJECT(object)->height);
-			g_object_unref (gc);
-
-		} else {
-
-            if (SGE_OBJECT(object)->opacity < MAX_OPACITY
-                || SGE_OBJECT(object)->zoom != 1.0)
-            {
-
-                pixbuffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
-                        TRUE, 8,
-                        SGE_OBJECT(object)->width,
-                        SGE_OBJECT(object)->height);
-
-                gdk_pixbuf_fill (pixbuffer, 0x00000000);
-                gdk_pixbuf_composite(g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-                        pixbuffer,
-                        0,
-                        0,
-                        SGE_OBJECT(object)->width,
-                        SGE_OBJECT(object)->height,
-                        0, 0,
-                        SGE_OBJECT(object)->zoom,
-                        SGE_OBJECT(object)->zoom,
-                        GDK_INTERP_NEAREST,
-                        SGE_OBJECT(object)->opacity);
-
-                if(SGE_OBJECT(object)->animation)
-
-                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                            NULL, pixbuffer,
-                            ((int)SGE_OBJECT(object)->animation_iter) * SGE_OBJECT(object)->height,
-                            0,
-                            x, y,
-                            SGE_OBJECT(object)->height,
-                            SGE_OBJECT(object)->height,
-                            GDK_RGB_DITHER_NONE, 0, 0);
-                else
-                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                            NULL, pixbuffer,
-                            0, 0,
-                            x +
-                                (SGE_OBJECT(object)->width -
-                                 SGE_OBJECT(object)->width *
-                                 SGE_OBJECT(object)->zoom) / 2,
-                            y +
-                                (SGE_OBJECT(object)->height -
-                                 SGE_OBJECT(object)->height *
-                                 SGE_OBJECT(object)->zoom) / 2,
-                            SGE_OBJECT(object)->width * SGE_OBJECT(object)->zoom,
-                            SGE_OBJECT(object)->height * SGE_OBJECT(object)->zoom,
-                            GDK_RGB_DITHER_NONE, 0, 0);
-
-                g_object_unref(pixbuffer);
-
-            } else if(SGE_OBJECT(object)->blink) {
-                pixbuffer = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
-                        TRUE, 8,
-                        SGE_OBJECT(object)->width,
-                        SGE_OBJECT(object)->height);
-
-                gdk_pixbuf_fill (pixbuffer, 0x00000000);
-
-                gdk_pixbuf_saturate_and_pixelate(
-                            g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-                            pixbuffer,
-                            SGE_OBJECT(object)->saturation,
-                            FALSE);
-
-                gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                        NULL, pixbuffer,
-                        0, 0, x, y,
-                        SGE_OBJECT(object)->width,
-                        SGE_OBJECT(object)->height,
-                        GDK_RGB_DITHER_NONE, 0, 0);
-
-               g_object_unref(pixbuffer);
-
-            } else {
-                if(SGE_OBJECT(object)->animation) {
-                    // width of each sprite of animation is the object height
-                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                            NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-                            ((int)SGE_OBJECT(object)->animation_iter) * SGE_OBJECT(object)->height,
-                            0,
-                            x, y,
-                            SGE_OBJECT(object)->height,
-                            SGE_OBJECT(object)->height,
-                            GDK_RGB_DITHER_NONE, 0, 0);
-
-                } else {
-
-                    // draw pixbuf without effects
-                    gdk_draw_pixbuf (GDK_DRAWABLE (g_pixmap_buffer),
-                            NULL, g_pixbufs[SGE_OBJECT(object)->pixbuf_id],
-                            0, 0, x, y,
-                            SGE_OBJECT(object)->width,
-                            SGE_OBJECT(object)->height,
-                            GDK_RGB_DITHER_NONE, 0, 0);
-                }
-            }
-        }
-        // request area drawing
-        gtk_widget_queue_draw_area (g_drawing_area, x, y,
-				SGE_OBJECT(object)->width,
-				SGE_OBJECT(object)->height);
-
-		SGE_OBJECT(object)->needs_drawing = 0;
-
-		invalidate_objects_above (SGE_OBJECT(object));
-	}
-
-    if(SGE_OBJECT(object)->fadeout) {
-        SGE_OBJECT(object)->opacity -= 30;
-        invalidate_background_beneath (SGE_OBJECT(object));
-    }
-    if(SGE_OBJECT(object)->zoomout) {
-        SGE_OBJECT(object)->zoom -= 0.20;
-        invalidate_background_beneath (SGE_OBJECT(object));
-    }
-    if(SGE_OBJECT(object)->blink) {
-        if(SGE_OBJECT(object)->opacity >= MAX_OPACITY)
-            SGE_OBJECT(object)->blink_increase = FALSE;
-
-        if(SGE_OBJECT(object)->opacity <= BLINK_OPACITY)
-            SGE_OBJECT(object)->blink_increase = TRUE;
-
-        if(SGE_OBJECT(object)->blink_increase)
-            SGE_OBJECT(object)->opacity += STEP_OPACITY;
-        else
-            SGE_OBJECT(object)->opacity -= STEP_OPACITY;
-
-         invalidate_background_beneath (SGE_OBJECT(object));
-    }
-    if(SGE_OBJECT(object)->animation) {
-        SGE_OBJECT(object)->animation_iter += 0.5;
-
-        if(SGE_OBJECT(object)->animation_iter * SGE_OBJECT(object)->height == SGE_OBJECT(object)->width) {
-            if(SGE_OBJECT(object)->animation_repeat)
-                SGE_OBJECT(object)->animation_iter = 0;
-            else {
-                sge_destroy_object (SGE_OBJECT(object), NULL);
-                return;
-            }
-        }
-        invalidate_background_beneath (SGE_OBJECT(object));
-    }
-    */
-}
-
-void
-move_object (gpointer object, gpointer user_data)
-{
-   
-}
-
-gboolean
-sge_main_loop (gpointer data)
-{
-	g_list_foreach (g_object_list, draw_object, NULL);
-	g_list_foreach (g_object_list, move_object, NULL);
-
-    return TRUE;
-
-}
-
-// creation/destruction
-void
-sge_init (void)
-{
-
-}
-
-void
-scale_object_pos (gpointer object, gpointer user_data)
-{
-
-   
-}
-
-void
-sge_set_drawing_area (GtkWidget * drawing_area, GdkPixbuf * pixmap_buffer,
-		      gint width, gint height)
-{
-	
-}
-
-void
-sge_destroy (void)
-{
-	
-}
-
-// pixbuf management
-void
-pixbuf_update_notify (gpointer item, gpointer data)
-{
-	
 }
 
 gint
@@ -311,258 +97,109 @@ sge_register_pixbuf (GdkPixbuf * pixbuf, int index)
 		i = index;
 		g_object_unref (g_pixbufs[i]);
 		g_pixbufs[i] = pixbuf;
-		g_list_foreach (g_object_list, pixbuf_update_notify,
-				(void *) &i);
 	}
 
 	return i;
 }
 
-// object/layer handling functions
-gboolean
-objects_intersect (T_SGEObject * object1, T_SGEObject * object2)
-{
-	GdkRectangle rect1, rect2, dest;
 
-	rect1.x = object1->x;
-	rect1.y = object1->y;
-	rect1.width = object1->width;
-	rect1.height = object1->height;
-
-	rect2.x = object2->x;
-	rect2.y = object2->y;
-	rect2.width = object2->width;
-	rect2.height = object2->height;
-
-	return gdk_rectangle_intersect (&rect1, &rect2, &dest);
-}
-
-void
-invalidate_object_if_above (gpointer item, gpointer data)
-{
-	T_SGEObject *target_object, *source_object;
-
-	source_object = (T_SGEObject *) data;
-	target_object = (T_SGEObject *) item;
-
-	if (source_object != target_object)
-		if (source_object->layer < target_object->layer)
-			if (objects_intersect
-			    (source_object, target_object))
-				target_object->needs_drawing = -1;
-}
-
-void
-invalidate_objects_above (T_SGEObject * object)
-{
-	g_list_foreach (g_object_list, invalidate_object_if_above,
-			(void *) object);
-}
-
-void
-invalidate_background_if_under_object (gpointer item, gpointer data)
-{
-	T_SGEObject *target_object, *source_object;
-
-	source_object = (T_SGEObject *) data;
-	target_object = (T_SGEObject *) item;
-
-	if (source_object != target_object)
-		if (target_object->layer == 0)
-			if (objects_intersect
-			    (source_object, target_object))
-				target_object->needs_drawing = -1;
-}
-
-void
-invalidate_background_beneath (T_SGEObject * object)
-{
-	g_list_foreach (g_object_list,
-			invalidate_background_if_under_object,
-			(void *) object);
-}
-
-void
-invalidate_if_layer (gpointer item, gpointer data)
-{
-	T_SGEObject *target_object;
-
-	target_object = (T_SGEObject *) item;
-
-	if (target_object->layer == *((int *) data))
-		target_object->needs_drawing = -1;
-}
-
-void
-sge_invalidate_layer (int layer)
-{
-	g_list_foreach (g_object_list, invalidate_if_layer,
-			(void *) &layer);
-}
-
-//objects creation/destruction
-T_SGEObject *
-sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
-{
-
-    T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
-    /*object->x = x;
-    object->y = y;
-    object->vx = 0.0;
-    object->vy = 0.0;
-    object->ax = 0.0;
-    object->ay = 0.0;
-    object->pixbuf_id = pixbuf_id;
-    object->dest_x = 0;
-    object->dest_y = 0;
-
-    object->y_delay = 0;
-    object->opacity = MAX_OPACITY;
-    object->fadeout = FALSE;
-    object->zoom = 1.0;
-    object->zoomout = FALSE;
-
-    object->saturation = 1.0;
-    object->blink = FALSE;
-    object->blink_increase = TRUE;
-
-    object->animation = FALSE;
-    object->animation_iter = 1;
-    object->animation_repeat = TRUE;
-
-    object->stop_condition = NULL;
-	object->stop_callback = NULL;
-	object->layer = layer;
-	object->needs_drawing = 0x01;
-
-	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
-    object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
-
-	if (layer == 0) {
-		object->pre_rendered =
-		    gdk_pixmap_new (g_drawing_area->window, object->width,
-				    object->height, -1);
-		gdk_draw_pixbuf (GDK_DRAWABLE (object->pre_rendered), NULL,
-				 g_pixbufs[pixbuf_id], 0, 0, 0, 0,
-				 object->width, object->height,
-				 GDK_RGB_DITHER_NONE, 0, 0);
-	} else
-		object->pre_rendered = NULL;
-
-    g_object_list = g_list_append (g_object_list, (gpointer) object);
-	g_object_list = g_list_sort (g_object_list, compare_by_layer);
-*/
-	return object;
-}
 
 void
 sge_destroy_object (gpointer object, gpointer user_data)
 {
-	
+	if (SGE_OBJECT(object)->actor) {
+	    clutter_actor_destroy (SGE_OBJECT(object)->actor);
+	}
+	g_object_list = g_list_remove (g_object_list, object);
+	g_free(object);
 }
 
 void
 sge_destroy_object_on_level (gpointer object, gpointer user_data)
 {
+    // destroy only objects in the specified level
+    if(SGE_OBJECT(object)->layer != GPOINTER_TO_INT(user_data))
+        return;
+
+    sge_destroy_object(object, NULL);
 }
 
 void
 sge_destroy_all_objects (void)
 {
-
+	g_list_foreach (g_object_list, sge_destroy_object, NULL);
 }
 
 void
 sge_destroy_all_objects_on_level (int level)
 {
-
+	g_list_foreach (g_object_list, sge_destroy_object_on_level, GINT_TO_POINTER(level));
 }
 
-// Stop conditions
-int
-is_out_of_screen (T_SGEObject * object)
-{
-	if ((object->x > g_width) ||
-	    (object->x < -object->width) ||
-	    (object->y > g_height) || (object->y < -object->height))
-		return -1;
 
-	return 0;
+void
+sge_destroy_on_transition_ended (ClutterActor *actor,
+                         char         *name,
+                         gboolean      is_finished,
+                         gpointer      object) {
+                         
+    sge_destroy_object (SGE_OBJECT(object), NULL);
 }
 
-int
-has_reached_destination (T_SGEObject * object)
-{
-    //g_debug("has_reached_destination():\n");
-	if (fabs (object->x - object->dest_x) < 1.0 &&
-	    fabs (object->y - object->dest_y) < 1.0)
-		return -1;
-
-	return 0;
-}
-
-int
-has_reached_floor (T_SGEObject * object)
-{
-	if (object->y >= object->dest_y) {
-		object->y = object->dest_y;
-		return -1;
-	}
-
-	return 0;
-}
-
-int
-has_reached_time_limit (T_SGEObject * object)
-{
-	if (object->lifetime--)
-		return 0;
-	return -1;
+void
+sge_fadeout_on_transition_ended (ClutterActor *actor,
+                                 char         *name,
+                                 gboolean      is_finished,
+                                 gpointer      object) {
+       sge_object_fadeout(SGE_OBJECT(object));
 }
 
 // animations/effects
-void
-sge_object_rise (T_SGEObject * object)
-{
-	
-}
-
-void
-sge_object_take_down (T_SGEObject * object)
-{
-
-}
-
-#define NB_STEPS	10
 
 // used for gems swapping
 void
 sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 {
-
+  object->x = dest_x;
+  object->y = dest_y;
+  
+  clutter_actor_save_easing_state (object->actor);
+  clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_CUBIC);
+  clutter_actor_set_easing_duration (object->actor, 200);
+  clutter_actor_set_position (object->actor, dest_x, dest_y);
+  clutter_actor_restore_easing_state (object->actor);
 }
 
-void sge_object_fadeout_cb (gpointer object, gpointer user_data)
+gboolean
+sge_object_expired (gpointer data)
 {
-
+    sge_destroy_object(SGE_OBJECT(data), NULL);
+    return FALSE;
 }
 
 void
 sge_object_set_lifetime (T_SGEObject * object, gint seconds)
 {
-	
+    g_timeout_add_seconds (seconds, sge_object_expired, object);
 }
 void
 
 sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
-  
+  sge_object_fall_to_with_delay (object, y_pos, 0);
 }
 void
 sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
 {
   
+  object->y = y_pos;
+  
+  clutter_actor_save_easing_state (object->actor);
+  clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_ELASTIC);
+  clutter_actor_set_easing_duration (object->actor, 500);
+  clutter_actor_set_easing_delay (object->actor, delay);
+  clutter_actor_set_position (object->actor, clutter_actor_get_x (object->actor), y_pos);
+  clutter_actor_restore_easing_state (object->actor);
 }
 
 //other useful stuff
@@ -570,7 +207,9 @@ sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
 gboolean
 sge_object_is_moving (T_SGEObject * object)
 {
-	return ((object->vx != 0.0) || (object->vy != 0.0));
+	gfloat cx, cy;
+	clutter_actor_get_position(object->actor, &cx, &cy);
+	return ((object->x != cx) || (object->y != cy));
 }
 
 gboolean
@@ -606,43 +245,69 @@ sge_objects_are_moving_on_layer (int layer)
 
 void sge_set_layer_visibility (int layer, gboolean visibility)
 {
-    if(layer >= 0 && layer < 5) {
-        layers_visibility[layer] = visibility;
-        if(layer > 0)
-            sge_invalidate_layer(layer-1);
-        else
-            sge_invalidate_layer(0);
+    if (visibility) {
+        clutter_actor_set_opacity(g_actor_layers[layer], 255);
+    } else {
+        clutter_actor_set_opacity(g_actor_layers[layer], 0);
     }
 }
 
-void sge_object_set_opacity (T_SGEObject *object, gint opacity)
-{
-
-  
-}
 
 // fadeout the object and then destroy it
 void sge_object_fadeout (T_SGEObject *object)
 {
-    object->fadeout = TRUE;
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
+    clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_opacity (object->actor, 0);
+    clutter_actor_restore_easing_state (object->actor);
+    
+    g_signal_connect (object->actor, "transition-stopped",
+		    G_CALLBACK (sge_destroy_on_transition_ended), 
+		    object);
+    
 }
 
 // zoomout the object and then destroy it
 void sge_object_zoomout (T_SGEObject *object)
 {
-    object->zoomout = TRUE;
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
+    clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
+    clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_size (object->actor, 0, 0);
+    clutter_actor_restore_easing_state (object->actor);
+    
+    g_signal_connect (object->actor, "transition-stopped",
+		    G_CALLBACK (sge_destroy_on_transition_ended), 
+		    object);
+}
+
+void
+sge_object_fly_away (T_SGEObject *object)
+{    
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
+    clutter_actor_set_easing_duration (object->actor, 800);
+    clutter_actor_set_position (object->actor, clutter_actor_get_x (object->actor), clutter_actor_get_y (object->actor) - (prefs.tile_size/2));
+    clutter_actor_restore_easing_state (object->actor);
+    
+    g_signal_connect (object->actor, "transition-stopped",
+		    G_CALLBACK (sge_fadeout_on_transition_ended), 
+		    object);
 }
 
 void sge_object_blink_start (T_SGEObject *object)
-{
+{    
     object->blink = TRUE;
-    object->blink_increase = TRUE;
+    clutter_timeline_start(timeline);
 }
 
 void sge_object_blink_stop (T_SGEObject *object)
 {
     object->blink = FALSE;
-    object->opacity = MAX_OPACITY;
+    clutter_timeline_pause(timeline);
+    clutter_actor_set_opacity (object->actor, 255);
 }
 
 void sge_object_animate (T_SGEObject *object, gboolean repeat)
@@ -658,4 +323,196 @@ sge_object_exists (T_SGEObject *object)
         return FALSE;
     else
         return TRUE;
+}
+
+static gboolean
+on_gem_clicked (ClutterClickAction    *action,
+                ClutterActor          *actor,
+                gpointer               user_data)
+{
+    gfloat x, y;
+     
+     
+    // resume game on click
+    if (is_game_running() && board_get_pause() == TRUE ) {
+        board_set_pause(FALSE);
+        // not handle this click
+        return FALSE;
+    }
+
+    // in pause mode don't accept events
+    if (board_get_pause())
+        return FALSE;
+
+    // only handle left button
+    if (clutter_click_action_get_button (action) != 1)
+        return FALSE;
+    
+	 
+    clutter_actor_get_position (actor, &x, &y);
+	 
+	 
+	gi_x_click = round(x) / prefs.tile_size;
+    gi_y_click = round(y) / prefs.tile_size;
+     
+    g_print("Clicked! %i:%i %s btn:%i\n", gi_x_click, gi_y_click, clutter_actor_get_name(actor), clutter_click_action_get_button (action));
+     
+    gi_gem_clicked = -1;
+    gi_dragging = -1;
+	 
+	respawn_board_engine_loop();
+	 
+	 
+	return FALSE;
+}
+
+
+
+/* Timeline handler */
+static void
+sge_clutter_frame_cb (ClutterTimeline *timeline, 
+	  gint             msecs,
+	  gpointer         data)
+{
+    gint            i;
+    guint           progress = clutter_timeline_get_progress (timeline) * 360.0f;
+    static gboolean fade = TRUE;
+    T_SGEObject *object;
+    
+    if (progress < 360)
+        return;
+
+    for (i = 0; i < g_list_length (g_object_list); i++) {
+		object = (T_SGEObject *) g_list_nth_data (g_object_list, i);
+		if (object->blink) {
+		    clutter_actor_save_easing_state (object->actor);
+            clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
+            clutter_actor_set_easing_duration (object->actor, 100);
+            if (fade) {
+                clutter_actor_set_opacity (object->actor, 155);
+                fade = FALSE;
+            }
+            else {
+                clutter_actor_set_opacity (object->actor, 255);
+                fade = TRUE;
+            }
+            clutter_actor_restore_easing_state (object->actor);
+        }
+	}
+
+}
+
+
+//objects creation/destruction
+T_SGEObject *
+sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
+{
+
+    GError *error;
+    ClutterAction *action;
+    
+    g_debug("sge_create_object %i at %i:%i layer:%i\n", pixbuf_id, x, y, layer);
+    
+    T_SGEObject * object;
+	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object->x = x;
+    object->y = y;
+    object->pixbuf_id = pixbuf_id;
+
+    object->y_delay = 0;
+
+    object->blink = FALSE;
+
+    object->animation = FALSE;
+    object->animation_iter = 1;
+    object->animation_repeat = TRUE;
+
+	object->layer = layer;
+
+	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
+    object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
+    
+   
+    // Clutter actors.
+    object->actor = gtk_clutter_texture_new ();
+    gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
+                                         GDK_PIXBUF(g_pixbufs[pixbuf_id]), &error);
+    clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
+                            object->width,
+                            object->height);
+                            
+    clutter_actor_set_position (CLUTTER_ACTOR (object->actor),
+                                x,
+                                y);
+    
+    clutter_actor_add_child (g_actor_layers[layer],
+                                 CLUTTER_ACTOR (object->actor));
+                                 
+    clutter_actor_show (object->actor);                            
+        
+
+    if (layer == 1) {
+    
+        clutter_actor_set_reactive (object->actor, TRUE);
+        
+        action = clutter_click_action_new();
+        clutter_actor_add_action (object->actor, action);
+        
+        g_signal_connect (action, "clicked", G_CALLBACK (on_gem_clicked), NULL);
+	}
+	
+
+    g_object_list = g_list_append (g_object_list, (gpointer) object);
+
+	return object;
+}
+
+
+void
+sge_destroy (void)
+{
+	int i;
+
+	for (i = 0; i < gi_nb_pixbufs; i++)
+		g_object_unref (g_pixbufs[i]);
+	g_free (g_pixbufs);
+}
+
+// creation/destruction
+void
+sge_init (void)
+{
+	int i;
+
+	gi_nb_pixbufs = 0;
+	g_pixbufs = NULL;
+	
+	for (i = 0; i < 5; i++) {
+	    g_actor_layers[i] = clutter_actor_new();
+	    
+	    clutter_actor_set_name(g_actor_layers[i], g_strdup_printf ("Level %d\n", i));
+	    clutter_actor_set_easing_mode(g_actor_layers[i], CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (g_actor_layers[i], 200);
+        clutter_actor_show (g_actor_layers[i]);
+        
+        clutter_actor_set_position(g_actor_layers[i], 0, 0);
+        
+        clutter_actor_add_child (g_stage, g_actor_layers[i]);
+        clutter_actor_add_constraint (g_actor_layers[i], clutter_align_constraint_new (g_stage, CLUTTER_ALIGN_BOTH, 0));
+	}
+    
+    
+    /* Create a timeline to manage animation */
+    timeline = clutter_timeline_new (200);
+    clutter_timeline_set_repeat_count (timeline, -1);
+
+    /* fire a callback for frame change */
+    g_signal_connect (timeline, "new-frame",  G_CALLBACK (sge_clutter_frame_cb), NULL);
+    
+    
+    clutter_timeline_pause(timeline);
+
+    /* and start it */
+    clutter_timeline_start (timeline);
+	
 }

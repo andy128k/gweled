@@ -24,6 +24,9 @@
 
 #include <gtk/gtk.h>
 
+#include <clutter/clutter.h>
+#include <clutter-gtk/clutter-gtk.h>
+
 #include "graphic_engine.h"
 #include "board_engine.h"
 #include "sound.h"
@@ -37,17 +40,18 @@
 GtkBuilder *builder;
 GtkWidget *g_main_window;
 GtkWidget *g_pref_window;
-GtkWidget *g_score_window;
 
-GtkWidget *g_drawing_area;
+GtkWidget *g_clutter;
+GtkWidget *g_welcome_box;
 GtkWidget *g_progress_bar;
 GtkWidget *g_score_label;
 GtkWidget *g_bonus_label;
-GtkWidget *g_menu_pause;
 GtkWidget *g_pref_sounds_button;
-GtkWidget *g_alignment_welcome;
+GtkWidget *g_main_game_stack;
 GtkWidget *g_new_game;
 GtkWidget *g_pause_game_btn;
+
+ClutterActor *g_stage;
 
 GtkMenuButton *g_menu_button;
 GMenuModel *headermenu;
@@ -110,6 +114,75 @@ on_preferences_activate (GSimpleAction *simple, GVariant *parameter, gpointer us
 }
 
 void
+on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
+{
+	GtkWidget *dialog;
+	gint response;
+
+	if (gi_game_running) {
+		dialog = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+					      GTK_DIALOG_DESTROY_WITH_PARENT,
+					      GTK_MESSAGE_QUESTION,
+					      GTK_BUTTONS_YES_NO,
+					      _("Do you really want to abort this game?"));
+
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+						 GTK_RESPONSE_NO);
+		response = gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		if (response != GTK_RESPONSE_YES)
+			return;
+	}
+
+    gweled_stop_game ();
+
+    welcome_screen_visibility (TRUE);
+}
+
+void
+on_pause_activate_cb (GtkWidget *button, gpointer user_data)
+{
+
+    if(!gi_game_running) return;
+
+    if ( board_get_pause() ) {
+	    board_set_pause(FALSE);
+
+	}
+    else {
+	    board_set_pause(TRUE);
+
+	}
+}
+
+void
+on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
+{
+    prefs.game_mode = GPOINTER_TO_UINT (game_mode);
+    welcome_screen_visibility(FALSE);
+
+    gweled_draw_board ();
+    gweled_start_new_game ();
+    respawn_board_engine_loop();
+    gtk_widget_set_sensitive(g_pause_game_btn, TRUE);
+
+    gtk_widget_show(GTK_WIDGET(g_new_game));
+    gtk_widget_show(GTK_WIDGET(g_pause_game_btn));
+}
+
+
+
+void
+on_window_unfocus_cb (GtkWidget *widget,
+                      GdkEvent  *event,
+                      gpointer   user_data)
+{
+    if (gi_game_running && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
+        board_set_pause(TRUE);
+}
+
+void
 on_prefs_tilesize_toggled_cb (GtkToggleButton *togglebutton, gpointer user_data)
 {
 	if (gtk_toggle_button_get_active (togglebutton)) {
@@ -123,7 +196,7 @@ on_prefs_tilesize_toggled_cb (GtkToggleButton *togglebutton, gpointer user_data)
 }
 
 void
-on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_data)
+on_prefs_sounds_checkbutton_toggled_cb (GtkToggleButton * togglebutton, gpointer user_data)
 {
 	if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.sounds_on = TRUE;
@@ -138,7 +211,7 @@ on_sounds_checkbutton_toggled (GtkToggleButton * togglebutton, gpointer user_dat
 }
 
 void
-on_hints_checkbutton_toggled (GtkToggleButton *togglebutton, gpointer *data)
+on_prefs_hints_checkbutton_toggled_cb (GtkToggleButton *togglebutton, gpointer *data)
 {
     if (gtk_toggle_button_get_active (togglebutton)) {
 		prefs.hints_off = TRUE;
@@ -164,10 +237,13 @@ on_prefs_close_cb (GtkWidget *widget, gpointer user_data)
 }
 
 
+// Open windows / set GUI state
 void
 init_pref_window(GtkWidget *window)
 {
 	GtkWidget *radio_button = NULL;
+	
+	g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (builder, "sounds_checkbutton"));
 
 	switch (prefs.tile_size) {
 	    case 32:
@@ -199,7 +275,7 @@ init_pref_window(GtkWidget *window)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
 
 	g_signal_connect(radio_button, "toggled",
-                     G_CALLBACK(on_sounds_checkbutton_toggled), NULL);
+                     G_CALLBACK(on_prefs_sounds_checkbutton_toggled_cb), NULL);
 	
 	// HINTS
 	radio_button = GTK_WIDGET(gtk_builder_get_object(builder, "hints_checkbutton"));
@@ -210,56 +286,12 @@ init_pref_window(GtkWidget *window)
 	}
 	
 	g_signal_connect(radio_button, "toggled",
-                     G_CALLBACK(on_hints_checkbutton_toggled), NULL);
+                     G_CALLBACK(on_prefs_hints_checkbutton_toggled_cb), NULL);
 	
 	g_signal_connect(window, "delete-event",
                      G_CALLBACK(on_prefs_close_cb), NULL);
 }
 
-
-void welcome_screen_visibility (gboolean value)
-{
-    gtk_widget_set_visible (g_alignment_welcome, value);
-    gtk_widget_set_visible (g_drawing_area, !value);
-
-    if(value == TRUE) {
-    
-        // Hide Play/Pause buttons.
-        gtk_widget_hide(GTK_WIDGET(g_new_game));
-        gtk_widget_hide(GTK_WIDGET(g_pause_game_btn));
-
-        // set the label with value for word wrap
-        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (builder, "labelDescNormal")), BOARD_WIDTH * prefs.tile_size - 30, -1);
-        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (builder, "labelDescTimed")), BOARD_WIDTH * prefs.tile_size - 30, -1);
-        gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (builder, "labelDescEndless")), BOARD_WIDTH * prefs.tile_size - 30, -1);
-
-        // if window is small, reduce spaces
-        if(prefs.tile_size < 48) {
-
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "vboxWelcome")), 10);
-            gtk_widget_hide(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 0);
-            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (builder, "vboxWelcome")), 0);
-
-        }
-        else if(prefs.tile_size > 48) {
-
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "vboxWelcome")), 70);
-            gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 12);
-            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (builder, "vboxWelcome")), 30);
-
-        }
-        else {
-
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "vboxWelcome")), 40);
-            gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
-            gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 12);
-            gtk_container_set_border_width( GTK_CONTAINER (gtk_builder_get_object (builder, "vboxWelcome")), 12);
-
-        }
-    }
-}
 
 gint
 show_hiscores (gint pos, gboolean endofgame)
@@ -333,76 +365,48 @@ show_hiscores (gint pos, gboolean endofgame)
   return result;
 }
 
-void
-on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
-{
-	GtkWidget *dialog;
-	gint response;
-
-	if (gi_game_running) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
-					      GTK_DIALOG_DESTROY_WITH_PARENT,
-					      GTK_MESSAGE_QUESTION,
-					      GTK_BUTTONS_YES_NO,
-					      _("Do you really want to abort this game?"));
-
-		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-						 GTK_RESPONSE_NO);
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-
-		if (response != GTK_RESPONSE_YES)
-			return;
-	}
-
-    gweled_stop_game ();
-
-    welcome_screen_visibility (TRUE);
-}
 
 void
-on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
+welcome_screen_visibility (gboolean value)
 {
-    prefs.game_mode = GPOINTER_TO_UINT (game_mode);
-    welcome_screen_visibility(FALSE);
-
-    gweled_draw_board ();
-    gweled_start_new_game ();
-    respawn_board_engine_loop();
-    gtk_widget_set_sensitive(g_pause_game_btn, TRUE);
+    if(value == FALSE) {
+        gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "g_clutter_scene");
+        return;
+    }
     
+    // Hide Play/Pause buttons.
+    gtk_widget_hide(GTK_WIDGET(g_new_game));
+    gtk_widget_hide(GTK_WIDGET(g_pause_game_btn));
     
-    gtk_widget_show(GTK_WIDGET(g_new_game));
-    gtk_widget_show(GTK_WIDGET(g_pause_game_btn));
-}
+    // Set welcome screen visible
+    gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "welcome_screen");
 
 
-void
-on_pause_activate_cb (GtkWidget *button, gpointer user_data)
-{
+    // if window is small, reduce spaces
+    if(prefs.tile_size < 48) {
 
-    if(!gi_game_running) return;
+        gtk_box_set_spacing (GTK_BOX (g_welcome_box), 10);
+        gtk_widget_hide(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
+        gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 0);
+        gtk_container_set_border_width( GTK_CONTAINER (g_welcome_box), 0);
 
-    if ( board_get_pause() ) {
-	    board_set_pause(FALSE);
+    }
+    else if(prefs.tile_size > 48) {
 
-	}
+        gtk_box_set_spacing (GTK_BOX (g_welcome_box), 70);
+        gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
+        gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 12);
+        gtk_container_set_border_width( GTK_CONTAINER (g_welcome_box), 30);
+    }
     else {
-	    board_set_pause(TRUE);
 
-	}
+        gtk_box_set_spacing (GTK_BOX (g_welcome_box), 40);
+        gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
+        gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 12);
+        gtk_container_set_border_width( GTK_CONTAINER (g_welcome_box), 12);
+    }
+
 }
-
-
-void
-on_window_unfocus_cb (GtkWidget *widget,
-                      GdkEvent  *event,
-                      gpointer   user_data)
-{
-    if (gi_game_running && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
-        board_set_pause(TRUE);
-}
-
 
 void
 gweled_ui_destroy(GtkWidget *window, gpointer user_data)
@@ -455,10 +459,8 @@ gweled_ui_init (GApplication *app)
                                  0 /* default category */,
                                  GAMES_SCORES_STYLE_PLAIN_DESCENDING);
 
-	//sge_init ();
-
 	g_random_generator = g_rand_new_with_seed (time (NULL));
-
+      
     builder = gtk_builder_new ();
     if (!gtk_builder_add_from_resource  (builder, GWELED_RESOURCE_BASE "ui/main.ui", &error))
     {
@@ -467,17 +469,28 @@ gweled_ui_init (GApplication *app)
     }
     g_pref_window = GTK_WIDGET (gtk_builder_get_object (builder, "preferencesDialog"));
     g_main_window = GTK_WIDGET (gtk_builder_get_object (builder, "gweledApp"));
-    g_score_window = GTK_WIDGET (gtk_builder_get_object (builder, "highscoresDialog"));
+    g_welcome_box = GTK_WIDGET (gtk_builder_get_object (builder, "vboxWelcome"));
     g_progress_bar = GTK_WIDGET (gtk_builder_get_object (builder, "bonusProgressbar"));
     g_score_label = GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel"));
-    g_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "boardDrawingarea"));
-    g_menu_pause = GTK_WIDGET (gtk_builder_get_object (builder, "pause1"));
-    g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (builder, "sounds_checkbutton"));
-    g_alignment_welcome = GTK_WIDGET (gtk_builder_get_object (builder, "alignmentWelcome"));
+    g_main_game_stack = GTK_WIDGET (gtk_builder_get_object (builder, "main_game_stack"));
     g_menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (builder, "menu_button"));
     
     g_new_game = GTK_WIDGET (gtk_builder_get_object (builder, "new_game_button"));
     g_pause_game_btn = GTK_WIDGET (gtk_builder_get_object (builder, "pause_button"));
+    
+    // Clutter scene
+    g_clutter = gtk_clutter_embed_new ();
+    gtk_widget_set_size_request (g_clutter,
+                                 BOARD_WIDTH * prefs.tile_size,
+			                     BOARD_HEIGHT * prefs.tile_size);
+    gtk_stack_add_named (GTK_STACK (g_main_game_stack), g_clutter, "g_clutter_scene");
+    gtk_clutter_embed_set_use_layout_size(GTK_CLUTTER_EMBED (g_clutter), TRUE);
+    gtk_widget_set_can_focus(g_clutter, TRUE);
+    gtk_widget_realize (g_clutter);
+    gtk_widget_show (g_clutter);
+ 
+    g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (g_clutter));
+    clutter_actor_set_background_color (g_stage, CLUTTER_COLOR_LightSkyBlue);
 
 	// Header button events
 	g_signal_connect(G_OBJECT(g_new_game), "clicked",
@@ -509,45 +522,32 @@ gweled_ui_init (GApplication *app)
     load_preferences();
 	init_pref_window(g_pref_window);
 
-	gtk_builder_connect_signals(builder, NULL);
-
-	gtk_widget_add_events (GTK_WIDGET (g_drawing_area),
-			       GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_MOTION_MASK);
-
-	gtk_window_set_resizable (GTK_WINDOW (g_main_window), FALSE);
-
 
     welcome_screen_visibility(TRUE);
-
-    gtk_widget_set_size_request (g_drawing_area,
-                                 BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);
-
-    gtk_widget_set_size_request (g_alignment_welcome,
-                                 BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);
-
-    /*g_buffer_pixmap = gdk_pixmap_new (gtk_widget_get_parent_window(g_drawing_area),
-			    BOARD_WIDTH * prefs.tile_size,
-			    BOARD_HEIGHT * prefs.tile_size, -1);*/
-
+    
+    g_print("Size %d x %d; tile size: %d\n", BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size, prefs.tile_size);
+			                     
+	sge_init ();
+	
+	gweled_set_objects_size (prefs.tile_size);
+	
 	gweled_init_glyphs ();
 	gweled_load_pixmaps ();
 	gweled_load_font ();
 
 	gi_game_running = 0;
 
+    // Init sound
 	if(prefs.sounds_on) {
 	    sound_init(gdk_screen_get_default());
+	    
+	    // If for some reason the sound subsystem it's not working
 	    if(sound_get_enabled() == FALSE) {
 	        gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
 	    }
 	}
 
-	/*sge_set_drawing_area (g_drawing_area, g_buffer_pixmap,
-			      BOARD_WIDTH * prefs.tile_size,
-			      BOARD_HEIGHT * prefs.tile_size);
-*/
+
     // check for previous saved game
     filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
 

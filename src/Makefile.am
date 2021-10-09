@@ -1,6 +1,8 @@
 gweled_CFLAGS =           \
     @GTK_CFLAGS@          \
 	@RSVG_CFLAGS@	      \
+	@CLUTTER_CFLAGS@	  \
+	@CLUTTER_GTK_CFLAGS@  \
 	@CANBERRA_CFLAGS@     \
 	@CANBERRA_GTK_CFLAGS@ \
     -DDATADIR=\""$(datadir)"\"                    \
@@ -21,7 +23,6 @@ RESOURCES =                \
 gweled_SOURCES = \
 	main.c main.h \
 	gweled-gui.c gweled-gui.h \
-	callbacks.c \
 	board_engine.c board_engine.h \
 	graphic_engine.c graphic_engine.h \
     sge_core.c sge_core.h \
@@ -37,7 +38,7 @@ gweled_SOURCES = \
 	$(NULL)
 	
 	
-gweled_LDADD = @GTK_LIBS@ @RSVG_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@ -lm
+gweled_LDADD = @GTK_LIBS@ @RSVG_LIBS@ @CLUTTER_LIBS@ @CLUTTER_GTK_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@ -lm
 
 RESOURCES_DEP = $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies gweled.gresource.xml)
 

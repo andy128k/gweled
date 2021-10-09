@@ -21,36 +21,26 @@
 #ifndef _SGE_CORE_H_
 #define _SGE_CORE_H_
 
+#include <clutter/clutter.h>
+
+
 typedef struct s_sge_object
 {
 	gdouble x;
 	gdouble y;
-	gdouble vx;
-	gdouble vy;
-	gdouble ax;
-	gdouble ay;
 	gint y_delay;
-	gint dest_x;
-	gint dest_y;
+
 	gint width;
 	gint height;
 	gint layer;
-	gint lifetime;
-	gint opacity;
-	gboolean fadeout;
-	gboolean zoomout;
-	gfloat zoom;
-	gfloat saturation;
+
 	gboolean blink;
-	gboolean blink_increase;
 	gboolean animation;
 	gfloat animation_iter;
 	gboolean animation_repeat;
-	gint needs_drawing;
 	gint pixbuf_id;
-	//GdkPixmap *pre_rendered;
-	gint (*stop_condition)(struct s_sge_object *);
-	GFunc stop_callback;
+	ClutterActor *actor;
+	
 }T_SGEObject;
 
 #define SGE_OBJECT(obj)  ((T_SGEObject *) obj)
@@ -61,7 +51,10 @@ void sge_set_drawing_area(GtkWidget *drawing_area, GdkPixbuf *pixmap_buffer, gin
 
 gint sge_register_pixbuf(GdkPixbuf *pixbuf, int index);
 
-T_SGEObject *sge_create_object(gint x, gint y, gint layer, gint pixbuf_id);//GdkPixbuf *pixbuf);
+GdkPixbuf *
+sge_get_pixbuf(gint);
+
+T_SGEObject *sge_create_object(gint x, gint y, gint layer, gint pixbuf_id);
 void sge_destroy_object(gpointer object, gpointer user_data);
 void sge_destroy_all_objects_on_level(int level);
 void sge_destroy_all_objects(void);
@@ -80,9 +73,11 @@ void sge_set_layer_visibility (int layer, gboolean visibility);
 
 void sge_invalidate_layer(int layer);
 
-void sge_object_set_opacity (T_SGEObject *object, gint alpha);
 void sge_object_fadeout (T_SGEObject *object);
 void sge_object_zoomout (T_SGEObject *object);
+
+void
+sge_object_fly_away (T_SGEObject *object);
 
 void sge_object_blink_start (T_SGEObject *object);
 void sge_object_blink_stop (T_SGEObject *object);
