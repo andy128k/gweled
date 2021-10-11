@@ -1,16 +1,15 @@
 gweled_CFLAGS =           \
     @GTK_CFLAGS@          \
-	@RSVG_CFLAGS@	      \
-	@CLUTTER_CFLAGS@	  \
-	@CLUTTER_GTK_CFLAGS@  \
-	@CANBERRA_CFLAGS@     \
-	@CANBERRA_GTK_CFLAGS@ \
+    @CLUTTER_CFLAGS@	  \
+    @CLUTTER_GTK_CFLAGS@  \
+    @CANBERRA_CFLAGS@     \
+    @CANBERRA_GTK_CFLAGS@ \
     -DDATADIR=\""$(datadir)"\"                    \
     -DPREFIX=\""$(prefix)"\"                      \
-	-DPACKAGE_DATA_DIR=\""$(datadir)/gweled"\"    \
-	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"  \
-	-DSCOREDIR=\""$(scoredir)"\"                  \
-	$(NULL)
+    -DPACKAGE_DATA_DIR=\""$(datadir)/gweled"\"    \
+    -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"  \
+    -DSCOREDIR=\""$(scoredir)"\"                  \
+    $(NULL)
 
 bin_PROGRAMS = gweled
 
@@ -38,7 +37,7 @@ gweled_SOURCES = \
 	$(NULL)
 	
 	
-gweled_LDADD = @GTK_LIBS@ @RSVG_LIBS@ @CLUTTER_LIBS@ @CLUTTER_GTK_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@ -lm
+gweled_LDADD = @GTK_LIBS@ @CLUTTER_LIBS@ @CLUTTER_GTK_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@ -lm
 
 RESOURCES_DEP = $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies gweled.gresource.xml)
 

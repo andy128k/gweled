@@ -50,13 +50,6 @@ PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.20,,
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-#### Check for librsvg 2.0 ####
-PKG_CHECK_MODULES(RSVG, librsvg-2.0,,
-	AC_MSG_ERROR([librsvg-2.0 is required to compile gweled]))
-
-AC_SUBST(RSVG_CFLAGS)
-AC_SUBST(RSVG_LIBS)
-
 #### Check for clutter ####
 PKG_CHECK_MODULES(CLUTTER, clutter-1.0,,
 	AC_MSG_ERROR([clutter-1.0 is required to compile gweled]))

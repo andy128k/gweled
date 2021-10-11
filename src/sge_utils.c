@@ -20,7 +20,6 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 
 #include "sge_utils.h"
 
