@@ -22,12 +22,6 @@
 #define _GWELED_MAIN_H_
 
 void
-save_preferences(void);
-
-void
-load_preferences(void);
-
-void
 save_current_game();
 
 void

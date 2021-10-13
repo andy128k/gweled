@@ -41,14 +41,17 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 AM_GNU_GETTEXT_VERSION([0.19.8])
 AM_GNU_GETTEXT([external])
 
-AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, glib-compile-resources)
-
 #### Check for GTK+ >= 2.14 ####
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.20,,
 	AC_MSG_ERROR([GTK+-2.14 is required to compile gweled]))
 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
+
+
+AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, glib-compile-resources)
+
+GLIB_GSETTINGS
 
 #### Check for clutter ####
 PKG_CHECK_MODULES(CLUTTER, clutter-1.0,,

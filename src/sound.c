@@ -43,6 +43,7 @@ sound_init(GdkScreen *screen)
 	    return;
 	}
 
+    g_print("sound_init\n");
     sound_available = TRUE;
 }
 

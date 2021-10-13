@@ -24,17 +24,25 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 $(appdata_DATA): $(appdata_in_files)
 	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
+# GSettings schema
+gsettingsdir = $(datadir)/glib-2.0/schemas
+gsettings_SCHEMAS = org.gweled.gweled.gschema.xml
+@GSETTINGS_RULES@
+gsettings_DATA = $(gsettings_SCHEMAS)
+
 
 EXTRA_DIST = \
-      $(icon_DATA)      \
-      $(NULL)
-      
-CLEANFILES = 			\
-        $(DESKTOP_FILES)        \
-	$(appdata_DATA)
+    $(icon_DATA)         \
+    $(NULL)
 
-DISTCLEANFILES = 		\
-        $(DESKTOP_FILES)  
+CLEANFILES = \
+    $(DESKTOP_FILES)        \
+    $(appdata_DATA)         \
+    $(NULL)
+
+DISTCLEANFILES = \
+    $(DESKTOP_FILES)        \
+    $(NULL)
 
 
 ###############################################################################

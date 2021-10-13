@@ -35,10 +35,9 @@ typedef struct s_gweled_prefs
 {
 	gweled_game_mode game_mode;
 	gint tile_size;
-	gboolean music_on;
 	gboolean sounds_on;
 	gboolean hints_off;
-}GweledPrefs;
+} GweledPrefs;
 
 typedef struct s_gweled_gamestate
 {

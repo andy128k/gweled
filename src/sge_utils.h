@@ -21,10 +21,12 @@
 #ifndef _SGE_UTILS_H_
 #define _SGE_UTILS_H_
 
-GdkPixbuf*
+#include <gtk/gtk.h>
+
+GdkPixbuf *
 sge_load_file_to_pixbuf (char *filename);
 
-GdkPixbuf*
+GdkPixbuf *
 sge_load_svg_to_pixbuf (char *filename, int width, int height);
 
 #endif

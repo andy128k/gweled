@@ -18,10 +18,36 @@
 <interface>
   <menu id="headermenu">
     <section>
+      <submenu>
+        <attribute name="label" translatable="yes">_Board size</attribute>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">_Small</attribute>
+            <attribute name="action">win.tile-size</attribute>
+            <attribute name="target" type="s">'small'</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">_Medium</attribute>
+            <attribute name="action">win.tile-size</attribute>
+            <attribute name="target" type="s">'medium'</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">_Big</attribute>
+            <attribute name="action">win.tile-size</attribute>
+            <attribute name="target" type="s">'big'</attribute>
+          </item>
+        </section>
+      </submenu>
       <item>
-        <attribute name="label" translatable="yes">_Preferences</attribute>
-        <attribute name="action">app.preferences</attribute>
+        <attribute name="label" translatable="yes">_Sound</attribute>
+        <attribute name="action">win.sound</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">_Hints</attribute>
+        <attribute name="action">win.hints</attribute>
+      </item>
+    </section>
+    <section>
       <item>
         <attribute name="label" translatable="yes">_Scores</attribute>
         <attribute name="action">app.scores</attribute>

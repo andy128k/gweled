@@ -39,7 +39,6 @@
 // GLOBALS
 GtkBuilder *builder;
 GtkWidget *g_main_window;
-GtkWidget *g_pref_window;
 
 GtkWidget *g_clutter;
 GtkWidget *g_welcome_box;
@@ -68,6 +67,7 @@ static const GamesScoresCategory scorecats[] = {
 
 
 extern GweledPrefs prefs;
+extern GSettings *settings;
 
 #define GWELED_RESOURCE_BASE "/org/gweled/"
 
@@ -101,15 +101,6 @@ void
 on_scores_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
 {
  	show_hiscores (0, FALSE);
-}
-
-void
-on_preferences_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
-{
-	if(is_game_running() && !board_get_pause()) 
-	    board_set_pause(TRUE);
-	
-	gtk_widget_show (g_pref_window);
 }
 
 void
@@ -176,116 +167,6 @@ on_window_unfocus_cb (GtkWidget *widget,
 {
     if (is_game_running() && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
         board_set_pause(TRUE);
-}
-
-void
-on_prefs_tilesize_toggled_cb (GtkToggleButton *togglebutton, gpointer user_data)
-{
-	if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.tile_size = GPOINTER_TO_INT (user_data);
-
-		gweled_set_objects_size (prefs.tile_size);
-	}
-
-    if(!is_game_running())
-        welcome_screen_visibility(TRUE);
-}
-
-void
-on_prefs_sounds_checkbutton_toggled_cb (GtkToggleButton * togglebutton, gpointer user_data)
-{
-	if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.sounds_on = TRUE;
-		if(sound_get_enabled() == FALSE) {
-	        sound_init(gdk_screen_get_default());
-		    if(sound_get_enabled() == FALSE) {
-	            gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
-	        }
-		}
-	}
-	else prefs.sounds_on = FALSE;
-}
-
-void
-on_prefs_hints_checkbutton_toggled_cb (GtkToggleButton *togglebutton, gpointer *data)
-{
-    if (gtk_toggle_button_get_active (togglebutton)) {
-		prefs.hints_off = TRUE;
-		gweled_set_hints_active(FALSE);
-	}
-	else {
-	    prefs.hints_off = FALSE;
-	    gweled_set_hints_active(TRUE);
-	}
-}
-
-
-void
-on_prefs_close_cb (GtkWidget *widget, gpointer user_data)
-{
-	save_preferences();
-
-    // unpause the game if running
-    if(is_game_running())
-	    board_set_pause(FALSE);
-
-	gtk_widget_hide (g_pref_window);
-}
-
-
-// Open windows / set GUI state
-void
-init_pref_window(GtkWidget *window)
-{
-	GtkWidget *radio_button = NULL;
-	
-	g_pref_sounds_button = GTK_WIDGET (gtk_builder_get_object (builder, "sounds_checkbutton"));
-
-	switch (prefs.tile_size) {
-	    case 32:
-		    radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "smallRadiobutton"));
-		    break;
-	    case 48:
-		    radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "mediumRadiobutton"));
-		    break;
-	    case 64:
-		    radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "largeRadiobutton"));
-		    break;
-	}
-	
-	if (radio_button)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
-		
-	g_signal_connect(gtk_builder_get_object (builder, "smallRadiobutton"), "toggled",
-                     G_CALLBACK(on_prefs_tilesize_toggled_cb), GINT_TO_POINTER(32));
-    g_signal_connect(gtk_builder_get_object (builder, "mediumRadiobutton"), "toggled",
-                     G_CALLBACK(on_prefs_tilesize_toggled_cb), GINT_TO_POINTER(48));
-    g_signal_connect(gtk_builder_get_object (builder, "largeRadiobutton"), "toggled",
-                     G_CALLBACK(on_prefs_tilesize_toggled_cb), GINT_TO_POINTER(64));
-
-	// Sounds
-	radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "sounds_checkbutton"));
-	if (prefs.sounds_on)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio_button), FALSE);
-
-	g_signal_connect(radio_button, "toggled",
-                     G_CALLBACK(on_prefs_sounds_checkbutton_toggled_cb), NULL);
-	
-	// HINTS
-	radio_button = GTK_WIDGET(gtk_builder_get_object(builder, "hints_checkbutton"));
-	if(prefs.hints_off) {
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), TRUE);
-	} else {
-	    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_button), FALSE);
-	}
-	
-	g_signal_connect(radio_button, "toggled",
-                     G_CALLBACK(on_prefs_hints_checkbutton_toggled_cb), NULL);
-	
-	g_signal_connect(window, "delete-event",
-                     G_CALLBACK(on_prefs_close_cb), NULL);
 }
 
 
@@ -460,6 +341,7 @@ gweled_ui_init (GApplication *app)
 	gchar     *filename;
 	gint       response;
 	GtkBuilder *menu_builder;
+	GAction *action;
     
     GError    *error = NULL;
     
@@ -477,7 +359,6 @@ gweled_ui_init (GApplication *app)
         g_error ("Couldn't load builder file: %s", error->message);
         g_error_free (error);
     }
-    g_pref_window = GTK_WIDGET (gtk_builder_get_object (builder, "preferencesDialog"));
     g_main_window = GTK_WIDGET (gtk_builder_get_object (builder, "gweledApp"));
     g_welcome_box = GTK_WIDGET (gtk_builder_get_object (builder, "vboxWelcome"));
     g_progress_bar = GTK_WIDGET (gtk_builder_get_object (builder, "bonusProgressbar"));
@@ -507,8 +388,8 @@ gweled_ui_init (GApplication *app)
                      G_CALLBACK(on_new_game_activate_cb), NULL);
     g_signal_connect(G_OBJECT(g_pause_game_btn), "clicked",
                      G_CALLBACK(on_pause_activate_cb), NULL);
-                     
-                     
+
+
     // Game mode button events
     g_signal_connect(gtk_builder_get_object (builder, "buttonNormal"), "clicked",
                      G_CALLBACK(on_game_mode_start_clicked), GINT_TO_POINTER(NORMAL_MODE));
@@ -528,10 +409,6 @@ gweled_ui_init (GApplication *app)
     g_signal_connect(G_OBJECT(g_main_window), "unmap-event",
                      G_CALLBACK(on_window_unfocus_cb), NULL);
                      
-                     
-    load_preferences();
-	init_pref_window(g_pref_window);
-
 
     welcome_screen_visibility(TRUE);
     
@@ -548,11 +425,6 @@ gweled_ui_init (GApplication *app)
     // Init sound
 	if(prefs.sounds_on) {
 	    sound_init(gdk_screen_get_default());
-	    
-	    // If for some reason the sound subsystem it's not working
-	    if(sound_get_enabled() == FALSE) {
-	        gtk_widget_set_sensitive(g_pref_sounds_button, FALSE);
-	    }
 	}
 
 
@@ -592,12 +464,25 @@ gweled_ui_init (GApplication *app)
     // Menu actions.
     const GActionEntry entries[] = {
         { "about", on_about_activate_cb },
-        { "preferences", on_preferences_activate },
         { "scores", on_scores_activate }
     };
 
+    GActionGroup *win_actions = G_ACTION_GROUP( g_simple_action_group_new () );
+
+    action = g_settings_create_action(settings, "tile-size");
+    g_action_map_add_action (G_ACTION_MAP (win_actions), action);
+
+    action = g_settings_create_action(settings, "sound");
+    g_action_map_add_action (G_ACTION_MAP (win_actions), action);
+
+    action = g_settings_create_action(settings, "hints");
+    g_action_map_add_action (G_ACTION_MAP (win_actions), action);
+
     GActionGroup *actions = G_ACTION_GROUP( g_simple_action_group_new () );
+
+    gtk_widget_insert_action_group (g_main_window, "win", win_actions);
     gtk_widget_insert_action_group (g_main_window, "app", actions);
+
     g_action_map_add_action_entries (G_ACTION_MAP (actions), entries, G_N_ELEMENTS (entries), g_main_window);
     gtk_menu_button_set_menu_model(g_menu_button, headermenu);
     g_object_unref(G_OBJECT(menu_builder));

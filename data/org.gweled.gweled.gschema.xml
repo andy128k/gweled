@@ -1,0 +1,26 @@
+<schemalist>
+
+  <enum id="org.gweled.Gweled.tileSize">
+    <value nick="small" value="32"/>
+    <value nick="medium" value="48"/>
+    <value nick="big" value="64"/>
+  </enum>
+
+  <schema id="org.gweled.gweled" path="/org/gnome/gweled/">
+    <key name="tile-size" enum="org.gweled.Gweled.tileSize">
+      <default>"medium"</default>
+      <summary>Board size</summary>
+      <description>Board size.</description>
+    </key>
+    <key name="sound" type="b">
+      <default>true</default>
+      <summary>Play sound effects</summary>
+      <description>Play sound effects.</description>
+    </key>
+    <key name="hints" type="b">
+      <default>true</default>
+      <summary>Show hints</summary>
+      <description>Shot hints after inactivity.</description>
+    </key>
+  </schema>
+</schemalist>    

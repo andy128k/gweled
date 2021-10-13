@@ -34,89 +34,48 @@
 #include <clutter-gtk/clutter-gtk.h>
 
 #include "gweled-gui.h"
-
-//#include "sge_core.h"
 #include "board_engine.h"
+#include "graphic_engine.h"
+#include "sound.h"
 #include "main.h"
 
 // Globals
 guint board_engine_id;
 
 GweledPrefs prefs;
+GSettings *settings;
 
 
 void
-save_preferences(void)
-{
-	gchar *filename, *configstr;
-	GKeyFile *config;
-	FILE *configfile;
+gweled_setting_changed (GSettings* self,
+                        gchar* key,
+                        gpointer user_data
+) {
+    g_print("Settings changed: %s\n", key);
 
-	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
-
-    config = g_key_file_new();
-
-	g_key_file_set_integer(config, "General", "tile_size", prefs.tile_size);
-	g_key_file_set_boolean(config, "General", "sounds_on", prefs.sounds_on);
-	g_key_file_set_boolean(config, "General", "hints_off", prefs.hints_off);
-
-    configstr = g_key_file_to_data(config, NULL, NULL);
-
-	configfile = fopen(filename, "w");
-
-	if(configfile != NULL) {
-	    fprintf(configfile, configstr, NULL);
-	    fclose(configfile);
-	    g_free(configstr);
-
-	} else {
-	    g_printerr("Error writing config file\n");
+    if (g_strcmp0 (key, "tile-size") == 0) {
+    	prefs.tile_size = g_settings_get_enum (self, "tile-size");
+		gweled_set_objects_size (prefs.tile_size);
     }
 
-    g_key_file_free(config);
-	g_free(filename);
+    if (g_strcmp0 (key, "sound") == 0) {
+    	prefs.sounds_on = g_settings_get_boolean (self, "sound");
+		if (prefs.sounds_on && sound_get_enabled() == FALSE) {
+	        sound_init(gdk_screen_get_default());
+	    }
+    }
+
+    if (g_strcmp0 (key, "hints") == 0) {
+    	prefs.hints_off = !g_settings_get_boolean (self, "hints");
+		gweled_set_hints_active(!prefs.hints_off);
+    }
 }
 
 void load_preferences(void)
 {
-	char *filename;
-	GKeyFile *config;
-	GError *error = NULL;
-
-	filename = g_strconcat(g_get_user_config_dir(), "/gweled.conf", NULL);
-
-	config = g_key_file_new();
-	g_key_file_load_from_file(config, filename,
-		G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error);
-
-    if(error == NULL && g_key_file_has_group(config, "General")) {
-
-	    prefs.tile_size = g_key_file_get_integer(config, "General", "tile_size", NULL);
-	    prefs.sounds_on = g_key_file_get_boolean(config, "General", "sounds_on", NULL);
-	    prefs.hints_off = g_key_file_get_boolean(config, "General", "hints_off", NULL);
-
-	    if(prefs.tile_size <= 32)
-	        prefs.tile_size = 32;
-	    else if(prefs.tile_size >= 64)
-	        prefs.tile_size = 64;
-	    else
-	        prefs.tile_size = 48;
-
-    } else {
-        if (error) {
-            g_printerr("Error loading config file: %s\n", error->message);
-            g_error_free (error);
-        }
-
-		prefs.tile_size = 48;
-		prefs.sounds_on = TRUE;
-		prefs.hints_off = FALSE;
-
-		save_preferences();
-	}
-	g_key_file_free(config);
-	g_free(filename);
-
+	prefs.tile_size = g_settings_get_enum (settings, "tile-size");
+	prefs.sounds_on = g_settings_get_boolean (settings, "sound");
+	prefs.hints_off = !g_settings_get_boolean (settings, "hints");
 }
 
 void save_current_game(void)
@@ -164,14 +123,14 @@ load_previous_game()
 static void
 gweled_activate_cb (GApplication *app, gpointer user_data)
 {
-    g_set_application_name("Gweled");
-
     gtk_window_set_default_icon_name ("gweled");
     
     g_object_set (gtk_settings_get_default (),
                     "gtk-application-prefer-dark-theme", TRUE,
                     NULL);
     
+    load_preferences();
+
     /* Initialize the GUI */
     gweled_ui_init(app);
 
@@ -185,6 +144,8 @@ int main (int argc, char **argv)
 	GtkApplication *app;
 	GError *error = NULL;
 	int status;
+
+    g_set_application_name("Gweled");
 	
 	/* gettext */
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -193,29 +154,29 @@ int main (int argc, char **argv)
 
     // needed for scores handling
     setgid_io_init();
-	
-	app = gtk_application_new ("org.gweled", G_APPLICATION_FLAGS_NONE);
-	
-	g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
-	
+
+    app = gtk_application_new ("org.gweled.gweled", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
+
     if (gtk_clutter_init_with_args (&argc, &argv,
                                     NULL,
                                     NULL,
                                     NULL,
                                     &error) != CLUTTER_INIT_SUCCESS)
     {
-    
-        if (error) {
-            g_critical ("Unable to initialize Clutter-GTK: %s", error->message);
-            g_error_free (error);
-            return EXIT_FAILURE;
-          }
-          else
-            g_error ("Unable to initialize Clutter-GTK");
+        GtkWidget *dialog = gtk_message_dialog_new (NULL,
+                                                GTK_DIALOG_MODAL,
+                                                GTK_MESSAGE_ERROR,
+                                                GTK_BUTTONS_NONE,
+                                                "%s", "Unable to initialize Clutter.");
+        gtk_window_set_title (GTK_WINDOW (dialog), g_get_application_name ());
+        gtk_dialog_run (GTK_DIALOG (dialog));
+        gtk_widget_destroy (dialog);
+        exit (EXIT_FAILURE);
     }
     
-    /* calling gtk_clutter_init* multiple times should be safe */
-    g_assert (gtk_clutter_init (NULL, NULL) == CLUTTER_INIT_SUCCESS);
+    settings = g_settings_new ("org.gweled.gweled");
+    g_signal_connect (settings, "changed", G_CALLBACK (gweled_setting_changed), NULL);
 
 	status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);
