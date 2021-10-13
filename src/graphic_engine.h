@@ -56,6 +56,6 @@ void
 gweled_draw_board (void);
 
 void
-gweled_set_objects_size (gint size);
+gweled_set_objects_size (gint size, gboolean update);
 
 #endif

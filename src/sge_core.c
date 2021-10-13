@@ -166,7 +166,7 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
   clutter_actor_save_easing_state (object->actor);
   clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_CUBIC);
   clutter_actor_set_easing_duration (object->actor, 200);
-  clutter_actor_set_position (object->actor, dest_x, dest_y);
+  clutter_actor_set_position (object->actor, dest_x * prefs.tile_size, dest_y * prefs.tile_size);
   clutter_actor_restore_easing_state (object->actor);
 }
 
@@ -198,7 +198,9 @@ sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
   clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_ELASTIC);
   clutter_actor_set_easing_duration (object->actor, 500);
   clutter_actor_set_easing_delay (object->actor, delay);
-  clutter_actor_set_position (object->actor, clutter_actor_get_x (object->actor), y_pos);
+  clutter_actor_set_position (object->actor,
+                              clutter_actor_get_x (object->actor),
+                              y_pos * prefs.tile_size);
   clutter_actor_restore_easing_state (object->actor);
 }
 
@@ -209,7 +211,7 @@ sge_object_is_moving (T_SGEObject * object)
 {
 	gfloat cx, cy;
 	clutter_actor_get_position(object->actor, &cx, &cy);
-	return ((object->x != cx) || (object->y != cy));
+	return ((object->x * prefs.tile_size != cx) || (object->y * prefs.tile_size != cy));
 }
 
 gboolean
@@ -275,7 +277,7 @@ void sge_object_zoomout (T_SGEObject *object)
     clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
     clutter_actor_set_easing_duration (object->actor, 200);
-    clutter_actor_set_size (object->actor, 0, 0);
+    clutter_actor_set_scale  (object->actor, 0, 0);
     clutter_actor_restore_easing_state (object->actor);
     
     g_signal_connect (object->actor, "transition-stopped",
@@ -288,12 +290,23 @@ sge_object_fly_away (T_SGEObject *object)
 {    
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_duration (object->actor, 800);
-    clutter_actor_set_position (object->actor, clutter_actor_get_x (object->actor), clutter_actor_get_y (object->actor) - (prefs.tile_size/2));
+    clutter_actor_set_easing_duration (object->actor, 1000);
+    clutter_actor_set_position (object->actor,
+                                clutter_actor_get_x (object->actor),
+                                clutter_actor_get_y (object->actor) - (prefs.tile_size/2)
+                                );
+    clutter_actor_restore_easing_state (object->actor);
+    
+    // After 800ms start to fade away.
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
+    clutter_actor_set_easing_delay(object->actor, 800);
+    clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_opacity(object->actor, 0);
     clutter_actor_restore_easing_state (object->actor);
     
     g_signal_connect (object->actor, "transition-stopped",
-		    G_CALLBACK (sge_fadeout_on_transition_ended), 
+		    G_CALLBACK (sge_destroy_on_transition_ended), 
 		    object);
 }
 
@@ -367,6 +380,38 @@ on_gem_clicked (ClutterClickAction    *action,
 }
 
 
+void
+sge_objects_resize (gint size) {
+    GError *error = NULL;
+    int i;
+    T_SGEObject *object;
+    
+    for (i = 0; i < g_list_length (g_object_list); i++) {
+    
+		object = (T_SGEObject *) g_list_nth_data (g_object_list, i);
+		gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
+                                         GDK_PIXBUF(g_pixbufs[object->pixbuf_id]), &error);
+		clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
+                            size,
+                            size);
+                            
+        clutter_actor_set_position (CLUTTER_ACTOR (object->actor),
+                                    object->x * size,
+                                    object->y * size);
+    }
+    
+    // Resize levels.
+    for (i = 0; i < 5; i++) {
+	 
+        clutter_actor_set_size (g_actor_layers[i],
+                                BOARD_WIDTH * size,
+                                BOARD_HEIGHT * size);
+                                
+        clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * size, BOARD_HEIGHT * size);
+    }
+}
+
+
 
 /* Timeline handler */
 static void
@@ -404,6 +449,7 @@ sge_clutter_frame_cb (ClutterTimeline *timeline,
 
 
 //objects creation/destruction
+
 T_SGEObject *
 sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
 {
@@ -411,7 +457,70 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     GError *error;
     ClutterAction *action;
     
-    g_debug("sge_create_object %i at %i:%i layer:%i\n", pixbuf_id, x, y, layer);
+    g_print("sge_create_object %i at %i:%i layer:%i\n", pixbuf_id, x, y, layer);
+    g_print("sge_create_object %i at %i:%i layer:%i\n", pixbuf_id, x * prefs.tile_size, y * prefs.tile_size, layer);
+    
+    T_SGEObject * object;
+	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object->x = x;
+    object->y = y;
+    object->pixbuf_id = pixbuf_id;
+
+    object->y_delay = 0;
+
+    object->blink = FALSE;
+
+    object->animation = FALSE;
+    object->animation_iter = 1;
+    object->animation_repeat = TRUE;
+
+	object->layer = layer;
+
+	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
+    object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
+    
+   
+    // Clutter actors.
+    object->actor = gtk_clutter_texture_new ();
+    gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
+                                         GDK_PIXBUF(g_pixbufs[pixbuf_id]), &error);
+    clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
+                            object->width,
+                            object->height);
+                            
+    clutter_actor_set_position (CLUTTER_ACTOR (object->actor),
+                                x * prefs.tile_size,
+                                y * prefs.tile_size);
+    
+    clutter_actor_add_child (g_actor_layers[layer],
+                                 CLUTTER_ACTOR (object->actor));
+                                 
+    clutter_actor_show (object->actor);                            
+        
+
+    // Gems clickabe.
+    if (layer == 1) {
+        clutter_actor_set_reactive (object->actor, TRUE);
+        
+        action = clutter_click_action_new();
+        clutter_actor_add_action (object->actor, action);
+        
+        g_signal_connect (action, "clicked", G_CALLBACK (on_gem_clicked), NULL);
+	}
+	
+
+    g_object_list = g_list_append (g_object_list, (gpointer) object);
+
+	return object;
+}
+
+// Temporary, for text
+T_SGEObject *
+sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id)
+{
+    GError *error;
+    
+    g_print("sge_create_object_simple %i at %i:%i layer:%i\n", pixbuf_id, x, y, layer);
     
     T_SGEObject * object;
 	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
@@ -449,20 +558,6 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
                                  CLUTTER_ACTOR (object->actor));
                                  
     clutter_actor_show (object->actor);                            
-        
-
-    if (layer == 1) {
-    
-        clutter_actor_set_reactive (object->actor, TRUE);
-        
-        action = clutter_click_action_new();
-        clutter_actor_add_action (object->actor, action);
-        
-        g_signal_connect (action, "clicked", G_CALLBACK (on_gem_clicked), NULL);
-	}
-	
-
-    g_object_list = g_list_append (g_object_list, (gpointer) object);
 
 	return object;
 }
@@ -487,6 +582,7 @@ sge_init (void)
 	gi_nb_pixbufs = 0;
 	g_pixbufs = NULL;
 	
+	// Layers create.
 	for (i = 0; i < 5; i++) {
 	    g_actor_layers[i] = clutter_actor_new();
 	    
@@ -496,6 +592,11 @@ sge_init (void)
         clutter_actor_show (g_actor_layers[i]);
         
         clutter_actor_set_position(g_actor_layers[i], 0, 0);
+        clutter_actor_set_size (g_actor_layers[i],
+                                BOARD_WIDTH * prefs.tile_size,
+                                BOARD_HEIGHT * prefs.tile_size);
+                                
+        clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
         
         clutter_actor_add_child (g_stage, g_actor_layers[i]);
         clutter_actor_add_constraint (g_actor_layers[i], clutter_align_constraint_new (g_stage, CLUTTER_ALIGN_BOTH, 0));

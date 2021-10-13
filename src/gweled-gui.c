@@ -258,23 +258,12 @@ gweled_setup_game_window(gboolean playing)
     }
 }
 
-
 void
-welcome_screen_visibility (gboolean value)
-{
-    if(value == FALSE) {
-        gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "g_clutter_scene");
-        return;
-    }
-    
-    gweled_setup_game_window(FALSE);
-    
-    // Set welcome screen visible
-    gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "welcome_screen");
+gweled_ui_resize (gint size, gboolean update) {
 
 
     // if window is small, reduce spaces
-    if(prefs.tile_size < 48) {
+    if(size < 48) {
 
         gtk_box_set_spacing (GTK_BOX (g_welcome_box), 10);
         gtk_widget_hide(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
@@ -282,7 +271,7 @@ welcome_screen_visibility (gboolean value)
         gtk_container_set_border_width( GTK_CONTAINER (g_welcome_box), 0);
 
     }
-    else if(prefs.tile_size > 48) {
+    else if(size > 48) {
 
         gtk_box_set_spacing (GTK_BOX (g_welcome_box), 70);
         gtk_widget_show(GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel2")));
@@ -296,7 +285,29 @@ welcome_screen_visibility (gboolean value)
         gtk_box_set_spacing( GTK_BOX (gtk_builder_get_object (builder, "hbox2")), 12);
         gtk_container_set_border_width( GTK_CONTAINER (g_welcome_box), 12);
     }
+    
+    // set the label with value for word wrap
+    gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (builder, "labelDescNormal")), BOARD_WIDTH * size - 30, -1);
+    gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (builder, "labelDescTimed")), BOARD_WIDTH * size - 30, -1);
+    gtk_widget_set_size_request( GTK_WIDGET (gtk_builder_get_object (builder, "labelDescEndless")), BOARD_WIDTH * size - 30, -1);
 
+    
+    gweled_set_objects_size (size, update);
+}
+
+
+void
+welcome_screen_visibility (gboolean value)
+{
+    if(value == FALSE) {
+        gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "g_clutter_scene");
+        return;
+    }
+    
+    gweled_setup_game_window(FALSE);
+    
+    // Set welcome screen visible
+    gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "welcome_screen");
 }
 
 void
@@ -371,9 +382,9 @@ gweled_ui_init (GApplication *app)
     
     // Clutter scene
     g_clutter = gtk_clutter_embed_new ();
-    gtk_widget_set_size_request (g_clutter,
+    /*gtk_widget_set_size_request (g_clutter,
                                  BOARD_WIDTH * prefs.tile_size,
-			                     BOARD_HEIGHT * prefs.tile_size);
+			                     BOARD_HEIGHT * prefs.tile_size);*/
     gtk_stack_add_named (GTK_STACK (g_main_game_stack), g_clutter, "g_clutter_scene");
     gtk_clutter_embed_set_use_layout_size(GTK_CLUTTER_EMBED (g_clutter), TRUE);
     gtk_widget_set_can_focus(g_clutter, TRUE);
@@ -410,13 +421,16 @@ gweled_ui_init (GApplication *app)
                      G_CALLBACK(on_window_unfocus_cb), NULL);
                      
 
+    gweled_ui_resize(prefs.tile_size, FALSE);
+
     welcome_screen_visibility(TRUE);
+   
     
     g_print("Size %d x %d; tile size: %d\n", BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size, prefs.tile_size);
 			                     
 	sge_init ();
 	
-	gweled_set_objects_size (prefs.tile_size);
+	gweled_set_objects_size (prefs.tile_size, FALSE);
 	
 	gweled_init_glyphs ();
 	gweled_load_pixmaps ();

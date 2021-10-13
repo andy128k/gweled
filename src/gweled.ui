@@ -159,6 +159,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">Get as many points as you can. The game ends if you run out of moves.</property>
                                 <property name="wrap">True</property>
+                                <property name="max-width-chars">40</property>
                                 <property name="xalign">0</property>
                                 <attributes>
                                   <attribute name="scale" value="0.90000000000000002"/>
@@ -214,10 +215,9 @@
                               <object class="GtkLabel" id="labelDescTimed">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="xpad">0</property>
-                                <property name="ypad">0</property>
                                 <property name="label" translatable="yes">Get as many points as you can. The game ends if you run out of time.</property>
                                 <property name="wrap">True</property>
+                                <property name="max-width-chars">40</property>
                                 <property name="xalign">0</property>
                                 <attributes>
                                   <attribute name="scale" value="0.90000000000000002"/>
@@ -275,7 +275,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">The game never ends, but your score will not be saved.</property>
                                 <property name="wrap">True</property>
-                                <property name="wrap-mode">char</property>
+                                <property name="max-width-chars">40</property>
                                 <property name="xalign">0</property>
                                 <attributes>
                                   <attribute name="scale" value="0.90000000000000002"/>
@@ -310,9 +310,6 @@
               <packing>
                 <property name="name">welcome_screen</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>

@@ -54,7 +54,15 @@ gint sge_register_pixbuf(GdkPixbuf *pixbuf, int index);
 GdkPixbuf *
 sge_get_pixbuf(gint);
 
-T_SGEObject *sge_create_object(gint x, gint y, gint layer, gint pixbuf_id);
+void
+sge_objects_resize (gint size);
+
+T_SGEObject
+*sge_create_object (gint x, gint y, gint layer, gint pixbuf_id);
+
+T_SGEObject
+*sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id);
+
 void sge_destroy_object(gpointer object, gpointer user_data);
 void sge_destroy_all_objects_on_level(int level);
 void sge_destroy_all_objects(void);
@@ -70,8 +78,6 @@ gboolean sge_objects_are_moving(void);
 gboolean sge_objects_are_moving_on_layer(int layer);
 
 void sge_set_layer_visibility (int layer, gboolean visibility);
-
-void sge_invalidate_layer(int layer);
 
 void sge_object_fadeout (T_SGEObject *object);
 void sge_object_zoomout (T_SGEObject *object);

@@ -221,7 +221,7 @@ T_SGEObject *
 gweled_draw_character (int x, int y, int layer, char character)
 {
 	if (gpc_font_glyphs[(int)character] != -1)
-		return sge_create_object (x, y, layer,
+		return sge_create_object_simple (x, y, layer,
 					  gi_charset_pixbuf[gpc_font_glyphs
 							    [(int)character]]);
 	else
@@ -271,7 +271,7 @@ gweled_draw_game_message (gchar * in_message, int timing)
 	for (i = 0; i < strlen (message); i++)
 		if (gpc_font_glyphs[(int)message[i]] != -1) {
 			p_object =
-			    sge_create_object (msg_x + i * FONT_WIDTH,
+			    sge_create_object_simple (msg_x + i * FONT_WIDTH,
 					       msg_y, 3,
 					       gi_charset_pixbuf
 					       [gpc_font_glyphs
@@ -296,10 +296,9 @@ gweled_gems_fall_into_place (gboolean with_delay)
 
             if (with_delay)
                 sge_object_fall_to_with_delay (g_gem_objects[i][j],
-                                               j * prefs.tile_size, 200);
+                                               j, i * 50);
             else
-                sge_object_fall_to (g_gem_objects[i][j],
-                                    j * prefs.tile_size);
+                sge_object_fall_to (g_gem_objects[i][j], j);
         }
 		//g_print("\n\e[0m");
     }
@@ -307,9 +306,32 @@ gweled_gems_fall_into_place (gboolean with_delay)
 }
 
 void
-gweled_set_objects_size (gint size)
+gweled_set_objects_size (gint size, gboolean update)
 {
-    gtk_widget_set_size_request (g_welcome_box,
+     
+	// TODO: resize the clutter stage
+	
+	if (update) {
+	    GList *g_actor_list;
+	    ClutterActor *actor;
+	    int i;
+	    
+	    g_actor_list = clutter_actor_get_children (g_actor_layers[0]);
+	    
+	    // FIXME: very bad
+	    for (i = 0; i < g_list_length (g_actor_list); i++) {
+		    actor = (ClutterActor *) g_list_nth_data (g_actor_list, i);
+		    clutter_actor_destroy(actor);
+        }
+        
+        gweled_load_pixmaps ();
+        
+        gweled_draw_board();
+	    
+	    sge_objects_resize(size);
+	}
+	
+	gtk_widget_set_size_request (g_welcome_box,
                                  BOARD_WIDTH * size,
 			                     BOARD_HEIGHT * size);
 			                              
@@ -317,8 +339,4 @@ gweled_set_objects_size (gint size)
                                  BOARD_WIDTH * size,
 			                     BOARD_HEIGHT * size);
 
-    
-	// TODO: resize the clutter stage
-
-	gweled_load_pixmaps ();
 }

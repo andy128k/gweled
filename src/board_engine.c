@@ -265,13 +265,13 @@ gweled_refill_board (void)
 
 				// make sure the new tile appears outside of the screen (1st row is special-cased)
 				if (j && g_gem_objects[i][1])
-					g_gem_objects[i][0] = sge_create_object (i * prefs.tile_size,
-											g_gem_objects[i][1]->y - prefs.tile_size,
+					g_gem_objects[i][0] = sge_create_object (i,
+											g_gem_objects[i][1]->y - 1,
 											1,
 											gi_gems_pixbuf[gpc_game_board[i][0]]);
 				else
-					g_gem_objects[i][0] = sge_create_object (i * prefs.tile_size,
-											-prefs.tile_size,
+					g_gem_objects[i][0] = sge_create_object (i,
+											-1,
 											1,
 											gi_gems_pixbuf[gpc_game_board[i][0]]);
 			}
@@ -550,9 +550,9 @@ hint_callback (gpointer data)
 	if (gi_game_running) {
 		gweled_check_for_moves_left (&x, &y);
 		//g_debug("hint_callback(): x:%d, y%d", x, y);
-		g_hint_object = sge_create_object (prefs.tile_size * x,
-					prefs.tile_size * y,
-					2, gi_powerglow_pixbuf);
+		g_hint_object = sge_create_object (x,
+					                       y,
+					                       2, gi_powerglow_pixbuf);
 		sge_object_animate(g_hint_object, TRUE);
 		sge_object_set_lifetime (g_hint_object, 2);
 	}
@@ -631,9 +631,9 @@ board_engine_loop (gpointer data)
 
 			if (cursor[0])
 				sge_destroy_object (cursor[0], NULL);
-			cursor[0] = sge_create_object (prefs.tile_size * x1,
-					prefs.tile_size * y1,
-					2, gi_cursor_pixbuf);
+			cursor[0] = sge_create_object (x1,
+					                       y1,
+					                       2, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
 			gi_gem_dragged = 0;
 		} else
@@ -650,24 +650,24 @@ board_engine_loop (gpointer data)
 				// If the player clicks an adjacent gem, try to swap
 				if (cursor[1])
 					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = sge_create_object (prefs.tile_size * x2,
-                                               prefs.tile_size * y2,
+				cursor[1] = sge_create_object (x2,
+                                               y2,
                                                2, gi_cursor_pixbuf);
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],
-						x2 * prefs.tile_size,
-						y2 * prefs.tile_size);
+						x2,
+						y2);
 				sge_object_move_to (g_gem_objects[x2][y2],
-						x1 * prefs.tile_size,
-						y1 * prefs.tile_size);
+						x1,
+						y1);
 				// swap cursors
 				sge_object_move_to (cursor[0],
-						x2 * prefs.tile_size,
-						y2 * prefs.tile_size);
+						x2,
+						y2);
 				sge_object_move_to (cursor[1],
-						x1 * prefs.tile_size,
-						y1 * prefs.tile_size);
+						x1,
+						y1);
 				if(prefs.sounds_on == TRUE){
 				    sound_effect_play(SWAP_EVENT);
 				}
@@ -697,8 +697,8 @@ board_engine_loop (gpointer data)
 				y1 = y2;
 				if (cursor[0])
 					sge_destroy_object (cursor[0], NULL);
-				cursor[0] = sge_create_object (prefs.tile_size * x1,
-						prefs.tile_size * y1,
+				cursor[0] = sge_create_object (x1,
+						y1,
 						2, gi_cursor_pixbuf);
 			}
 		}else if(gi_gem_dragged)
@@ -706,8 +706,8 @@ board_engine_loop (gpointer data)
 			//printf("gem dragged\n");
 			if (cursor[1])
 					sge_destroy_object (cursor[1], NULL);
-			cursor[1] = sge_create_object (prefs.tile_size * gi_x_drag,
-						prefs.tile_size * gi_y_drag,
+			cursor[1] = sge_create_object (gi_x_drag,
+						gi_y_drag,
 						2, gi_cursor_pixbuf);
 		}
 		break;
@@ -718,18 +718,18 @@ board_engine_loop (gpointer data)
 			if (!gweled_is_part_of_an_alignment (x1, y1) && !gweled_is_part_of_an_alignment (x2, y2)) {
 				// re-swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],
-						x2 * prefs.tile_size,
-						y2 * prefs.tile_size);
+						x2,
+						y2);
 				sge_object_move_to (g_gem_objects[x2][y2],
-						x1 * prefs.tile_size,
-						y1 * prefs.tile_size);
+						x1,
+						y1);
 				// re-swap cursors
 				sge_object_move_to (cursor[1],
-						x2 * prefs.tile_size,
-						y2 * prefs.tile_size);
+						x2,
+						y2);
 				sge_object_move_to (cursor[0],
-						x1 * prefs.tile_size,
-						y1 * prefs.tile_size);
+						x1,
+						y1);
 
 				gi_state = _ILLEGAL_MOVE;
 			} else {
@@ -790,9 +790,9 @@ board_engine_loop (gpointer data)
 					g_do_not_score = FALSE;
 					for (i = 0; i < BOARD_WIDTH; i++)
 						for (j = 0; j < BOARD_HEIGHT; j++) {
-							g_gem_objects[i][j] = sge_create_object
-								(i * prefs.tile_size,
-							    	(j - BOARD_HEIGHT) * prefs.tile_size,
+							g_gem_objects[i][j] = sge_create_object	(
+							        i,
+							    	(j - BOARD_HEIGHT),
 								1, gi_gems_pixbuf[gpc_game_board[i][j]]);
 						}
 					gweled_gems_fall_into_place (FALSE);
@@ -926,8 +926,8 @@ gweled_start_new_game (void)
 			gpc_game_board[i][j] = get_new_tile ();
 			gi_nb_of_tiles[gpc_game_board[i][j]]++;
 			g_gem_objects[i][j] =
-			    sge_create_object (i * prefs.tile_size,
-							(j - BOARD_HEIGHT) * prefs.tile_size,
+			    sge_create_object (i,
+							(j - BOARD_HEIGHT),
 							1,
 							gi_gems_pixbuf[gpc_game_board[i][j]]);
 		}
@@ -952,7 +952,7 @@ gweled_start_new_game (void)
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			g_gem_objects[i][j] = sge_create_object (i * prefs.tile_size, (j - BOARD_HEIGHT) * prefs.tile_size, 1,
+			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), 1,
 													 gi_gems_pixbuf[gpc_game_board[i][j]]);
 
 	gweled_gems_fall_into_place (TRUE);
@@ -983,7 +983,6 @@ GweledGameState gweled_get_current_game(void)
     return game;
 }
 
-extern void init_pref_window(void);
 
 void gweled_set_previous_game(GweledGameState game)
 {
@@ -1024,7 +1023,7 @@ void gweled_set_previous_game(GweledGameState game)
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++) {
             gpc_game_board[i][j] = game.gpc_game_board[i][j];
-            g_gem_objects[i][j] = sge_create_object (i * prefs.tile_size, j * prefs.tile_size, 1,
+            g_gem_objects[i][j] = sge_create_object (i, j , 1,
 													 gi_gems_pixbuf[gpc_game_board[i][j]]);
         }
 

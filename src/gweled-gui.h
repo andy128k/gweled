@@ -26,6 +26,9 @@ void
 gweled_ui_init(GApplication *app);
 
 void
+gweled_ui_resize (gint size, gboolean update);
+
+void
 gweled_setup_game_window(gboolean playing);
 
 void
