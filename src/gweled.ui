@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkApplicationWindow" id="gweledApp">
     <property name="can-focus">False</property>
     <property name="title">Gweled</property>
-    <property name="resizable">False</property>
     <property name="icon-name">gweled</property>
     <child>
       <object class="GtkBox" id="vboxMain">
@@ -76,6 +75,7 @@
                 <property name="can-focus">False</property>
                 <property name="border-width">0</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
                 <child>
                   <object class="GtkBox" id="hbox2">
                     <property name="visible">True</property>
@@ -123,6 +123,8 @@
                   <object class="GtkBox" id="vbox6">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">12</property>
                     <child>
@@ -159,7 +161,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">Get as many points as you can. The game ends if you run out of moves.</property>
                                 <property name="wrap">True</property>
-                                <property name="max-width-chars">40</property>
+                                <property name="max-width-chars">30</property>
                                 <property name="xalign">0</property>
                                 <attributes>
                                   <attribute name="scale" value="0.90000000000000002"/>
@@ -217,7 +219,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">Get as many points as you can. The game ends if you run out of time.</property>
                                 <property name="wrap">True</property>
-                                <property name="max-width-chars">40</property>
+                                <property name="max-width-chars">30</property>
                                 <property name="xalign">0</property>
                                 <attributes>
                                   <attribute name="scale" value="0.90000000000000002"/>
@@ -275,7 +277,7 @@
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">The game never ends, but your score will not be saved.</property>
                                 <property name="wrap">True</property>
-                                <property name="max-width-chars">40</property>
+                                <property name="max-width-chars">30</property>
                                 <property name="xalign">0</property>
                                 <attributes>
                                   <attribute name="scale" value="0.90000000000000002"/>
@@ -309,6 +311,21 @@
               </object>
               <packing>
                 <property name="name">welcome_screen</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkAspectFrame" id="game_frame">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label-xalign">0</property>
+                <property name="shadow-type">none</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="name">game_scene</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>

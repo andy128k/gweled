@@ -37,6 +37,8 @@
 extern gchar gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 extern GRand *g_random_generator;
 extern GdkPixbuf *g_gems_pixbuf[7];
+
+extern GtkWidget *g_main_window;
 extern GtkWidget *g_main_game_stack;
 extern GtkWidget *g_clutter;
 extern GtkWidget *g_welcome_box;
@@ -44,13 +46,13 @@ extern GtkWidget *g_welcome_box;
 extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 
 extern ClutterActor *g_stage;
-
 extern ClutterActor *g_actor_layers[5];
 
 extern GweledPrefs prefs;
+extern gint size;
 
 signed char gpc_font_glyphs[256];
-gint gi_tiles_bg_pixbuf[2] = {-1, -1};
+gint gi_tiles_bg_pixbuf = -1;
 gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
 gint gi_charset_pixbuf[50];
 gint gi_cursor_pixbuf = -1;
@@ -78,7 +80,7 @@ gweled_load_font (void)
 }
 
 void
-gweled_load_pixmaps (void)
+gweled_load_pixmaps (gint size)
 {
 	gchar *filename;
 	GdkPixbuf *pixbuf;
@@ -86,9 +88,7 @@ gweled_load_pixmaps (void)
 
 	for (i = 0; i < 7; i++) {
 		filename = g_strdup_printf ("gweled/gem%02d.svg", i + 1);
-		pixbuf =
-		    sge_load_svg_to_pixbuf (filename,
-					    prefs.tile_size, prefs.tile_size);
+		pixbuf = sge_load_svg_to_pixbuf (filename, size, size);
 		if (pixbuf == NULL)
 			exit (-1);
 		gi_gems_pixbuf[i] = sge_register_pixbuf (pixbuf, gi_gems_pixbuf[i]);
@@ -96,40 +96,31 @@ gweled_load_pixmaps (void)
 		g_free (filename);
 	}
 
-    pixbuf = sge_load_svg_to_pixbuf ("gweled/tile_odd.svg",
-				                prefs.tile_size, prefs.tile_size);
+    pixbuf = sge_load_svg_to_pixbuf ("gweled/board_bg.svg", size * 2, size * 2);
 
 	if (pixbuf == NULL)
 		exit (-1);
-	gi_tiles_bg_pixbuf[0] = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[0]);
+	gi_tiles_bg_pixbuf = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf);
 
-    pixbuf = sge_load_svg_to_pixbuf ("gweled/tile_even.svg",
-				                prefs.tile_size, prefs.tile_size);
+	pixbuf = sge_load_svg_to_pixbuf ("gweled/cursor.svg", size, size);
 
-	if (pixbuf == NULL)
-		exit (-1);
-	gi_tiles_bg_pixbuf[1] = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf[1]);
-
-
-	pixbuf =
-	    sge_load_svg_to_pixbuf ("gweled/cursor.svg",
-				    prefs.tile_size, prefs.tile_size);
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
 
-    filename = g_strdup_printf ("gweled/sparkle_%d.png", prefs.tile_size);
+    filename = g_strdup_printf ("gweled/sparkle_%d.png", 64);
 	pixbuf = sge_load_file_to_pixbuf (filename);
 	if (pixbuf == NULL)
 		exit (-1);
 	g_free(filename);
 	gi_sparkle_pixbuf = sge_register_pixbuf (pixbuf, gi_sparkle_pixbuf);
 
-	filename = g_strdup_printf ("gweled/sparkle_%d.png", prefs.tile_size);
+	filename = g_strdup_printf ("gweled/sparkle_%d.png", 64);
 	pixbuf = sge_load_file_to_pixbuf (filename);
 	if (pixbuf == NULL)
 		exit (-1);
     g_free(filename);
+
 	gi_powerglow_pixbuf = sge_register_pixbuf (pixbuf, gi_powerglow_pixbuf);
 
 }
@@ -192,29 +183,28 @@ gweled_init_glyphs (void)
 }
 
 void
-gweled_draw_board (void)
+gweled_draw_board (gint size)
 {
-	gint i, j;
+
 	ClutterActor *tmp;
 	GError *error;
+    GValue val = {0,};
 
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++) {
+    tmp = gtk_clutter_texture_new ();
+    gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (tmp),
+                                         GDK_PIXBUF(sge_get_pixbuf(gi_tiles_bg_pixbuf)), &error);
 
-	        tmp = gtk_clutter_texture_new ();
-            gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (tmp),
-                                                 GDK_PIXBUF(sge_get_pixbuf(gi_tiles_bg_pixbuf[(i + j) % 2])), &error);
-	        clutter_actor_set_size (CLUTTER_ACTOR(tmp),
-                                    prefs.tile_size,
-                                    prefs.tile_size);                     
-            clutter_actor_set_position (CLUTTER_ACTOR (tmp),
-                                        i * prefs.tile_size,
-                                        j * prefs.tile_size);
-            clutter_actor_show (CLUTTER_ACTOR (tmp));
+    g_value_init (&val, G_TYPE_BOOLEAN);
+    g_value_set_boolean ( &val, TRUE);
 
-            clutter_actor_add_child (g_actor_layers[0],
-                                     CLUTTER_ACTOR (tmp));
-		}
+    g_object_set_property (G_OBJECT (tmp), "repeat-y", &val);
+    g_object_set_property (G_OBJECT (tmp), "repeat-x", &val);
+
+    clutter_actor_set_size (CLUTTER_ACTOR(tmp), BOARD_WIDTH * size, BOARD_HEIGHT * size);
+    clutter_actor_set_position (CLUTTER_ACTOR (tmp), 0, 0);
+    clutter_actor_show (CLUTTER_ACTOR (tmp));
+
+    clutter_actor_add_child (g_actor_layers[0], CLUTTER_ACTOR (tmp));
 }
 
 T_SGEObject *
@@ -288,7 +278,7 @@ void
 gweled_gems_fall_into_place (gboolean with_delay)
 {
 	gint i, j;
-    g_print("gweled_gems_fall_into_place()\n");
+    g_print("gweled_gems_fall_into_place() delay:%d\n", with_delay);
    
 
     for (j = 0; j < BOARD_HEIGHT; j++) {
@@ -306,37 +296,26 @@ gweled_gems_fall_into_place (gboolean with_delay)
 }
 
 void
-gweled_set_objects_size (gint size, gboolean update)
+gweled_set_objects_size (gint size)
 {
-     
-	// TODO: resize the clutter stage
-	
-	if (update) {
-	    GList *g_actor_list;
-	    ClutterActor *actor;
-	    int i;
-	    
-	    g_actor_list = clutter_actor_get_children (g_actor_layers[0]);
-	    
-	    // FIXME: very bad
-	    for (i = 0; i < g_list_length (g_actor_list); i++) {
-		    actor = (ClutterActor *) g_list_nth_data (g_actor_list, i);
-		    clutter_actor_destroy(actor);
-        }
-        
-        gweled_load_pixmaps ();
-        
-        gweled_draw_board();
-	    
-	    sge_objects_resize(size);
-	}
-	
-	gtk_widget_set_size_request (g_welcome_box,
-                                 BOARD_WIDTH * size,
-			                     BOARD_HEIGHT * size);
-			                              
-	gtk_widget_set_size_request (g_clutter,
-                                 BOARD_WIDTH * size,
-			                     BOARD_HEIGHT * size);
+	g_print("gweled_set_objects_size %d\n", size);
+
+    GList *g_actor_list;
+    ClutterActor *actor;
+    int i;
+
+    g_actor_list = clutter_actor_get_children (g_actor_layers[0]);
+
+    // FIXME: very bad
+    for (i = 0; i < g_list_length (g_actor_list); i++) {
+	    actor = (ClutterActor *) g_list_nth_data (g_actor_list, i);
+	    clutter_actor_destroy(actor);
+    }
+
+    gweled_load_pixmaps (size);
+
+    gweled_draw_board(size);
+
+    sge_objects_resize(size);
 
 }

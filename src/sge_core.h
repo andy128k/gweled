@@ -57,11 +57,11 @@ sge_get_pixbuf(gint);
 void
 sge_objects_resize (gint size);
 
-T_SGEObject
-*sge_create_object (gint x, gint y, gint layer, gint pixbuf_id);
+T_SGEObject *
+sge_create_object (gint x, gint y, gint layer, gint pixbuf_id);
 
-T_SGEObject
-*sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id);
+T_SGEObject *
+sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id);
 
 void sge_destroy_object(gpointer object, gpointer user_data);
 void sge_destroy_all_objects_on_level(int level);

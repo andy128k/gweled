@@ -457,8 +457,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
     GError *error;
     ClutterAction *action;
     
-    g_print("sge_create_object %i at %i:%i layer:%i\n", pixbuf_id, x, y, layer);
-    g_print("sge_create_object %i at %i:%i layer:%i\n", pixbuf_id, x * prefs.tile_size, y * prefs.tile_size, layer);
+    g_print("sge_create_object %i at %i:%i -> %i:%i layer:%i\n", pixbuf_id, x, y, x * prefs.tile_size, y * prefs.tile_size, layer);
     
     T_SGEObject * object;
 	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
@@ -557,7 +556,9 @@ sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id)
     clutter_actor_add_child (g_actor_layers[layer],
                                  CLUTTER_ACTOR (object->actor));
                                  
-    clutter_actor_show (object->actor);                            
+    clutter_actor_show (object->actor);
+
+    g_object_list = g_list_append (g_object_list, (gpointer) object);
 
 	return object;
 }
@@ -599,7 +600,7 @@ sge_init (void)
         clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
         
         clutter_actor_add_child (g_stage, g_actor_layers[i]);
-        clutter_actor_add_constraint (g_actor_layers[i], clutter_align_constraint_new (g_stage, CLUTTER_ALIGN_BOTH, 0));
+
 	}
     
     
@@ -609,7 +610,6 @@ sge_init (void)
 
     /* fire a callback for frame change */
     g_signal_connect (timeline, "new-frame",  G_CALLBACK (sge_clutter_frame_cb), NULL);
-    
     
     clutter_timeline_pause(timeline);
 

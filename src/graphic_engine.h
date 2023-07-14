@@ -32,7 +32,7 @@ void
 gweled_load_font (void);
 
 void
-gweled_load_pixmaps (void);
+gweled_load_pixmaps (gint size);
 
 void
 gweled_init_glyphs (void);
@@ -53,9 +53,9 @@ T_SGEObject*
 gweled_draw_character (int x, int y, int layer, char character);
 
 void
-gweled_draw_board (void);
+gweled_draw_board (gint size);
 
 void
-gweled_set_objects_size (gint size, gboolean update);
+gweled_set_objects_size (gint size);
 
 #endif

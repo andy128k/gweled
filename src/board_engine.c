@@ -598,7 +598,7 @@ board_engine_loop (gpointer data)
                 gtk_main_quit ();
             else {
                 sge_destroy_all_objects ();
-	            gweled_draw_board ();
+	            gweled_draw_board (prefs.tile_size);
 	            gweled_start_new_game ();
             }
 			g_do_not_score = FALSE;
@@ -809,7 +809,7 @@ board_engine_loop (gpointer data)
                         gtk_main_quit ();
                     else {
                         sge_destroy_all_objects ();
-	                    gweled_draw_board ();
+	                    gweled_draw_board (prefs.tile_size);
 	                    gweled_start_new_game ();
                     }
 					g_do_not_score = FALSE;
@@ -1018,7 +1018,7 @@ void gweled_set_previous_game(GweledGameState game)
     gweled_setup_game_window (TRUE);
     welcome_screen_visibility (FALSE);
 
-    gweled_draw_board ();
+    gweled_draw_board (prefs.tile_size);
 
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++) {

@@ -53,11 +53,6 @@ gweled_setting_changed (GSettings* self,
 ) {
     g_print("Settings changed: %s\n", key);
 
-    if (g_strcmp0 (key, "tile-size") == 0) {
-    	prefs.tile_size = g_settings_get_enum (self, "tile-size");
-		gweled_ui_resize (prefs.tile_size, TRUE);
-    }
-
     if (g_strcmp0 (key, "sound") == 0) {
     	prefs.sounds_on = g_settings_get_boolean (self, "sound");
 		if (prefs.sounds_on && sound_get_enabled() == FALSE) {
