@@ -100,9 +100,8 @@ static gint gi_state = _IDLE;
 static GList *g_alignment_list;
 
 extern GRand *g_random_generator;
-extern GtkWidget *g_progress_bar;
-extern GtkWidget *g_score_label;
-extern GtkWidget *g_pause_game_btn;
+
+extern GuiContext *gweled_ui;
 
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
@@ -501,12 +500,12 @@ board_set_pause(gboolean value)
     gi_game_paused = value;
 
     if(value == TRUE) {
-    	gtk_button_set_label(GTK_BUTTON(g_pause_game_btn), _("_Resume"));
+    	gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
 
         // Currently not translatable because I only have basic ASCII characters.
         gweled_draw_message("paused");
-        last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(g_progress_bar)));
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), _("Paused"));
+        last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
         sge_set_layer_visibility(1, FALSE);
         sge_set_layer_visibility(2, FALSE);
         gweled_set_hints_active(FALSE);
@@ -516,10 +515,10 @@ board_set_pause(gboolean value)
         }
     }
     else {
-        gtk_button_set_label(GTK_BUTTON(g_pause_game_btn), _("_Pause"));
+        gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Pause"));
         
         if(last_text != NULL) {
-            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(g_progress_bar), last_text);
+            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), last_text);
             g_free(last_text);
             last_text = NULL;
         }
@@ -580,7 +579,7 @@ board_engine_loop (gpointer data)
 	{
 		gi_current_score += 10;
 		g_sprintf (msg_buffer, "%06d", gi_current_score);
-		gtk_label_set_markup ((GtkLabel *) g_score_label, msg_buffer);
+		gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
 	}
 
     /* Let's first check if we are in timer mode, and penalize the player if necessary */
@@ -605,7 +604,7 @@ board_engine_loop (gpointer data)
 			gi_state = _IDLE;
 		} else
 			gtk_progress_bar_set_fraction ((GtkProgressBar *)
-						       g_progress_bar,
+						       gweled_ui->g_progress_bar,
 						       (float)(gi_total_gems_removed -gi_previous_bonus_at)
 						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
@@ -760,9 +759,9 @@ board_engine_loop (gpointer data)
 
             if(prefs.game_mode != ENDLESS_MODE) {
                 if (gi_total_gems_removed <= gi_next_bonus_at)
-				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
+				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
 			    else
-				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar), 1.0);
+				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), 1.0);
 
                 gi_state = _BOARD_REFILLING;
             }
@@ -835,7 +834,7 @@ board_engine_loop (gpointer data)
                 gi_bonus_multiply++;
                 gi_level++;
                 g_sprintf(msg_buffer, _("Level %d"), gi_level);
-                gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), msg_buffer);
+                gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), msg_buffer);
 				g_sprintf (msg_buffer, "bonus x%d", gi_bonus_multiply >> 1);
 				gweled_draw_game_message (msg_buffer, 2);
 
@@ -846,7 +845,7 @@ board_engine_loop (gpointer data)
 				if (prefs.game_mode == TIMED_MODE)
 					gi_total_gems_removed = (gi_next_bonus_at + gi_previous_bonus_at) / 2;
 
-				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(g_progress_bar),
+				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar),
 					(float) (gi_total_gems_removed - gi_previous_bonus_at) /
 					(float) (gi_next_bonus_at - gi_previous_bonus_at));
 
@@ -905,18 +904,18 @@ gweled_start_new_game (void)
 
     if(prefs.game_mode != ENDLESS_MODE) {
         gchar *text = g_strdup_printf(_("Level %d"), 1);
-	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text );
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
+	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text );
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
 	    g_free(text);
     }
     else
     {
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), "" );
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
     }
 
 
-    gtk_label_set_markup ((GtkLabel *) g_score_label, "000000");
+    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), "000000");
 
 	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
@@ -1001,16 +1000,16 @@ void gweled_set_previous_game(GweledGameState game)
     gi_current_score = gi_score;
 
     if(prefs.game_mode != ENDLESS_MODE) {
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar),
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar),
                                 (float)(gi_total_gems_removed -gi_previous_bonus_at)
                                 / (float)(gi_next_bonus_at - gi_previous_bonus_at));
         text_buffer = g_strdup_printf(_("Level %d"), gi_level);
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), text_buffer);
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text_buffer);
         g_free(text_buffer);
     }
 
     text_buffer = g_strdup_printf("%06d", gi_current_score);
-    gtk_label_set_markup (GTK_LABEL(g_score_label), text_buffer);
+    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), text_buffer);
     g_free(text_buffer);
 
     sge_destroy_all_objects ();
@@ -1044,9 +1043,9 @@ void gweled_stop_game()
     gi_game_running = 0;
     sge_destroy_all_objects();
 
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (g_progress_bar), "" );
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (g_progress_bar), 0.0);
-    gtk_label_set_markup ((GtkLabel *) g_score_label, "000000");
+    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), "" );
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
+    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), "000000");
 }
 
 void gweled_set_hints_active(gboolean yn)

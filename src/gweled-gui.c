@@ -37,26 +37,8 @@
 #include "gweled-gui.h"
 
 // GLOBALS
-GtkBuilder *builder;
-GtkWidget *g_main_window;
+GuiContext* gweled_ui;
 
-GtkWidget *g_clutter;
-GtkWidget *g_welcome_box;
-GtkWidget *g_progress_bar;
-GtkWidget *g_score_label;
-GtkWidget *g_bonus_label;
-GtkWidget *g_pref_sounds_button;
-GtkWidget *g_main_game_stack;
-GtkWidget *g_headerbar;
-GtkWidget *g_new_game;
-GtkWidget *g_pause_game_btn;
-
-ClutterActor *g_stage;
-
-GtkMenuButton *g_menu_button;
-GMenuModel *headermenu;
-
-//GdkPixmap *g_buffer_pixmap = NULL;
 GRand *g_random_generator;
 
 GamesScores *highscores;
@@ -86,7 +68,7 @@ on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_
 
 	const gchar *translator_credits = _("translator-credits");
 
-    gtk_show_about_dialog (GTK_WINDOW(g_main_window),
+    gtk_show_about_dialog (GTK_WINDOW(gweled_ui->main_window),
         "authors", authors,
 	    "translator-credits", strcmp("translator-credits", translator_credits) ? translator_credits : NULL,
         "comments", _("A puzzle game with gems"),
@@ -111,7 +93,7 @@ on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 	gint response;
 
 	if (is_game_running()) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+		dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
@@ -126,7 +108,7 @@ on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 			return;
 	}
 
-	gtk_header_bar_set_subtitle(GTK_HEADER_BAR(g_headerbar), "");
+	gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), "");
 
     gweled_stop_game ();
 
@@ -156,13 +138,13 @@ on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
 
     switch (prefs.game_mode) {
         case NORMAL_MODE:
-            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(g_headerbar), _("Normal"));
+            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Normal"));
             break;
         case TIMED_MODE:
-            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(g_headerbar), _("Timed"));
+            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Timed"));
             break;
         case ENDLESS_MODE:
-            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(g_headerbar), _("Endless"));
+            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Endless"));
             break;
     }
 
@@ -199,7 +181,7 @@ show_hiscores (gint pos, gboolean endofgame)
     if (sorrydialog != NULL) {
       gtk_window_present (GTK_WINDOW (sorrydialog));
     } else {
-      sorrydialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (g_main_window),
+      sorrydialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (gweled_ui->main_window),
 							GTK_DIALOG_DESTROY_WITH_PARENT,
 							GTK_MESSAGE_INFO,
 							GTK_BUTTONS_NONE,
@@ -221,7 +203,7 @@ show_hiscores (gint pos, gboolean endofgame)
     if (scoresdialog != NULL) {
       gtk_window_present (GTK_WINDOW (scoresdialog));
     } else {
-      scoresdialog = games_scores_dialog_new (GTK_WINDOW (g_main_window), highscores, _("Gweled Scores"));
+      scoresdialog = games_scores_dialog_new (GTK_WINDOW (gweled_ui->main_window), highscores, _("Gweled Scores"));
       games_scores_dialog_set_category_description (GAMES_SCORES_DIALOG
 						    (scoresdialog),
 						    _("Game type:"));
@@ -263,14 +245,14 @@ void
 gweled_setup_game_window(gboolean playing)
 {
     if (playing) {
-        gtk_widget_set_sensitive(g_pause_game_btn, TRUE);
-        gtk_widget_show(GTK_WIDGET(g_new_game));
-        gtk_widget_show(GTK_WIDGET(g_pause_game_btn));
+        gtk_widget_set_sensitive(gweled_ui->g_pause_game_btn, TRUE);
+        gtk_widget_show(gweled_ui->g_new_game_btn);
+        gtk_widget_show(gweled_ui->g_pause_game_btn);
     }
     else {
         // Hide Play/Pause buttons.
-        gtk_widget_hide(GTK_WIDGET(g_new_game));
-        gtk_widget_hide(GTK_WIDGET(g_pause_game_btn));
+        gtk_widget_hide(gweled_ui->g_new_game_btn);
+        gtk_widget_hide(gweled_ui->g_pause_game_btn);
     }
 }
 
@@ -279,14 +261,14 @@ void
 welcome_screen_visibility (gboolean value)
 {
     if(value == FALSE) {
-        gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "game_scene");
+        gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "game_scene");
         return;
     }
     
     gweled_setup_game_window(FALSE);
     
     // Set welcome screen visible
-    gtk_stack_set_visible_child_name (GTK_STACK (g_main_game_stack), "welcome_screen");
+    gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "welcome_screen");
 }
 
 void
@@ -296,7 +278,7 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
     gint response;
 
     if (is_game_running()) {
-        dialog = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+        dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
                           GTK_DIALOG_DESTROY_WITH_PARENT,
                           GTK_MESSAGE_QUESTION,
                           GTK_BUTTONS_YES_NO,
@@ -319,7 +301,7 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
     
     g_rand_free (g_random_generator);
     
-    gtk_widget_destroy(g_main_window);
+    gtk_widget_destroy(gweled_ui->main_window);
 
 	gtk_main_quit ();
 }
@@ -348,7 +330,7 @@ configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
   if (tilesize == prefs.tile_size) return FALSE;
 
 
-   clutter_actor_set_size (CLUTTER_ACTOR (g_stage),
+   clutter_actor_set_size (CLUTTER_ACTOR (gweled_ui->g_stage),
                           BOARD_WIDTH * tilesize,
                           BOARD_HEIGHT * tilesize);
 
@@ -380,76 +362,75 @@ gweled_ui_init (GApplication *app)
                                  GAMES_SCORES_STYLE_PLAIN_DESCENDING);
 
 	g_random_generator = g_rand_new_with_seed (time (NULL));
+
+    gweled_ui = g_malloc( sizeof(GuiContext) );
       
-    builder = gtk_builder_new ();
-    if (!gtk_builder_add_from_resource  (builder, GWELED_RESOURCE_BASE "ui/main.ui", &error))
+    gweled_ui->builder = gtk_builder_new ();
+    if (!gtk_builder_add_from_resource  (gweled_ui->builder, GWELED_RESOURCE_BASE "ui/main.ui", &error))
     {
         g_error ("Couldn't load builder file: %s", error->message);
         g_error_free (error);
     }
-    g_main_window = GTK_WIDGET (gtk_builder_get_object (builder, "gweledApp"));
-    g_welcome_box = GTK_WIDGET (gtk_builder_get_object (builder, "vboxWelcome"));
-    g_progress_bar = GTK_WIDGET (gtk_builder_get_object (builder, "bonusProgressbar"));
-    g_score_label = GTK_WIDGET (gtk_builder_get_object (builder, "scoreLabel"));
-    g_main_game_stack = GTK_WIDGET (gtk_builder_get_object (builder, "main_game_stack"));
-    g_menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (builder, "menu_button"));
+    gweled_ui->main_window = LOOKUP_WIDGET ("gweledApp");
+    gweled_ui->g_welcome_box = LOOKUP_WIDGET ("vboxWelcome");
+    gweled_ui->g_progress_bar = LOOKUP_WIDGET ("bonusProgressbar");
+    gweled_ui->g_score_label = LOOKUP_WIDGET ("scoreLabel");
+    gweled_ui->g_main_game_stack = LOOKUP_WIDGET ("main_game_stack");
+    gweled_ui->g_menu_button = GTK_MENU_BUTTON (LOOKUP_WIDGET ("menu_button"));
     
-    g_headerbar = GTK_WIDGET (gtk_builder_get_object (builder, "headerbar"));
-    g_new_game = GTK_WIDGET (gtk_builder_get_object (builder, "new_game_button"));
-    g_pause_game_btn = GTK_WIDGET (gtk_builder_get_object (builder, "pause_button"));
+    gweled_ui->g_headerbar = LOOKUP_WIDGET ("headerbar");
+    gweled_ui->g_new_game_btn = LOOKUP_WIDGET ("new_game_button");
+    gweled_ui->g_pause_game_btn = LOOKUP_WIDGET ("pause_button");
 
-    game_frame = GTK_WIDGET (gtk_builder_get_object (builder, "game_frame"));
+    game_frame = LOOKUP_WIDGET ("game_frame");
 
     // Clutter scene
-    g_clutter = gtk_clutter_embed_new ();
-    g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (g_clutter));
+    gweled_ui->g_clutter = gtk_clutter_embed_new ();
+    gweled_ui->g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (gweled_ui->g_clutter));
 
 
-    clutter_actor_set_size  (g_stage,
+    clutter_actor_set_size  (gweled_ui->g_stage,
                             BOARD_WIDTH * prefs.tile_size,
                             BOARD_HEIGHT * prefs.tile_size);
 
-    clutter_stage_set_user_resizable (CLUTTER_STAGE(g_stage), FALSE);
+    clutter_stage_set_user_resizable (CLUTTER_STAGE(gweled_ui->g_stage), FALSE);
+    clutter_actor_set_background_color (gweled_ui->g_stage, CLUTTER_COLOR_LightSkyBlue);
 
 
-
-    clutter_actor_set_background_color (g_stage, CLUTTER_COLOR_LightSkyBlue);
-
-
-    gtk_window_set_default_size (GTK_WINDOW (g_main_window),
+    gtk_window_set_default_size (GTK_WINDOW (gweled_ui->main_window),
                                BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
 
-    gtk_widget_realize (g_main_window);
+    gtk_widget_realize (gweled_ui->main_window);
 
-    gtk_container_add(GTK_CONTAINER(game_frame), GTK_WIDGET(g_clutter));
+    gtk_container_add(GTK_CONTAINER(game_frame), gweled_ui->g_clutter);
 
 	// Header button events
-	g_signal_connect(G_OBJECT(g_new_game), "clicked",
+	g_signal_connect(G_OBJECT(gweled_ui->g_new_game_btn), "clicked",
                      G_CALLBACK(on_new_game_activate_cb), NULL);
-    g_signal_connect(G_OBJECT(g_pause_game_btn), "clicked",
+    g_signal_connect(G_OBJECT(gweled_ui->g_pause_game_btn), "clicked",
                      G_CALLBACK(on_pause_activate_cb), NULL);
 
 
     // Game mode button events
-    g_signal_connect(gtk_builder_get_object (builder, "buttonNormal"), "clicked",
+    g_signal_connect(LOOKUP_WIDGET ("buttonNormal"), "clicked",
                      G_CALLBACK(on_game_mode_start_clicked), GINT_TO_POINTER(NORMAL_MODE));
-    g_signal_connect(gtk_builder_get_object (builder, "buttonTimed"), "clicked",
+    g_signal_connect(LOOKUP_WIDGET ("buttonTimed"), "clicked",
                      G_CALLBACK(on_game_mode_start_clicked), GINT_TO_POINTER(TIMED_MODE));
-    g_signal_connect(gtk_builder_get_object (builder, "buttonEndless"), "clicked",
+    g_signal_connect(LOOKUP_WIDGET ("buttonEndless"), "clicked",
                      G_CALLBACK(on_game_mode_start_clicked), GINT_TO_POINTER(ENDLESS_MODE));                 
                  
 	
     // Main window events
-    g_signal_connect(G_OBJECT(g_main_window), "delete-event",
+    g_signal_connect(G_OBJECT(gweled_ui->main_window), "delete-event",
                      G_CALLBACK(gweled_ui_destroy), NULL);
                  
-    g_signal_connect(G_OBJECT(g_main_window), "focus-out-event",
+    g_signal_connect(G_OBJECT(gweled_ui->main_window), "focus-out-event",
                      G_CALLBACK(on_window_unfocus_cb), NULL);
      
-    g_signal_connect(G_OBJECT(g_main_window), "unmap-event",
+    g_signal_connect(G_OBJECT(gweled_ui->main_window), "unmap-event",
                      G_CALLBACK(on_window_unfocus_cb), NULL);
 
-    g_signal_connect (G_OBJECT (g_clutter), "configure_event",
+    g_signal_connect (G_OBJECT (gweled_ui->g_clutter), "configure_event",
                     G_CALLBACK (configure_event_cb), NULL);
 
     
@@ -471,7 +452,7 @@ gweled_ui_init (GApplication *app)
     filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
 
 	if(g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
-	    box = gtk_message_dialog_new (GTK_WINDOW (g_main_window),
+	    box = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
                           GTK_DIALOG_DESTROY_WITH_PARENT,
                           GTK_MESSAGE_QUESTION,
                           GTK_BUTTONS_YES_NO,
@@ -500,7 +481,7 @@ gweled_ui_init (GApplication *app)
         g_error_free (error);
     }
 
-    headermenu = G_MENU_MODEL(gtk_builder_get_object (menu_builder, "headermenu"));
+    gweled_ui->headermenu = G_MENU_MODEL(gtk_builder_get_object (menu_builder, "headermenu"));
 
     // Menu actions.
     const GActionEntry entries[] = {
@@ -521,16 +502,16 @@ gweled_ui_init (GApplication *app)
 
     GActionGroup *actions = G_ACTION_GROUP( g_simple_action_group_new () );
 
-    gtk_widget_insert_action_group (g_main_window, "win", win_actions);
-    gtk_widget_insert_action_group (g_main_window, "app", actions);
+    gtk_widget_insert_action_group (gweled_ui->main_window, "win", win_actions);
+    gtk_widget_insert_action_group (gweled_ui->main_window, "app", actions);
 
-    g_action_map_add_action_entries (G_ACTION_MAP (actions), entries, G_N_ELEMENTS (entries), g_main_window);
-    gtk_menu_button_set_menu_model(g_menu_button, headermenu);
+    g_action_map_add_action_entries (G_ACTION_MAP (actions), entries, G_N_ELEMENTS (entries), gweled_ui->main_window);
+    gtk_menu_button_set_menu_model(gweled_ui->g_menu_button, gweled_ui->headermenu);
     g_object_unref(G_OBJECT(menu_builder));
 	
-	gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(g_main_window));
+	gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(gweled_ui->main_window));
 
-    gtk_widget_show_all (g_main_window);
+    gtk_widget_show_all (gweled_ui->main_window);
 
     // Setup default window mode.
     welcome_screen_visibility(!start_previous_game);

@@ -21,6 +21,32 @@
 #define _GWELED_GUI_H_
 
 #include <glib.h>
+#include <clutter/clutter.h>
+
+#define LOOKUP_WIDGET(widget_name) GTK_WIDGET (gtk_builder_get_object (gweled_ui->builder, widget_name))
+
+typedef struct
+{
+  GtkBuilder *builder;
+
+  GtkWidget *main_window,
+            *g_clutter,
+            *g_welcome_box,
+            *g_progress_bar,
+            *g_score_label,
+            *g_pref_sounds_button,
+            *g_main_game_stack,
+            *g_headerbar,
+            *g_new_game_btn,
+            *g_pause_game_btn;
+
+  ClutterActor *g_stage;
+
+  GtkMenuButton *g_menu_button;
+
+  GMenuModel *headermenu;
+
+} GuiContext;
 
 void
 gweled_ui_init(GApplication *app);

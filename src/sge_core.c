@@ -31,6 +31,7 @@
 #include <clutter-gtk/clutter-gtk.h>
 #include <math.h>
 
+#include "gweled-gui.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
 #include "sound.h"
@@ -52,8 +53,7 @@ extern gint gi_gem_dragged;
 extern gint gi_x_drag;
 extern gint gi_y_drag;
 
-extern GtkWidget *g_clutter;
-extern ClutterActor *g_stage;
+extern GuiContext *gweled_ui;
 
 extern GweledPrefs prefs;
 
@@ -599,7 +599,7 @@ sge_init (void)
                                 
         clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
         
-        clutter_actor_add_child (g_stage, g_actor_layers[i]);
+        clutter_actor_add_child (gweled_ui->g_stage, g_actor_layers[i]);
 
 	}
     
