@@ -369,6 +369,7 @@ gweled_ui_init (GApplication *app)
 	gint       response;
 	GtkBuilder *menu_builder;
 	GAction *action;
+    gboolean start_previous_game = FALSE;
     
     GError    *error = NULL;
     
@@ -401,10 +402,7 @@ gweled_ui_init (GApplication *app)
 
     // Clutter scene
     g_clutter = gtk_clutter_embed_new ();
-
-
     g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (g_clutter));
-
 
 
     clutter_actor_set_size  (g_stage,
@@ -424,8 +422,6 @@ gweled_ui_init (GApplication *app)
     gtk_widget_realize (g_main_window);
 
     gtk_container_add(GTK_CONTAINER(game_frame), GTK_WIDGET(g_clutter));
-
-
 
 	// Header button events
 	g_signal_connect(G_OBJECT(g_new_game), "clicked",
@@ -456,9 +452,6 @@ gweled_ui_init (GApplication *app)
     g_signal_connect (G_OBJECT (g_clutter), "configure_event",
                     G_CALLBACK (configure_event_cb), NULL);
 
-
-    welcome_screen_visibility(TRUE);
-   
     
     g_print("Size %d x %d; tile size: %d\n", BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size, prefs.tile_size);
 			                     
@@ -489,8 +482,10 @@ gweled_ui_init (GApplication *app)
         response = gtk_dialog_run (GTK_DIALOG (box));
         gtk_widget_destroy (box);
 
-        if (response == GTK_RESPONSE_YES)
+        if (response == GTK_RESPONSE_YES) {
             load_previous_game();
+            start_previous_game = TRUE;
+        }
         else
             unlink(filename);
 	}
@@ -534,6 +529,11 @@ gweled_ui_init (GApplication *app)
     g_object_unref(G_OBJECT(menu_builder));
 	
 	gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(g_main_window));
+
     gtk_widget_show_all (g_main_window);
+
+    // Setup default window mode.
+    welcome_screen_visibility(!start_previous_game);
+    gweled_setup_game_window(start_previous_game);
 }
 
