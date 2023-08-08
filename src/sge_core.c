@@ -254,6 +254,11 @@ void sge_set_layer_visibility (int layer, gboolean visibility)
     }
 }
 
+void sge_set_layer_opacity (int layer, guint8 opacity)
+{
+    clutter_actor_set_opacity(g_actor_layers[layer], opacity);
+}
+
 
 // fadeout the object and then destroy it
 void sge_object_fadeout (T_SGEObject *object)

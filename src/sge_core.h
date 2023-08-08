@@ -78,6 +78,7 @@ gboolean sge_objects_are_moving(void);
 gboolean sge_objects_are_moving_on_layer(int layer);
 
 void sge_set_layer_visibility (int layer, gboolean visibility);
+void sge_set_layer_opacity (int layer, guint8 opacity);
 
 void sge_object_fadeout (T_SGEObject *object);
 void sge_object_zoomout (T_SGEObject *object);

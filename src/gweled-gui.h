@@ -1,4 +1,4 @@
-/* Gweled
+/* gweled-gui.h
  *
  * Copyright (C) 2021 Daniele Napolitano <dnax88@gmail.com>
  *
@@ -59,8 +59,5 @@ gweled_setup_game_window(gboolean playing);
 
 void
 welcome_screen_visibility (gboolean value);
-
-gint
-show_hiscores (gint pos, gboolean endofgame);
 
 #endif

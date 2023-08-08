@@ -147,9 +147,6 @@ int main (int argc, char **argv)
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
 
-    // needed for scores handling
-    setgid_io_init();
-
     app = gtk_application_new ("org.gweled.gweled", G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
 

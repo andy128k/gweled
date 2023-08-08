@@ -4,6 +4,7 @@ gweled_CFLAGS =           \
     @CLUTTER_GTK_CFLAGS@  \
     @CANBERRA_CFLAGS@     \
     @CANBERRA_GTK_CFLAGS@ \
+    @GNOME_GAMES_CFLAGS@  \
     -DDATADIR=\""$(datadir)"\"                    \
     -DPREFIX=\""$(prefix)"\"                      \
     -DPACKAGE_DATA_DIR=\""$(datadir)/gweled"\"    \
@@ -24,20 +25,15 @@ gweled_SOURCES = \
 	gweled-gui.c gweled-gui.h \
 	board_engine.c board_engine.h \
 	graphic_engine.c graphic_engine.h \
-    sge_core.c sge_core.h \
+	sge_core.c sge_core.h \
 	sge_utils.c sge_utils.h \
 	sound.c sound.h \
-	games-score.c games-score.h \
-	games-scores.c games-scores.h \
-	games-scores-backend.c games-scores-backend.h \
-	games-scores-dialog.c games-scores-dialog.h \
-	games-setgid-io.c games-setgid-io.h \
-	games-scores-dialog-private.h \
+	gweled-scores.c gweled-scores.h \
 	$(RESOURCES) \
 	$(NULL)
 	
 	
-gweled_LDADD = @GTK_LIBS@ @CLUTTER_LIBS@ @CLUTTER_GTK_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@ -lm
+gweled_LDADD = @GTK_LIBS@ @CLUTTER_LIBS@ @CLUTTER_GTK_LIBS@ @CANBERRA_LIBS@ @CANBERRA_GTK_LIBS@ @GNOME_GAMES_LIBS@ -lm
 
 RESOURCES_DEP = $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies gweled.gresource.xml)
 

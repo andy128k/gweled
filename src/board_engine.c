@@ -31,10 +31,8 @@
 #include <glib/gprintf.h>
 #include <glib/gi18n-lib.h>
 
-#include "games-scores.h"
-
+#include "gweled-scores.h"
 #include "gweled-gui.h"
-
 #include "sge_core.h"
 #include "board_engine.h"
 #include "graphic_engine.h"
@@ -110,8 +108,6 @@ extern gint gi_sparkle_pixbuf;
 
 extern guint board_engine_id;
 extern GweledPrefs prefs;
-
-extern GamesScores *highscores;
 
 gchar
 get_new_tile (void)
@@ -566,8 +562,6 @@ board_engine_loop (gpointer data)
 	static gint x1, y1, x2, y2, time_slice = 0;
 	static T_SGEObject *cursor[2] = { NULL, NULL };
 	gchar msg_buffer[200];
-    GamesScoreValue score;
-	gint hiscore_rank;
 
 	time_slice++;
 
@@ -587,21 +581,16 @@ board_engine_loop (gpointer data)
 	{
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
-      // Currently not translatable because I only have basic ASCII characters.
+            // Currently not translatable because I only have basic ASCII characters.
 			gweled_draw_message ("time's up #");
-			gi_game_running = 0;
- 			score.plain = gi_score;
- 			games_scores_set_category (highscores, "Timed");
- 			hiscore_rank = games_scores_add_score (highscores, score);
- 			if (show_hiscores (hiscore_rank, TRUE) == GTK_RESPONSE_REJECT)
-                gtk_main_quit ();
-            else {
-                sge_destroy_all_objects ();
-	            gweled_draw_board (prefs.tile_size);
-	            gweled_start_new_game ();
-            }
-			g_do_not_score = FALSE;
-			gi_state = _IDLE;
+            sge_set_layer_opacity(1, 128);
+            gtk_widget_hide(gweled_ui->g_pause_game_btn);
+			gi_game_running = FALSE;
+            gi_game_paused = TRUE;
+            gi_state = _IDLE;
+
+            gweled_hiscores_show_and_add(gi_score, GAME_SCORE_CAT_TIMED);
+
 		} else
 			gtk_progress_bar_set_fraction ((GtkProgressBar *)
 						       gweled_ui->g_progress_bar,
@@ -797,22 +786,16 @@ board_engine_loop (gpointer data)
 					gweled_gems_fall_into_place (FALSE);
 					gi_state = _MARK_ALIGNED_GEMS;
 				} else {
-				  // Game over
-          // Currently not translatable because I only have basic ASCII characters.
+				    // Game over
+                    // Currently not translatable because I only have basic ASCII characters.
 					gweled_draw_message ("no moves left #");
-					gi_game_running = 0;
-					score.plain = gi_score;
-					games_scores_set_category (highscores, "Normal");
-					hiscore_rank = games_scores_add_score (highscores, score);
- 					if (show_hiscores (hiscore_rank, TRUE) == GTK_RESPONSE_REJECT)
-                        gtk_main_quit ();
-                    else {
-                        sge_destroy_all_objects ();
-	                    gweled_draw_board (prefs.tile_size);
-	                    gweled_start_new_game ();
-                    }
-					g_do_not_score = FALSE;
-					gi_state = _IDLE;
+                    sge_set_layer_opacity(1, 128);
+                    gtk_widget_hide(gweled_ui->g_pause_game_btn);
+					gi_game_running = FALSE;
+                    gi_game_paused = TRUE;
+                    gi_state = _IDLE;
+
+                    gweled_hiscores_show_and_add(gi_score, GAME_SCORE_CAT_NORMAL);
 				}
 			} else {
 				g_do_not_score = FALSE;

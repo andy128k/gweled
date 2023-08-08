@@ -82,6 +82,13 @@ AC_CHECK_LIB(canberra-gtk3, ca_gtk_proplist_set_for_widget, [],
 AC_SUBST(CANBERRA_GTK_CFLAGS)
 AC_SUBST(CANBERRA_GTK_LIBS)
 
+#### Check for libgnome-games-support-1 ####
+PKG_CHECK_MODULES(GNOME_GAMES, libgnome-games-support-1,,
+	AC_MSG_ERROR([libgnome-games-support-1 is required to compile gweled]))
+
+AC_SUBST(GNOME_GAMES_CFLAGS)
+AC_SUBST(GNOME_GAMES_LIBS)
+
 LIBS="$LIBS -export-dynamic"
 
 AC_ARG_ENABLE([setgid],

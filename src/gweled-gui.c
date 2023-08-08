@@ -1,6 +1,6 @@
 /* gweled-gui.c
  *
- * Copyright (C) 2021 Daniele Napolitano
+ * Copyright (C) 2021 Daniele Napolitano <dnax88@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,24 +30,14 @@
 #include "graphic_engine.h"
 #include "board_engine.h"
 #include "sound.h"
-#include "games-scores.h"
-#include "games-scores-dialog.h"
+#include "gweled-scores.h"
 #include "main.h"
-
 #include "gweled-gui.h"
 
 // GLOBALS
 GuiContext* gweled_ui;
 
 GRand *g_random_generator;
-
-GamesScores *highscores;
-
-static const GamesScoresCategory scorecats[] = {
-  {"Normal", NC_("game type", "Normal")  },
-  {"Timed",  NC_("game type", "Timed") }
-};
-
 
 extern GweledPrefs prefs;
 extern GSettings *settings;
@@ -83,7 +73,8 @@ on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_
 void
 on_scores_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
 {
- 	show_hiscores (0, FALSE);
+
+  gweled_hiscores_show();
 }
 
 void
@@ -165,79 +156,6 @@ on_window_unfocus_cb (GtkWidget *widget,
 {
     if (is_game_running() && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
         board_set_pause(TRUE);
-}
-
-
-gint
-show_hiscores (gint pos, gboolean endofgame)
-{
-  gchar *message;
-  static GtkWidget *scoresdialog = NULL;
-  static GtkWidget *sorrydialog = NULL;
-  GtkWidget *dialog;
-  gint result;
-
-  if (endofgame && (pos <= 0)) {
-    if (sorrydialog != NULL) {
-      gtk_window_present (GTK_WINDOW (sorrydialog));
-    } else {
-      sorrydialog = gtk_message_dialog_new_with_markup (GTK_WINDOW (gweled_ui->main_window),
-							GTK_DIALOG_DESTROY_WITH_PARENT,
-							GTK_MESSAGE_INFO,
-							GTK_BUTTONS_NONE,
-							"<b>%s</b>\n%s",
-							_
-							("Game over!"),
-							_
-							("Great work, but unfortunately your score did not make the top ten."));
-      gtk_dialog_add_buttons (GTK_DIALOG (sorrydialog), _("_Quit"),
-			      GTK_RESPONSE_REJECT, _("_New Game"),
-			      GTK_RESPONSE_ACCEPT, NULL);
-      gtk_dialog_set_default_response (GTK_DIALOG (sorrydialog),
-				       GTK_RESPONSE_ACCEPT);
-      gtk_window_set_title (GTK_WINDOW (sorrydialog), "");
-    }
-    dialog = sorrydialog;
-  } else {
-
-    if (scoresdialog != NULL) {
-      gtk_window_present (GTK_WINDOW (scoresdialog));
-    } else {
-      scoresdialog = games_scores_dialog_new (GTK_WINDOW (gweled_ui->main_window), highscores, _("Gweled Scores"));
-      games_scores_dialog_set_category_description (GAMES_SCORES_DIALOG
-						    (scoresdialog),
-						    _("Game type:"));
-    }
-
-    if (pos > 0) {
-      games_scores_dialog_set_hilight (GAMES_SCORES_DIALOG (scoresdialog),
-				       pos);
-      message = g_strdup_printf ("<b>%s</b>\n\n%s",
-				 _("Congratulations!"),
-				 pos == 1 ? _("Your score is the best!") :
-                                 _("Your score has made the top ten."));
-      games_scores_dialog_set_message (GAMES_SCORES_DIALOG (scoresdialog),
-				       message);
-      g_free (message);
-    } else {
-      games_scores_dialog_set_message (GAMES_SCORES_DIALOG (scoresdialog),
-				       NULL);
-    }
-
-    if (endofgame) {
-      games_scores_dialog_set_buttons (GAMES_SCORES_DIALOG (scoresdialog),
-				       GAMES_SCORES_QUIT_BUTTON |
-				       GAMES_SCORES_NEW_GAME_BUTTON);
-    } else {
-      games_scores_dialog_set_buttons (GAMES_SCORES_DIALOG (scoresdialog), 0);
-    }
-    dialog = scoresdialog;
-  }
-
-  result = gtk_dialog_run (GTK_DIALOG (dialog));
-  gtk_widget_hide (dialog);
-
-  return result;
 }
 
 
@@ -354,12 +272,6 @@ gweled_ui_init (GApplication *app)
     gboolean start_previous_game = FALSE;
     
     GError    *error = NULL;
-    
-    highscores = games_scores_new ("gweled",
-                                 scorecats, G_N_ELEMENTS (scorecats),
-                                 "game type", NULL,
-                                 0 /* default category */,
-                                 GAMES_SCORES_STYLE_PLAIN_DESCENDING);
 
 	g_random_generator = g_rand_new_with_seed (time (NULL));
 
@@ -510,6 +422,8 @@ gweled_ui_init (GApplication *app)
     g_object_unref(G_OBJECT(menu_builder));
 	
 	gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(gweled_ui->main_window));
+
+    gweled_init_scores(GTK_WINDOW(gweled_ui->main_window));
 
     gtk_widget_show_all (gweled_ui->main_window);
 
