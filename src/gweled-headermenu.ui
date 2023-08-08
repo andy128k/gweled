@@ -18,26 +18,6 @@
 <interface>
   <menu id="headermenu">
     <section>
-      <submenu>
-        <attribute name="label" translatable="yes">_Board size</attribute>
-        <section>
-          <item>
-            <attribute name="label" translatable="yes">_Small</attribute>
-            <attribute name="action">win.tile-size</attribute>
-            <attribute name="target" type="s">'small'</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">_Medium</attribute>
-            <attribute name="action">win.tile-size</attribute>
-            <attribute name="target" type="s">'medium'</attribute>
-          </item>
-          <item>
-            <attribute name="label" translatable="yes">_Big</attribute>
-            <attribute name="action">win.tile-size</attribute>
-            <attribute name="target" type="s">'big'</attribute>
-          </item>
-        </section>
-      </submenu>
       <item>
         <attribute name="label" translatable="yes">_Sound</attribute>
         <attribute name="action">win.sound</attribute>
