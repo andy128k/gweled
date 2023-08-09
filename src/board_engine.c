@@ -262,12 +262,12 @@ gweled_refill_board (void)
 				if (j && g_gem_objects[i][1])
 					g_gem_objects[i][0] = sge_create_object (i,
 											g_gem_objects[i][1]->y - 1,
-											1,
+											GEMS_LAYER,
 											gi_gems_pixbuf[gpc_game_board[i][0]]);
 				else
 					g_gem_objects[i][0] = sge_create_object (i,
 											-1,
-											1,
+											GEMS_LAYER,
 											gi_gems_pixbuf[gpc_game_board[i][0]]);
 			}
 }
@@ -547,7 +547,7 @@ hint_callback (gpointer data)
 		//g_debug("hint_callback(): x:%d, y%d", x, y);
 		g_hint_object = sge_create_object (x,
 					                       y,
-					                       2, gi_powerglow_pixbuf);
+					                       EFFECTS_LAYER, gi_powerglow_pixbuf);
 		sge_object_animate(g_hint_object, TRUE);
 		sge_object_set_lifetime (g_hint_object, 2);
 	}
@@ -589,7 +589,7 @@ board_engine_loop (gpointer data)
             gi_game_paused = TRUE;
             gi_state = _IDLE;
 
-            gweled_hiscores_show_and_add(gi_score, GAME_SCORE_CAT_TIMED);
+            gweled_hiscores_show_and_add(gi_score, NORMAL_MODE);
 
 		} else
 			gtk_progress_bar_set_fraction ((GtkProgressBar *)
@@ -621,7 +621,7 @@ board_engine_loop (gpointer data)
 				sge_destroy_object (cursor[0], NULL);
 			cursor[0] = sge_create_object (x1,
 					                       y1,
-					                       2, gi_cursor_pixbuf);
+					                       EFFECTS_LAYER, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
 			gi_gem_dragged = 0;
 		} else
@@ -640,7 +640,7 @@ board_engine_loop (gpointer data)
 					sge_destroy_object (cursor[1], NULL);
 				cursor[1] = sge_create_object (x2,
                                                y2,
-                                               2, gi_cursor_pixbuf);
+                                               EFFECTS_LAYER, gi_cursor_pixbuf);
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],
@@ -687,7 +687,7 @@ board_engine_loop (gpointer data)
 					sge_destroy_object (cursor[0], NULL);
 				cursor[0] = sge_create_object (x1,
 						y1,
-						2, gi_cursor_pixbuf);
+						EFFECTS_LAYER, gi_cursor_pixbuf);
 			}
 		}else if(gi_gem_dragged)
 		{
@@ -696,7 +696,7 @@ board_engine_loop (gpointer data)
 					sge_destroy_object (cursor[1], NULL);
 			cursor[1] = sge_create_object (gi_x_drag,
 						gi_y_drag,
-						2, gi_cursor_pixbuf);
+						EFFECTS_LAYER, gi_cursor_pixbuf);
 		}
 		break;
 
@@ -781,7 +781,7 @@ board_engine_loop (gpointer data)
 							g_gem_objects[i][j] = sge_create_object	(
 							        i,
 							    	(j - BOARD_HEIGHT),
-								1, gi_gems_pixbuf[gpc_game_board[i][j]]);
+								GEMS_LAYER, gi_gems_pixbuf[gpc_game_board[i][j]]);
 						}
 					gweled_gems_fall_into_place (FALSE);
 					gi_state = _MARK_ALIGNED_GEMS;
@@ -795,7 +795,7 @@ board_engine_loop (gpointer data)
                     gi_game_paused = TRUE;
                     gi_state = _IDLE;
 
-                    gweled_hiscores_show_and_add(gi_score, GAME_SCORE_CAT_NORMAL);
+                    gweled_hiscores_show_and_add(gi_score, TIMED_MODE);
 				}
 			} else {
 				g_do_not_score = FALSE;
@@ -910,7 +910,7 @@ gweled_start_new_game (void)
 			g_gem_objects[i][j] =
 			    sge_create_object (i,
 							(j - BOARD_HEIGHT),
-							1,
+							GEMS_LAYER,
 							gi_gems_pixbuf[gpc_game_board[i][j]]);
 		}
 
@@ -934,7 +934,7 @@ gweled_start_new_game (void)
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), 1,
+			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), GEMS_LAYER,
 													 gi_gems_pixbuf[gpc_game_board[i][j]]);
 
 	gweled_gems_fall_into_place (TRUE);
@@ -1005,7 +1005,7 @@ void gweled_set_previous_game(GweledGameState game)
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++) {
             gpc_game_board[i][j] = game.gpc_game_board[i][j];
-            g_gem_objects[i][j] = sge_create_object (i, j , 1,
+            g_gem_objects[i][j] = sge_create_object (i, j , GEMS_LAYER,
 													 gi_gems_pixbuf[gpc_game_board[i][j]]);
         }
 

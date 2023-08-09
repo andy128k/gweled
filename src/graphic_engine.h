@@ -50,7 +50,7 @@ void
 gweled_gems_fall_into_place (gboolean with_delay);
 
 T_SGEObject*
-gweled_draw_character (int x, int y, int layer, char character);
+gweled_draw_character (int x, int y, T_SGELayer layer, char character);
 
 void
 gweled_draw_board (gint size);

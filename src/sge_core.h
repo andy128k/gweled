@@ -23,6 +23,13 @@
 
 #include <clutter/clutter.h>
 
+typedef enum e_sge_layers
+{
+    BOARD_LAYER,
+    GEMS_LAYER,
+    EFFECTS_LAYER,
+    TEXT_LAYER
+} T_SGELayer;
 
 typedef struct s_sge_object
 {
@@ -32,7 +39,7 @@ typedef struct s_sge_object
 
 	gint width;
 	gint height;
-	gint layer;
+	T_SGELayer layer;
 
 	gboolean blink;
 	gboolean animation;
@@ -58,13 +65,13 @@ void
 sge_objects_resize (gint size);
 
 T_SGEObject *
-sge_create_object (gint x, gint y, gint layer, gint pixbuf_id);
+sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id);
 
 T_SGEObject *
-sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id);
+sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id);
 
 void sge_destroy_object(gpointer object, gpointer user_data);
-void sge_destroy_all_objects_on_level(int level);
+void sge_destroy_all_objects_on_level(T_SGELayer level);
 void sge_destroy_all_objects(void);
 
 void sge_object_set_lifetime(T_SGEObject *object, gint seconds);
@@ -75,10 +82,10 @@ void sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay
 
 gboolean sge_object_is_moving(T_SGEObject *object);
 gboolean sge_objects_are_moving(void);
-gboolean sge_objects_are_moving_on_layer(int layer);
+gboolean sge_objects_are_moving_on_layer(T_SGELayer layer);
 
-void sge_set_layer_visibility (int layer, gboolean visibility);
-void sge_set_layer_opacity (int layer, guint8 opacity);
+void sge_set_layer_visibility (T_SGELayer layer, gboolean visibility);
+void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity);
 
 void sge_object_fadeout (T_SGEObject *object);
 void sge_object_zoomout (T_SGEObject *object);

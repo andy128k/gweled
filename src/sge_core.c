@@ -131,7 +131,7 @@ sge_destroy_all_objects (void)
 }
 
 void
-sge_destroy_all_objects_on_level (int level)
+sge_destroy_all_objects_on_level (T_SGELayer level)
 {
 	g_list_foreach (g_object_list, sge_destroy_object_on_level, GINT_TO_POINTER(level));
 }
@@ -230,7 +230,7 @@ sge_objects_are_moving (void)
 }
 
 gboolean
-sge_objects_are_moving_on_layer (int layer)
+sge_objects_are_moving_on_layer (T_SGELayer layer)
 {
 	gint i;
 	T_SGEObject *object;
@@ -245,7 +245,7 @@ sge_objects_are_moving_on_layer (int layer)
 	return FALSE;
 }
 
-void sge_set_layer_visibility (int layer, gboolean visibility)
+void sge_set_layer_visibility (T_SGELayer layer, gboolean visibility)
 {
     if (visibility) {
         clutter_actor_set_opacity(g_actor_layers[layer], 255);
@@ -254,7 +254,7 @@ void sge_set_layer_visibility (int layer, gboolean visibility)
     }
 }
 
-void sge_set_layer_opacity (int layer, guint8 opacity)
+void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity)
 {
     clutter_actor_set_opacity(g_actor_layers[layer], opacity);
 }
@@ -456,7 +456,7 @@ sge_clutter_frame_cb (ClutterTimeline *timeline,
 //objects creation/destruction
 
 T_SGEObject *
-sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
+sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 {
 
     GError *error;
@@ -503,7 +503,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
         
 
     // Gems clickabe.
-    if (layer == 1) {
+    if (layer == GEMS_LAYER) {
         clutter_actor_set_reactive (object->actor, TRUE);
         
         action = clutter_click_action_new();
@@ -520,7 +520,7 @@ sge_create_object (gint x, gint y, gint layer, gint pixbuf_id)
 
 // Temporary, for text
 T_SGEObject *
-sge_create_object_simple (gint x, gint y, gint layer, gint pixbuf_id)
+sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 {
     GError *error;
     

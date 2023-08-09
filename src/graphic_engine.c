@@ -204,11 +204,11 @@ gweled_draw_board (gint size)
     clutter_actor_set_position (CLUTTER_ACTOR (tmp), 0, 0);
     clutter_actor_show (CLUTTER_ACTOR (tmp));
 
-    clutter_actor_add_child (g_actor_layers[0], CLUTTER_ACTOR (tmp));
+    clutter_actor_add_child (g_actor_layers[BOARD_LAYER], CLUTTER_ACTOR (tmp));
 }
 
 T_SGEObject *
-gweled_draw_character (int x, int y, int layer, char character)
+gweled_draw_character (int x, int y, T_SGELayer layer, char character)
 {
 	if (gpc_font_glyphs[(int)character] != -1)
 		return sge_create_object_simple (x, y, layer,
@@ -227,7 +227,7 @@ gweled_draw_message_at (gchar * in_message, gint msg_x, gint msg_y)
 	message = g_ascii_strup (in_message, -1);
 
 	for (i = 0; i < strlen (message); i++)
-		gweled_draw_character (msg_x + i * FONT_WIDTH, msg_y, 3,
+		gweled_draw_character (msg_x + i * FONT_WIDTH, msg_y, TEXT_LAYER,
 				       message[i]);
 
 	g_free (message);
@@ -262,7 +262,7 @@ gweled_draw_game_message (gchar * in_message, int timing)
 		if (gpc_font_glyphs[(int)message[i]] != -1) {
 			p_object =
 			    sge_create_object_simple (msg_x + i * FONT_WIDTH,
-					       msg_y, 3,
+					       msg_y, TEXT_LAYER,
 					       gi_charset_pixbuf
 					       [gpc_font_glyphs
 						[(int)message[i]]]);
@@ -304,7 +304,7 @@ gweled_set_objects_size (gint size)
     ClutterActor *actor;
     int i;
 
-    g_actor_list = clutter_actor_get_children (g_actor_layers[0]);
+    g_actor_list = clutter_actor_get_children (g_actor_layers[BOARD_LAYER]);
 
     // FIXME: very bad
     for (i = 0; i < g_list_length (g_actor_list); i++) {
