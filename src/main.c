@@ -68,7 +68,7 @@ gweled_setting_changed (GSettings* self,
 
 void load_preferences(void)
 {
-	prefs.tile_size = g_settings_get_enum (settings, "tile-size");
+	prefs.tile_size = 64;
 	prefs.sounds_on = g_settings_get_boolean (settings, "sound");
 	prefs.hints_off = !g_settings_get_boolean (settings, "hints");
 }

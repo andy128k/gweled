@@ -403,9 +403,6 @@ gweled_ui_init (GApplication *app)
 
     GActionGroup *win_actions = G_ACTION_GROUP( g_simple_action_group_new () );
 
-    action = g_settings_create_action(settings, "tile-size");
-    g_action_map_add_action (G_ACTION_MAP (win_actions), action);
-
     action = g_settings_create_action(settings, "sound");
     g_action_map_add_action (G_ACTION_MAP (win_actions), action);
 
