@@ -21,7 +21,6 @@
 #define _GWELED_SCORES_H_
 
 #include <glib.h>
-#include <glib/gi18n.h>
 
 #include <libgnome-games-support.h>
 
