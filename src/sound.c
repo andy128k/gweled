@@ -18,10 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <config.h>
+
 #include <canberra-gtk.h>
 
 #include "sound.h"
-#include "board_engine.h"
+
+#define GWELED_SOUND_BASEPATH DATA_DIRECTORY G_DIR_SEPARATOR_S "sounds" G_DIR_SEPARATOR_S PACKAGE_NAME G_DIR_SEPARATOR_S
 
 static gboolean sound_available;
 static ca_context *context = NULL;
@@ -51,10 +54,11 @@ sound_init(GdkScreen *screen)
 void
 sound_effect_play(GweledSoundEffects effect)
 {
-    char click_name[] = "click.ogg";
-    char swap_name[] = "swap.ogg";
-    char click_path[] = DATADIR"/sounds/gweled/click.ogg";
-    char swap_path[] = DATADIR"/sounds/gweled/swap.ogg";
+
+    const char click_name[] = "click";
+    const char swap_name[] = "swap";
+    const char click_path[] = GWELED_SOUND_BASEPATH "click.ogg";
+    const char swap_path[] = GWELED_SOUND_BASEPATH "swap.ogg";
     int play_status;
 
     if (sound_available == FALSE)

@@ -22,9 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "config.h"
 
 #include <stdio.h>
 
@@ -118,7 +116,7 @@ load_previous_game()
 static void
 gweled_activate_cb (GApplication *app, gpointer user_data)
 {
-    gtk_window_set_default_icon_name ("gweled");
+    gtk_window_set_default_icon_name (PACKAGE_NAME);
     
     g_object_set (gtk_settings_get_default (),
                     "gtk-application-prefer-dark-theme", TRUE,
@@ -139,15 +137,13 @@ int main (int argc, char **argv)
 	GtkApplication *app;
 	GError *error = NULL;
 	int status;
-
-    g_set_application_name("Gweled");
 	
 	/* gettext */
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
 
-    app = gtk_application_new ("org.gweled.gweled", G_APPLICATION_FLAGS_NONE);
+    app = gtk_application_new (APPLICATION_ID, G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
 
     if (gtk_clutter_init_with_args (&argc, &argv,
@@ -167,8 +163,10 @@ int main (int argc, char **argv)
         exit (EXIT_FAILURE);
     }
     
-    settings = g_settings_new ("org.gweled.gweled");
+    settings = g_settings_new (APPLICATION_ID);
     g_signal_connect (settings, "changed", G_CALLBACK (gweled_setting_changed), NULL);
+
+    g_set_application_name("Gweled");
 
 	status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);

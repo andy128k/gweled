@@ -67,7 +67,7 @@ gweled_load_font (void)
 	int i;
 
 	pixbuf =
-	    sge_load_file_to_pixbuf ("gweled/font_24_20.png");
+	    sge_load_file_to_pixbuf ("font_24_20.png");
 	if (pixbuf) {
 		for (i = 0; i < 50; i++)
 			gi_charset_pixbuf[i] =
@@ -87,7 +87,7 @@ gweled_load_pixmaps (gint size)
 	int i;
 
 	for (i = 0; i < 7; i++) {
-		filename = g_strdup_printf ("gweled/gem%02d.svg", i + 1);
+		filename = g_strdup_printf ("gem%02d.svg", i + 1);
 		pixbuf = sge_load_svg_to_pixbuf (filename, size, size);
 		if (pixbuf == NULL)
 			exit (-1);
@@ -96,26 +96,26 @@ gweled_load_pixmaps (gint size)
 		g_free (filename);
 	}
 
-    pixbuf = sge_load_svg_to_pixbuf ("gweled/board_bg.svg", size * 2, size * 2);
+    pixbuf = sge_load_svg_to_pixbuf ("board_bg.svg", size * 2, size * 2);
 
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_tiles_bg_pixbuf = sge_register_pixbuf (pixbuf, gi_tiles_bg_pixbuf);
 
-	pixbuf = sge_load_svg_to_pixbuf ("gweled/cursor.svg", size, size);
+	pixbuf = sge_load_svg_to_pixbuf ("cursor.svg", size, size);
 
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
 
-    filename = g_strdup_printf ("gweled/sparkle_%d.png", 64);
+    filename = g_strdup_printf ("sparkle_%d.png", 64);
 	pixbuf = sge_load_file_to_pixbuf (filename);
 	if (pixbuf == NULL)
 		exit (-1);
 	g_free(filename);
 	gi_sparkle_pixbuf = sge_register_pixbuf (pixbuf, gi_sparkle_pixbuf);
 
-	filename = g_strdup_printf ("gweled/sparkle_%d.png", 64);
+	filename = g_strdup_printf ("sparkle_%d.png", 64);
 	pixbuf = sge_load_file_to_pixbuf (filename);
 	if (pixbuf == NULL)
 		exit (-1);

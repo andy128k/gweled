@@ -64,9 +64,9 @@ on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_
         "comments", _("A puzzle game with gems"),
         "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010-2021 Daniele Napolitano",
         "version", VERSION,
-        "license-type", GTK_LICENSE_GPL_3_0,
+        "license-type", GTK_LICENSE_GPL_2_0,
         "website", "https://gweled.org",
-	    "logo-icon-name", "gweled",
+	    "logo-icon-name", PACKAGE_NAME,
         NULL);
 }
 

@@ -18,22 +18,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <config.h>
+
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
 #include "sge_utils.h"
 
+#define GWELED_PIXMAPS_BASEPATH DATA_DIRECTORY G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S PACKAGE_NAME G_DIR_SEPARATOR_S
+
 GdkPixbuf *
-sge_load_svg_to_pixbuf (char *filename, int width,
-			int height)
+sge_load_svg_to_pixbuf (char *filename, int width, int height)
 {
-	gchar *full_pathname;
+	char *full_pathname;
 	GdkPixbuf *pixbuf = NULL;
 	GError *error = NULL;
 
-	full_pathname = g_strconcat(DATADIR G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S,
-	                            filename,
-	                            NULL );
+	full_pathname = g_strconcat(GWELED_PIXMAPS_BASEPATH, filename, NULL);
 	if (g_file_test(full_pathname, G_FILE_TEST_IS_REGULAR)) {
 		pixbuf = gdk_pixbuf_new_from_file_at_size (full_pathname, width,
 						   height, &error);
@@ -54,9 +55,7 @@ sge_load_file_to_pixbuf (char *filename)
 	gchar *full_pathname;
 	GdkPixbuf *pixbuf = NULL;
 
-	full_pathname = g_strconcat(DATADIR G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S,
-	                            filename,
-	                            NULL );
+	full_pathname = g_strconcat(GWELED_PIXMAPS_BASEPATH, filename, NULL);
 	if (g_file_test(full_pathname, G_FILE_TEST_IS_REGULAR)) {
 		pixbuf = gdk_pixbuf_new_from_file (full_pathname, NULL);
 		g_free (full_pathname);
