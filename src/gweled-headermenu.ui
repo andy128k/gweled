@@ -19,7 +19,7 @@
   <menu id="headermenu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Sound</attribute>
+        <attribute name="label" translatable="yes">_Sound effects</attribute>
         <attribute name="action">win.sound</attribute>
       </item>
       <item>
