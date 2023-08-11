@@ -21,10 +21,18 @@
 #ifndef _GWELED_MAIN_H_
 #define _GWELED_MAIN_H_
 
+#include <glib.h>
+
 void
 save_current_game();
 
 void
 load_previous_game();
+
+gboolean
+is_present_saved_game();
+
+void
+remove_saved_game();
 
 #endif

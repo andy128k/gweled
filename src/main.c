@@ -37,6 +37,8 @@
 #include "sound.h"
 #include "main.h"
 
+#define SAVED_GAME_FILENAME "gweled.saved-game"
+
 // Globals
 guint board_engine_id;
 
@@ -71,6 +73,19 @@ void load_preferences(void)
 	prefs.hints_off = !g_settings_get_boolean (settings, "hints");
 }
 
+// check for previous saved game
+gboolean is_present_saved_game()
+{
+    gchar *filename;
+    filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
+    if (g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)){
+        g_free(filename);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 void save_current_game(void)
 {
     GweledGameState game;
@@ -79,7 +94,7 @@ void save_current_game(void)
 
     game = gweled_get_current_game();
 
-    filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+    filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
 
     stream = fopen(filename, "w");
 
@@ -98,7 +113,7 @@ load_previous_game()
     GweledGameState game;
     gint ret;
 
-    filename = g_strconcat(g_get_user_config_dir(), "/gweled.saved-game", NULL);
+    filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
 
     stream = fopen(filename, "r");
 
@@ -111,6 +126,15 @@ load_previous_game()
             gweled_set_previous_game(game);
     }
 
+}
+
+void remove_saved_game()
+{
+    gchar *filename;
+    filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
+    if (g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)){
+        unlink(filename);
+    }
 }
 
 static void
