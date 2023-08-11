@@ -500,8 +500,8 @@ board_set_pause(gboolean value)
         gweled_draw_message("paused");
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
-        sge_set_layer_visibility(1, FALSE);
-        sge_set_layer_visibility(2, FALSE);
+        sge_set_layer_visibility(GEMS_LAYER, FALSE);
+        sge_set_layer_visibility(EFFECTS_LAYER, FALSE);
         gweled_set_hints_active(FALSE);
         if(sge_object_exists(g_hint_object)) {
             sge_destroy_object (g_hint_object, NULL);
@@ -516,9 +516,9 @@ board_set_pause(gboolean value)
             g_free(last_text);
             last_text = NULL;
         }
-        sge_set_layer_visibility(1, TRUE);
-        sge_set_layer_visibility(2, TRUE);
-        sge_destroy_all_objects_on_level(3);
+        sge_set_layer_visibility(GEMS_LAYER, TRUE);
+        sge_set_layer_visibility(EFFECTS_LAYER, TRUE);
+        sge_destroy_all_objects_on_level(TEXT_LAYER);
         respawn_board_engine_loop();
     }
 }
@@ -581,7 +581,7 @@ board_engine_loop (gpointer data)
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
             // Currently not translatable because I only have basic ASCII characters.
 			gweled_draw_message ("time's up #");
-            sge_set_layer_opacity(1, 128);
+            sge_set_layer_opacity(GEMS_LAYER, 128);
             gtk_widget_hide(gweled_ui->g_pause_game_btn);
 			gi_game_running = FALSE;
             gi_game_paused = TRUE;
@@ -787,7 +787,7 @@ board_engine_loop (gpointer data)
 				    // Game over
                     // Currently not translatable because I only have basic ASCII characters.
 					gweled_draw_message ("no moves left #");
-                    sge_set_layer_opacity(1, 128);
+                    sge_set_layer_opacity(GEMS_LAYER, 128);
                     gtk_widget_hide(gweled_ui->g_pause_game_btn);
 					gi_game_running = FALSE;
                     gi_game_paused = TRUE;
@@ -803,7 +803,7 @@ board_engine_loop (gpointer data)
 		break;
 
 	case _BOARD_REFILLING:
-        if (!sge_objects_are_moving_on_layer (1)) {
+        if (!sge_objects_are_moving_on_layer (GEMS_LAYER)) {
 			if (gi_total_gems_removed >= gi_next_bonus_at) {
 				gi_previous_bonus_at = gi_next_bonus_at;
 				gi_next_bonus_at *= 2;
