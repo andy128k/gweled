@@ -56,8 +56,6 @@ gint gi_tiles_bg_pixbuf = -1;
 gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
 gint gi_charset_pixbuf[50];
 gint gi_cursor_pixbuf = -1;
-gint gi_sparkle_pixbuf = -1;
-gint gi_powerglow_pixbuf = -1;
 
 
 void
@@ -107,22 +105,6 @@ gweled_load_pixmaps (gint size)
 	if (pixbuf == NULL)
 		exit (-1);
 	gi_cursor_pixbuf = sge_register_pixbuf (pixbuf, gi_cursor_pixbuf);
-
-    filename = g_strdup_printf ("sparkle_%d.png", 64);
-	pixbuf = sge_load_file_to_pixbuf (filename);
-	if (pixbuf == NULL)
-		exit (-1);
-	g_free(filename);
-	gi_sparkle_pixbuf = sge_register_pixbuf (pixbuf, gi_sparkle_pixbuf);
-
-	filename = g_strdup_printf ("sparkle_%d.png", 64);
-	pixbuf = sge_load_file_to_pixbuf (filename);
-	if (pixbuf == NULL)
-		exit (-1);
-    g_free(filename);
-
-	gi_powerglow_pixbuf = sge_register_pixbuf (pixbuf, gi_powerglow_pixbuf);
-
 }
 
 void

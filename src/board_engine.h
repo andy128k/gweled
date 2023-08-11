@@ -21,6 +21,8 @@
 #ifndef _BOARD_ENGINE_H_
 #define _BOARD_ENGINE_H_
 
+#include <glib.h>
+
 #define BOARD_WIDTH   8
 #define BOARD_HEIGHT  8
 

@@ -37,8 +37,7 @@
 #include "sound.h"
 #include "sge_core.h"
 
-#define ACCELERATION	1.0
-#define SGE_TIMER_INTERVAL  20
+#define CLUTTER_TIMELINE_DURATION  200
 
 // LOCAL VARS
 static GList *g_object_list;
@@ -109,6 +108,7 @@ sge_destroy_object (gpointer object, gpointer user_data)
 {
 	if (SGE_OBJECT(object)->actor) {
 	    clutter_actor_destroy (SGE_OBJECT(object)->actor);
+        SGE_OBJECT(object)->actor = NULL;
 	}
 	g_object_list = g_list_remove (g_object_list, object);
 	g_free(object);
@@ -162,6 +162,8 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 {
   object->x = dest_x;
   object->y = dest_y;
+
+  sge_object_reset_effects (object);
   
   clutter_actor_save_easing_state (object->actor);
   clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_CUBIC);
@@ -279,7 +281,6 @@ void sge_object_fadeout (T_SGEObject *object)
 void sge_object_zoomout (T_SGEObject *object)
 {
     clutter_actor_save_easing_state (object->actor);
-    clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
     clutter_actor_set_easing_duration (object->actor, 200);
     clutter_actor_set_scale  (object->actor, 0, 0);
@@ -315,6 +316,23 @@ sge_object_fly_away (T_SGEObject *object)
 		    object);
 }
 
+void sge_object_reset_effects (T_SGEObject *object)
+{
+    if (object->actor == NULL) return;
+
+    clutter_actor_remove_all_transitions (object->actor);
+
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
+    clutter_actor_set_easing_duration(object->actor, COGL_PIXEL_FORMAT_ARGB_2101010);
+    clutter_actor_set_opacity(object->actor, 255);
+    clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
+    clutter_actor_set_size (object->actor, prefs.tile_size, prefs.tile_size);
+    clutter_actor_restore_easing_state (object->actor);
+
+    clutter_timeline_pause(timeline);
+}
+
 void sge_object_blink_start (T_SGEObject *object)
 {    
     object->blink = TRUE;
@@ -325,7 +343,25 @@ void sge_object_blink_stop (T_SGEObject *object)
 {
     object->blink = FALSE;
     clutter_timeline_pause(timeline);
-    clutter_actor_set_opacity (object->actor, 255);
+    sge_object_reset_effects(object);
+}
+
+gboolean
+sge_object_stop_bounce (gpointer data)
+{
+    T_SGEObject *object = SGE_OBJECT(data);
+
+    object->bounce = FALSE;
+    sge_object_reset_effects(object);
+
+    return FALSE;
+}
+
+void sge_object_bounce (T_SGEObject *object)
+{
+    object->bounce = TRUE;
+    clutter_timeline_start(timeline);
+    g_timeout_add_seconds (2, sge_object_stop_bounce, object);
 }
 
 void sge_object_animate (T_SGEObject *object, gboolean repeat)
@@ -350,7 +386,6 @@ on_gem_clicked (ClutterClickAction    *action,
 {
     gfloat x, y;
      
-     
     // resume game on click
     if (is_game_running() && board_get_pause() == TRUE ) {
         board_set_pause(FALSE);
@@ -366,14 +401,13 @@ on_gem_clicked (ClutterClickAction    *action,
     if (clutter_click_action_get_button (action) != 1)
         return FALSE;
     
-	 
-    clutter_actor_get_position (actor, &x, &y);
-	 
+    // Can't use the actor position due to possible transformations.
+    clutter_click_action_get_coords  (action, &x, &y);
 	 
 	gi_x_click = round(x) / prefs.tile_size;
     gi_y_click = round(y) / prefs.tile_size;
      
-    g_print("Clicked! %i:%i %s btn:%i\n", gi_x_click, gi_y_click, clutter_actor_get_name(actor), clutter_click_action_get_button (action));
+    g_print("Clicked! %i:%i [%.2lfx%.2lf] %s btn:%i\n", gi_x_click, gi_y_click, x, y, clutter_actor_get_name(actor), clutter_click_action_get_button (action));
      
     gi_gem_clicked = -1;
     gi_dragging = -1;
@@ -427,8 +461,9 @@ sge_clutter_frame_cb (ClutterTimeline *timeline,
     gint            i;
     guint           progress = clutter_timeline_get_progress (timeline) * 360.0f;
     static gboolean fade = TRUE;
+    static gboolean bounce_anim = TRUE;
     T_SGEObject *object;
-    
+
     if (progress < 360)
         return;
 
@@ -448,10 +483,31 @@ sge_clutter_frame_cb (ClutterTimeline *timeline,
             }
             clutter_actor_restore_easing_state (object->actor);
         }
+
+        if (object->bounce) {
+		    clutter_actor_save_easing_state (object->actor);
+            clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_QUAD);
+            if (bounce_anim) {
+                clutter_actor_set_easing_duration (object->actor, 500);
+                clutter_actor_set_position  (object->actor,
+                                            object->x * prefs.tile_size - (prefs.tile_size * 0.05),
+                                            object->y * prefs.tile_size + (prefs.tile_size * 0.2));
+                clutter_actor_set_size (object->actor, prefs.tile_size * 1.1, prefs.tile_size * 0.9);
+
+                bounce_anim = FALSE;
+            }
+            else {
+                clutter_actor_set_easing_duration (object->actor, 250);
+                clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
+                clutter_actor_set_size (object->actor, prefs.tile_size, prefs.tile_size);
+
+                bounce_anim = TRUE;
+            }
+            clutter_actor_restore_easing_state (object->actor);
+        }
 	}
 
 }
-
 
 //objects creation/destruction
 
@@ -474,6 +530,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
     object->blink = FALSE;
 
+    object->bounce = FALSE;
+
     object->animation = FALSE;
     object->animation_iter = 1;
     object->animation_repeat = TRUE;
@@ -488,6 +546,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     object->actor = gtk_clutter_texture_new ();
     gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
                                          GDK_PIXBUF(g_pixbufs[pixbuf_id]), &error);
+
+    clutter_actor_set_name(object->actor, g_strdup_printf ("pixbuf #%d", pixbuf_id));
     clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
                             object->width,
                             object->height);
@@ -505,6 +565,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     // Gems clickabe.
     if (layer == GEMS_LAYER) {
         clutter_actor_set_reactive (object->actor, TRUE);
+
+        clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
         
         action = clutter_click_action_new();
         clutter_actor_add_action (object->actor, action);
@@ -535,6 +597,7 @@ sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     object->y_delay = 0;
 
     object->blink = FALSE;
+    object->bounce = FALSE;
 
     object->animation = FALSE;
     object->animation_iter = 1;
@@ -610,7 +673,7 @@ sge_init (void)
     
     
     /* Create a timeline to manage animation */
-    timeline = clutter_timeline_new (200);
+    timeline = clutter_timeline_new (CLUTTER_TIMELINE_DURATION);
     clutter_timeline_set_repeat_count (timeline, -1);
 
     /* fire a callback for frame change */

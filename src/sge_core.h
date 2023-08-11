@@ -42,6 +42,7 @@ typedef struct s_sge_object
 	T_SGELayer layer;
 
 	gboolean blink;
+	gboolean bounce;
 	gboolean animation;
 	gfloat animation_iter;
 	gboolean animation_repeat;
@@ -96,7 +97,11 @@ sge_object_fly_away (T_SGEObject *object);
 void sge_object_blink_start (T_SGEObject *object);
 void sge_object_blink_stop (T_SGEObject *object);
 
+void sge_object_bounce (T_SGEObject *object);
+
 void sge_object_animate (T_SGEObject *object, gboolean repeat);
+
+void sge_object_reset_effects (T_SGEObject *object);
 
 gboolean sge_object_exists (T_SGEObject *object);
 

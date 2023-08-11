@@ -101,8 +101,6 @@ extern GuiContext *gweled_ui;
 
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
-extern gint gi_powerglow_pixbuf;
-extern gint gi_sparkle_pixbuf;
 
 extern guint board_engine_id;
 extern GweledPrefs prefs;
@@ -542,12 +540,8 @@ hint_callback (gpointer data)
 
 	if (gi_game_running) {
 		gweled_check_for_moves_left (&x, &y);
-		//g_debug("hint_callback(): x:%d, y%d", x, y);
-		g_hint_object = sge_create_object (x,
-					                       y,
-					                       EFFECTS_LAYER, gi_powerglow_pixbuf);
-		sge_object_animate(g_hint_object, TRUE);
-		sge_object_set_lifetime (g_hint_object, 2);
+		g_print("hint_callback(): x:%d, y%d\n", x, y);
+        sge_object_bounce(g_gem_objects[x][y]);
 	}
 
 	return TRUE;
@@ -1032,13 +1026,14 @@ void gweled_stop_game()
 void gweled_set_hints_active(gboolean yn)
 {
     if(yn) {
-	if(!hint_timeout) {
-	    hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
-	}
-    } else {
-	if(hint_timeout) {
-	    g_source_remove(hint_timeout);
-	    hint_timeout = 0;
-	}
+        if(!hint_timeout) {
+            hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
+        }
+    }
+    else {
+        if(hint_timeout) {
+            g_source_remove(hint_timeout);
+            hint_timeout = 0;
+        }
     }
 }
