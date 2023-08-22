@@ -58,6 +58,8 @@ extern GweledPrefs prefs;
 
 static gint gi_dragging = 0;
 
+ClutterActor *g_gameboard = NULL;
+
 ClutterActor *g_actor_layers[5] = {NULL, NULL, NULL, NULL, NULL};
 
 ClutterTimeline *timeline;
@@ -425,6 +427,22 @@ sge_objects_resize (gint size) {
     int i;
     T_SGEObject *object;
     
+    g_print("sge_objects_resize at %i\n", size);
+
+    clutter_actor_set_size (g_gameboard,
+                            BOARD_WIDTH * size,
+                            BOARD_HEIGHT * size);
+
+    // Resize levels.
+    for (i = 0; i < 5; i++) {
+
+        clutter_actor_set_size (g_actor_layers[i],
+                                BOARD_WIDTH * size,
+                                BOARD_HEIGHT * size);
+
+        clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * size, BOARD_HEIGHT * size);
+    }
+
     for (i = 0; i < g_list_length (g_object_list); i++) {
     
 		object = (T_SGEObject *) g_list_nth_data (g_object_list, i);
@@ -439,15 +457,6 @@ sge_objects_resize (gint size) {
                                     object->y * size);
     }
     
-    // Resize levels.
-    for (i = 0; i < 5; i++) {
-	 
-        clutter_actor_set_size (g_actor_layers[i],
-                                BOARD_WIDTH * size,
-                                BOARD_HEIGHT * size);
-                                
-        clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * size, BOARD_HEIGHT * size);
-    }
 }
 
 
@@ -650,7 +659,15 @@ sge_init (void)
 
 	gi_nb_pixbufs = 0;
 	g_pixbufs = NULL;
-	
+
+    // Create a parent actor that's autoalign on the stage
+    g_gameboard = clutter_actor_new();
+    clutter_actor_set_size (g_gameboard,
+                            BOARD_WIDTH * prefs.tile_size,
+                            BOARD_HEIGHT * prefs.tile_size);
+    clutter_actor_add_constraint (g_gameboard, clutter_align_constraint_new (gweled_ui->g_stage, CLUTTER_ALIGN_BOTH, 0.5));
+    clutter_actor_add_child (gweled_ui->g_stage, g_gameboard);
+
 	// Layers create.
 	for (i = 0; i < 5; i++) {
 	    g_actor_layers[i] = clutter_actor_new();
@@ -658,8 +675,6 @@ sge_init (void)
 	    clutter_actor_set_name(g_actor_layers[i], g_strdup_printf ("Level %d\n", i));
 	    clutter_actor_set_easing_mode(g_actor_layers[i], CLUTTER_LINEAR);
         clutter_actor_set_easing_duration (g_actor_layers[i], 200);
-        clutter_actor_show (g_actor_layers[i]);
-        
         clutter_actor_set_position(g_actor_layers[i], 0, 0);
         clutter_actor_set_size (g_actor_layers[i],
                                 BOARD_WIDTH * prefs.tile_size,
@@ -667,11 +682,13 @@ sge_init (void)
                                 
         clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
         
-        clutter_actor_add_child (gweled_ui->g_stage, g_actor_layers[i]);
+        clutter_actor_add_child (g_gameboard, g_actor_layers[i]);
 
+        clutter_actor_show (g_actor_layers[i]);
 	}
     
-    
+    clutter_actor_show (g_gameboard);
+
     /* Create a timeline to manage animation */
     timeline = clutter_timeline_new (CLUTTER_TIMELINE_DURATION);
     clutter_timeline_set_repeat_count (timeline, -1);

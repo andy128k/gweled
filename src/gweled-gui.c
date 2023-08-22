@@ -301,9 +301,8 @@ gweled_ui_init (GApplication *app)
                             BOARD_WIDTH * prefs.tile_size,
                             BOARD_HEIGHT * prefs.tile_size);
 
-    clutter_stage_set_user_resizable (CLUTTER_STAGE(gweled_ui->g_stage), FALSE);
-    clutter_actor_set_background_color (gweled_ui->g_stage, CLUTTER_COLOR_LightSkyBlue);
-
+    clutter_stage_set_use_alpha(CLUTTER_STAGE(gweled_ui->g_stage), TRUE);
+    clutter_actor_set_background_color(gweled_ui->g_stage, CLUTTER_COLOR_Transparent);
 
     gtk_window_set_default_size (GTK_WINDOW (gweled_ui->main_window),
                                BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);

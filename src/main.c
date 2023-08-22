@@ -159,7 +159,6 @@ gweled_activate_cb (GApplication *app, gpointer user_data)
 int main (int argc, char **argv)
 {
 	GtkApplication *app;
-	GError *error = NULL;
 	int status;
 	
 	/* gettext */
@@ -170,11 +169,7 @@ int main (int argc, char **argv)
     app = gtk_application_new (APPLICATION_ID, G_APPLICATION_FLAGS_NONE);
     g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
 
-    if (gtk_clutter_init_with_args (&argc, &argv,
-                                    NULL,
-                                    NULL,
-                                    NULL,
-                                    &error) != CLUTTER_INIT_SUCCESS)
+    if (gtk_clutter_init (&argc, &argv) != CLUTTER_INIT_SUCCESS)
     {
         GtkWidget *dialog = gtk_message_dialog_new (NULL,
                                                 GTK_DIALOG_MODAL,

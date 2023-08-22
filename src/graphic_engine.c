@@ -282,22 +282,16 @@ gweled_set_objects_size (gint size)
 {
 	g_print("gweled_set_objects_size %d\n", size);
 
-    GList *g_actor_list;
-    ClutterActor *actor;
-    int i;
+    // Destroy board background texture
+    clutter_actor_remove_all_children (g_actor_layers[BOARD_LAYER]);
 
-    g_actor_list = clutter_actor_get_children (g_actor_layers[BOARD_LAYER]);
-
-    // FIXME: very bad
-    for (i = 0; i < g_list_length (g_actor_list); i++) {
-	    actor = (ClutterActor *) g_list_nth_data (g_actor_list, i);
-	    clutter_actor_destroy(actor);
-    }
-
+    // Reload SVG at new sizes.
     gweled_load_pixmaps (size);
 
+    // Draw the board background texture
     gweled_draw_board(size);
 
+    // Resize all the Clutter objects
     sge_objects_resize(size);
 
 }
