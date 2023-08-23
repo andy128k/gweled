@@ -52,6 +52,23 @@ gweled_setup_game_window(gboolean playing)
         gtk_widget_set_sensitive(gweled_ui->g_pause_game_btn, TRUE);
         gtk_widget_show(gweled_ui->g_new_game_btn);
         gtk_widget_show(gweled_ui->g_pause_game_btn);
+
+        // Sets window subtitle and progress bar visibility
+        switch (prefs.game_mode) {
+            case NORMAL_MODE:
+                gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Normal"));
+                gtk_widget_set_visible (gweled_ui->g_progress_bar, TRUE);
+                break;
+            case TIMED_MODE:
+                gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Timed"));
+                gtk_widget_set_visible (gweled_ui->g_progress_bar, TRUE);
+                break;
+            case ENDLESS_MODE:
+                gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Endless"));
+                gtk_widget_set_visible (gweled_ui->g_progress_bar, FALSE);
+                break;
+        }
+
     }
     else {
         // Hide Play/Pause buttons.
@@ -65,10 +82,12 @@ void
 welcome_screen_visibility (gboolean value)
 {
     if (value) {
-         gweled_setup_game_window(FALSE);
+        gweled_setup_game_window(FALSE);
 
-         // Set welcome screen visible
-         gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "welcome_screen");
+        gtk_widget_set_visible (gweled_ui->g_progress_bar, FALSE);
+
+        // Set welcome screen visible
+        gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "welcome_screen");
     }
     else {
         gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "game_scene");
@@ -157,19 +176,6 @@ void
 on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
 {
     prefs.game_mode = GPOINTER_TO_UINT (game_mode);
-
-    switch (prefs.game_mode) {
-        case NORMAL_MODE:
-            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Normal"));
-            break;
-        case TIMED_MODE:
-            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Timed"));
-            break;
-        case ENDLESS_MODE:
-            gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Endless"));
-            break;
-    }
-
     welcome_screen_visibility(FALSE);
     
     gweled_draw_board (prefs.tile_size);
@@ -402,6 +408,8 @@ gweled_ui_init (GApplication *app)
     gweled_init_scores(GTK_WINDOW(gweled_ui->main_window));
 
     gtk_widget_show_all (gweled_ui->main_window);
+
+    gtk_widget_set_visible (gweled_ui->g_progress_bar, FALSE);
 
     // check for previous saved game
 	if(is_present_saved_game()) {
