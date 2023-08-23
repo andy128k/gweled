@@ -382,9 +382,9 @@ sge_object_exists (T_SGEObject *object)
 }
 
 static gboolean
-on_gem_clicked (ClutterClickAction    *action,
-                ClutterActor          *actor,
-                gpointer               user_data)
+on_gem_clicked (ClutterActor *stage,
+                  ClutterEvent *event,
+                  gpointer      dummy G_GNUC_UNUSED)
 {
     gfloat x, y;
      
@@ -400,16 +400,16 @@ on_gem_clicked (ClutterClickAction    *action,
         return FALSE;
 
     // only handle left button
-    if (clutter_click_action_get_button (action) != 1)
+    if (clutter_event_get_button (event) != 1)
         return FALSE;
     
     // Can't use the actor position due to possible transformations.
-    clutter_click_action_get_coords  (action, &x, &y);
+    clutter_event_get_coords  (event, &x, &y);
 	 
 	gi_x_click = round(x) / prefs.tile_size;
     gi_y_click = round(y) / prefs.tile_size;
      
-    g_print("Clicked! %i:%i [%.2lfx%.2lf] %s btn:%i\n", gi_x_click, gi_y_click, x, y, clutter_actor_get_name(actor), clutter_click_action_get_button (action));
+    g_print("Clicked! %i:%i [%.2lfx%.2lf] btn:%i\n", gi_x_click, gi_y_click, x, y, clutter_event_get_button (event));
      
     gi_gem_clicked = -1;
     gi_dragging = -1;
@@ -525,7 +525,6 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 {
 
     GError *error;
-    ClutterAction *action;
     
     g_print("sge_create_object %i at %i:%i -> %i:%i layer:%i\n", pixbuf_id, x, y, x * prefs.tile_size, y * prefs.tile_size, layer);
     
@@ -571,18 +570,9 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     clutter_actor_show (object->actor);                            
         
 
-    // Gems clickabe.
     if (layer == GEMS_LAYER) {
-        clutter_actor_set_reactive (object->actor, TRUE);
-
         clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
-        
-        action = clutter_click_action_new();
-        clutter_actor_add_action (object->actor, action);
-        
-        g_signal_connect (action, "clicked", G_CALLBACK (on_gem_clicked), NULL);
 	}
-	
 
     g_object_list = g_list_append (g_object_list, (gpointer) object);
 
@@ -667,6 +657,12 @@ sge_init (void)
                             BOARD_HEIGHT * prefs.tile_size);
     clutter_actor_add_constraint (g_gameboard, clutter_align_constraint_new (gweled_ui->g_stage, CLUTTER_ALIGN_BOTH, 0.5));
     clutter_actor_add_child (gweled_ui->g_stage, g_gameboard);
+    clutter_actor_show (g_gameboard);
+
+    clutter_actor_set_reactive (g_gameboard, TRUE);
+    g_signal_connect (g_gameboard, "button-press-event",
+                      G_CALLBACK (on_gem_clicked),
+                      NULL);
 
 	// Layers create.
 	for (i = 0; i < 5; i++) {
@@ -686,8 +682,6 @@ sge_init (void)
 
         clutter_actor_show (g_actor_layers[i]);
 	}
-    
-    clutter_actor_show (g_gameboard);
 
     /* Create a timeline to manage animation */
     timeline = clutter_timeline_new (CLUTTER_TIMELINE_DURATION);
@@ -695,10 +689,7 @@ sge_init (void)
 
     /* fire a callback for frame change */
     g_signal_connect (timeline, "new-frame",  G_CALLBACK (sge_clutter_frame_cb), NULL);
-    
-    clutter_timeline_pause(timeline);
 
     /* and start it */
     clutter_timeline_start (timeline);
-	
 }
