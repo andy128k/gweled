@@ -360,6 +360,8 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Menu</property>
+            <accelerator key="F10" signal="clicked"/>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
