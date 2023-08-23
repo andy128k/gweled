@@ -86,13 +86,11 @@ gboolean is_present_saved_game()
     return FALSE;
 }
 
-void save_current_game(void)
+void
+save_current_game(GweledGameState *game)
 {
-    GweledGameState game;
     gchar *filename;
     FILE *stream;
-
-    game = gweled_get_current_game();
 
     filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
 
@@ -100,18 +98,20 @@ void save_current_game(void)
 
     if(stream)
     {
-        fwrite(&game, sizeof(GweledGameState), 1, stream);
+        fwrite(game, sizeof(GweledGameState), 1, stream);
         fclose(stream);
     }
 }
 
-void
+GweledGameState*
 load_previous_game()
 {
     gchar *filename;
     FILE *stream;
-    GweledGameState game;
+    GweledGameState *game;
     gint ret;
+
+    game = g_malloc( sizeof(GweledGameState) );
 
     filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
 
@@ -119,13 +119,14 @@ load_previous_game()
 
     if(stream)
     {
-        ret = fread(&game, sizeof(GweledGameState), 1, stream);
+        ret = fread(game, sizeof(GweledGameState), 1, stream);
         fclose(stream);
 
         if(ret == 1)
-            gweled_set_previous_game(game);
+            return game;
     }
 
+    return NULL;
 }
 
 void remove_saved_game()

@@ -45,6 +45,36 @@ extern GSettings *settings;
 
 #define GWELED_RESOURCE_BASE "/org/gweled/"
 
+void
+gweled_setup_game_window(gboolean playing)
+{
+    if (playing) {
+        gtk_widget_set_sensitive(gweled_ui->g_pause_game_btn, TRUE);
+        gtk_widget_show(gweled_ui->g_new_game_btn);
+        gtk_widget_show(gweled_ui->g_pause_game_btn);
+    }
+    else {
+        // Hide Play/Pause buttons.
+        gtk_widget_hide(gweled_ui->g_new_game_btn);
+        gtk_widget_hide(gweled_ui->g_pause_game_btn);
+    }
+}
+
+
+void
+welcome_screen_visibility (gboolean value)
+{
+    if (value) {
+         gweled_setup_game_window(FALSE);
+
+         // Set welcome screen visible
+         gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "welcome_screen");
+    }
+    else {
+        gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "game_scene");
+    }
+}
+
 
 // Callbacks
 static void
@@ -167,35 +197,6 @@ gweled_set_current_score (gint score)
 	gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
 }
 
-void
-gweled_setup_game_window(gboolean playing)
-{
-    if (playing) {
-        gtk_widget_set_sensitive(gweled_ui->g_pause_game_btn, TRUE);
-        gtk_widget_show(gweled_ui->g_new_game_btn);
-        gtk_widget_show(gweled_ui->g_pause_game_btn);
-    }
-    else {
-        // Hide Play/Pause buttons.
-        gtk_widget_hide(gweled_ui->g_new_game_btn);
-        gtk_widget_hide(gweled_ui->g_pause_game_btn);
-    }
-}
-
-
-void
-welcome_screen_visibility (gboolean value)
-{
-    if(value == FALSE) {
-        gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "game_scene");
-        return;
-    }
-    
-    gweled_setup_game_window(FALSE);
-    
-    // Set welcome screen visible
-    gtk_stack_set_visible_child_name (GTK_STACK (gweled_ui->g_main_game_stack), "welcome_screen");
-}
 
 void
 gweled_ui_destroy(GtkWidget *window, gpointer user_data)
@@ -216,7 +217,7 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
         gtk_widget_destroy (dialog);
 
         if (response == GTK_RESPONSE_YES)
-            save_current_game();
+            save_current_game(gweled_get_current_game());
         else {
             remove_saved_game();
         }
@@ -416,11 +417,13 @@ gweled_ui_init (GApplication *app)
         gtk_widget_destroy (box);
 
         if (response == GTK_RESPONSE_YES) {
-            load_previous_game();
+            GweledGameState *previous_game = load_previous_game();
+            gweled_set_previous_game(previous_game);
+            g_free(previous_game);
             start_previous_game = TRUE;
         }
-        else
-            remove_saved_game();
+
+        remove_saved_game();
 	}
 
     // Setup default window mode.

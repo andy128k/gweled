@@ -933,43 +933,47 @@ gweled_start_new_game (void)
 	gi_state = _MARK_ALIGNED_GEMS;
 }
 
-GweledGameState gweled_get_current_game(void)
+GweledGameState*
+gweled_get_current_game(void)
 {
-    GweledGameState game;
+    GweledGameState *game;
     int i, j;
 
-    game.game_mode = prefs.game_mode;
-    game.gi_score = gi_score;
-    game.gi_total_gems_removed = gi_total_gems_removed;
-    game.gi_bonus_multiply = gi_bonus_multiply;
-    game.gi_previous_bonus_at = gi_previous_bonus_at;
-    game.gi_next_bonus_at = gi_next_bonus_at;
-    game.gi_level = gi_level;
-    game.gi_trigger_bonus = gi_trigger_bonus;
-    game.g_steps_for_timer = g_steps_for_timer;
+    game = g_malloc( sizeof(GweledGameState) );
+
+    game->game_mode = prefs.game_mode;
+    game->gi_score = gi_score;
+    game->gi_total_gems_removed = gi_total_gems_removed;
+    game->gi_bonus_multiply = gi_bonus_multiply;
+    game->gi_previous_bonus_at = gi_previous_bonus_at;
+    game->gi_next_bonus_at = gi_next_bonus_at;
+    game->gi_level = gi_level;
+    game->gi_trigger_bonus = gi_trigger_bonus;
+    game->g_steps_for_timer = g_steps_for_timer;
 
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++)
-            game.gpc_game_board[i][j] = gpc_game_board[i][j];
+            game->gpc_game_board[i][j] = gpc_game_board[i][j];
 
     return game;
 }
 
 
-void gweled_set_previous_game(GweledGameState game)
+void
+gweled_set_previous_game(GweledGameState *game)
 {
     gchar *text_buffer;
     int i, j;
 
-    prefs.game_mode = game.game_mode;
-    gi_score = game.gi_score;
-    gi_total_gems_removed = game.gi_total_gems_removed;
-    gi_bonus_multiply = game.gi_bonus_multiply;
-    gi_previous_bonus_at = game.gi_previous_bonus_at;
-    gi_next_bonus_at = game.gi_next_bonus_at;
-    gi_level = game.gi_level;
-    gi_trigger_bonus = game.gi_trigger_bonus;
-    g_steps_for_timer = game.g_steps_for_timer;
+    prefs.game_mode = game->game_mode;
+    gi_score = game->gi_score;
+    gi_total_gems_removed = game->gi_total_gems_removed;
+    gi_bonus_multiply = game->gi_bonus_multiply;
+    gi_previous_bonus_at = game->gi_previous_bonus_at;
+    gi_next_bonus_at = game->gi_next_bonus_at;
+    gi_level = game->gi_level;
+    gi_trigger_bonus = game->gi_trigger_bonus;
+    g_steps_for_timer = game->g_steps_for_timer;
     gi_current_score = gi_score;
 
     if(prefs.game_mode != ENDLESS_MODE) {
@@ -985,14 +989,9 @@ void gweled_set_previous_game(GweledGameState game)
 
     sge_destroy_all_objects ();
 
-    gweled_setup_game_window (TRUE);
-    welcome_screen_visibility (FALSE);
-
-    gweled_draw_board (prefs.tile_size);
-
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++) {
-            gpc_game_board[i][j] = game.gpc_game_board[i][j];
+            gpc_game_board[i][j] = game->gpc_game_board[i][j];
             g_gem_objects[i][j] = sge_create_object (i, j , GEMS_LAYER,
 													 gi_gems_pixbuf[gpc_game_board[i][j]]);
         }

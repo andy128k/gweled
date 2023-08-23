@@ -55,10 +55,4 @@ gweled_ui_init(GApplication *app);
 void
 gweled_set_current_score (gint score);
 
-void
-gweled_setup_game_window(gboolean playing);
-
-void
-welcome_screen_visibility (gboolean value);
-
 #endif

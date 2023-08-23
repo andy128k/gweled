@@ -72,11 +72,11 @@ is_game_running(void);
 
 void respawn_board_engine_loop();
 
-GweledGameState
+GweledGameState*
 gweled_get_current_game(void);
 
 void
-gweled_set_previous_game(GweledGameState game);
+gweled_set_previous_game(GweledGameState *game);
 
 void
 gweled_stop_game();

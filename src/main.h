@@ -23,10 +23,12 @@
 
 #include <glib.h>
 
-void
-save_current_game();
+#include "board_engine.h"
 
 void
+save_current_game(GweledGameState *game);
+
+GweledGameState*
 load_previous_game();
 
 gboolean
