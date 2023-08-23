@@ -564,8 +564,7 @@ board_engine_loop (gpointer data)
 	if(gi_current_score < gi_score)
 	{
 		gi_current_score += 10;
-		g_sprintf (msg_buffer, "%06d", gi_current_score);
-		gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
+        gweled_set_current_score (gi_current_score);
 	}
 
     /* Let's first check if we are in timer mode, and penalize the player if necessary */
@@ -889,8 +888,7 @@ gweled_start_new_game (void)
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
     }
 
-
-    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), "000000");
+    gweled_set_current_score (0);
 
 	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
@@ -983,9 +981,7 @@ void gweled_set_previous_game(GweledGameState game)
         g_free(text_buffer);
     }
 
-    text_buffer = g_strdup_printf("%06d", gi_current_score);
-    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), text_buffer);
-    g_free(text_buffer);
+    gweled_set_current_score (gi_current_score);
 
     sge_destroy_all_objects ();
 
@@ -1020,7 +1016,7 @@ void gweled_stop_game()
 
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), "" );
     gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
-    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), "000000");
+    gweled_set_current_score (0);
 }
 
 void gweled_set_hints_active(gboolean yn)

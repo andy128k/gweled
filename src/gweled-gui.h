@@ -21,6 +21,7 @@
 #define _GWELED_GUI_H_
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <clutter/clutter.h>
 
 #define LOOKUP_WIDGET(widget_name) GTK_WIDGET (gtk_builder_get_object (gweled_ui->builder, widget_name))
@@ -52,7 +53,7 @@ void
 gweled_ui_init(GApplication *app);
 
 void
-gweled_ui_resize (gint size, gboolean update);
+gweled_set_current_score (gint score);
 
 void
 gweled_setup_game_window(gboolean playing);

@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <glib/gi18n.h>
 
 #include <gtk/gtk.h>
@@ -158,6 +159,13 @@ on_window_unfocus_cb (GtkWidget *widget,
         board_set_pause(TRUE);
 }
 
+void
+gweled_set_current_score (gint score)
+{
+    gchar msg_buffer[6];
+    g_sprintf (msg_buffer, "%06d", score);
+	gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
+}
 
 void
 gweled_setup_game_window(gboolean playing)
@@ -292,6 +300,7 @@ gweled_ui_init (GApplication *app)
 
     game_frame = LOOKUP_WIDGET ("game_frame");
 
+    gtk_widget_realize (gweled_ui->main_window);
     // Clutter scene
     gweled_ui->g_clutter = gtk_clutter_embed_new ();
     gweled_ui->g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (gweled_ui->g_clutter));
