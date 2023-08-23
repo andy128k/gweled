@@ -495,7 +495,7 @@ board_set_pause(gboolean value)
     	gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
 
         // Currently not translatable because I only have basic ASCII characters.
-        gweled_draw_message("paused");
+        gweled_draw_game_message("paused", -1);
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
         sge_set_layer_visibility(GEMS_LAYER, FALSE);
@@ -573,7 +573,7 @@ board_engine_loop (gpointer data)
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
             // Currently not translatable because I only have basic ASCII characters.
-			gweled_draw_message ("time's up #");
+			gweled_draw_game_message ("time's up #", -1);
             sge_set_layer_opacity(GEMS_LAYER, 128);
             gtk_widget_hide(gweled_ui->g_pause_game_btn);
 			gi_game_running = FALSE;
@@ -752,7 +752,7 @@ board_engine_loop (gpointer data)
 				if ((gi_level == 1) || (prefs.game_mode == ENDLESS_MODE) || (prefs.game_mode == TIMED_MODE)) {
 					gint i, j;
                     // TRANSLATORS: # is replaced with !!
-					gweled_draw_game_message ("no moves left #", 1);
+					gweled_draw_game_message ("no moves left #", 2);
 					memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
 					for (i = 0; i < BOARD_WIDTH; i++)
@@ -779,7 +779,7 @@ board_engine_loop (gpointer data)
 				} else {
 				    // Game over
                     // Currently not translatable because I only have basic ASCII characters.
-					gweled_draw_message ("no moves left #");
+					gweled_draw_game_message ("no moves left #", -1);
                     sge_set_layer_opacity(GEMS_LAYER, 128);
                     gtk_widget_hide(gweled_ui->g_pause_game_btn);
 					gi_game_running = FALSE;

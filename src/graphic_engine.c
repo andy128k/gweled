@@ -216,18 +216,7 @@ gweled_draw_message_at (gchar * in_message, gint msg_x, gint msg_y)
 }
 
 void
-gweled_draw_message (gchar * in_message)
-{
-	gint msg_x, msg_y, msg_w;
-
-	msg_w = FONT_WIDTH * strlen (in_message);
-	msg_x = (BOARD_WIDTH * prefs.tile_size - msg_w) >> 1;
-	msg_y = (BOARD_HEIGHT * prefs.tile_size - FONT_HEIGHT) >> 1;
-
-	gweled_draw_message_at (in_message, msg_x, msg_y);
-}
-void
-gweled_draw_game_message (gchar * in_message, int timing)
+gweled_draw_game_message (gchar * in_message, gint lifetime)
 {
 	int i;
 	gint msg_x, msg_y, msg_w;
@@ -248,7 +237,8 @@ gweled_draw_game_message (gchar * in_message, int timing)
 					       gi_charset_pixbuf
 					       [gpc_font_glyphs
 						[(int)message[i]]]);
-			sge_object_set_lifetime (p_object, timing);
+            if (lifetime != -1)
+			    sge_object_set_lifetime (p_object, lifetime);
 		}
 
     g_free (message);
