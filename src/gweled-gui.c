@@ -310,6 +310,10 @@ gweled_ui_init (GApplication *app)
     gweled_ui->g_clutter = gtk_clutter_embed_new ();
     gweled_ui->g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (gweled_ui->g_clutter));
 
+    // Minimum size of tiles of 48px
+    gtk_widget_set_size_request(gweled_ui->g_clutter,
+                                BOARD_WIDTH * 48,
+                                BOARD_HEIGHT * 48);
 
     clutter_actor_set_size  (gweled_ui->g_stage,
                             BOARD_WIDTH * prefs.tile_size,
