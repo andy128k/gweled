@@ -38,7 +38,7 @@ void
 gweled_init_glyphs (void);
 
 void
-gweled_draw_game_message (gchar *in_message, gint timing);
+gweled_draw_game_message (const gchar *message, guint timing);
 
 void
 gweled_draw_message_at (gchar *in_message, gint msg_x, gint msg_y);

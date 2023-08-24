@@ -153,7 +153,7 @@ sge_fadeout_on_transition_ended (ClutterActor *actor,
                                  char         *name,
                                  gboolean      is_finished,
                                  gpointer      object) {
-       sge_object_fadeout(SGE_OBJECT(object));
+       sge_object_fadeout(SGE_OBJECT(object), 0);
 }
 
 // animations/effects
@@ -265,11 +265,12 @@ void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity)
 
 
 // fadeout the object and then destroy it
-void sge_object_fadeout (T_SGEObject *object)
+void sge_object_fadeout (T_SGEObject *object, guint delay_secs)
 {
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
     clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_easing_delay(object->actor, delay_secs * 1000);
     clutter_actor_set_opacity (object->actor, 0);
     clutter_actor_restore_easing_state (object->actor);
     
@@ -387,6 +388,7 @@ on_gem_clicked (ClutterActor *stage,
                   gpointer      dummy G_GNUC_UNUSED)
 {
     gfloat x, y;
+    g_print("on_gem_clicked\n");
      
     // resume game on click
     if (is_game_running() && board_get_pause() == TRUE ) {
@@ -446,13 +448,14 @@ sge_objects_resize (gint size) {
     for (i = 0; i < g_list_length (g_object_list); i++) {
     
 		object = (T_SGEObject *) g_list_nth_data (g_object_list, i);
+
+        if (CLUTTER_IS_TEXT(object->actor)) continue;
+
 		gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
                                          GDK_PIXBUF(g_pixbufs[object->pixbuf_id]), &error);
-		clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
-                            size,
-                            size);
+		clutter_actor_set_size (object->actor, size, size);
                             
-        clutter_actor_set_position (CLUTTER_ACTOR (object->actor),
+        clutter_actor_set_position (object->actor,
                                     object->x * size,
                                     object->y * size);
     }
@@ -630,6 +633,69 @@ sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 	return object;
 }
 
+
+// Temporary, for text
+T_SGEObject *
+sge_create_text_object (T_SGELayer layer, const gchar *string, const gchar *color_string)
+{
+
+    g_print("sge_create_text_object \"%s\" layer:%i\n", string, layer);
+
+    T_SGEObject * object;
+	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object->x = 0;
+    object->y = 0;
+    object->pixbuf_id = 0;
+
+    object->y_delay = 0;
+
+    object->blink = FALSE;
+    object->bounce = FALSE;
+
+    object->animation = FALSE;
+    object->animation_iter = 1;
+    object->animation_repeat = TRUE;
+
+	object->layer = layer;
+
+    // Text features
+    PangoContext* context = gtk_widget_get_pango_context(gweled_ui->g_clutter);
+    PangoFontDescription *systemFontDesc = pango_context_get_font_description (context);
+    gint systemFontSize = pango_font_description_get_size(systemFontDesc); // In pango units (1/1024th of a point)
+
+    PangoFontDescription *font_desc = pango_font_description_copy(systemFontDesc);
+    pango_font_description_set_weight (font_desc, PANGO_WEIGHT_BOLD);
+    pango_font_description_set_size(font_desc, systemFontSize * 2);
+
+    // Color handling.
+    ClutterColor *c_color = clutter_color_alloc();
+    clutter_color_from_string (c_color, color_string);
+
+    // Clutter actor.
+    object->actor = clutter_text_new_full(pango_font_description_to_string (font_desc), string, c_color);
+
+    clutter_color_free(c_color);
+
+    // Clutter text alignment and sizing
+    clutter_text_set_line_alignment (CLUTTER_TEXT(object->actor), PANGO_ALIGN_CENTER);
+    clutter_text_set_line_wrap (CLUTTER_TEXT(object->actor), TRUE);
+
+    clutter_actor_set_width (object->actor, BOARD_WIDTH * prefs.tile_size);
+    object->width = clutter_actor_get_width (object->actor);
+    object->height = clutter_actor_get_height (object->actor);
+
+    // Horizontally and vertically centerered,
+    clutter_actor_add_constraint (object->actor, clutter_align_constraint_new (g_gameboard, CLUTTER_ALIGN_BOTH, 0.5));
+
+    clutter_actor_add_child (g_actor_layers[layer],
+                             CLUTTER_ACTOR (object->actor));
+
+    clutter_actor_show (object->actor);
+
+    g_object_list = g_list_append (g_object_list, (gpointer) object);
+
+	return object;
+}
 
 void
 sge_destroy (void)

@@ -88,7 +88,7 @@ gboolean sge_objects_are_moving_on_layer(T_SGELayer layer);
 void sge_set_layer_visibility (T_SGELayer layer, gboolean visibility);
 void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity);
 
-void sge_object_fadeout (T_SGEObject *object);
+void sge_object_fadeout (T_SGEObject *object, guint delay_secs);
 void sge_object_zoomout (T_SGEObject *object);
 
 void
@@ -104,5 +104,8 @@ void sge_object_animate (T_SGEObject *object, gboolean repeat);
 void sge_object_reset_effects (T_SGEObject *object);
 
 gboolean sge_object_exists (T_SGEObject *object);
+
+T_SGEObject *
+sge_create_text_object (T_SGELayer layer, const gchar *string, const gchar *color_string);
 
 #endif

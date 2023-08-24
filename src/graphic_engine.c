@@ -216,32 +216,15 @@ gweled_draw_message_at (gchar * in_message, gint msg_x, gint msg_y)
 }
 
 void
-gweled_draw_game_message (gchar * in_message, gint lifetime)
+gweled_draw_game_message (const gchar * message, guint lifetime)
 {
-	int i;
-	gint msg_x, msg_y, msg_w;
-	T_SGEObject *p_object;
-	gchar *message;
+	T_SGEObject *object;
 
-	msg_w = FONT_WIDTH * strlen (in_message);
-	msg_x = (BOARD_WIDTH * prefs.tile_size - msg_w) >> 1;
-	msg_y = (BOARD_HEIGHT * prefs.tile_size - FONT_HEIGHT) >> 1;
+    object = sge_create_text_object(TEXT_LAYER, message, "#FFD700");
 
-	message = g_ascii_strup (in_message, -1);
+    if (lifetime != -1)
+        sge_object_fadeout(object, lifetime);
 
-	for (i = 0; i < strlen (message); i++)
-		if (gpc_font_glyphs[(int)message[i]] != -1) {
-			p_object =
-			    sge_create_object_simple (msg_x + i * FONT_WIDTH,
-					       msg_y, TEXT_LAYER,
-					       gi_charset_pixbuf
-					       [gpc_font_glyphs
-						[(int)message[i]]]);
-            if (lifetime != -1)
-			    sge_object_set_lifetime (p_object, lifetime);
-		}
-
-    g_free (message);
 }
 
 //const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};

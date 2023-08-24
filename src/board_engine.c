@@ -494,8 +494,8 @@ board_set_pause(gboolean value)
     if(value == TRUE) {
     	gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
 
-        // Currently not translatable because I only have basic ASCII characters.
-        gweled_draw_game_message("paused", -1);
+        gweled_draw_game_message(_("Paused"), -1);
+
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
         sge_set_layer_visibility(GEMS_LAYER, FALSE);
@@ -572,8 +572,8 @@ board_engine_loop (gpointer data)
 	{
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
-            // Currently not translatable because I only have basic ASCII characters.
-			gweled_draw_game_message ("time's up #", -1);
+
+			gweled_draw_game_message (_("Time's up!"), -1);
             sge_set_layer_opacity(GEMS_LAYER, 128);
             gtk_widget_hide(gweled_ui->g_pause_game_btn);
 			gi_game_running = FALSE;
@@ -717,9 +717,9 @@ board_engine_loop (gpointer data)
 			}
 			// fadeout cursors
 			if (cursor[0])
-				sge_object_fadeout (cursor[0]);
+				sge_object_fadeout (cursor[0], 0);
 			if (cursor[1])
-				sge_object_fadeout (cursor[1]);
+				sge_object_fadeout (cursor[1], 0);
 			cursor[0] = NULL;
 			cursor[1] = NULL;
 		}
@@ -751,8 +751,8 @@ board_engine_loop (gpointer data)
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
 				if ((gi_level == 1) || (prefs.game_mode == ENDLESS_MODE) || (prefs.game_mode == TIMED_MODE)) {
 					gint i, j;
-                    // TRANSLATORS: # is replaced with !!
-					gweled_draw_game_message ("no moves left #", 2);
+
+					gweled_draw_game_message (_("No moves left!"), 2);
 					memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
 					for (i = 0; i < BOARD_WIDTH; i++)
@@ -778,8 +778,8 @@ board_engine_loop (gpointer data)
 					gi_state = _MARK_ALIGNED_GEMS;
 				} else {
 				    // Game over
-                    // Currently not translatable because I only have basic ASCII characters.
-					gweled_draw_game_message ("no moves left #", -1);
+
+					gweled_draw_game_message (_("No moves left!"), -1);
                     sge_set_layer_opacity(GEMS_LAYER, 128);
                     gtk_widget_hide(gweled_ui->g_pause_game_btn);
 					gi_game_running = FALSE;
@@ -809,7 +809,7 @@ board_engine_loop (gpointer data)
                 gi_level++;
                 g_sprintf(msg_buffer, _("Level %d"), gi_level);
                 gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), msg_buffer);
-				g_sprintf (msg_buffer, "bonus x%d", gi_bonus_multiply >> 1);
+				g_sprintf (msg_buffer, _("Bonus x%d"), gi_bonus_multiply >> 1);
 				gweled_draw_game_message (msg_buffer, 2);
 
 				gweled_delete_gems_for_bonus ();
