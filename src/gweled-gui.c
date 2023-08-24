@@ -177,8 +177,6 @@ on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
 {
     prefs.game_mode = GPOINTER_TO_UINT (game_mode);
     welcome_screen_visibility(FALSE);
-    
-    gweled_draw_board (prefs.tile_size);
     gweled_setup_game_window(TRUE);
     gweled_start_new_game ();
 
