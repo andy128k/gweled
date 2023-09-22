@@ -580,7 +580,8 @@ board_engine_loop (gpointer data)
             gi_game_paused = TRUE;
             gi_state = _IDLE;
 
-            gweled_hiscores_show_and_add(gi_score, NORMAL_MODE);
+            if (gi_score > 0)
+                gweled_hiscores_show_and_add(gi_score, TIMED_MODE);
 
 		} else
 			gtk_progress_bar_set_fraction ((GtkProgressBar *)
@@ -786,7 +787,8 @@ board_engine_loop (gpointer data)
                     gi_game_paused = TRUE;
                     gi_state = _IDLE;
 
-                    gweled_hiscores_show_and_add(gi_score, TIMED_MODE);
+                    if (gi_score > 0)
+                        gweled_hiscores_show_and_add(gi_score, NORMAL_MODE);
 				}
 			} else {
 				g_do_not_score = FALSE;
