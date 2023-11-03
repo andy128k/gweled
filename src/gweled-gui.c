@@ -238,37 +238,30 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
 static gboolean
 configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
- int tilesize, ts_x, ts_y;
-  int i;
+    gint tilesize, ts_x, ts_y;
 
-  g_print("configure_event_cb %d\n", event->width);
+    g_print("configure_event_cb %dx%d %d\n", event->width, event->height, event->send_event);
 
-  if (event->width == 1) return FALSE;
+    if (event->width == 1) return FALSE;
 
-  /* Compute the new tile size based on the size of the
-   * drawing area, rounded down. */
-  ts_x = event->width / BOARD_WIDTH;
-  ts_y = event->height / BOARD_HEIGHT;
-  if (ts_x * BOARD_WIDTH > event->width)
-    ts_x--;
-  if (ts_y * BOARD_HEIGHT > event->height)
-    ts_y--;
-  tilesize = MIN (ts_x, ts_y);
+    /* Compute the new tile size based on the size of the
+     * drawing area, rounded down. */
+    ts_x = event->width / BOARD_WIDTH;
+    ts_y = event->height / BOARD_HEIGHT;
+    if (ts_x * BOARD_WIDTH > event->width)
+        ts_x--;
+    if (ts_y * BOARD_HEIGHT > event->height)
+        ts_y--;
+    tilesize = MIN (ts_x, ts_y);
 
-  if (tilesize == prefs.tile_size) return FALSE;
+    // If no changements do nothing
+    if (tilesize == prefs.tile_size) return FALSE;
 
+    gweled_set_objects_size (tilesize);
 
-   clutter_actor_set_size (CLUTTER_ACTOR (gweled_ui->g_stage),
-                          BOARD_WIDTH * tilesize,
-                          BOARD_HEIGHT * tilesize);
+    prefs.tile_size = tilesize;
 
-
-   gweled_set_objects_size (tilesize);
-
-   prefs.tile_size = tilesize;
-
-
-  return TRUE;
+    return TRUE;
 }
 
 void
@@ -305,7 +298,11 @@ gweled_ui_init (GApplication *app)
 
     game_frame = LOOKUP_WIDGET ("game_frame");
 
+    gtk_window_set_default_size (GTK_WINDOW (gweled_ui->main_window),
+                               BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
+
     gtk_widget_realize (gweled_ui->main_window);
+
     // Clutter scene
     gweled_ui->g_clutter = gtk_clutter_embed_new ();
     gweled_ui->g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (gweled_ui->g_clutter));
@@ -322,12 +319,9 @@ gweled_ui_init (GApplication *app)
     clutter_stage_set_use_alpha(CLUTTER_STAGE(gweled_ui->g_stage), TRUE);
     clutter_actor_set_background_color(gweled_ui->g_stage, CLUTTER_COLOR_Transparent);
 
-    gtk_window_set_default_size (GTK_WINDOW (gweled_ui->main_window),
-                               BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
-
-    gtk_widget_realize (gweled_ui->main_window);
-
     gtk_container_add(GTK_CONTAINER(game_frame), gweled_ui->g_clutter);
+
+    gtk_widget_set_can_focus (gweled_ui->g_clutter, TRUE);
 
 	// Header button events
 	g_signal_connect(G_OBJECT(gweled_ui->g_new_game_btn), "clicked",
