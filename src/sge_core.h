@@ -21,6 +21,7 @@
 #ifndef _SGE_CORE_H_
 #define _SGE_CORE_H_
 
+#include <gtk/gtk.h>
 #include <clutter/clutter.h>
 
 typedef enum e_sge_layers
@@ -39,7 +40,7 @@ typedef struct s_sge_text_data
   guint relative_font_size;
   T_SGEColor text_color;
   T_SGEColor outline_color;
-}T_SGETextData;
+} T_SGETextData;
 
 
 #define COLOR_CREATE(r,g,b)	(((r)<<16) | ((g)<<8) | (b))
@@ -59,20 +60,18 @@ typedef struct s_sge_object
 
 	gboolean blink;
 	gboolean bounce;
-	gboolean animation;
-	gfloat animation_iter;
-	gboolean animation_repeat;
+	gboolean animation_status;
 	gint pixbuf_id;
+
 	T_SGETextData *text_data;
 	ClutterActor *actor;
 	
-}T_SGEObject;
+} T_SGEObject;
 
 #define SGE_OBJECT(obj)  ((T_SGEObject *) obj)
 
 void sge_init(void);
 void sge_destroy(void);
-void sge_set_drawing_area(GtkWidget *drawing_area, GdkPixbuf *pixmap_buffer, gint width, gint height);
 
 gint sge_register_pixbuf(GdkPixbuf *pixbuf, int index);
 
@@ -89,14 +88,11 @@ void sge_destroy_object(gpointer object, gpointer user_data);
 void sge_destroy_all_objects_on_level(T_SGELayer level);
 void sge_destroy_all_objects(void);
 
-void sge_object_set_lifetime(T_SGEObject *object, gint seconds);
-void sge_object_take_down(T_SGEObject *object);
 void sge_object_move_to(T_SGEObject *object, gint dest_x, gint dest_y);
 void sge_object_fall_to(T_SGEObject *object, gint dest_y);
 void sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay);
 
 gboolean sge_object_is_moving(T_SGEObject *object);
-gboolean sge_objects_are_moving(void);
 gboolean sge_objects_are_moving_on_layer(T_SGELayer layer);
 
 void sge_set_layer_visibility (T_SGELayer layer, gboolean visibility);
@@ -115,8 +111,6 @@ void sge_object_blink_start (T_SGEObject *object);
 void sge_object_blink_stop (T_SGEObject *object);
 
 void sge_object_bounce (T_SGEObject *object);
-
-void sge_object_animate (T_SGEObject *object, gboolean repeat);
 
 void sge_object_reset_effects (T_SGEObject *object);
 

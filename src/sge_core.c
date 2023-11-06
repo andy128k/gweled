@@ -161,14 +161,6 @@ sge_destroy_on_specific_transition_ended (ClutterTimeline *timeline,
     sge_destroy_object (SGE_OBJECT(user_data), NULL);
 }
 
-void
-sge_fadeout_on_transition_ended (ClutterActor *actor,
-                                 char         *name,
-                                 gboolean      is_finished,
-                                 gpointer      object) {
-    sge_object_fadeout(SGE_OBJECT(object), 0);
-}
-
 // animations/effects
 
 // used for gems swapping
@@ -187,20 +179,7 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
   clutter_actor_restore_easing_state (object->actor);
 }
 
-gboolean
-sge_object_expired (gpointer data)
-{
-    sge_destroy_object(SGE_OBJECT(data), NULL);
-    return FALSE;
-}
-
 void
-sge_object_set_lifetime (T_SGEObject * object, gint seconds)
-{
-    g_timeout_add_seconds (seconds, sge_object_expired, object);
-}
-void
-
 sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
   sge_object_fall_to_with_delay (object, y_pos, 0);
@@ -232,29 +211,13 @@ sge_object_is_moving (T_SGEObject * object)
 }
 
 gboolean
-sge_objects_are_moving (void)
-{
-	gint i;
-	T_SGEObject *object;
-
-	for (i = 0; i < g_list_length (g_object_list); i++) {
-		object =
-		    (T_SGEObject *) g_list_nth_data (g_object_list, i);
-		if (sge_object_is_moving (object))
-			return TRUE;
-	}
-	return FALSE;
-}
-
-gboolean
 sge_objects_are_moving_on_layer (T_SGELayer layer)
 {
 	gint i;
 	T_SGEObject *object;
 
 	for (i = 0; i < g_list_length (g_object_list); i++) {
-		object =
-		    (T_SGEObject *) g_list_nth_data (g_object_list, i);
+		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
 		if (object->layer == layer)
 			if (sge_object_is_moving (object))
 				return TRUE;
@@ -355,7 +318,7 @@ void sge_object_reset_effects (T_SGEObject *object)
 
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_duration(object->actor, COGL_PIXEL_FORMAT_ARGB_2101010);
+    clutter_actor_set_easing_duration(object->actor, 100);
     clutter_actor_set_opacity(object->actor, 255);
     clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
     clutter_actor_set_size (object->actor, prefs.tile_size, prefs.tile_size);
@@ -367,13 +330,13 @@ void sge_object_reset_effects (T_SGEObject *object)
 void sge_object_blink_start (T_SGEObject *object)
 {    
     object->blink = TRUE;
+    object->animation_status = TRUE;
     clutter_timeline_start(timeline);
 }
 
 void sge_object_blink_stop (T_SGEObject *object)
 {
     object->blink = FALSE;
-    clutter_timeline_pause(timeline);
     sge_object_reset_effects(object);
 }
 
@@ -391,14 +354,9 @@ sge_object_stop_bounce (gpointer data)
 void sge_object_bounce (T_SGEObject *object)
 {
     object->bounce = TRUE;
+    object->animation_status = TRUE;
     clutter_timeline_start(timeline);
     g_timeout_add_seconds (2, sge_object_stop_bounce, object);
-}
-
-void sge_object_animate (T_SGEObject *object, gboolean repeat)
-{
-    object->animation = TRUE;
-    object->animation_repeat = repeat;
 }
 
 gboolean
@@ -475,7 +433,7 @@ sge_objects_resize (gint size) {
 
     for (i = 0; i < g_list_length (g_object_list); i++) {
     
-		object = (T_SGEObject *) g_list_nth_data (g_object_list, i);
+		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
 
         if (object->layer == TEXT_LAYER) {
             clutter_actor_set_size (object->actor, BOARD_WIDTH * size, BOARD_HEIGHT * size);
@@ -506,26 +464,24 @@ sge_clutter_frame_cb (ClutterTimeline *timeline,
 {
     gint            i;
     guint           progress = clutter_timeline_get_progress (timeline) * 360.0f;
-    static gboolean fade = TRUE;
-    static gboolean bounce_anim = TRUE;
     T_SGEObject *object;
 
     if (progress < 360)
         return;
 
     for (i = 0; i < g_list_length (g_object_list); i++) {
-		object = (T_SGEObject *) g_list_nth_data (g_object_list, i);
+		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
 		if (object->blink) {
 		    clutter_actor_save_easing_state (object->actor);
             clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
             clutter_actor_set_easing_duration (object->actor, 100);
-            if (fade) {
+            if (object->animation_status) {
                 clutter_actor_set_opacity (object->actor, 155);
-                fade = FALSE;
+                object->animation_status = FALSE;
             }
             else {
                 clutter_actor_set_opacity (object->actor, 255);
-                fade = TRUE;
+                object->animation_status = TRUE;
             }
             clutter_actor_restore_easing_state (object->actor);
         }
@@ -533,21 +489,21 @@ sge_clutter_frame_cb (ClutterTimeline *timeline,
         if (object->bounce) {
 		    clutter_actor_save_easing_state (object->actor);
             clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_QUAD);
-            if (bounce_anim) {
+            if (object->animation_status) {
                 clutter_actor_set_easing_duration (object->actor, 500);
                 clutter_actor_set_position  (object->actor,
                                             object->x * prefs.tile_size - (prefs.tile_size * 0.05),
                                             object->y * prefs.tile_size + (prefs.tile_size * 0.2));
                 clutter_actor_set_size (object->actor, prefs.tile_size * 1.1, prefs.tile_size * 0.9);
 
-                bounce_anim = FALSE;
+                object->animation_status = FALSE;
             }
             else {
                 clutter_actor_set_easing_duration (object->actor, 250);
                 clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
                 clutter_actor_set_size (object->actor, prefs.tile_size, prefs.tile_size);
 
-                bounce_anim = TRUE;
+                object->animation_status = TRUE;
             }
             clutter_actor_restore_easing_state (object->actor);
         }
@@ -574,12 +530,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     object->y_delay = 0;
 
     object->blink = FALSE;
-
     object->bounce = FALSE;
-
-    object->animation = FALSE;
-    object->animation_iter = 1;
-    object->animation_repeat = TRUE;
+    object->animation_status = FALSE;
 
 	object->layer = layer;
 
@@ -692,10 +644,7 @@ sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *t
 
     object->blink = FALSE;
     object->bounce = FALSE;
-
-    object->animation = FALSE;
-    object->animation_iter = 1;
-    object->animation_repeat = TRUE;
+    object->animation_status = FALSE;
 
 	object->layer = layer;
 
@@ -751,10 +700,7 @@ sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
 
     object->blink = FALSE;
     object->bounce = FALSE;
-
-    object->animation = FALSE;
-    object->animation_iter = 1;
-    object->animation_repeat = TRUE;
+    object->animation_status = FALSE;
 
 	object->layer = layer;
 
