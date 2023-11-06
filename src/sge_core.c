@@ -374,10 +374,10 @@ on_board_clicked (ClutterActor *stage,
                 gpointer      dummy G_GNUC_UNUSED)
 {
     gfloat x, y;
-    static gfloat x_press = -1;
-	static gfloat y_press = -1;
-	static gfloat x_release = -1;
-	static gfloat y_release = -1;
+    static gint x_press = -1;
+	static gint y_press = -1;
+	static gint x_release = -1;
+	static gint y_release = -1;
     g_print("Board clicked\n");
      
     // resume game on click
@@ -402,22 +402,23 @@ on_board_clicked (ClutterActor *stage,
 
     switch (clutter_event_type (event)) {
         case CLUTTER_BUTTON_PRESS:
-            clutter_event_get_coords (event, &x_press, &y_press);
-            gi_x_click = round(x_press) / prefs.tile_size;
-            gi_y_click = round(y_press) / prefs.tile_size;
+            gi_x_click = x_press = round(x) / prefs.tile_size;
+            gi_y_click = y_press = round(y) / prefs.tile_size;
 
             gi_gem_clicked = -1;
             gi_dragging = -1;
             break;
 
         case CLUTTER_BUTTON_RELEASE:
-            clutter_event_get_coords (event, &x_release, &y_release);
             gi_dragging = 0;
 		    gi_gem_dragged = 0;
 
+            x_release = round(x) / prefs.tile_size;
+            y_release = round(y) / prefs.tile_size;
+
             if (x_press != x_release || y_press != y_release) {
-                gi_x_click = round(x_release) / prefs.tile_size;
-                gi_y_click = round(y_release) / prefs.tile_size;
+                gi_x_click = x_release;
+                gi_y_click = y_release;
 			    gi_gem_clicked = -1;
             }
             break;
