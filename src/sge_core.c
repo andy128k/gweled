@@ -369,12 +369,16 @@ sge_object_exists (T_SGEObject *object)
 }
 
 static gboolean
-on_gem_clicked (ClutterActor *stage,
-                  ClutterEvent *event,
-                  gpointer      dummy G_GNUC_UNUSED)
+on_board_clicked (ClutterActor *stage,
+                ClutterEvent *event,
+                gpointer      dummy G_GNUC_UNUSED)
 {
     gfloat x, y;
-    g_print("on_gem_clicked\n");
+    static gfloat x_press = -1;
+	static gfloat y_press = -1;
+	static gfloat x_release = -1;
+	static gfloat y_release = -1;
+    g_print("Board clicked\n");
      
     // resume game on click
     if (is_game_running() && board_get_pause() == TRUE ) {
@@ -388,24 +392,43 @@ on_gem_clicked (ClutterActor *stage,
         return FALSE;
 
     // only handle left button
-    if (clutter_event_get_button (event) != 1)
+    if (clutter_event_get_button (event) != CLUTTER_BUTTON_PRIMARY)
         return FALSE;
     
-    // Can't use the actor position due to possible transformations.
-    clutter_event_get_coords  (event, &x, &y);
-	 
-	gi_x_click = round(x) / prefs.tile_size;
-    gi_y_click = round(y) / prefs.tile_size;
-     
-    g_print("Clicked! %i:%i [%.2lfx%.2lf] btn:%i\n", gi_x_click, gi_y_click, x, y, clutter_event_get_button (event));
-     
-    gi_gem_clicked = -1;
-    gi_dragging = -1;
-	 
-	respawn_board_engine_loop();
-	 
-	 
-	return FALSE;
+    // Can't use the actor position due to possible gems transformations.
+    clutter_event_get_coords (event, &x, &y);
+
+    respawn_board_engine_loop();
+
+    switch (clutter_event_type (event)) {
+        case CLUTTER_BUTTON_PRESS:
+            clutter_event_get_coords (event, &x_press, &y_press);
+            gi_x_click = round(x_press) / prefs.tile_size;
+            gi_y_click = round(y_press) / prefs.tile_size;
+
+            gi_gem_clicked = -1;
+            gi_dragging = -1;
+            break;
+
+        case CLUTTER_BUTTON_RELEASE:
+            clutter_event_get_coords (event, &x_release, &y_release);
+            gi_dragging = 0;
+		    gi_gem_dragged = 0;
+
+            if (x_press != x_release || y_press != y_release) {
+                gi_x_click = round(x_release) / prefs.tile_size;
+                gi_y_click = round(y_release) / prefs.tile_size;
+			    gi_gem_clicked = -1;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    g_print("Clicked! %i:%i [%.2lfx%.2lf] btn:%i event_type:%i\n", gi_x_click, gi_y_click, x, y, clutter_event_get_button (event), clutter_event_type (event));
+
+	return CLUTTER_EVENT_STOP;
 }
 
 
@@ -766,7 +789,10 @@ sge_init (void)
 
     clutter_actor_set_reactive (g_gameboard, TRUE);
     g_signal_connect (g_gameboard, "button-press-event",
-                      G_CALLBACK (on_gem_clicked),
+                      G_CALLBACK (on_board_clicked),
+                      NULL);
+    g_signal_connect (g_gameboard, "button-release-event",
+                      G_CALLBACK (on_board_clicked),
                       NULL);
 
 	// Layers create.
