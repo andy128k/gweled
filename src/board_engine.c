@@ -574,7 +574,13 @@ board_engine_loop (gpointer data)
 
 			gweled_draw_game_message (_("Time's up!"), -1);
             sge_set_layer_opacity(GEMS_LAYER, 128);
+
+            // Removes any gem that is still activated
+            sge_object_blink_stop(g_gem_objects[gi_x_click][gi_y_click]);
+            sge_set_layer_visibility (EFFECTS_LAYER, FALSE);
+
             gtk_widget_hide(gweled_ui->g_pause_game_btn);
+
 			gi_game_running = FALSE;
             gi_game_paused = TRUE;
             gi_state = _IDLE;
