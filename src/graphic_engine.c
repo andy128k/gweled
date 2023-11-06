@@ -51,31 +51,9 @@ extern ClutterActor *g_actor_layers[5];
 extern GweledPrefs prefs;
 extern gint size;
 
-signed char gpc_font_glyphs[256];
 gint gi_tiles_bg_pixbuf = -1;
 gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
-gint gi_charset_pixbuf[50];
 gint gi_cursor_pixbuf = -1;
-
-
-void
-gweled_load_font (void)
-{
-	GdkPixbuf *pixbuf;
-	int i;
-
-	pixbuf =
-	    sge_load_file_to_pixbuf ("font_24_20.png");
-	if (pixbuf) {
-		for (i = 0; i < 50; i++)
-			gi_charset_pixbuf[i] =
-			    sge_register_pixbuf (gdk_pixbuf_new_subpixbuf
-						 (pixbuf, i * FONT_WIDTH,
-						  0, FONT_WIDTH,
-						  FONT_HEIGHT), -1);
-	} else
-		exit (-1);
-}
 
 void
 gweled_load_pixmaps (gint size)
@@ -108,63 +86,6 @@ gweled_load_pixmaps (gint size)
 }
 
 void
-gweled_init_glyphs (void)
-{
-	int i;
-
-	for (i = 0; i < 127; i++)
-		if (g_ascii_isupper (i))
-			gpc_font_glyphs[i] = i - 'A';
-		else if (g_ascii_isdigit (i))
-			gpc_font_glyphs[i] = 29 + i - '0';
-		else
-			switch (i) {
-			case '(':
-				gpc_font_glyphs[i] = 26;
-				break;
-			case ')':
-				gpc_font_glyphs[i] = 27;
-				break;
-			case '-':
-				gpc_font_glyphs[i] = 28;
-				break;
-			case '.':
-				gpc_font_glyphs[i] = 39;
-				break;
-			case ':':
-				gpc_font_glyphs[i] = 40;
-				break;
-			case ',':
-				gpc_font_glyphs[i] = 41;
-				break;
-			case '\'':
-				gpc_font_glyphs[i] = 42;
-				break;
-			case '"':
-				gpc_font_glyphs[i] = 43;
-				break;
-			case '?':
-				gpc_font_glyphs[i] = 44;
-				break;
-			case '!':
-				gpc_font_glyphs[i] = 45;
-				break;
-			case '#':	// "!!!"
-				gpc_font_glyphs[i] = 46;
-				break;
-			case '_':	// "..."
-				gpc_font_glyphs[i] = 47;
-				break;
-			case '*':	// "ang"
-				gpc_font_glyphs[i] = 48;
-				break;
-			default:
-				gpc_font_glyphs[i] = -1;
-				break;
-			}
-}
-
-void
 gweled_draw_board (gint size)
 {
 
@@ -190,37 +111,35 @@ gweled_draw_board (gint size)
 }
 
 T_SGEObject *
-gweled_draw_character (int x, int y, T_SGELayer layer, char character)
+gweled_draw_score_message (gchar * in_message, T_SGELayer layer, gint msg_x, gint msg_y)
 {
-	if (gpc_font_glyphs[(int)character] != -1)
-		return sge_create_object_simple (x, y, layer,
-					  gi_charset_pixbuf[gpc_font_glyphs
-							    [(int)character]]);
-	else
-		return NULL;
-}
+	T_SGEObject *object;
+    T_SGETextData *text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
 
-void
-gweled_draw_message_at (gchar * in_message, gint msg_x, gint msg_y)
-{
-	int i;
-	gchar *message;
+    text_data->string = in_message;
+    text_data->relative_font_size = 65;
+    text_data->text_color = COLOR_CREATE(0xff, 0xd7, 0x00);
+    text_data->outline_color = COLOR_CREATE(0x00, 0x00, 0x00);
 
-	message = g_ascii_strup (in_message, -1);
+    object = sge_create_score_text_object (msg_x, msg_y, TEXT_LAYER, text_data);
 
-	for (i = 0; i < strlen (message); i++)
-		gweled_draw_character (msg_x + i * FONT_WIDTH, msg_y, TEXT_LAYER,
-				       message[i]);
-
-	g_free (message);
+    return object;
 }
 
 void
 gweled_draw_game_message (const gchar * message, guint lifetime)
 {
 	T_SGEObject *object;
+    T_SGETextData *text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
 
-    object = sge_create_text_object(TEXT_LAYER, message, COLOR_CREATE(0xff, 0xd7, 0x00), COLOR_CREATE(0x00, 0x00, 0x00));
+    text_data->string = message;
+    text_data->relative_font_size = 82;
+    text_data->text_color = COLOR_CREATE(0xff, 0xd7, 0x00);
+    text_data->outline_color = COLOR_CREATE(0x00, 0x00, 0x00);
+
+    object = sge_create_fullscreen_text_object (TEXT_LAYER, text_data);
+
+    sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BACK);
 
     if (lifetime != -1)
         sge_object_fadeout(object, lifetime);

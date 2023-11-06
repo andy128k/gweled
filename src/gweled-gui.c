@@ -357,9 +357,7 @@ gweled_ui_init (GApplication *app)
 			                     
 	sge_init ();
 	
-	gweled_init_glyphs ();
 	gweled_load_pixmaps (prefs.tile_size);
-	gweled_load_font ();
 
     // Init sound
 	if(prefs.sounds_on) {

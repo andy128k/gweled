@@ -273,7 +273,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 {
 	gint i, i_total_score;
     gint gi_gems_removed = 0;
-	int xsize, ysize, xhotspot, yhotspot, xpos, ypos;
+	int xhotspot, yhotspot, xpos, ypos;
 	char *buffer;
 	T_Alignment *alignment;
 	T_SGEObject *object;
@@ -317,14 +317,13 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 		gi_score += i_total_score;
         //display score
 		buffer = g_strdup_printf ("%d", i_total_score);
-		xsize = strlen (buffer) * FONT_WIDTH;
-		ysize = FONT_HEIGHT;
-		for (i = 0; i < strlen (buffer); i++) {
-			xpos = xhotspot - xsize / 2 + i * FONT_WIDTH;
-			ypos = yhotspot - ysize / 2;
-			object = gweled_draw_character (xpos, ypos, 4, buffer[i]);
-			sge_object_fly_away(object);
-		}
+
+        xpos = xhotspot - prefs.tile_size;
+		ypos = yhotspot - (prefs.tile_size / 2);
+        object = gweled_draw_score_message (buffer, TEXT_LAYER, xpos, ypos);
+        sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BOUNCE);
+        sge_object_fly_away (object);
+
 		g_free (buffer);
 	}
 }

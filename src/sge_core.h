@@ -85,9 +85,6 @@ sge_objects_resize (gint size);
 T_SGEObject *
 sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id);
 
-T_SGEObject *
-sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id);
-
 void sge_destroy_object(gpointer object, gpointer user_data);
 void sge_destroy_all_objects_on_level(T_SGELayer level);
 void sge_destroy_all_objects(void);
@@ -111,6 +108,9 @@ void sge_object_zoomout (T_SGEObject *object);
 void
 sge_object_fly_away (T_SGEObject *object);
 
+void
+sge_object_zoomin (T_SGEObject *object, guint msecs, ClutterAnimationMode mode);
+
 void sge_object_blink_start (T_SGEObject *object);
 void sge_object_blink_stop (T_SGEObject *object);
 
@@ -123,6 +123,9 @@ void sge_object_reset_effects (T_SGEObject *object);
 gboolean sge_object_exists (T_SGEObject *object);
 
 T_SGEObject *
-sge_create_text_object (T_SGELayer layer, const gchar *string, T_SGEColor text_color, T_SGEColor outline_color);
+sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data);
+
+T_SGEObject *
+sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *text_data);
 
 #endif

@@ -24,30 +24,17 @@
 #include <glib.h>
 #include "sge_core.h"
 
-#define FONT_WIDTH    24
-#define FONT_HEIGHT   20
-
-
-void
-gweled_load_font (void);
-
 void
 gweled_load_pixmaps (gint size);
 
 void
-gweled_init_glyphs (void);
-
-void
 gweled_draw_game_message (const gchar *message, guint timing);
 
-void
-gweled_draw_message_at (gchar *in_message, gint msg_x, gint msg_y);
+T_SGEObject*
+gweled_draw_score_message (gchar *in_message, T_SGELayer layer, gint msg_x, gint msg_y);
 
 void
 gweled_gems_fall_into_place (gboolean with_delay);
-
-T_SGEObject*
-gweled_draw_character (int x, int y, T_SGELayer layer, char character);
 
 void
 gweled_draw_board (gint size);

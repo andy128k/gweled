@@ -153,12 +153,20 @@ sge_destroy_on_transition_ended (ClutterActor *actor,
     sge_destroy_object (SGE_OBJECT(object), NULL);
 }
 
+static void
+sge_destroy_on_specific_transition_ended (ClutterTimeline *timeline,
+                     gboolean         is_finished,
+                     gpointer         user_data){
+
+    sge_destroy_object (SGE_OBJECT(user_data), NULL);
+}
+
 void
 sge_fadeout_on_transition_ended (ClutterActor *actor,
                                  char         *name,
                                  gboolean      is_finished,
                                  gpointer      object) {
-       sge_object_fadeout(SGE_OBJECT(object), 0);
+    sge_object_fadeout(SGE_OBJECT(object), 0);
 }
 
 // animations/effects
@@ -301,27 +309,42 @@ void sge_object_zoomout (T_SGEObject *object)
 
 void
 sge_object_fly_away (T_SGEObject *object)
-{    
+{
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_duration (object->actor, 1000);
+    clutter_actor_set_easing_duration (object->actor, 800);
     clutter_actor_set_position (object->actor,
                                 clutter_actor_get_x (object->actor),
-                                clutter_actor_get_y (object->actor) - (prefs.tile_size/2)
+                                clutter_actor_get_y (object->actor) - (prefs.tile_size/3)
                                 );
     clutter_actor_restore_easing_state (object->actor);
     
-    // After 800ms start to fade away.
+    // After 700ms start to fade away.
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_delay(object->actor, 800);
-    clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_easing_delay(object->actor, 700);
+    clutter_actor_set_easing_duration (object->actor, 100);
     clutter_actor_set_opacity(object->actor, 0);
+
+    ClutterTransition *transition = clutter_actor_get_transition (object->actor, "opacity");
+    g_signal_connect (transition, "stopped",
+	        G_CALLBACK (sge_destroy_on_specific_transition_ended),
+	        object);
+
     clutter_actor_restore_easing_state (object->actor);
+}
+
+void
+sge_object_zoomin (T_SGEObject *object, guint msecs, ClutterAnimationMode mode)
+{
+    clutter_actor_set_scale (object->actor, 0.8, 0.8);
     
-    g_signal_connect (object->actor, "transition-stopped",
-		    G_CALLBACK (sge_destroy_on_transition_ended), 
-		    object);
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode (object->actor, mode);
+    clutter_actor_set_easing_delay (object->actor, 50);
+    clutter_actor_set_easing_duration (object->actor, msecs);
+    clutter_actor_set_scale (object->actor, 1, 1);
+    clutter_actor_restore_easing_state (object->actor);
 }
 
 void sge_object_reset_effects (T_SGEObject *object)
@@ -595,60 +618,6 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 	return object;
 }
 
-// Temporary, for text
-T_SGEObject *
-sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
-{
-    GError *error;
-    
-    g_print("sge_create_object_simple %i at %i:%i layer:%i\n", pixbuf_id, x, y, layer);
-    
-    T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
-    object->x = x;
-    object->y = y;
-    object->pixbuf_id = pixbuf_id;
-
-    object->y_delay = 0;
-
-    object->blink = FALSE;
-    object->bounce = FALSE;
-
-    object->animation = FALSE;
-    object->animation_iter = 1;
-    object->animation_repeat = TRUE;
-
-	object->layer = layer;
-
-    object->text_data = NULL;
-
-	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
-    object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
-    
-   
-    // Clutter actors.
-    object->actor = gtk_clutter_texture_new ();
-    gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
-                                         GDK_PIXBUF(g_pixbufs[pixbuf_id]), &error);
-    clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
-                            object->width,
-                            object->height);
-                            
-    clutter_actor_set_position (CLUTTER_ACTOR (object->actor),
-                                x,
-                                y);
-    
-    clutter_actor_add_child (g_actor_layers[layer],
-                                 CLUTTER_ACTOR (object->actor));
-                                 
-    clutter_actor_show (object->actor);
-
-    g_object_list = g_list_append (g_object_list, (gpointer) object);
-
-	return object;
-}
-
-
 static gboolean
 generic_text_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer user_data) {
 
@@ -656,6 +625,7 @@ generic_text_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int heig
     PangoLayout *layout;
     T_SGETextData *text_data = (T_SGETextData*) user_data;
     gint lw, lh;
+    gfloat board_width = BOARD_WIDTH * prefs.tile_size;
 
     // Clean the surface.
     cairo_save (cr);
@@ -672,7 +642,7 @@ generic_text_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int heig
     PangoContext* context = gtk_widget_get_pango_context(gweled_ui->g_clutter);
     desc = pango_context_get_font_description (context);
     pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
-    pango_font_description_set_absolute_size(desc, width * text_data->relative_font_size);
+    pango_font_description_set_absolute_size(desc, board_width * text_data->relative_font_size);
 
     layout = pango_cairo_create_layout(cr);
     pango_layout_set_text(layout, text_data->string, -1);
@@ -693,7 +663,7 @@ generic_text_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int heig
     cairo_set_source_rgb(cr, COLOR_RED (text_data->outline_color) / 255.0,
                              COLOR_GREEN (text_data->outline_color) / 255.0,
                              COLOR_BLUE (text_data->outline_color) / 255.0);
-    cairo_set_line_width(cr, width / 120.0);
+    cairo_set_line_width(cr, board_width / 120.0);
     cairo_stroke_preserve(cr);
 
     // Text internal color
@@ -708,13 +678,69 @@ generic_text_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int heig
     return TRUE;
 }
 
-// Temporary, for text
+
 T_SGEObject *
-sge_create_text_object (T_SGELayer layer, const gchar *string, T_SGEColor text_color, T_SGEColor outline_color)
+sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *text_data)
 {
+    T_SGEObject * object;
+	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object->x = x;
+    object->y = y;
+    object->pixbuf_id = 0;
 
-    g_print("sge_create_text_object \"%s\" layer:%i\n", string, layer);
+    object->y_delay = 0;
 
+    object->blink = FALSE;
+    object->bounce = FALSE;
+
+    object->animation = FALSE;
+    object->animation_iter = 1;
+    object->animation_repeat = TRUE;
+
+	object->layer = layer;
+
+    object->width = prefs.tile_size * 2;
+    object->height = prefs.tile_size;
+
+    // Text features
+    ClutterContent * canvas;
+
+    object->text_data = text_data;
+
+    // Crea un actor per il testo
+    canvas = clutter_canvas_new();
+    g_signal_connect(canvas, "draw", G_CALLBACK(generic_text_canvas_draw), (gpointer) object->text_data);
+
+    // Text size: width -> two times the gem size, height -> gem size
+    clutter_canvas_set_size (CLUTTER_CANVAS(canvas), object->width, object->height);
+
+    object->actor = clutter_actor_new();
+    clutter_actor_set_content (object->actor, canvas);
+
+    clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
+                            object->width,
+                            object->height);
+
+    clutter_actor_set_position (CLUTTER_ACTOR (object->actor),
+                                x,
+                                y);
+
+    clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
+
+    clutter_actor_add_child (g_actor_layers[layer],
+                             CLUTTER_ACTOR (object->actor));
+
+    clutter_actor_show (object->actor);
+
+    g_object_list = g_list_append (g_object_list, (gpointer) object);
+
+	return object;
+}
+
+
+T_SGEObject *
+sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
+{
     T_SGEObject * object;
 	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
     object->x = 0;
@@ -738,11 +764,7 @@ sge_create_text_object (T_SGELayer layer, const gchar *string, T_SGEColor text_c
     // Text features
     ClutterContent * canvas;
 
-    object->text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
-    object->text_data->string = string;
-    object->text_data->relative_font_size = 82;
-    object->text_data->text_color = text_color;
-    object->text_data->outline_color = outline_color;
+    object->text_data = text_data;
 
     // Crea un actor per il testo
     canvas = clutter_canvas_new();
@@ -755,6 +777,8 @@ sge_create_text_object (T_SGELayer layer, const gchar *string, T_SGEColor text_c
     clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
                             object->width,
                             object->height);
+
+    clutter_actor_set_pivot_point (object->actor, 0.5, 0.5);
 
     clutter_actor_add_child (g_actor_layers[layer],
                              CLUTTER_ACTOR (object->actor));
