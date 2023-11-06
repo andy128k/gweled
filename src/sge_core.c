@@ -112,6 +112,7 @@ sge_destroy_object (gpointer object, gpointer user_data)
 
         if (SGE_OBJECT(object)->layer == TEXT_LAYER) {
             g_object_unref(CLUTTER_CANVAS (clutter_actor_get_content (SGE_OBJECT(object)->actor)));
+            g_free(SGE_OBJECT(object)->text_data);
         }
 	    clutter_actor_destroy (SGE_OBJECT(object)->actor);
         SGE_OBJECT(object)->actor = NULL;
@@ -559,6 +560,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
 	object->layer = layer;
 
+    object->text_data = NULL;
+
 	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
     object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
     
@@ -617,6 +620,8 @@ sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
 	object->layer = layer;
 
+    object->text_data = NULL;
+
 	object->width = gdk_pixbuf_get_width (g_pixbufs[pixbuf_id]);
     object->height = gdk_pixbuf_get_height (g_pixbufs[pixbuf_id]);
     
@@ -645,10 +650,11 @@ sge_create_object_simple (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
 
 static gboolean
-on_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer user_data) {
+generic_text_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpointer user_data) {
 
     PangoFontDescription *desc;
     PangoLayout *layout;
+    T_SGETextData *text_data = (T_SGETextData*) user_data;
     gint lw, lh;
 
     // Clean the surface.
@@ -666,10 +672,10 @@ on_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpoint
     PangoContext* context = gtk_widget_get_pango_context(gweled_ui->g_clutter);
     desc = pango_context_get_font_description (context);
     pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
-    pango_font_description_set_absolute_size(desc, PANGO_SCALE * width * 0.08);
+    pango_font_description_set_absolute_size(desc, width * text_data->relative_font_size);
 
     layout = pango_cairo_create_layout(cr);
-    pango_layout_set_text(layout, user_data, -1);
+    pango_layout_set_text(layout, text_data->string, -1);
     pango_layout_set_font_description(layout, desc);
 
     // Text centered and layout at full width.
@@ -684,12 +690,16 @@ on_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpoint
 
     // External text border
     cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_set_source_rgb(cr, COLOR_RED (text_data->outline_color) / 255.0,
+                             COLOR_GREEN (text_data->outline_color) / 255.0,
+                             COLOR_BLUE (text_data->outline_color) / 255.0);
     cairo_set_line_width(cr, width / 120.0);
     cairo_stroke_preserve(cr);
 
     // Text internal color
-    cairo_set_source_rgb(cr, 1.0, 1.0, 0.0);
+    cairo_set_source_rgb(cr, COLOR_RED (text_data->text_color) / 255.0,
+                             COLOR_GREEN (text_data->text_color) / 255.0,
+                             COLOR_BLUE (text_data->text_color) / 255.0);
     cairo_fill(cr);
 
     // Free resources
@@ -700,7 +710,7 @@ on_canvas_draw(ClutterCanvas *canvas, cairo_t *cr, int width, int height, gpoint
 
 // Temporary, for text
 T_SGEObject *
-sge_create_text_object (T_SGELayer layer, const gchar *string, const gchar *color_string)
+sge_create_text_object (T_SGELayer layer, const gchar *string, T_SGEColor text_color, T_SGEColor outline_color)
 {
 
     g_print("sge_create_text_object \"%s\" layer:%i\n", string, layer);
@@ -722,22 +732,29 @@ sge_create_text_object (T_SGELayer layer, const gchar *string, const gchar *colo
 
 	object->layer = layer;
 
+    object->width = BOARD_WIDTH * prefs.tile_size;
+    object->height = BOARD_HEIGHT * prefs.tile_size;
+
     // Text features
     ClutterContent * canvas;
 
+    object->text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
+    object->text_data->string = string;
+    object->text_data->relative_font_size = 82;
+    object->text_data->text_color = text_color;
+    object->text_data->outline_color = outline_color;
+
     // Crea un actor per il testo
     canvas = clutter_canvas_new();
-    g_signal_connect(canvas, "draw", G_CALLBACK(on_canvas_draw), (gpointer) string);
-    clutter_canvas_set_size (CLUTTER_CANVAS(canvas), BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
+    g_signal_connect(canvas, "draw", G_CALLBACK(generic_text_canvas_draw), (gpointer) object->text_data);
+    clutter_canvas_set_size (CLUTTER_CANVAS(canvas), object->width, object->width);
 
     object->actor = clutter_actor_new();
     clutter_actor_set_content (object->actor, canvas);
 
-    clutter_actor_set_width (object->actor, BOARD_WIDTH * prefs.tile_size);
-    clutter_actor_set_height (object->actor, BOARD_WIDTH * prefs.tile_size);
-
-    object->width = clutter_actor_get_width (object->actor);
-    object->height = clutter_actor_get_height (object->actor);
+    clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
+                            object->width,
+                            object->height);
 
     clutter_actor_add_child (g_actor_layers[layer],
                              CLUTTER_ACTOR (object->actor));

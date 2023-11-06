@@ -220,7 +220,7 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 {
 	T_SGEObject *object;
 
-    object = sge_create_text_object(TEXT_LAYER, message, "#FFD700");
+    object = sge_create_text_object(TEXT_LAYER, message, COLOR_CREATE(0xff, 0xd7, 0x00), COLOR_CREATE(0x00, 0x00, 0x00));
 
     if (lifetime != -1)
         sge_object_fadeout(object, lifetime);

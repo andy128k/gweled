@@ -31,6 +31,22 @@ typedef enum e_sge_layers
     TEXT_LAYER
 } T_SGELayer;
 
+typedef uint32_t T_SGEColor;
+
+typedef struct s_sge_text_data
+{
+  const gchar *string;
+  guint relative_font_size;
+  T_SGEColor text_color;
+  T_SGEColor outline_color;
+}T_SGETextData;
+
+
+#define COLOR_CREATE(r,g,b)	(((r)<<16) | ((g)<<8) | (b))
+#define COLOR_RED(col)		(((col)>>16) & 0xff)
+#define COLOR_GREEN(col)	(((col)>>8) & 0xff)
+#define COLOR_BLUE(col)		((col)&0xff)
+
 typedef struct s_sge_object
 {
 	gdouble x;
@@ -47,6 +63,7 @@ typedef struct s_sge_object
 	gfloat animation_iter;
 	gboolean animation_repeat;
 	gint pixbuf_id;
+	T_SGETextData *text_data;
 	ClutterActor *actor;
 	
 }T_SGEObject;
@@ -106,6 +123,6 @@ void sge_object_reset_effects (T_SGEObject *object);
 gboolean sge_object_exists (T_SGEObject *object);
 
 T_SGEObject *
-sge_create_text_object (T_SGELayer layer, const gchar *string, const gchar *color_string);
+sge_create_text_object (T_SGELayer layer, const gchar *string, T_SGEColor text_color, T_SGEColor outline_color);
 
 #endif
