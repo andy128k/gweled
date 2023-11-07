@@ -15,6 +15,8 @@
           <object class="GtkBox" id="hbox9">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="margin-start">4</property>
+            <property name="margin-end">4</property>
             <property name="border-width">6</property>
             <property name="spacing">6</property>
             <child>
@@ -22,11 +24,30 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="valign">center</property>
+                <property name="margin-end">4</property>
+                <property name="show-text">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="scoreLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">000000</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.2"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack-type">end</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -40,22 +61,6 @@
                 <property name="fill">True</property>
                 <property name="pack-type">end</property>
                 <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="scoreLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label">000000</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="pack-type">end</property>
-                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -361,7 +366,6 @@
             <property name="can-focus">False</property>
             <property name="receives-default">True</property>
             <property name="tooltip-text" translatable="yes">Menu</property>
-            <accelerator key="F10" signal="clicked"/>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -369,6 +373,7 @@
                 <property name="icon-name">open-menu-symbolic</property>
               </object>
             </child>
+            <accelerator key="F10" signal="clicked"/>
           </object>
           <packing>
             <property name="pack-type">end</property>
