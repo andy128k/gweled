@@ -20,85 +20,86 @@
 
 #include <config.h>
 
-#include <canberra-gtk.h>
+#include <gsound.h>
 
 #include "sound.h"
+#include "board_engine.h"
 
 #define GWELED_SOUND_BASEPATH DATA_DIRECTORY G_DIR_SEPARATOR_S "sounds" G_DIR_SEPARATOR_S PACKAGE_NAME G_DIR_SEPARATOR_S
 
 static gboolean sound_available;
-static ca_context *context = NULL;
+static GSoundContext *sound_ctx = NULL;
+
+static const char* GweledSounds[NUM_SOUND_EFFECTS][2] = {
+    {"click", GWELED_SOUND_BASEPATH "click.ogg"},
+    {"swap", GWELED_SOUND_BASEPATH "swap.ogg"}
+};
+
+extern GweledPrefs prefs;
 
 void
-sound_init(GdkScreen *screen)
+sound_init()
 {
-    if(sound_available == TRUE)
-	return;
-    
-    if (screen == NULL)
-	    screen = gdk_screen_get_default();
+    int i;
+    GError *error = NULL;
 
-    if(context == NULL)
-        context = ca_gtk_context_get_for_screen(screen);
 
-    if (!context){
-	    sound_available = FALSE;
+    if (sound_available == TRUE)
 	    return;
-	}
 
-    g_print("sound_init\n");
+    if (sound_ctx == NULL) {
+        sound_ctx = gsound_context_new (NULL, &error);
+        if (error != NULL) goto sound_errors;
+
+        gsound_context_open (sound_ctx, &error);
+        if (error != NULL) goto sound_errors;
+
+        for (i = 0; i < NUM_SOUND_EFFECTS; i ++) {
+            error = NULL;
+            gsound_context_cache(sound_ctx, &error,
+                                 GSOUND_ATTR_EVENT_ID,
+                                 GweledSounds[i][SOUND_NAME],
+                                 GSOUND_ATTR_MEDIA_FILENAME,
+                                 GweledSounds[i][SOUND_PATH],
+                                 GSOUND_ATTR_MEDIA_ROLE, "game",
+                                 NULL);
+            if (error != NULL)  {
+                g_warning("File [%s] %i: %s\n", GweledSounds[i][SOUND_PATH], error->code, error->message);
+                g_error_free (error);
+            }
+        }
+    }
+
+    g_print("Sound init OK\n");
     sound_available = TRUE;
+    return;
+
+    sound_errors:
+        g_print("Sound error %i: %s\n", error->code, error->message);
+        g_error_free (error);
+        sound_available = FALSE;
 }
 
 /* Play sound fx */
 void
 sound_effect_play(GweledSoundEffects effect)
 {
+    GError *error = NULL;
 
-    const char click_name[] = "click";
-    const char swap_name[] = "swap";
-    const char click_path[] = GWELED_SOUND_BASEPATH "click.ogg";
-    const char swap_path[] = GWELED_SOUND_BASEPATH "swap.ogg";
-    int play_status;
-
-    if (sound_available == FALSE)
+    if (!(prefs.sounds_on && sound_available))
         return;
 
-    switch (effect) {
-        case CLICK_EVENT:
-            play_status = ca_gtk_play_for_event(gtk_get_current_event(), 0,
-			CA_PROP_MEDIA_FILENAME, click_name,
-			CA_PROP_MEDIA_FILENAME, click_path,
-			CA_PROP_EVENT_ID, "click-event",
-			CA_PROP_EVENT_DESCRIPTION, "click event happened",
-			NULL);
-            g_print("libcanberra playing sound %s [file: %s]; %s\n", click_name, 
-            			click_path, ca_strerror(play_status));
-            break;
-        case SWAP_EVENT:
-            play_status = ca_context_play(context, 0,
-			CA_PROP_MEDIA_FILENAME, swap_name,
-			CA_PROP_MEDIA_FILENAME, swap_path,
-			CA_PROP_EVENT_ID, "swap-event",
-			CA_PROP_EVENT_DESCRIPTION, "swap event happened",
-			NULL);
-            g_print("libcanberra playing sound %s [file: %s]; %s\n", swap_name,
-             			swap_path, ca_strerror(play_status));
-            break;
+    gsound_context_play_simple (sound_ctx, NULL, &error,
+                                GSOUND_ATTR_EVENT_ID, GweledSounds[effect][SOUND_NAME],
+                                GSOUND_ATTR_MEDIA_FILENAME, GweledSounds[effect][SOUND_PATH],
+                                GSOUND_ATTR_MEDIA_ROLE, "game",
+                                GSOUND_ATTR_CANBERRA_CACHE_CONTROL, "permanent",
+                                NULL);
+
+    if (error != NULL)  {
+        g_warning("File [%s] %i: %s\n", GweledSounds[effect][SOUND_PATH], error->code, error->message);
+        g_error_free (error);
+        return;
     }
-}
-
-void
-sound_destroy()
-{
-  ca_context_destroy(context);
-  sound_available = FALSE;
-}
-
-
-gboolean
-sound_get_enabled()
-{
-    return sound_available;
 }
 

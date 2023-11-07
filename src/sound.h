@@ -21,24 +21,26 @@
 #ifndef _SOUND_H_
 #define _SOUND_H_
 #include <glib.h>
-#include <canberra.h>
 
 typedef enum e_gweled_sound_effects
 {
     CLICK_EVENT,
-    SWAP_EVENT
+    SWAP_EVENT,
+    // To track the length of the array.
+    NUM_SOUND_EFFECTS
 } GweledSoundEffects;
 
+
+typedef enum e_gweled_sound_fields
+{
+    SOUND_NAME,
+    SOUND_PATH
+} GweledSoundFields;
+
 void
-sound_init(GdkScreen *);
+sound_init();
 
 void
 sound_effect_play(GweledSoundEffects);
-
-gboolean
-sound_get_enabled();
-
-void
-sound_destroy(void);
 
 #endif

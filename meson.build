@@ -52,7 +52,7 @@ glib = dependency('glib-2.0', version: '>= 2.36')
 gtk = dependency('gtk+-3.0', version: '>= 3.20')
 clutter = dependency('clutter-1.0', version: '>= 1.20')
 clutter_gtk = dependency('clutter-gtk-1.0', version: '>= 1.8')
-libcanberra_gtk3 = dependency('libcanberra-gtk3', version: '>= 0.3')
+gsound = dependency('gsound', version: '>= 1.0.3')
 libgnome_games_support = dependency('libgnome-games-support-1', version: '>= 1.8')
 
 

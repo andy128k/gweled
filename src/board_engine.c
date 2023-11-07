@@ -653,9 +653,9 @@ board_engine_loop (gpointer data)
 				sge_object_move_to (cursor[1],
 						x1,
 						y1);
-				if(prefs.sounds_on == TRUE){
-				    sound_effect_play(SWAP_EVENT);
-				}
+
+				sound_effect_play (SWAP_EVENT);
+
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
 				if (cursor[1]) {

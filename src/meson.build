@@ -17,7 +17,7 @@ app_deps = [
   gtk,
   clutter,
   clutter_gtk,
-  libcanberra_gtk3,
+  gsound,
   libgnome_games_support,
 ]
 

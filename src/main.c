@@ -55,9 +55,6 @@ gweled_setting_changed (GSettings* self,
 
     if (g_strcmp0 (key, "sound") == 0) {
     	prefs.sounds_on = g_settings_get_boolean (self, "sound");
-		if (prefs.sounds_on && sound_get_enabled() == FALSE) {
-	        sound_init(gdk_screen_get_default());
-	    }
     }
 
     if (g_strcmp0 (key, "hints") == 0) {
@@ -151,6 +148,9 @@ gweled_activate_cb (GApplication *app, gpointer user_data)
 
     /* Initialize the GUI */
     gweled_ui_init(app);
+
+    // Init sound system
+	sound_init ();
 
     /* Enter in the main loop */
     gtk_main();

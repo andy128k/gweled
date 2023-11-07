@@ -30,7 +30,6 @@
 
 #include "graphic_engine.h"
 #include "board_engine.h"
-#include "sound.h"
 #include "gweled-scores.h"
 #include "main.h"
 #include "gweled-gui.h"
@@ -358,11 +357,6 @@ gweled_ui_init (GApplication *app)
 	sge_init ();
 	
 	gweled_load_pixmaps (prefs.tile_size);
-
-    // Init sound
-	if(prefs.sounds_on) {
-	    sound_init(gdk_screen_get_default());
-	}
 	
 	// Menu
 	menu_builder = gtk_builder_new ();
@@ -432,4 +426,5 @@ gweled_ui_init (GApplication *app)
     welcome_screen_visibility(!start_previous_game);
     gweled_setup_game_window(start_previous_game);
 }
+
 

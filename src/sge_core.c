@@ -407,6 +407,8 @@ on_board_clicked (ClutterActor *stage,
 
             gi_gem_clicked = -1;
             gi_dragging = -1;
+
+            sound_effect_play (CLICK_EVENT);
             break;
 
         case CLUTTER_BUTTON_RELEASE:
