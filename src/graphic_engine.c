@@ -160,7 +160,7 @@ gweled_gems_fall_into_place (gboolean with_delay)
 
             if (with_delay)
                 sge_object_fall_to_with_delay (g_gem_objects[i][j],
-                                               j, i * 50);
+                                               j, (i * 100) + ((BOARD_HEIGHT - j) * 50));
             else
                 sge_object_fall_to (g_gem_objects[i][j], j);
         }

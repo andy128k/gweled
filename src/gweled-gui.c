@@ -152,6 +152,8 @@ on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 
     gweled_stop_game ();
 
+    sge_pause_timeline();
+
     welcome_screen_visibility (TRUE);
 }
 
@@ -171,17 +173,25 @@ on_pause_activate_cb (GtkWidget *button, gpointer user_data)
 	}
 }
 
-void
+gboolean
+board_start (gpointer data)
+{
+    sge_start_timeline();
+    gweled_start_new_game ();
+    respawn_board_engine_loop();
+    return FALSE;
+}
+
+static void
 on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
 {
     prefs.game_mode = GPOINTER_TO_UINT (game_mode);
     welcome_screen_visibility(FALSE);
     gweled_setup_game_window(TRUE);
-    gweled_start_new_game ();
 
-    respawn_board_engine_loop();
+    // Waiting for the clutter stage to be realized.
+    g_timeout_add (50, board_start, NULL);
 }
-
 
 void
 on_window_unfocus_cb (GtkWidget *widget,
@@ -306,14 +316,10 @@ gweled_ui_init (GApplication *app)
     gweled_ui->g_clutter = gtk_clutter_embed_new ();
     gweled_ui->g_stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (gweled_ui->g_clutter));
 
-    // Minimum size of tiles of 48px
-    gtk_widget_set_size_request(gweled_ui->g_clutter,
-                                BOARD_WIDTH * 48,
-                                BOARD_HEIGHT * 48);
-
-    clutter_actor_set_size  (gweled_ui->g_stage,
-                            BOARD_WIDTH * prefs.tile_size,
-                            BOARD_HEIGHT * prefs.tile_size);
+    // Set the board size at the default tile size.
+    gtk_widget_set_size_request(gweled_ui->g_main_game_stack,
+                                BOARD_WIDTH * prefs.tile_size,
+                                BOARD_HEIGHT * prefs.tile_size);
 
     clutter_stage_set_use_alpha(CLUTTER_STAGE(gweled_ui->g_stage), TRUE);
     clutter_actor_set_background_color(gweled_ui->g_stage, CLUTTER_COLOR_Transparent);
@@ -355,8 +361,8 @@ gweled_ui_init (GApplication *app)
     g_print("Size %d x %d; tile size: %d\n", BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size, prefs.tile_size);
 			                     
 	sge_init ();
-	
 	gweled_load_pixmaps (prefs.tile_size);
+    gweled_set_objects_size (prefs.tile_size);
 	
 	// Menu
 	menu_builder = gtk_builder_new ();

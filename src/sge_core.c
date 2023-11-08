@@ -182,22 +182,31 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 void
 sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
-  sge_object_fall_to_with_delay (object, y_pos, 0);
+    if (object->y == y_pos) return;
+
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_ELASTIC);
+    clutter_actor_set_easing_duration (object->actor, 500);
+    clutter_actor_set_easing_delay (object->actor, (BOARD_HEIGHT - object->y) * 10);
+    clutter_actor_set_position (object->actor, object->x * prefs.tile_size, y_pos * prefs.tile_size);
+    clutter_actor_restore_easing_state (object->actor);
+
+    object->y = y_pos;
+
 }
+
+// Used only for the game start animation
 void
 sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
 {
+    object->y = y_pos;
   
-  object->y = y_pos;
-  
-  clutter_actor_save_easing_state (object->actor);
-  clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_ELASTIC);
-  clutter_actor_set_easing_duration (object->actor, 500);
-  clutter_actor_set_easing_delay (object->actor, delay);
-  clutter_actor_set_position (object->actor,
-                              clutter_actor_get_x (object->actor),
-                              y_pos * prefs.tile_size);
-  clutter_actor_restore_easing_state (object->actor);
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_QUAD);
+    clutter_actor_set_easing_duration (object->actor, 500);
+    clutter_actor_set_easing_delay (object->actor, delay);
+    clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
+    clutter_actor_restore_easing_state (object->actor);
 }
 
 //other useful stuff
@@ -772,6 +781,16 @@ sge_destroy (void)
 	g_free (g_pixbufs);
 }
 
+void
+sge_pause_timeline() {
+    clutter_timeline_pause (timeline);
+}
+
+void
+sge_start_timeline() {
+    clutter_timeline_start (timeline);
+}
+
 // creation/destruction
 void
 sge_init (void)
@@ -823,7 +842,4 @@ sge_init (void)
 
     /* fire a callback for frame change */
     g_signal_connect (timeline, "new-frame",  G_CALLBACK (sge_clutter_frame_cb), NULL);
-
-    /* and start it */
-    clutter_timeline_start (timeline);
 }

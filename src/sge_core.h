@@ -50,8 +50,8 @@ typedef struct s_sge_text_data
 
 typedef struct s_sge_object
 {
-	gdouble x;
-	gdouble y;
+	gint x;
+	gint y;
 	gint y_delay;
 
 	gint width;
@@ -121,5 +121,11 @@ sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data);
 
 T_SGEObject *
 sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *text_data);
+
+void
+sge_start_timeline();
+
+void
+sge_pause_timeline();
 
 #endif
