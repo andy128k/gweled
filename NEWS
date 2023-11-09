@@ -1,3 +1,30 @@
+1.0
+======
+
+  Released: tbd
+
+  Features:
+    * Ported to Gtk3
+    * Sound migrated to GSound
+    * Graphics implemented with Clutter
+    * Hiscores implemented with libgnome-games-support (saved per user, not globally)
+    * Settings saved with GSettings
+    * Dynamic tile size according to window size (not anymore fixed small, medium big)
+    * In game text drawed with Pango and fully translatable
+    * Removed all the raster graphics
+    * New gems effects
+    * Use of GtkHeaderBar for most actions and settings included into main buger menu
+    * Removed Autonomus (1997, by Skaven/FC) background music, probably copyrighted
+    * Ported to Meson build system
+    * Some bugfixes
+    * Lots of new/updated translations
+    
+  Known bugs:
+    * Some alignments give incorrect points
+    * Auto alignments after user one are usually slow to trigger
+    * No custom messages if your score is not in the first 10 ones
+
+
 0.9.1
 ======
 
@@ -97,6 +124,8 @@
 0.7
 ======
 
+  Released: 2005-10-03
+
   Features:
     * Remember config in a config file
     * Music (Autonomus by Skaven, this mod was used in the original Bejeweled)
@@ -112,6 +141,8 @@
 0.6
 ======
 
+  Released: 2004-11-30
+
   Features:
     * display the timed hiscore table when in timed mode (this is a bit confusing since it's not visible anywhere that you are in timed mode).
     * highlight the drop target when dragging
@@ -126,52 +157,68 @@
 0.5
 ======
 
-- timed game
-- drag'n drop to swap gems
+  Released: 2004-08-30
+  
+  Features:
+    * timed game
+    * drag'n drop to swap gems
 
 
 0.4
 ======
 
-- removed the toolbar (as suggested by Eugenia Loli-Queru)
-- apply a preliminary patch for timed game (by David Meggy), not usable yet
-- apply patch to unselect the selected gem (Pat Rondon)
-- fixed a buffer overflow for gentoo users (first reported by Joseph Antrosio)
-- switch to libglade
-- provide a spec file (Marc Deslauriers)
+  Released: 2003-12-31
+  
+  Features:
+    * removed the toolbar (as suggested by Eugenia Loli-Queru)
+    * apply a preliminary patch for timed game (by David Meggy), not usable yet
+    * apply patch to unselect the selected gem (Pat Rondon)
+    * switch to libglade
+    * provide a spec file (Marc Deslauriers)
+    
+  Bugs fixed:
+    * fixed a buffer overflow for gentoo users (first reported by Joseph Antrosio)
 
 
 0.3
 ======
 
-- png icon for the window
-- svg file for the cursor and the background tiles
-- remove the unnecessary and intrusive "illegal move" message
-- start new game by clicking anywhere in the game window
-- bonus does not score insane amounts of points
-- optimize board refresh routine (smoother animations)
-- does not score when "hint" is used
-- enable preferences
-- instant-apply board size setting (SVG finally pays)
-- do not lose before the first bonus
+  Released: 2003-11-27
+  
+  Features:
+    * png icon for the window
+    * svg file for the cursor and the background tiles
+    * remove the unnecessary and intrusive "illegal move" message
+    * start new game by clicking anywhere in the game window
+    * bonus does not score insane amounts of points
+    * optimize board refresh routine (smoother animations)
+    * does not score when "hint" is used
+    * enable preferences
+    * instant-apply board size setting (SVG finally pays)
+    * do not lose before the first bonus
 
 
 0.2
 ======
 
-- first public release
-- fix the score (1 small bug left though)
-- move the score above the board
-- add various in-game animations
-- get rid of the windows, copyrighted, game graphics
-- redraw all gems and switch to SVG
-- optimize the graphic engine (don't redraw everything all the time !)
-- rewrite the graphic engine (split the graphic core and the game engine)
-- integrate properly with Gnome 2 (menu entry)
+  Released: 2003-11-11
+  
+  Features:
+    * first public release
+    * move the score above the board
+    * add various in-game animations
+    * get rid of the windows, copyrighted, game graphics
+    * redraw all gems and switch to SVG
+    * optimize the graphic engine (don't redraw everything all the time !)
+    * rewrite the graphic engine (split the graphic core and the game engine)
+    * integrate properly with Gnome 2 (menu entry)
+    
+  Bugs fixed:
+    * fix the score (1 small bug left though)  
 
 
 0.1
 ======
 
-- private release for Laura
-- the game works
+    * private release for Laura
+    * the game works
