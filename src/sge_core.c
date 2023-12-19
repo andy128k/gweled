@@ -378,15 +378,15 @@ sge_object_exists (T_SGEObject *object)
 }
 
 static gboolean
-on_board_clicked (ClutterActor *stage,
+board_input_event (ClutterActor *stage,
                 ClutterEvent *event,
                 gpointer      dummy G_GNUC_UNUSED)
 {
     gfloat x, y;
     static gint x_press = -1;
-	static gint y_press = -1;
-	static gint x_release = -1;
-	static gint y_release = -1;
+    static gint y_press = -1;
+    static gint x_release = -1;
+    static gint y_release = -1;
     g_print("Board clicked\n");
      
     // resume game on click
@@ -401,7 +401,7 @@ on_board_clicked (ClutterActor *stage,
         return FALSE;
 
     // only handle left button
-    if (clutter_event_get_button (event) != CLUTTER_BUTTON_PRIMARY)
+    if (event->type == CLUTTER_BUTTON_PRESS && clutter_event_get_button (event) != CLUTTER_BUTTON_PRIMARY)
         return FALSE;
     
     // Can't use the actor position due to possible gems transformations.
@@ -411,6 +411,7 @@ on_board_clicked (ClutterActor *stage,
 
     switch (clutter_event_type (event)) {
         case CLUTTER_BUTTON_PRESS:
+        case CLUTTER_TOUCH_BEGIN:
             gi_x_click = x_press = round(x) / prefs.tile_size;
             gi_y_click = y_press = round(y) / prefs.tile_size;
 
@@ -421,6 +422,7 @@ on_board_clicked (ClutterActor *stage,
             break;
 
         case CLUTTER_BUTTON_RELEASE:
+        case CLUTTER_TOUCH_END:
             gi_dragging = 0;
 		    gi_gem_dragged = 0;
 
@@ -438,7 +440,7 @@ on_board_clicked (ClutterActor *stage,
             break;
     }
 
-    g_print("Clicked! %i:%i [%.2lfx%.2lf] btn:%i event_type:%i\n", gi_x_click, gi_y_click, x, y, clutter_event_get_button (event), clutter_event_type (event));
+    g_print("Clicked! %i:%i [%.2lfx%.2lf] event_type:%i\n", gi_x_click, gi_y_click, x, y, clutter_event_type (event));
 
 	return CLUTTER_EVENT_STOP;
 }
@@ -811,10 +813,13 @@ sge_init (void)
 
     clutter_actor_set_reactive (g_gameboard, TRUE);
     g_signal_connect (g_gameboard, "button-press-event",
-                      G_CALLBACK (on_board_clicked),
+                      G_CALLBACK (board_input_event),
                       NULL);
     g_signal_connect (g_gameboard, "button-release-event",
-                      G_CALLBACK (on_board_clicked),
+                      G_CALLBACK (board_input_event),
+                      NULL);
+    g_signal_connect (g_gameboard, "touch-event",
+                      G_CALLBACK (board_input_event),
                       NULL);
 
 	// Layers create.
