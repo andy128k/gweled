@@ -56,8 +56,6 @@ extern GuiContext *gweled_ui;
 
 extern GweledPrefs prefs;
 
-static gint gi_dragging = 0;
-
 ClutterActor *g_gameboard = NULL;
 
 ClutterActor *g_actor_layers[5] = {NULL, NULL, NULL, NULL, NULL};
@@ -379,15 +377,15 @@ sge_object_exists (T_SGEObject *object)
 
 static gboolean
 board_input_event (ClutterActor *stage,
-                ClutterEvent *event,
-                gpointer      dummy G_GNUC_UNUSED)
+                   ClutterEvent *event,
+                   gpointer      dummy G_GNUC_UNUSED)
 {
     gfloat x, y;
     static gint x_press = -1;
     static gint y_press = -1;
     static gint x_release = -1;
     static gint y_release = -1;
-    g_print("Board clicked\n");
+    static gboolean gi_dragging = FALSE;
      
     // resume game on click
     if (is_game_running() && board_get_pause() == TRUE ) {
@@ -406,24 +404,35 @@ board_input_event (ClutterActor *stage,
     
     // Can't use the actor position due to possible gems transformations.
     clutter_event_get_coords (event, &x, &y);
+    
+    g_debug("Board input! %i:%i [%.2lfx%.2lf] event_type:%i\n", gi_x_click, gi_y_click, x, y, event->type);
 
-    respawn_board_engine_loop();
-
-    switch (clutter_event_type (event)) {
+    switch (event->type) {
         case CLUTTER_BUTTON_PRESS:
         case CLUTTER_TOUCH_BEGIN:
             gi_x_click = x_press = round(x) / prefs.tile_size;
             gi_y_click = y_press = round(y) / prefs.tile_size;
 
             gi_gem_clicked = -1;
-            gi_dragging = -1;
 
             sound_effect_play (CLICK_EVENT);
+
+            if (event->type == CLUTTER_TOUCH_BEGIN) {
+                gi_dragging = TRUE;
+            }
+
+            respawn_board_engine_loop();
+
             break;
 
         case CLUTTER_BUTTON_RELEASE:
         case CLUTTER_TOUCH_END:
-            gi_dragging = 0;
+        case CLUTTER_TOUCH_UPDATE:
+        
+            if (event->type == CLUTTER_TOUCH_UPDATE && gi_dragging == FALSE) {
+                break;
+            }
+        
 		    gi_gem_dragged = 0;
 
             x_release = round(x) / prefs.tile_size;
@@ -433,14 +442,16 @@ board_input_event (ClutterActor *stage,
                 gi_x_click = x_release;
                 gi_y_click = y_release;
 			    gi_gem_clicked = -1;
+                gi_dragging = FALSE;
             }
+
+            respawn_board_engine_loop();
+
             break;
 
         default:
             break;
     }
-
-    g_print("Clicked! %i:%i [%.2lfx%.2lf] event_type:%i\n", gi_x_click, gi_y_click, x, y, clutter_event_type (event));
 
 	return CLUTTER_EVENT_STOP;
 }
