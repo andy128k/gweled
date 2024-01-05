@@ -729,9 +729,9 @@ board_engine_loop (gpointer data)
 				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
 			    else
 				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), 1.0);
-
-                gi_state = _BOARD_REFILLING;
             }
+
+			gi_state = _BOARD_REFILLING;
 			gweled_refill_board ();
 			gweled_gems_fall_into_place (FALSE);
 		} else {
