@@ -6,4 +6,4 @@ src/gweled-scores.c
 src/gweled.ui
 src/gweled-headermenu.ui
 data/gweled.desktop.in
-data/gweled.appdata.xml.in
+data/org.gweled.gweled.appdata.xml.in
