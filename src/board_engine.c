@@ -633,11 +633,6 @@ board_engine_loop (gpointer data)
 			if (((x1 == x2) && (fabs (y1 - y2) == 1)) ||
 			    ((y1 == y2) && (fabs (x1 - x2) == 1))) {
 				// If the player clicks an adjacent gem, try to swap
-				if (cursor[1])
-					sge_destroy_object (cursor[1], NULL);
-				cursor[1] = sge_create_object (x2,
-                                               y2,
-                                               EFFECTS_LAYER, gi_cursor_pixbuf);
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems
 				sge_object_move_to (g_gem_objects[x1][y1],
@@ -650,18 +645,11 @@ board_engine_loop (gpointer data)
 				sge_object_move_to (cursor[0],
 						x2,
 						y2);
-				sge_object_move_to (cursor[1],
-						x1,
-						y1);
 
 				sound_effect_play (SWAP_EVENT);
 
 				gi_state = _SECOND_GEM_CLICKED;
 			} else if((x1 == x2) && (y1 == y2)) {
-				if (cursor[1]) {
-					sge_destroy_object (cursor[1], NULL);
-				    cursor[1] = NULL;
-				}
 				// If the player clicks the selected gem, deselect it
 				if(cursor[0]) {
 					sge_destroy_object(cursor[0], NULL);
@@ -671,10 +659,6 @@ board_engine_loop (gpointer data)
 				gi_state = _IDLE;
 				gi_gem_clicked = 0;
 			} else {
-				if (cursor[1]) {
-					sge_destroy_object (cursor[1], NULL);
-				    cursor[1] = NULL;
-				}
 				// If the player clicks anywhere else, make that the first selection
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				sge_object_blink_start(g_gem_objects[x2][y2]);
@@ -689,11 +673,6 @@ board_engine_loop (gpointer data)
 		}else if(gi_gem_dragged)
 		{
 			//printf("gem dragged\n");
-			if (cursor[1])
-					sge_destroy_object (cursor[1], NULL);
-			cursor[1] = sge_create_object (gi_x_drag,
-						gi_y_drag,
-						EFFECTS_LAYER, gi_cursor_pixbuf);
 		}
 		break;
 
@@ -709,9 +688,6 @@ board_engine_loop (gpointer data)
 						x1,
 						y1);
 				// re-swap cursors
-				sge_object_move_to (cursor[1],
-						x2,
-						y2);
 				sge_object_move_to (cursor[0],
 						x1,
 						y1);
@@ -724,8 +700,6 @@ board_engine_loop (gpointer data)
 			// fadeout cursors
 			if (cursor[0])
 				sge_object_fadeout (cursor[0], 0);
-			if (cursor[1])
-				sge_object_fadeout (cursor[1], 0);
 			cursor[0] = NULL;
 			cursor[1] = NULL;
 		}
