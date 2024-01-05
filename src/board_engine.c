@@ -349,12 +349,18 @@ take_down_alignment (gpointer object, gpointer user_data)
 
 	alignment = (T_Alignment *) object;
 
-		for (i = alignment->x; i < alignment->x + alignment->length; i++)
-			sge_object_zoomout (g_gem_objects[i][alignment->y]);
 	if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
+		for (i = alignment->x; i < alignment->x + alignment->length; i++) {
+      sge_gem_destroy (g_gem_objects[i][alignment->y]);
+      g_gem_objects[i][alignment->y] = NULL;
+    }
+
 	else
-		for (i = alignment->y; i < alignment->y + alignment->length; i++)
-			sge_object_zoomout (g_gem_objects[alignment->x][i]);
+		for (i = alignment->y; i < alignment->y + alignment->length; i++) {
+      sge_gem_destroy (g_gem_objects[alignment->x][i]);
+      g_gem_objects[alignment->x][i] = NULL;
+    }
+
 }
 
 void

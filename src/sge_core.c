@@ -117,6 +117,7 @@ sge_destroy_object (gpointer object, gpointer user_data)
 	}
 	g_object_list = g_list_remove (g_object_list, object);
 	g_free(object);
+  object = NULL;
 }
 
 void
@@ -148,6 +149,7 @@ sge_destroy_on_transition_ended (ClutterActor *actor,
                          gboolean      is_finished,
                          gpointer      object) {
                          
+    SGE_OBJECT(object)->animating = FALSE;
     sge_destroy_object (SGE_OBJECT(object), NULL);
 }
 
@@ -159,6 +161,17 @@ sge_destroy_on_specific_transition_ended (ClutterTimeline *timeline,
     sge_destroy_object (SGE_OBJECT(user_data), NULL);
 }
 
+void
+sge_finished_animation (ClutterActor *actor,
+                         char         *name,
+                         gboolean      is_finished,
+                         gpointer      object) {
+
+
+    SGE_OBJECT(object)->animating = FALSE;
+    g_signal_handler_disconnect (actor, SGE_OBJECT(object)->animating_handler_id);
+}
+
 // animations/effects
 
 // used for gems swapping
@@ -168,13 +181,17 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
   object->x = dest_x;
   object->y = dest_y;
 
-  sge_object_reset_effects (object);
+  object->animating = TRUE;
   
   clutter_actor_save_easing_state (object->actor);
   clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_CUBIC);
   clutter_actor_set_easing_duration (object->actor, 200);
   clutter_actor_set_position (object->actor, dest_x * prefs.tile_size, dest_y * prefs.tile_size);
   clutter_actor_restore_easing_state (object->actor);
+
+  object->animating_handler_id = g_signal_connect (object->actor, "transition-stopped",
+		    G_CALLBACK (sge_finished_animation),
+		    object);
 }
 
 void
@@ -182,14 +199,19 @@ sge_object_fall_to (T_SGEObject * object, gint y_pos)
 {
     if (object->y == y_pos) return;
 
+    object->animating = TRUE;
+
     clutter_actor_save_easing_state (object->actor);
-    clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_ELASTIC);
-    clutter_actor_set_easing_duration (object->actor, 500);
-    clutter_actor_set_easing_delay (object->actor, (BOARD_HEIGHT - object->y) * 10);
+    clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_CUBIC);
+    clutter_actor_set_easing_duration (object->actor, 200);
     clutter_actor_set_position (object->actor, object->x * prefs.tile_size, y_pos * prefs.tile_size);
     clutter_actor_restore_easing_state (object->actor);
 
     object->y = y_pos;
+
+    object->animating_handler_id = g_signal_connect (object->actor, "transition-stopped",
+		    G_CALLBACK (sge_finished_animation),
+		    object);
 
 }
 
@@ -212,9 +234,7 @@ sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
 gboolean
 sge_object_is_moving (T_SGEObject * object)
 {
-	gfloat cx, cy;
-	clutter_actor_get_position(object->actor, &cx, &cy);
-	return ((object->x * prefs.tile_size != cx) || (object->y * prefs.tile_size != cy));
+    return object->animating;
 }
 
 gboolean
@@ -222,14 +242,18 @@ sge_objects_are_moving_on_layer (T_SGELayer layer)
 {
 	gint i;
 	T_SGEObject *object;
+  gboolean moving = FALSE;
 
 	for (i = 0; i < g_list_length (g_object_list); i++) {
 		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
 		if (object->layer == layer)
-			if (sge_object_is_moving (object))
-				return TRUE;
+			if (sge_object_is_moving (object)) {
+				moving = TRUE;
+        break;
+      }
 	}
-	return FALSE;
+
+	return moving;
 }
 
 void sge_set_layer_visibility (T_SGELayer layer, gboolean visibility)
@@ -263,15 +287,46 @@ void sge_object_fadeout (T_SGEObject *object, guint delay_secs)
     
 }
 
+void
+sge_zoomout_on_transition_ended (ClutterActor *actor,
+                                 char         *name,
+                                 gboolean      is_finished,
+                                 gpointer      object) {
+
+    sge_object_zoomout (SGE_OBJECT(object));
+}
+
+// Destroy the gem with some effects
+void sge_gem_destroy (T_SGEObject *object)
+{
+    if (object == NULL) return;
+
+    object->animating = TRUE;
+
+    clutter_actor_set_scale (object->actor, 1, 1);
+
+    clutter_actor_save_easing_state (object->actor);
+    clutter_actor_set_easing_mode (object->actor, CLUTTER_EASE_OUT_CUBIC);
+    clutter_actor_set_easing_duration (object->actor, 80);
+    clutter_actor_set_scale (object->actor, 1.2, 1.2);
+    clutter_actor_restore_easing_state (object->actor);
+
+    object->animating_handler_id = g_signal_connect (object->actor, "transition-stopped",
+		    G_CALLBACK (sge_zoomout_on_transition_ended),
+		    object);
+}
+
 // zoomout the object and then destroy it
 void sge_object_zoomout (T_SGEObject *object)
 {
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_duration (object->actor, 200);
-    clutter_actor_set_scale  (object->actor, 0, 0);
+    clutter_actor_set_easing_duration (object->actor, 150);
+    clutter_actor_set_scale (object->actor, 0, 0);
     clutter_actor_restore_easing_state (object->actor);
     
+    g_signal_handler_disconnect (object->actor, object->animating_handler_id);
+
     g_signal_connect (object->actor, "transition-stopped",
 		    G_CALLBACK (sge_destroy_on_transition_ended), 
 		    object);
@@ -325,13 +380,11 @@ void sge_object_reset_effects (T_SGEObject *object)
 
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_duration(object->actor, 100);
+    clutter_actor_set_easing_duration(object->actor, 0);
     clutter_actor_set_opacity(object->actor, 255);
     clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
-    clutter_actor_set_size (object->actor, prefs.tile_size, prefs.tile_size);
+    clutter_actor_set_scale (object->actor, 1, 1);
     clutter_actor_restore_easing_state (object->actor);
-
-    clutter_timeline_pause(timeline);
 }
 
 void sge_object_blink_start (T_SGEObject *object)
@@ -577,6 +630,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
     object->y_delay = 0;
 
+    object->animating = FALSE;
+
     object->blink = FALSE;
     object->bounce = FALSE;
     object->animation_status = FALSE;
@@ -688,6 +743,8 @@ sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *t
     object->y = y;
     object->pixbuf_id = 0;
 
+    object->animating = FALSE;
+
     object->y_delay = 0;
 
     object->blink = FALSE;
@@ -743,6 +800,8 @@ sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
     object->x = 0;
     object->y = 0;
     object->pixbuf_id = 0;
+
+    object->animating = FALSE;
 
     object->y_delay = 0;
 

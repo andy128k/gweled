@@ -32,20 +32,17 @@
 #include "sge_utils.h"
 
 #include "board_engine.h"
+#include "gweled-gui.h"
 #include "graphic_engine.h"
 
 extern gchar gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 extern GRand *g_random_generator;
 extern GdkPixbuf *g_gems_pixbuf[7];
 
-extern GtkWidget *g_main_window;
-extern GtkWidget *g_main_game_stack;
-extern GtkWidget *g_clutter;
-extern GtkWidget *g_welcome_box;
+extern GuiContext *gweled_ui;
 
 extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 
-extern ClutterActor *g_stage;
 extern ClutterActor *g_actor_layers[5];
 
 extern GweledPrefs prefs;
@@ -54,6 +51,8 @@ extern gint size;
 gint gi_tiles_bg_pixbuf = -1;
 gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
 gint gi_cursor_pixbuf = -1;
+
+gboolean ready_to_fall = FALSE;
 
 void
 gweled_load_pixmaps (gint size)
@@ -148,12 +147,31 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 
 //const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
 
+gboolean
+gweled_gems_ready_to_fall_check (gpointer data)
+{
+    if (!sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        ready_to_fall = TRUE;
+        gweled_gems_fall_into_place(FALSE);
+        return FALSE;
+    }
+    return TRUE;
+}
+
 void
 gweled_gems_fall_into_place (gboolean with_delay)
 {
 	gint i, j;
     g_print("gweled_gems_fall_into_place() delay:%d\n", with_delay);
-   
+
+    if (!with_delay) {
+        if (!ready_to_fall) {
+            g_timeout_add (10, gweled_gems_ready_to_fall_check, NULL);
+            return;
+        }
+
+        ready_to_fall = FALSE;
+    }
 
     for (j = 0; j < BOARD_HEIGHT; j++) {
         for (i = 0; i < BOARD_WIDTH; i++) {

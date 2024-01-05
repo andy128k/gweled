@@ -58,6 +58,9 @@ typedef struct s_sge_object
 	gint height;
 	T_SGELayer layer;
 
+  gboolean animating;
+  gulong animating_handler_id;
+
 	gboolean blink;
 	gboolean bounce;
 	gboolean animation_status;
@@ -100,6 +103,7 @@ void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity);
 
 void sge_object_fadeout (T_SGEObject *object, guint delay_secs);
 void sge_object_zoomout (T_SGEObject *object);
+void sge_gem_destroy (T_SGEObject *object);
 
 void
 sge_object_fly_away (T_SGEObject *object);
