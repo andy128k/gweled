@@ -52,10 +52,16 @@ enum {
 	_BOARD_REFILLING
 };
 
+typedef enum e_alignment_dir
+{
+    T_ALIGN_HORIZONTAL,
+    T_ALIGN_VERTICAL
+} T_AlignmentDir;
+
 typedef struct s_alignment {
 	gint x;
 	gint y;
-	gint direction;
+	T_AlignmentDir direction;
 	gint length;
 } T_Alignment;
 
@@ -280,7 +286,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 
 	alignment = (T_Alignment *) alignment_pointer;
     // delete alignment
-	if (alignment->direction == 1)	// horizontal
+	if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
 	{
 		xhotspot = (alignment->x * prefs.tile_size + alignment->length * prefs.tile_size / 2);
 		yhotspot = (alignment->y * prefs.tile_size + prefs.tile_size / 2);
@@ -307,24 +313,25 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 		i_total_score = 10 * g_rand_int_range (g_random_generator, 1, 2);
     }
 	else {
-		i_total_score = 10 * (gi_bonus_multiply >> 1) * (gi_gems_removed - 2) + gi_score_per_move;
+		i_total_score = 10 * (gi_bonus_multiply >> 1) * (alignment->length - 2) + gi_score_per_move;
         if(g_do_not_score == TRUE)
             gi_score_per_move = i_total_score;
     }
     if (g_do_not_score == FALSE) {
-        gi_total_gems_removed += gi_gems_removed;
-        //g_print("Score: %d Gems removed: %d\n", i_total_score, gi_gems_removed);
-		gi_score += i_total_score;
-        //display score
-		buffer = g_strdup_printf ("%d", i_total_score);
+      gi_total_gems_removed += gi_gems_removed;
 
-        xpos = xhotspot - prefs.tile_size;
-		ypos = yhotspot - (prefs.tile_size / 2);
-        object = gweled_draw_score_message (buffer, TEXT_LAYER, xpos, ypos);
-        sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BOUNCE);
-        sge_object_fly_away (object);
+      g_debug("Score: %d Gems removed: %d [tot:%d] %i:%i, dir %i, length:%i\n", i_total_score, gi_gems_removed, gi_score_per_move, alignment->x, alignment->y, alignment->direction, alignment->length);
 
-		g_free (buffer);
+      gi_score += i_total_score;
+
+      // display score
+      buffer = g_strdup_printf ("%d", i_total_score);
+      xpos = xhotspot - prefs.tile_size;
+      ypos = yhotspot - (prefs.tile_size / 2);
+      object = gweled_draw_score_message (buffer, TEXT_LAYER, xpos, ypos);
+      sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BOUNCE);
+      sge_object_fly_away (object);
+      g_free (buffer);
 	}
 }
 
@@ -342,9 +349,9 @@ take_down_alignment (gpointer object, gpointer user_data)
 
 	alignment = (T_Alignment *) object;
 
-	if (alignment->direction == 1)	// horizontal
 		for (i = alignment->x; i < alignment->x + alignment->length; i++)
 			sge_object_zoomout (g_gem_objects[i][alignment->y]);
+	if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
 	else
 		for (i = alignment->y; i < alignment->y + alignment->length; i++)
 			sge_object_zoomout (g_gem_objects[alignment->x][i]);
@@ -379,7 +386,7 @@ gweled_delete_gems_for_bonus (void)
 		alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
 		alignment->x = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->y = g_rand_int_range (g_random_generator, 0, 7);
-		alignment->direction = 1;
+		alignment->direction = T_ALIGN_HORIZONTAL;
 		alignment->length = 1;
 		g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
 	}
@@ -425,7 +432,7 @@ gweled_check_for_alignments (void)
 					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
 					alignment->x = start_x;
 					alignment->y = start_y;
-					alignment->direction = 2;
+					alignment->direction = T_ALIGN_VERTICAL;
 					alignment->length = i_nb_aligned;
 					g_alignment_list = g_list_append(g_alignment_list, (gpointer) alignment);
 				}
@@ -437,14 +444,14 @@ gweled_check_for_alignments (void)
 			alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
 			alignment->x = start_x;
 			alignment->y = start_y;
-			alignment->direction = 2;
+			alignment->direction = T_ALIGN_VERTICAL;
 			alignment->length = i_nb_aligned;
 			g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
 		}
 		i_nb_aligned = 0;
 	}
 
-    // make a list of horizontal alignments
+  // make a list of horizontal alignments
 	i_nb_aligned = 0;
 
 	for (j = 0; j < BOARD_HEIGHT; j++) {
@@ -462,7 +469,7 @@ gweled_check_for_alignments (void)
 					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
 					alignment->x = start_x;
 					alignment->y = start_y;
-					alignment->direction = 1;
+					alignment->direction = T_ALIGN_HORIZONTAL;
 					alignment->length = i_nb_aligned;
 					g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
 				}
@@ -474,7 +481,7 @@ gweled_check_for_alignments (void)
 			alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
 			alignment->x = start_x;
 			alignment->y = start_y;
-			alignment->direction = 1;
+			alignment->direction = T_ALIGN_HORIZONTAL;
 			alignment->length = i_nb_aligned;
 			g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
 		}
