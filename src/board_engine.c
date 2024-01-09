@@ -742,7 +742,7 @@ board_engine_loop (gpointer data)
 			gweled_gems_fall_into_place (FALSE);
 		} else {
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
-				if ((gi_level == 1) || (prefs.game_mode == ENDLESS_MODE) || (prefs.game_mode == TIMED_MODE)) {
+				if (prefs.game_mode == ENDLESS_MODE || prefs.game_mode == TIMED_MODE) {
 					gint i, j;
 
 					gweled_draw_game_message (_("No moves left!"), 2);
