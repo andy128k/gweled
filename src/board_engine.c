@@ -240,6 +240,7 @@ gweled_swap_gems (gint x1, gint y1, gint x2, gint y2)
 	gpc_game_board[x1][y1] = gpc_game_board[x2][y2];
 	gpc_game_board[x2][y2] = i;
 }
+
 void
 gweled_refill_board (void)
 {
@@ -497,6 +498,52 @@ gweled_check_for_alignments (void)
 	return (g_list_length (g_alignment_list) != 0);
 }
 
+
+void
+gweled_fill_new_board ()
+{
+    gint i, j;
+
+    memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
+		{
+			gpc_game_board[i][j] = get_new_tile ();
+			gi_nb_of_tiles[gpc_game_board[i][j]]++;
+			g_gem_objects[i][j] =
+			    sge_create_object (i,
+							(j - BOARD_HEIGHT),
+							GEMS_LAYER,
+							gi_gems_pixbuf[gpc_game_board[i][j]]);
+		}
+
+	g_do_not_score = TRUE;
+
+    while(gweled_check_for_alignments ()) {
+		gweled_remove_gems_and_update_score ();
+		gweled_refill_board();
+	};
+	g_do_not_score = FALSE;
+
+    //test pattern for a known bug
+/*
+    gpc_game_board[0][7] = 0;
+    gpc_game_board[1][7] = 0;
+    gpc_game_board[2][7] = 1;
+    gpc_game_board[3][7] = 0;
+    gpc_game_board[4][7] = 1;
+    gpc_game_board[5][7] = 1;
+*/
+
+
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
+			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), GEMS_LAYER,
+													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+
+}
+
 void
 board_set_pause(gboolean value)
 {
@@ -743,30 +790,12 @@ board_engine_loop (gpointer data)
 		} else {
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
 				if (prefs.game_mode == ENDLESS_MODE || prefs.game_mode == TIMED_MODE) {
-					gint i, j;
 
 					gweled_draw_game_message (_("No moves left!"), 2);
-					memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
-					for (i = 0; i < BOARD_WIDTH; i++)
-						for (j = 0; j < BOARD_HEIGHT; j++) {
-							sge_destroy_object (g_gem_objects[i][j], NULL);
-							gpc_game_board[i][j] = get_new_tile();
-							gi_nb_of_tiles[gpc_game_board[i][j]]++;
-						}
-					g_do_not_score = TRUE;
-					while(gweled_check_for_alignments ()) {
-						gweled_remove_gems_and_update_score ();
-						gweled_refill_board();
-					};
-					g_do_not_score = FALSE;
-					for (i = 0; i < BOARD_WIDTH; i++)
-						for (j = 0; j < BOARD_HEIGHT; j++) {
-							g_gem_objects[i][j] = sge_create_object	(
-							        i,
-							    	(j - BOARD_HEIGHT),
-								GEMS_LAYER, gi_gems_pixbuf[gpc_game_board[i][j]]);
-						}
+                    sge_destroy_all_objects_on_level(GEMS_LAYER);
+                    gweled_fill_new_board();
+
 					gweled_gems_fall_into_place (FALSE);
 					gi_state = _MARK_ALIGNED_GEMS;
 				} else {
@@ -847,11 +876,10 @@ void respawn_board_engine_loop()
         board_engine_id = g_timeout_add (50, board_engine_loop, NULL);
 }
 
+
 void
 gweled_start_new_game (void)
 {
-	gint i, j;
-
     gi_game_paused = 0;
 	gi_score = 0;
 	gi_current_score = 0;
@@ -884,48 +912,14 @@ gweled_start_new_game (void)
 
     gweled_set_current_score (0);
 
-	memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
-
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-		{
-			gpc_game_board[i][j] = get_new_tile ();
-			gi_nb_of_tiles[gpc_game_board[i][j]]++;
-			g_gem_objects[i][j] =
-			    sge_create_object (i,
-							(j - BOARD_HEIGHT),
-							GEMS_LAYER,
-							gi_gems_pixbuf[gpc_game_board[i][j]]);
-		}
-
-	g_do_not_score = TRUE;
-	while(gweled_check_for_alignments ()) {
-		gweled_remove_gems_and_update_score ();
-		gweled_refill_board();
-	};
-	g_do_not_score = FALSE;
-
-    //test pattern for a known bug
-/*
-    gpc_game_board[0][7] = 0;
-    gpc_game_board[1][7] = 0;
-    gpc_game_board[2][7] = 1;
-    gpc_game_board[3][7] = 0;
-    gpc_game_board[4][7] = 1;
-    gpc_game_board[5][7] = 1;
-*/
-
-
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), GEMS_LAYER,
-													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+    gweled_fill_new_board();
 
 	gweled_gems_fall_into_place (TRUE);
 
 	gi_game_running = -1;
 	gi_state = _MARK_ALIGNED_GEMS;
 }
+
 
 GweledGameState*
 gweled_get_current_game(void)
