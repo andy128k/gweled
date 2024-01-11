@@ -602,6 +602,13 @@ hint_callback (gpointer data)
 }
 
 gboolean
+gweled_game_over_callback (gpointer data)
+{
+    gweled_hiscores_show_and_add(gi_score, prefs.game_mode);
+    return FALSE;
+}
+
+gboolean
 board_engine_loop (gpointer data)
 {
 	static gint x1, y1, x2, y2, time_slice = 0;
@@ -640,7 +647,7 @@ board_engine_loop (gpointer data)
             gi_state = _IDLE;
 
             if (gi_score > 0)
-                gweled_hiscores_show_and_add(gi_score, TIMED_MODE);
+                g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
 
 		} else
 			gtk_progress_bar_set_fraction ((GtkProgressBar *)
@@ -798,7 +805,7 @@ board_engine_loop (gpointer data)
                     gi_state = _IDLE;
 
                     if (gi_score > 0)
-                        gweled_hiscores_show_and_add(gi_score, NORMAL_MODE);
+                        g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
 				}
 			} else {
 				g_do_not_score = FALSE;
