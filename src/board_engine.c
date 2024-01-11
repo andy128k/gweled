@@ -95,8 +95,6 @@ gboolean g_do_not_score;
 T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 unsigned char gpc_bit_n[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-static T_SGEObject *g_hint_object = NULL;
-
 static gint gi_state = _IDLE;
 
 static GList *g_alignment_list;
@@ -560,10 +558,6 @@ board_set_pause(gboolean value)
         sge_set_layer_visibility(GEMS_LAYER, FALSE);
         sge_set_layer_visibility(EFFECTS_LAYER, FALSE);
         gweled_set_hints_active(FALSE);
-        if(sge_object_exists(g_hint_object)) {
-            sge_destroy_object (g_hint_object, NULL);
-            g_hint_object = NULL;
-        }
     }
     else {
         gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Pause"));
@@ -659,11 +653,6 @@ board_engine_loop (gpointer data)
 
     if(hint_timeout && gi_gem_clicked) {
         gweled_set_hints_active(FALSE);
-        if(g_hint_object && sge_object_exists(g_hint_object)) {
-            sge_destroy_object (g_hint_object, NULL);
-            g_hint_object = NULL;
-        } else
-            g_hint_object = NULL;
     }
 
 	switch (gi_state) {
