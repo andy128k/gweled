@@ -19,7 +19,7 @@
 
   <update_contact>dnax88@gmail.com</update_contact>
   <developer_name>Daniele Napolitano</developer_name>
-  
+
   <supports>
     <control>pointing</control>
     <control>touch</control>
@@ -32,7 +32,7 @@
   </screenshots>
 
   <translation type="gettext">gweled</translation>
- 
+
   <project_group>GNOME</project_group>
   <content_rating type="oars-1.1"/>
 </component>

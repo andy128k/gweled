@@ -23,7 +23,7 @@ po_dir = join_paths(meson.project_source_root(), 'po')
 # Config #
 ###########
 
-application_id = 'org.gweled.Gweled'
+application_id = 'org.gweled.gweled'
 
 conf = configuration_data()
 conf.set_quoted('PACKAGE_NAME', meson.project_name())
