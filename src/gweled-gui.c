@@ -111,7 +111,7 @@ on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_
         "authors", authors,
 	    "translator-credits", strcmp("translator-credits", translator_credits) ? translator_credits : NULL,
         "comments", _("A puzzle game with gems"),
-        "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010-2021 Daniele Napolitano",
+        "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010-2024 Daniele Napolitano",
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_2_0,
         "website", "https://gweled.org",
