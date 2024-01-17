@@ -101,12 +101,13 @@ gweled_hiscores_show_and_add(guint score, guint game_type)
 void
 gweled_init_scores(GtkWindow *parent_window)
 {
-    high_scores = games_scores_context_new("gweled",
+    high_scores = games_scores_context_new_with_icon_name("gweled",
                                            /* Translators: label displayed on the scores dialog, preceding a difficulty. */
                                            _("Game type:"),
                                            GTK_WINDOW (parent_window),
                                            get_scores_category_from_key,
-                                           NULL, GAMES_SCORES_STYLE_POINTS_GREATER_IS_BETTER);
+                                           NULL, GAMES_SCORES_STYLE_POINTS_GREATER_IS_BETTER,
+                                           APPLICATION_ID);
 
 }
 

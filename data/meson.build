@@ -1,4 +1,4 @@
-install_data (join_paths ('icons', 'scalable', meson.project_name() + '.svg'),
+install_data (join_paths ('icons', 'scalable', application_id + '.svg'),
               install_dir: join_paths (data_dir, 'icons', 'hicolor', 'scalable', 'apps'))
 
 
@@ -9,8 +9,8 @@ install_data (application_id + '.gschema.xml',
 # Desktop files
 desktop_file = i18n.merge_file(
   type: 'desktop',
-  input: meson.project_name() + '.desktop.in',
-  output: meson.project_name() + '.desktop',
+  input: application_id + '.desktop.in',
+  output: application_id + '.desktop',
   po_dir: po_dir,
   install: true,
   install_dir: join_paths(data_dir, 'applications')

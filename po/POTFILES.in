@@ -5,5 +5,5 @@ src/board_engine.c
 src/gweled-scores.c
 src/gweled.ui
 src/gweled-headermenu.ui
-data/gweled.desktop.in
+data/org.gweled.gweled.desktop.in
 data/org.gweled.gweled.appdata.xml.in

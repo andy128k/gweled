@@ -115,7 +115,7 @@ on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_2_0,
         "website", "https://gweled.org",
-	    "logo-icon-name", PACKAGE_NAME,
+	    "logo-icon-name", APPLICATION_ID,
         NULL);
 }
 

@@ -8,7 +8,7 @@
    <p>Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called &#34;Bejeweled&#34;, originally written by Sebastien Delestaing. The aim of the game is to make alignment of 3 or more gems, both vertically or horizontally by swapping adjacent gems. The game ends when there are no possible moves left.</p>
   </description>
 
-  <launchable type="desktop-id">gweled.desktop</launchable>
+  <launchable type="desktop-id">org.gweled.gweled.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+ and GFDL-1.3</project_license>
 
