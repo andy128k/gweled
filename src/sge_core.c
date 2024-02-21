@@ -60,9 +60,6 @@ ClutterActor *g_gameboard = NULL;
 
 ClutterActor *g_actor_layers[5] = {NULL, NULL, NULL, NULL, NULL};
 
-ClutterTimeline *timeline;
-
-
 GdkPixbuf *
 sge_get_pixbuf(gint index) {
     return g_pixbufs[index];
@@ -115,9 +112,14 @@ sge_destroy_object (gpointer object, gpointer user_data)
 	    clutter_actor_destroy (SGE_OBJECT(object)->actor);
         SGE_OBJECT(object)->actor = NULL;
 	}
+
+    if (SGE_OBJECT(object)->effect_handler_id) {
+        g_source_remove(SGE_OBJECT(object)->effect_handler_id);
+    }
+
 	g_object_list = g_list_remove (g_object_list, object);
 	g_free(object);
-  object = NULL;
+    object = NULL;
 }
 
 void
@@ -387,38 +389,6 @@ void sge_object_reset_effects (T_SGEObject *object)
     clutter_actor_restore_easing_state (object->actor);
 }
 
-void sge_object_blink_start (T_SGEObject *object)
-{    
-    object->blink = TRUE;
-    object->animation_status = TRUE;
-    clutter_timeline_start(timeline);
-}
-
-void sge_object_blink_stop (T_SGEObject *object)
-{
-    object->blink = FALSE;
-    sge_object_reset_effects(object);
-}
-
-gboolean
-sge_object_stop_bounce (gpointer data)
-{
-    T_SGEObject *object = SGE_OBJECT(data);
-
-    object->bounce = FALSE;
-    sge_object_reset_effects(object);
-
-    return FALSE;
-}
-
-void sge_object_bounce (T_SGEObject *object)
-{
-    object->bounce = TRUE;
-    object->animation_status = TRUE;
-    clutter_timeline_start(timeline);
-    g_timeout_add_seconds (2, sge_object_stop_bounce, object);
-}
-
 gboolean
 sge_object_exists (T_SGEObject *object)
 {
@@ -555,61 +525,104 @@ sge_objects_resize (gint size) {
     
 }
 
-
-
-/* Timeline handler */
-static void
-sge_clutter_frame_cb (ClutterTimeline *timeline, 
-	  gint             msecs,
-	  gpointer         data)
+gboolean
+sge_object_effects_cb (gpointer data)
 {
-    gint            i;
-    guint           progress = clutter_timeline_get_progress (timeline) * 360.0f;
-    T_SGEObject *object;
+    T_SGEObject *object = SGE_OBJECT(data);
 
-    if (progress < 360)
-        return;
+    if (object->effect == NONE) {
+        object->effect_status = TRUE;
+        sge_object_reset_effects (object);
+        return FALSE;
+    }
 
-    for (i = 0; i < g_list_length (g_object_list); i++) {
-		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
-		if (object->blink) {
-		    clutter_actor_save_easing_state (object->actor);
-            clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
-            clutter_actor_set_easing_duration (object->actor, 100);
-            if (object->animation_status) {
-                clutter_actor_set_opacity (object->actor, 155);
-                object->animation_status = FALSE;
-            }
-            else {
-                clutter_actor_set_opacity (object->actor, 255);
-                object->animation_status = TRUE;
-            }
-            clutter_actor_restore_easing_state (object->actor);
+    clutter_actor_save_easing_state (object->actor);
+
+    if (object->effect == BLINK) {
+
+        clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
+        clutter_actor_set_easing_duration (object->actor, 200);
+        if (object->effect_status) {
+            clutter_actor_set_opacity (object->actor, 155);
+            object->effect_status = FALSE;
+        }
+        else {
+            clutter_actor_set_opacity (object->actor, 255);
+            object->effect_status = TRUE;
         }
 
-        if (object->bounce) {
-		    clutter_actor_save_easing_state (object->actor);
+        object->effect_handler_id = g_timeout_add (200, sge_object_effects_cb, object);
+    }
+
+    if (object->effect == BOUNCE) {
             clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_IN_OUT_QUAD);
-            if (object->animation_status) {
-                clutter_actor_set_easing_duration (object->actor, 500);
+            if (object->effect_status) {
+                clutter_actor_set_easing_duration (object->actor, 350);
                 clutter_actor_set_position  (object->actor,
-                                            object->x * prefs.tile_size - (prefs.tile_size * 0.05),
-                                            object->y * prefs.tile_size + (prefs.tile_size * 0.2));
-                clutter_actor_set_size (object->actor, prefs.tile_size * 1.1, prefs.tile_size * 0.9);
+                                            object->x * prefs.tile_size,
+                                            object->y * prefs.tile_size + (prefs.tile_size * 0.07));
+                clutter_actor_set_scale  (object->actor, 1.1, 0.9);
 
-                object->animation_status = FALSE;
+                object->effect_status = FALSE;
+
+                object->effect_handler_id = g_timeout_add (350, sge_object_effects_cb, object);
             }
             else {
-                clutter_actor_set_easing_duration (object->actor, 250);
+                clutter_actor_set_easing_duration (object->actor, 150);
                 clutter_actor_set_position (object->actor, object->x * prefs.tile_size, object->y * prefs.tile_size);
-                clutter_actor_set_size (object->actor, prefs.tile_size, prefs.tile_size);
+                clutter_actor_set_scale (object->actor, 1, 1);
 
-                object->animation_status = TRUE;
+                object->effect_status = TRUE;
+
+                object->effect_handler_id = g_timeout_add (150, sge_object_effects_cb, object);
             }
-            clutter_actor_restore_easing_state (object->actor);
-        }
-	}
+    }
 
+    clutter_actor_restore_easing_state (object->actor);
+
+    return FALSE;
+}
+
+static void
+sge_object_start_effect (T_SGEObject *object, T_SGEEffect effect)
+{
+    // Sets the effect
+    object->effect = effect;
+    // Reset the effect repetition status
+    object->effect_status = TRUE;
+    sge_object_effects_cb(object);
+}
+
+static void
+sge_object_stop_effect (T_SGEObject *object) {
+    object->effect = NONE;
+    g_source_remove(object->effect_handler_id);
+    object->effect_handler_id = 0;
+    sge_object_reset_effects (object);
+}
+
+void sge_object_blink_start (T_SGEObject *object)
+{
+    sge_object_start_effect (object, BLINK);
+}
+
+void sge_object_blink_stop (T_SGEObject *object)
+{
+    sge_object_stop_effect (object);
+}
+
+gboolean
+sge_object_stop_bounce_cb (gpointer data)
+{
+    T_SGEObject *object = SGE_OBJECT(data);
+    sge_object_stop_effect (object);
+    return FALSE;
+}
+
+void sge_object_bounce (T_SGEObject *object)
+{
+    sge_object_start_effect (object, BOUNCE);
+    g_timeout_add_seconds (2, sge_object_stop_bounce_cb, object);
 }
 
 //objects creation/destruction
@@ -632,9 +645,8 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
     object->animating = FALSE;
 
-    object->blink = FALSE;
-    object->bounce = FALSE;
-    object->animation_status = FALSE;
+    object->effect = NONE;
+    object->effect_handler_id = 0;
 
 	object->layer = layer;
 
@@ -746,9 +758,7 @@ sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *t
 
     object->y_delay = 0;
 
-    object->blink = FALSE;
-    object->bounce = FALSE;
-    object->animation_status = FALSE;
+    object->effect_handler_id = 0;
 
 	object->layer = layer;
 
@@ -804,9 +814,7 @@ sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
 
     object->y_delay = 0;
 
-    object->blink = FALSE;
-    object->bounce = FALSE;
-    object->animation_status = FALSE;
+    object->effect_handler_id = 0;
 
 	object->layer = layer;
 
@@ -856,17 +864,6 @@ sge_destroy (void)
 		g_object_unref (g_pixbufs[i]);
 	g_free (g_pixbufs);
 
-    g_object_unref(timeline);
-}
-
-void
-sge_pause_timeline() {
-    clutter_timeline_pause (timeline);
-}
-
-void
-sge_start_timeline() {
-    clutter_timeline_start (timeline);
 }
 
 // creation/destruction
@@ -915,11 +912,4 @@ sge_init (void)
 
         clutter_actor_show (g_actor_layers[i]);
 	}
-
-    /* Create a timeline to manage animation */
-    timeline = clutter_timeline_new (CLUTTER_TIMELINE_DURATION);
-    clutter_timeline_set_repeat_count (timeline, -1);
-
-    /* fire a callback for frame change */
-    g_signal_connect (timeline, "new-frame",  G_CALLBACK (sge_clutter_frame_cb), NULL);
 }

@@ -152,8 +152,6 @@ on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 
     gweled_stop_game ();
 
-    sge_pause_timeline();
-
     welcome_screen_visibility (TRUE);
 }
 
@@ -176,7 +174,6 @@ on_pause_activate_cb (GtkWidget *button, gpointer user_data)
 gboolean
 board_start (gpointer data)
 {
-    sge_start_timeline();
     gweled_start_new_game ();
     respawn_board_engine_loop();
     return FALSE;

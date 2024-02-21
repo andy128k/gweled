@@ -32,6 +32,13 @@ typedef enum e_sge_layers
     TEXT_LAYER
 } T_SGELayer;
 
+typedef enum e_sge_effect
+{
+    NONE,
+    BLINK,
+    BOUNCE,
+} T_SGEEffect;
+
 typedef uint32_t T_SGEColor;
 
 typedef struct s_sge_text_data
@@ -61,9 +68,10 @@ typedef struct s_sge_object
   gboolean animating;
   gulong animating_handler_id;
 
-	gboolean blink;
-	gboolean bounce;
-	gboolean animation_status;
+  T_SGEEffect effect;
+  guint effect_handler_id;
+  gboolean effect_status;
+
 	gint pixbuf_id;
 
 	T_SGETextData *text_data;
@@ -125,11 +133,5 @@ sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data);
 
 T_SGEObject *
 sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *text_data);
-
-void
-sge_start_timeline();
-
-void
-sge_pause_timeline();
 
 #endif
