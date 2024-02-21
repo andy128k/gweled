@@ -7,210 +7,161 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 20:00+0100\n"
-"PO-Revision-Date: 2012-12-27 09:19+0000\n"
+"POT-Creation-Date: 2024-01-19 12:47+0100\n"
+"PO-Revision-Date: 2024-01-20 14:46+0000\n"
 "Last-Translator: Hans Joachim Desserud <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
-"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-12-28 05:16+0000\n"
-"X-Generator: Launchpad (build 16378)\n"
+"X-Launchpad-Export-Date: 2024-02-21 11:44+0000\n"
+"X-Generator: Launchpad (build 9643586c585856148a18782148972ae9c1179d06)\n"
+"Language: nb\n"
 
-#: src/main.c:280
-msgid "Game over!"
-msgstr "Spillet er slutt!"
+#: src/gweled-gui.c:58 src/gweled.ui:153
+msgid "Normal"
+msgstr "Normal"
 
-#: src/main.c:282
-msgid "Great work, but unfortunately your score did not make the top ten."
+#: src/gweled-gui.c:62 src/gweled.ui:211
+msgid "Timed"
+msgstr "På tid"
+
+#: src/gweled-gui.c:66 src/gweled.ui:269
+msgid "Endless"
+msgstr "Endeløs"
+
+#: src/gweled-gui.c:108
+msgid "translator-credits"
 msgstr ""
-"Godt gjort, men dessverre nådde ikke poengsummen din opp blant de ti beste."
+"Launchpad Contributions:\n"
+"  Daniele Napolitano https://launchpad.net/~dnax88\n"
+"  Hans Joachim Desserud https://launchpad.net/~hjd"
 
-#: src/main.c:284
-msgid "_New Game"
-msgstr "_Nytt spill"
+#: src/gweled-gui.c:113
+msgid "A puzzle game with gems"
+msgstr "Puslespill med edelstener"
 
-#: src/main.c:296
-msgid "Gweled Scores"
-msgstr "Gweled resultater"
+#: src/gweled-gui.c:140
+msgid "Do you really want to abort this game?"
+msgstr "Er du sikker på at du vil avbryte dette spillet?"
 
-#: src/main.c:299
+#: src/gweled-gui.c:225
+msgid "Do you want to save the current game?"
+msgstr "Vil du lagre gjeldende spill?"
+
+#: src/gweled-gui.c:420
+msgid "There is a game saved, do you want restore it?"
+msgstr "Det finnes et lagret spill, vil du fortsette på det?"
+
+#: src/board_engine.c:552
+msgid "_Resume"
+msgstr "_Fortsett"
+
+#: src/board_engine.c:554 src/board_engine.c:557
+msgid "Paused"
+msgstr "Pauset"
+
+#: src/board_engine.c:563 src/gweled.ui:385
+msgid "_Pause"
+msgstr "_Pause"
+
+#: src/board_engine.c:636
+msgid "Time's up!"
+msgstr "Tiden er ute!"
+
+#. Game over
+#: src/board_engine.c:790 src/board_engine.c:800
+msgid "No moves left!"
+msgstr "Ingen flere trekk!"
+
+#: src/board_engine.c:829 src/board_engine.c:898 src/board_engine.c:967
+#, c-format
+msgid "Level %d"
+msgstr "Nivå %d"
+
+#: src/board_engine.c:831
+#, c-format
+msgid "Bonus x%d"
+msgstr "Bonus x%d"
+
+#: src/gweled-scores.c:39
+msgctxt "game type"
+msgid "Normal"
+msgstr "Normal"
+
+#: src/gweled-scores.c:40
+msgctxt "game type"
+msgid "Timed"
+msgstr "På tid"
+
+#. Translators: label displayed on the scores dialog, preceding a difficulty.
+#: src/gweled-scores.c:106
 msgid "Game type:"
 msgstr "Spilltype:"
 
-#: src/main.c:306
-msgid "Congratulations!"
-msgstr "Gratulerer!"
+#: src/gweled.ui:57
+msgid "Score:"
+msgstr "Poeng:"
 
-#: src/main.c:307
-msgid "Your score is the best!"
-msgstr "Din poengsum er den beste!"
+#: src/gweled.ui:110
+msgid "Welcome to Gweled!"
+msgstr "Velkommen til Gweled!"
 
-#: src/main.c:308
-msgid "Your score has made the top ten."
-msgstr "Din poengsum er blant de ti beste."
-
-#: src/main.c:396
+#: src/gweled.ui:169
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 "Oppnå så mange poeng som mulig. Spillet er slutt når du slipper opp for "
 "muligheter til å flytte."
 
-#: src/main.c:398
+#: src/gweled.ui:227
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr "Oppnå så mange poeng som mulig. Spillet er slutt når tiden er ute."
 
-#: src/main.c:400
+#: src/gweled.ui:285
 msgid "The game never ends, but your score will not be saved."
-msgstr "Spillet slutter aldri, men poengsummen vil ikke bli lagret."
+msgstr "Spillet tar aldri slutt, men poengsummen lagres ikke."
 
-#: src/main.c:452
-msgid "There is a game saved, do you want restore it?"
-msgstr "Det er et lagret spill, vil du gjenoppta det?"
+#: src/gweled.ui:356
+msgid "_New Game"
+msgstr "_Nytt spill"
 
-#: src/callbacks.c:73
-msgid "Do you really want to abort this game?"
-msgstr "Vil du virkelig avbryte spillet?"
+#: src/gweled.ui:368
+msgid "Menu"
+msgstr "Meny"
 
-#: src/callbacks.c:138
-msgid "Do you want to save the current game?"
-msgstr "Vil du lagre gjeldende spill?"
-
-#: src/callbacks.c:173
-msgid "translator-credits"
-msgstr ""
-"Launchpad Contributions:\n"
-"  Hans Joachim Desserud https://launchpad.net/~hjd"
-
-#: src/callbacks.c:178
-msgid "A puzzle game with gems"
-msgstr "Puslespill med juveler"
-
-#: src/board_engine.c:505
-msgid "_Resume"
-msgstr "_Fortsett"
-
-#: src/board_engine.c:508
-msgid "Paused"
-msgstr "Pauset"
-
-#: src/board_engine.c:518 data/gweled.ui:44
-msgid "_Pause"
-msgstr "_Pause"
-
-#: src/board_engine.c:827 src/board_engine.c:897 src/board_engine.c:999
-#, c-format
-msgid "Level %d"
-msgstr "Nivå %d"
-
-#: src/games-scores-dialog.c:118 src/games-scores-dialog.c:545
-msgid "Score"
-msgstr "Poeng"
-
-#: src/games-scores-dialog.c:437
-msgid "New Game"
-msgstr "Nytt spill"
-
-#: src/games-scores-dialog.c:537
-msgid "Name"
-msgstr "Navn"
-
-#: data/gweled.ui:24
-msgid "_Game"
-msgstr "_Spill"
-
-#: data/gweled.ui:43
+#: src/gweled.ui:389
 msgid "Pauses the game for you can return to it later"
-msgstr "Pauser spillet så du kan komme tilbake til det senere."
+msgstr "Pauser spillet så du kan fortsette senere"
 
-#: data/gweled.ui:58
+#: src/gweled-headermenu.ui:22
+msgid "_Sound effects"
+msgstr "_Lydeffekter"
+
+#: src/gweled-headermenu.ui:26
+msgid "_Hints"
+msgstr "_Hint"
+
+#: src/gweled-headermenu.ui:32
 msgid "_Scores"
 msgstr "_Poeng"
 
-#: data/gweled.ui:85
-msgid "_Settings"
-msgstr "_Innstillinger"
+#: src/gweled-headermenu.ui:36
+msgid "_About"
+msgstr "_Om"
 
-#: data/gweled.ui:106
-msgid "_Help"
-msgstr "_Hjelp"
-
-#: data/gweled.ui:175
-msgid "Welcome to Gweled!"
-msgstr "Velkommen til Gweled!"
-
-#: data/gweled.ui:219
-msgid "Normal"
-msgstr "Normal"
-
-#: data/gweled.ui:270
-msgid "Timed"
-msgstr "Med tidsbegrensning"
-
-#: data/gweled.ui:322
-msgid "Endless"
-msgstr "Uendelig"
-
-#: data/gweled.ui:382
-msgid "Score:"
-msgstr "Poeng:"
-
-#: data/gweled.ui:415
-msgid "Preferences"
-msgstr "Brukervalg"
-
-#: data/gweled.ui:439
-msgid "Board size"
-msgstr "Brettstrørrelse"
-
-#: data/gweled.ui:456
-msgid "Small"
-msgstr "Lite"
-
-#: data/gweled.ui:477
-msgid "Medium"
-msgstr "Middels"
-
-#: data/gweled.ui:499
-msgid "Large"
-msgstr "Stort"
-
-#: data/gweled.ui:525
-msgid "Sound"
-msgstr "Lyd"
-
-#: data/gweled.ui:542
-msgid "Play sound effects"
-msgstr "Spill lydeffekter"
-
-#: data/gweled.ui:573
-msgid "Miscellaneous"
-msgstr ""
-
-#: data/gweled.ui:590
-msgid "Disable hints"
-msgstr ""
-
-#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
+#: data/org.gweled.gweled.desktop.in:3 data/org.gweled.gweled.appdata.xml.in:5
 msgid "Gweled"
 msgstr "Gweled"
 
-#: data/gweled.desktop.in:4
+#: data/org.gweled.gweled.desktop.in:4
 msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr "Spill et puslespill likt spillet \"Diamond Mine\""
-
-#. TRANSLATORS: Do NOT translate or transliterate this text!
-#. This is an icon file name
-#: data/gweled.desktop.in:8
-msgid "gweled"
 msgstr ""
 
-#: data/gweled.appdata.xml.in:9
+#: data/org.gweled.gweled.appdata.xml.in:6
 msgid "Bejeweled like real time strategic puzzle game"
-msgstr ""
+msgstr "Strategisk puslespill som Bejeweled"
 
-#: data/gweled.appdata.xml.in:11
+#: data/org.gweled.gweled.appdata.xml.in:8
 msgid ""
 "Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
 "\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
@@ -218,3 +169,8 @@ msgid ""
 "by swapping adjacent gems. The game ends when there are no possible moves "
 "left."
 msgstr ""
+"Gweled er en GTK+ versjon av det populære PalmOS/Windows/Java-spillet "
+"\"Bejeweled\", opprinnelig laget av Sebastien Delestaing. Målet med spillet "
+"er å få tre eller flere edelstener på rad, enten horisontalt eller vertikalt "
+"ved å bytte om på edelstener ved siden av hverandre. Spillet er over når du "
+"ikke har flere trekk igjen."
