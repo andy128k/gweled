@@ -74,13 +74,13 @@ void load_preferences(void)
 gboolean is_present_saved_game()
 {
     gchar *filename;
-    filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
-    if (g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)){
-        g_free(filename);
-        return TRUE;
-    }
+    gboolean test;
 
-    return FALSE;
+    filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
+    test = g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR);
+
+    g_free(filename);
+    return test;
 }
 
 void
@@ -133,6 +133,7 @@ void remove_saved_game()
     if (g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)){
         unlink(filename);
     }
+    g_free(filename);
 }
 
 static void

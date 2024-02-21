@@ -649,7 +649,6 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     gtk_clutter_texture_set_from_pixbuf (GTK_CLUTTER_TEXTURE (object->actor),
                                          GDK_PIXBUF(g_pixbufs[pixbuf_id]), &error);
 
-    clutter_actor_set_name(object->actor, g_strdup_printf ("pixbuf #%d", pixbuf_id));
     clutter_actor_set_size (CLUTTER_ACTOR(object->actor),
                             object->width,
                             object->height);
@@ -903,7 +902,6 @@ sge_init (void)
 	for (i = 0; i < 5; i++) {
 	    g_actor_layers[i] = clutter_actor_new();
 	    
-	    clutter_actor_set_name(g_actor_layers[i], g_strdup_printf ("Level %d\n", i));
 	    clutter_actor_set_easing_mode(g_actor_layers[i], CLUTTER_LINEAR);
         clutter_actor_set_easing_duration (g_actor_layers[i], 200);
         clutter_actor_set_position(g_actor_layers[i], 0, 0);
