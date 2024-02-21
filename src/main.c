@@ -156,7 +156,6 @@ gweled_activate_cb (GApplication *app, gpointer user_data)
     gtk_main();
 }
 
-
 int main (int argc, char **argv)
 {
 	GtkApplication *app;
@@ -189,11 +188,9 @@ int main (int argc, char **argv)
     g_set_application_name("Gweled");
 
 	status = g_application_run (G_APPLICATION (app), argc, argv);
-    g_object_unref (app);
 
-	//sge_destroy ();
-	if(board_engine_id)
-	    g_source_remove (board_engine_id);
+    g_object_run_dispose (G_OBJECT (app));
+    g_clear_object (&app);
 
 	return status;
 }

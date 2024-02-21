@@ -211,7 +211,7 @@ gweled_set_current_score (gint score)
 }
 
 
-void
+gboolean
 gweled_ui_destroy(GtkWidget *window, gpointer user_data)
 {
     GtkWidget *dialog;
@@ -238,9 +238,11 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
     
     g_rand_free (g_random_generator);
     
-    gtk_widget_destroy(gweled_ui->main_window);
+    sge_destroy ();
+    gtk_widget_destroy (window);
+    gtk_main_quit();
 
-	gtk_main_quit ();
+    return FALSE;
 }
 
 

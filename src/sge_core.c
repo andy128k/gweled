@@ -848,9 +848,16 @@ sge_destroy (void)
 {
 	int i;
 
+    sge_destroy_all_objects();
+
+    clutter_actor_destroy_all_children (g_gameboard);
+    clutter_actor_destroy (g_gameboard);
+
 	for (i = 0; i < gi_nb_pixbufs; i++)
 		g_object_unref (g_pixbufs[i]);
 	g_free (g_pixbufs);
+
+    g_object_unref(timeline);
 }
 
 void
