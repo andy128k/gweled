@@ -110,6 +110,7 @@ extern guint board_engine_id;
 extern GweledPrefs prefs;
 
 gchar
+gint
 get_new_tile (void)
 {
 	int i;
@@ -243,6 +244,8 @@ void
 gweled_refill_board (void)
 {
 	gint i, j, k;
+    gint last_tile = -1;
+    gint same_tile_count = 1;
 	g_debug("gweled_refill_board():");
 
 	for (i = 0; i < BOARD_WIDTH; i++)
@@ -257,6 +260,23 @@ gweled_refill_board (void)
 					    g_gem_objects[i][k - 1];
 				}
 				gpc_game_board[i][0] = get_new_tile ();
+
+                // Keeps count of gems of the same type in a row
+                if (last_tile == gpc_game_board[i][0])
+                    same_tile_count++;
+                else
+                    same_tile_count = 1;
+
+                // If we have at least 3 gems in a row, let's change it.
+                if (same_tile_count >= 3) {
+                    g_debug("##### 3 gems in a row!!\n");
+                    do  {
+                        gpc_game_board[i][0] = get_new_tile ();
+                    } while (last_tile == gpc_game_board[i][0]);
+                }
+
+                last_tile = gpc_game_board[i][0];
+
 				gi_nb_of_tiles[gpc_game_board[i][0]]++;
 
 				// make sure the new tile appears outside of the screen (1st row is special-cased)
