@@ -816,7 +816,7 @@ board_engine_loop (gpointer data)
 
 	case _BOARD_REFILLING:
         if (!sge_objects_are_moving_on_layer (GEMS_LAYER)) {
-			if (gi_total_gems_removed >= gi_next_bonus_at) {
+			if (gi_total_gems_removed >= gi_next_bonus_at && prefs.game_mode != ENDLESS_MODE) {
 				gi_previous_bonus_at = gi_next_bonus_at;
 				gi_next_bonus_at *= 2;
 
