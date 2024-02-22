@@ -43,14 +43,14 @@
 
 void gweled_remove_gems_and_update_score (void);
 
-enum {
+typedef enum e_game_state {
 	_IDLE,
 	_FIRST_GEM_CLICKED,
 	_SECOND_GEM_CLICKED,
 	_ILLEGAL_MOVE,
 	_MARK_ALIGNED_GEMS,
 	_BOARD_REFILLING
-};
+} T_GameState;
 
 typedef enum e_alignment_dir
 {
@@ -95,7 +95,7 @@ gboolean g_do_not_score;
 T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 unsigned char gpc_bit_n[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-static gint gi_state = _IDLE;
+static T_GameState gi_state = _IDLE;
 
 static GList *g_alignment_list;
 
