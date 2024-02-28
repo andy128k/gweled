@@ -109,7 +109,6 @@ extern gint gi_cursor_pixbuf;
 extern guint board_engine_id;
 extern GweledPrefs prefs;
 
-gchar
 gint
 get_new_tile (void)
 {
