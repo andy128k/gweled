@@ -150,39 +150,41 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 gboolean
 gweled_gems_ready_to_fall_check (gpointer data)
 {
-    if (!sge_objects_are_moving_on_layer (GEMS_LAYER)) {
-        ready_to_fall = TRUE;
-        gweled_gems_fall_into_place(FALSE);
-        return FALSE;
-    }
-    return TRUE;
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER))
+        g_timeout_add (10, gweled_gems_ready_to_fall_check, data);
+    else
+        gweled_gems_fall_into_place (GPOINTER_TO_INT(data));
+
+    return FALSE;
 }
 
 void
-gweled_gems_fall_into_place (gboolean with_delay)
+gweled_gems_fall_into_place (gboolean new_board_animation)
 {
 	gint i, j;
-    g_print("gweled_gems_fall_into_place() delay:%d\n", with_delay);
+    gint delay_incr = 0;
 
-    if (!with_delay) {
-        if (!ready_to_fall) {
-            g_timeout_add (10, gweled_gems_ready_to_fall_check, NULL);
-            return;
-        }
-
-        ready_to_fall = FALSE;
+    // Avoid gems falling if there are something moving/animating.
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        g_timeout_add (10, gweled_gems_ready_to_fall_check, GINT_TO_POINTER(new_board_animation));
+        return;
     }
 
-    for (j = 0; j < BOARD_HEIGHT; j++) {
-        for (i = 0; i < BOARD_WIDTH; i++) {
+    for (i = BOARD_WIDTH - 1; i >= 0; i--) {
+        delay_incr = 0;
+        for (j = BOARD_HEIGHT - 1; j >= 0; j--) {
 
-            if (with_delay)
-                sge_object_fall_to_with_delay (g_gem_objects[i][j],
-                                               j, (i * 100) + ((BOARD_HEIGHT - j) * 50));
+            if (g_gem_objects[i][j]->y == j) continue;
+
+            if (new_board_animation)
+                sge_object_fall_to_with_effect (g_gem_objects[i][j], j,
+                                    (i * 100) + ((BOARD_HEIGHT - j) * 50));
             else
-                sge_object_fall_to (g_gem_objects[i][j], j);
+                sge_object_fall_to (g_gem_objects[i][j], j,
+                                    delay_incr * 20);
+
+            delay_incr++;
         }
-		//g_print("\n\e[0m");
     }
 
 }

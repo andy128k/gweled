@@ -100,8 +100,8 @@ void sge_destroy_all_objects_on_level(T_SGELayer level);
 void sge_destroy_all_objects(void);
 
 void sge_object_move_to(T_SGEObject *object, gint dest_x, gint dest_y);
-void sge_object_fall_to(T_SGEObject *object, gint dest_y);
-void sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay);
+void sge_object_fall_to (T_SGEObject * object, gint y_pos, gint delay);
+void sge_object_fall_to_with_effect (T_SGEObject * object, gint y_pos, gint delay);
 
 gboolean sge_object_is_moving(T_SGEObject *object);
 gboolean sge_objects_are_moving_on_layer(T_SGELayer layer);

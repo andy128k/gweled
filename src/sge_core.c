@@ -165,10 +165,7 @@ sge_destroy_on_specific_transition_ended (ClutterTimeline *timeline,
 
 void
 sge_finished_animation (ClutterActor *actor,
-                         char         *name,
-                         gboolean      is_finished,
-                         gpointer      object) {
-
+                        gpointer      object) {
 
     SGE_OBJECT(object)->animating = FALSE;
     g_signal_handler_disconnect (actor, SGE_OBJECT(object)->animating_handler_id);
@@ -191,27 +188,26 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
   clutter_actor_set_position (object->actor, dest_x * prefs.tile_size, dest_y * prefs.tile_size);
   clutter_actor_restore_easing_state (object->actor);
 
-  object->animating_handler_id = g_signal_connect (object->actor, "transition-stopped",
+  object->animating_handler_id = g_signal_connect (object->actor, "transitions-completed",
 		    G_CALLBACK (sge_finished_animation),
 		    object);
 }
 
 void
-sge_object_fall_to (T_SGEObject * object, gint y_pos)
+sge_object_fall_to (T_SGEObject * object, gint y_pos, gint delay)
 {
-    if (object->y == y_pos) return;
-
     object->animating = TRUE;
 
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_CUBIC);
     clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_easing_delay (object->actor, delay);
     clutter_actor_set_position (object->actor, object->x * prefs.tile_size, y_pos * prefs.tile_size);
     clutter_actor_restore_easing_state (object->actor);
 
     object->y = y_pos;
 
-    object->animating_handler_id = g_signal_connect (object->actor, "transition-stopped",
+    object->animating_handler_id = g_signal_connect (object->actor, "transitions-completed",
 		    G_CALLBACK (sge_finished_animation),
 		    object);
 
@@ -219,7 +215,7 @@ sge_object_fall_to (T_SGEObject * object, gint y_pos)
 
 // Used only for the game start animation
 void
-sge_object_fall_to_with_delay (T_SGEObject * object, gint y_pos, gint delay)
+sge_object_fall_to_with_effect (T_SGEObject * object, gint y_pos, gint delay)
 {
     object->y = y_pos;
   
@@ -244,15 +240,14 @@ sge_objects_are_moving_on_layer (T_SGELayer layer)
 {
 	gint i;
 	T_SGEObject *object;
-  gboolean moving = FALSE;
+    gboolean moving = FALSE;
 
 	for (i = 0; i < g_list_length (g_object_list); i++) {
 		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
-		if (object->layer == layer)
-			if (sge_object_is_moving (object)) {
-				moving = TRUE;
-        break;
-      }
+		if (object->layer == layer && sge_object_is_moving (object)) {
+			moving = TRUE;
+            break;
+        }
 	}
 
 	return moving;
@@ -306,7 +301,6 @@ void sge_gem_destroy (T_SGEObject *object)
 
     object->animating = TRUE;
 
-    clutter_actor_set_scale (object->actor, 1, 1);
 
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode (object->actor, CLUTTER_EASE_OUT_CUBIC);
