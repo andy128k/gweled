@@ -140,8 +140,8 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 
     sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BACK);
 
-    if (lifetime != -1)
-        sge_object_fadeout(object, lifetime);
+    if (lifetime > 0)
+        sge_object_fadeout(object, lifetime, 500);
 
 }
 

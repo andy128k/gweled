@@ -571,7 +571,7 @@ board_set_pause(gboolean value)
     if(value == TRUE) {
     	gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
 
-        gweled_draw_game_message(_("Paused"), -1);
+        gweled_draw_game_message(_("Paused"), 0);
 
         last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
@@ -653,7 +653,7 @@ board_engine_loop (gpointer data)
 		gi_total_gems_removed -= g_steps_for_timer;
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
 
-			gweled_draw_game_message (_("Time's up!"), -1);
+			gweled_draw_game_message (_("Time's up!"), 0);
             sge_set_layer_opacity(GEMS_LAYER, 128);
 
             // Removes any gem that is still activated
@@ -775,7 +775,7 @@ board_engine_loop (gpointer data)
 			}
 			// fadeout cursors
 			if (cursor[0])
-				sge_object_fadeout (cursor[0], 0);
+				sge_object_fadeout (cursor[0], 0, 200);
 			cursor[0] = NULL;
 			cursor[1] = NULL;
 		}
@@ -817,7 +817,7 @@ board_engine_loop (gpointer data)
 				} else {
 				    // Game over
 
-					gweled_draw_game_message (_("No moves left!"), -1);
+					gweled_draw_game_message (_("No moves left!"), 0);
                     sge_set_layer_opacity(GEMS_LAYER, 128);
                     gtk_widget_hide(gweled_ui->g_pause_game_btn);
 					gi_game_running = FALSE;

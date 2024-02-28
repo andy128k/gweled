@@ -274,19 +274,20 @@ void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity)
 
 
 // fadeout the object and then destroy it
-void sge_object_fadeout (T_SGEObject *object, guint delay_secs)
+void sge_object_fadeout (T_SGEObject *object, guint delay_secs, guint duration)
 {
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode(object->actor, CLUTTER_LINEAR);
-    clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_easing_duration (object->actor, duration);
     clutter_actor_set_easing_delay(object->actor, delay_secs * 1000);
     clutter_actor_set_opacity (object->actor, 0);
+
+    ClutterTransition *transition = clutter_actor_get_transition (object->actor, "opacity");
+    g_signal_connect (transition, "stopped",
+	        G_CALLBACK (sge_destroy_on_specific_transition_ended),
+	        object);
+    
     clutter_actor_restore_easing_state (object->actor);
-    
-    g_signal_connect (object->actor, "transition-stopped",
-		    G_CALLBACK (sge_destroy_on_transition_ended), 
-		    object);
-    
 }
 
 void

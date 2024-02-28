@@ -109,7 +109,7 @@ gboolean sge_objects_are_moving_on_layer(T_SGELayer layer);
 void sge_set_layer_visibility (T_SGELayer layer, gboolean visibility);
 void sge_set_layer_opacity (T_SGELayer layer, guint8 opacity);
 
-void sge_object_fadeout (T_SGEObject *object, guint delay_secs);
+void sge_object_fadeout (T_SGEObject *object, guint delay_secs, guint duration);
 void sge_object_zoomout (T_SGEObject *object);
 void sge_gem_destroy (T_SGEObject *object);
 
