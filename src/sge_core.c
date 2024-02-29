@@ -194,13 +194,13 @@ sge_object_move_to (T_SGEObject * object, gint dest_x, gint dest_y)
 }
 
 void
-sge_object_fall_to (T_SGEObject * object, gint y_pos, gint delay)
+sge_object_fall_to (T_SGEObject * object, gint y_pos, gint delay, gint speed)
 {
     object->animating = TRUE;
 
     clutter_actor_save_easing_state (object->actor);
     clutter_actor_set_easing_mode(object->actor, CLUTTER_EASE_OUT_CUBIC);
-    clutter_actor_set_easing_duration (object->actor, 200);
+    clutter_actor_set_easing_duration (object->actor, speed);
     clutter_actor_set_easing_delay (object->actor, delay);
     clutter_actor_set_position (object->actor, object->x * prefs.tile_size, y_pos * prefs.tile_size);
     clutter_actor_restore_easing_state (object->actor);
@@ -210,7 +210,6 @@ sge_object_fall_to (T_SGEObject * object, gint y_pos, gint delay)
     object->animating_handler_id = g_signal_connect (object->actor, "transitions-completed",
 		    G_CALLBACK (sge_finished_animation),
 		    object);
-
 }
 
 // Used only for the game start animation

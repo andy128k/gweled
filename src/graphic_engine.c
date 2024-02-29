@@ -163,6 +163,7 @@ gweled_gems_fall_into_place (gboolean new_board_animation)
 {
 	gint i, j;
     gint delay_incr = 0;
+    gint max_height = 0;
 
     // Avoid gems falling if there are something moving/animating.
     if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
@@ -176,12 +177,18 @@ gweled_gems_fall_into_place (gboolean new_board_animation)
 
             if (g_gem_objects[i][j]->y == j) continue;
 
+            if (max_height < j)
+                max_height = j;
+
             if (new_board_animation)
                 sge_object_fall_to_with_effect (g_gem_objects[i][j], j,
                                     (i * 100) + ((BOARD_HEIGHT - j) * 50));
             else
                 sge_object_fall_to (g_gem_objects[i][j], j,
-                                    delay_incr * 20);
+                                    // delay incremental
+                                    delay_incr * 25,
+                                    // trying to have the same speed regardless the destination
+                                    100 + 20 * max_height);
 
             delay_incr++;
         }
