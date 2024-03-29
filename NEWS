@@ -1,7 +1,27 @@
-1.0
+1.0-beta1
 ======
 
-  Released: tbd
+  Released: 2024-03-29
+
+  Features:
+    * Fixed 0 points on a intersect of two perpendicular lines (fixes lp#926449)
+    * Restored board filling animation on new game
+    * Removed level bonuses on endless game mode
+    * Improved gem animations and better timing of subsequent gem destroy
+    * Renamed icon and appdata to org.gweled.gweled
+    * Avoids spawning 3 or more gems of the same type in a row 
+    * Started Flatpak support
+    * Updated Italian, Spanish and Norwegian Bokmal translations
+    * Other small improvements...
+    
+  Known bugs:
+    * No custom messages if your score is not in the first 10 ones
+
+
+1.0-alpha1
+======
+
+  Released: 2023-11-09
 
   Features:
     * Ported to Gtk3

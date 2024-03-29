@@ -1,5 +1,5 @@
 project('gweled', 'c',
-  version: '1.0-alpha',
+  version: '1.0-beta1',
   meson_version: '>= 0.59.0',
   license: 'GPL-2.0-or-later',
 )
