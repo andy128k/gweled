@@ -237,7 +237,6 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
     
     sge_destroy ();
     gtk_widget_destroy (window);
-    gtk_main_quit();
 
     return FALSE;
 }
@@ -309,7 +308,7 @@ gweled_ui_init (GApplication *app)
     gtk_window_set_default_size (GTK_WINDOW (gweled_ui->main_window),
                                BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
 
-    gtk_widget_realize (gweled_ui->main_window);
+    gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(gweled_ui->main_window));
 
     // Clutter scene
     gweled_ui->g_clutter = gtk_clutter_embed_new ();
@@ -395,8 +394,6 @@ gweled_ui_init (GApplication *app)
     g_action_map_add_action_entries (G_ACTION_MAP (actions), entries, G_N_ELEMENTS (entries), gweled_ui->main_window);
     gtk_menu_button_set_menu_model(gweled_ui->g_menu_button, gweled_ui->headermenu);
     g_object_unref(G_OBJECT(menu_builder));
-	
-	gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(gweled_ui->main_window));
 
     gweled_init_scores(GTK_WINDOW(gweled_ui->main_window));
 
