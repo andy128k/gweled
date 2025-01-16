@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-19 12:47+0100\n"
-"PO-Revision-Date: 2024-02-04 00:58+0000\n"
-"Last-Translator: bufalo_1973 <Unknown>\n"
+"PO-Revision-Date: 2024-05-20 16:51+0000\n"
+"Last-Translator: Carlos Carreno <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-02-21 11:44+0000\n"
-"X-Generator: Launchpad (build 9643586c585856148a18782148972ae9c1179d06)\n"
+"X-Launchpad-Export-Date: 2025-01-15 23:56+0000\n"
+"X-Generator: Launchpad (build 6394e03793719e8d73f5a60b5439440e693c92f1)\n"
 "Language: es\n"
 
 #: src/gweled-gui.c:58 src/gweled.ui:153
@@ -24,11 +24,11 @@ msgstr "Normal"
 
 #: src/gweled-gui.c:62 src/gweled.ui:211
 msgid "Timed"
-msgstr ""
+msgstr "Cronometrado"
 
 #: src/gweled-gui.c:66 src/gweled.ui:269
 msgid "Endless"
-msgstr ""
+msgstr "Sin fin"
 
 #: src/gweled-gui.c:108
 msgid "translator-credits"
@@ -37,6 +37,7 @@ msgstr ""
 "  Albert Parera https://launchpad.net/~aparera\n"
 "  Alejandro Moreno Calvo https://launchpad.net/~almorca\n"
 "  Antonio Caro https://launchpad.net/~antonio-gon\n"
+"  Carlos Carreno https://launchpad.net/~carlos-carreno\n"
 "  DiegoJ https://launchpad.net/~diegojromerolopez\n"
 "  Jonay https://launchpad.net/~jonay-santana\n"
 "  Juan Gacitua https://launchpad.net/~jotafrisco\n"
@@ -45,7 +46,7 @@ msgstr ""
 
 #: src/gweled-gui.c:113
 msgid "A puzzle game with gems"
-msgstr "Un juego de puzles con gemas"
+msgstr "Un juego de rompecabezas con gemas"
 
 #: src/gweled-gui.c:140
 msgid "Do you really want to abort this game?"
@@ -73,12 +74,12 @@ msgstr "_Pausar"
 
 #: src/board_engine.c:636
 msgid "Time's up!"
-msgstr ""
+msgstr "¡Se acabó el tiempo!"
 
 #. Game over
 #: src/board_engine.c:790 src/board_engine.c:800
 msgid "No moves left!"
-msgstr ""
+msgstr "¡No quedan movimientos!"
 
 #: src/board_engine.c:829 src/board_engine.c:898 src/board_engine.c:967
 #, c-format
@@ -88,17 +89,17 @@ msgstr "Nivel %d"
 #: src/board_engine.c:831
 #, c-format
 msgid "Bonus x%d"
-msgstr ""
+msgstr "Bonificación x%d"
 
 #: src/gweled-scores.c:39
 msgctxt "game type"
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/gweled-scores.c:40
 msgctxt "game type"
 msgid "Timed"
-msgstr ""
+msgstr "Cronometrado"
 
 #. Translators: label displayed on the scores dialog, preceding a difficulty.
 #: src/gweled-scores.c:106
@@ -107,11 +108,11 @@ msgstr "Tipo de partida:"
 
 #: src/gweled.ui:57
 msgid "Score:"
-msgstr ""
+msgstr "Puntuación:"
 
 #: src/gweled.ui:110
 msgid "Welcome to Gweled!"
-msgstr ""
+msgstr "¡Bienvenido a Gweled!"
 
 #: src/gweled.ui:169
 msgid "Get as many points as you can. The game ends if you run out of moves."
@@ -135,39 +136,39 @@ msgstr "_Nueva partida"
 
 #: src/gweled.ui:368
 msgid "Menu"
-msgstr ""
+msgstr "Menú"
 
 #: src/gweled.ui:389
 msgid "Pauses the game for you can return to it later"
-msgstr ""
+msgstr "Pone en pausa el juego para que pueda volver a él más tarde."
 
 #: src/gweled-headermenu.ui:22
 msgid "_Sound effects"
-msgstr ""
+msgstr "_Efectos de sonido"
 
 #: src/gweled-headermenu.ui:26
 msgid "_Hints"
-msgstr ""
+msgstr "_Sugerencias"
 
 #: src/gweled-headermenu.ui:32
 msgid "_Scores"
-msgstr ""
+msgstr "_Puntuaciones"
 
 #: src/gweled-headermenu.ui:36
 msgid "_About"
-msgstr ""
+msgstr "_Acerca de:"
 
 #: data/org.gweled.gweled.desktop.in:3 data/org.gweled.gweled.appdata.xml.in:5
 msgid "Gweled"
-msgstr ""
+msgstr "Gweled"
 
 #: data/org.gweled.gweled.desktop.in:4
 msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr ""
+msgstr "Juegue un juego de rompecabezas similar a «Mina de diamantes»"
 
 #: data/org.gweled.gweled.appdata.xml.in:6
 msgid "Bejeweled like real time strategic puzzle game"
-msgstr ""
+msgstr "Juego de rompecabezas estratégico en tiempo real similar a Bejeweled"
 
 #: data/org.gweled.gweled.appdata.xml.in:8
 msgid ""
@@ -177,4 +178,8 @@ msgid ""
 "by swapping adjacent gems. The game ends when there are no possible moves "
 "left."
 msgstr ""
-
+"Gweled es una versión GTK+ de un popular juego PalmOS/Windows/Java llamado "
+"«Bejeweled», escrito originalmente por Sebastien Delestaing. El objetivo del "
+"juego es hacer alineaciones de 3 o más gemas, tanto vertical como "
+"horizontalmente intercambiando gemas adyacentes. El juego termina cuando no "
+"quedan movimientos posibles."
