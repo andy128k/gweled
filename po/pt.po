@@ -1,0 +1,177 @@
+# Portuguese translation for gweled
+# Copyright (c) 2024 Rosetta Contributors and Canonical Ltd 2024
+# This file is distributed under the same license as the gweled package.
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gweled\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2024-01-19 12:47+0100\n"
+"PO-Revision-Date: 2024-12-31 15:03+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
+"Language-Team: Portuguese <pt@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2025-01-15 23:56+0000\n"
+"X-Generator: Launchpad (build 6394e03793719e8d73f5a60b5439440e693c92f1)\n"
+"Language: pt\n"
+
+#: src/gweled-gui.c:58 src/gweled.ui:153
+msgid "Normal"
+msgstr "Normal"
+
+#: src/gweled-gui.c:62 src/gweled.ui:211
+msgid "Timed"
+msgstr "Cronometrado"
+
+#: src/gweled-gui.c:66 src/gweled.ui:269
+msgid "Endless"
+msgstr "Infinito"
+
+#: src/gweled-gui.c:108
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  Hugo Carvalho https://launchpad.net/~hugok79"
+
+#: src/gweled-gui.c:113
+msgid "A puzzle game with gems"
+msgstr "Um jogo de puzzle com pedras preciosas"
+
+#: src/gweled-gui.c:140
+msgid "Do you really want to abort this game?"
+msgstr "Queres mesmo abortar este jogo?"
+
+#: src/gweled-gui.c:225
+msgid "Do you want to save the current game?"
+msgstr "Pretende guardar o jogo atual?"
+
+#: src/gweled-gui.c:420
+msgid "There is a game saved, do you want restore it?"
+msgstr "Há um jogo guardado, queres restaurá-lo?"
+
+#: src/board_engine.c:552
+msgid "_Resume"
+msgstr "_Retomar"
+
+#: src/board_engine.c:554 src/board_engine.c:557
+msgid "Paused"
+msgstr "Em pausa"
+
+#: src/board_engine.c:563 src/gweled.ui:385
+msgid "_Pause"
+msgstr "_Pausa"
+
+#: src/board_engine.c:636
+msgid "Time's up!"
+msgstr "Acabou o tempo!"
+
+#. Game over
+#: src/board_engine.c:790 src/board_engine.c:800
+msgid "No moves left!"
+msgstr "Não há mais jogadas!"
+
+#: src/board_engine.c:829 src/board_engine.c:898 src/board_engine.c:967
+#, c-format
+msgid "Level %d"
+msgstr "Nível %d"
+
+#: src/board_engine.c:831
+#, c-format
+msgid "Bonus x%d"
+msgstr "Bónus x%d"
+
+#: src/gweled-scores.c:39
+msgctxt "game type"
+msgid "Normal"
+msgstr "Normal"
+
+#: src/gweled-scores.c:40
+msgctxt "game type"
+msgid "Timed"
+msgstr "Cronometrado"
+
+#. Translators: label displayed on the scores dialog, preceding a difficulty.
+#: src/gweled-scores.c:106
+msgid "Game type:"
+msgstr "Tipo de jogo:"
+
+#: src/gweled.ui:57
+msgid "Score:"
+msgstr "Pontuação:"
+
+#: src/gweled.ui:110
+msgid "Welcome to Gweled!"
+msgstr "Bem-vindo(a) ao Gweled!"
+
+#: src/gweled.ui:169
+msgid "Get as many points as you can. The game ends if you run out of moves."
+msgstr ""
+"Obtém o máximo de pontos que conseguires. O jogo termina se ficares sem "
+"jogadas."
+
+#: src/gweled.ui:227
+msgid "Get as many points as you can. The game ends if you run out of time."
+msgstr ""
+"Obtém o máximo de pontos que conseguires. O jogo termina se o tempo se "
+"esgotar."
+
+#: src/gweled.ui:285
+msgid "The game never ends, but your score will not be saved."
+msgstr "O jogo nunca termina, mas a sua pontuação não será guardada."
+
+#: src/gweled.ui:356
+msgid "_New Game"
+msgstr "_Novo jogo"
+
+#: src/gweled.ui:368
+msgid "Menu"
+msgstr "Menu"
+
+#: src/gweled.ui:389
+msgid "Pauses the game for you can return to it later"
+msgstr "Pausa o jogo para poder voltar a ele mais tarde"
+
+#: src/gweled-headermenu.ui:22
+msgid "_Sound effects"
+msgstr "Efeitos _sonoros"
+
+#: src/gweled-headermenu.ui:26
+msgid "_Hints"
+msgstr "_Dicas"
+
+#: src/gweled-headermenu.ui:32
+msgid "_Scores"
+msgstr "_Pontuação"
+
+#: src/gweled-headermenu.ui:36
+msgid "_About"
+msgstr "_Acerca"
+
+#: data/org.gweled.gweled.desktop.in:3 data/org.gweled.gweled.appdata.xml.in:5
+msgid "Gweled"
+msgstr "Gweled"
+
+#: data/org.gweled.gweled.desktop.in:4
+msgid "Play a puzzle game similar to \"Diamond Mine\""
+msgstr "Joga um jogo de puzzle semelhante ao “Diamond Mine”"
+
+#: data/org.gweled.gweled.appdata.xml.in:6
+msgid "Bejeweled like real time strategic puzzle game"
+msgstr "Jogo de puzzle estratégico em tempo real semelhante ao Bejeweled"
+
+#: data/org.gweled.gweled.appdata.xml.in:8
+msgid ""
+"Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
+"\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "
+"game is to make alignment of 3 or more gems, both vertically or horizontally "
+"by swapping adjacent gems. The game ends when there are no possible moves "
+"left."
+msgstr ""
+"O Gweled é uma versão GTK+ de um popular jogo PalmOS/Windows/Java chamado "
+"“Bejeweled”, originalmente escrito por Sebastien Delestaing. O objetivo do "
+"jogo é fazer o alinhamento de 3 ou mais pedras preciosas, tanto vertical "
+"como horizontalmente, trocando pedras adjacentes. O jogo termina quando não "
+"há mais movimentos possíveis."
