@@ -37,7 +37,18 @@
 #include "sound.h"
 #include "sge_core.h"
 
-#define CLUTTER_TIMELINE_DURATION  200
+static const char * const PixbufStrings[] = {
+    "\e[1;37mgem\e[0;0m",
+    "\e[1;34mgem\e[0;0m",
+    "\e[1;33mgem\e[0;0m",
+    "\e[1;35mgem\e[0;0m",
+    "\e[1;31mgem\e[0;0m",
+    "\e[1;93mgem\e[0;0m",
+    "\e[1;92mgem\e[0;0m",
+    "bg",
+    "\e[1mcursor\e[0;0m"
+};
+#define PIXBUF_ID_TO_STRING(val) ((val) >= 0 && (val) < sizeof(PixbufStrings) ? PixbufStrings[val] : "UNKNOWN")
 
 // LOCAL VARS
 static GList *g_object_list;
@@ -653,7 +664,7 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
 
     GError *error;
     
-    g_print("sge_create_object %i at %i:%i -> %i:%i layer:%i\n", pixbuf_id, x, y, x * prefs.tile_size, y * prefs.tile_size, layer);
+    g_print("sge_create_object %s at %i:%i -> %i:%i layer:%i\n", PIXBUF_ID_TO_STRING(pixbuf_id), x, y, x * prefs.tile_size, y * prefs.tile_size, layer);
     
     T_SGEObject * object;
 	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
