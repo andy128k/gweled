@@ -60,6 +60,11 @@ ClutterActor *g_gameboard = NULL;
 
 ClutterActor *g_actor_layers[5] = {NULL, NULL, NULL, NULL, NULL};
 
+T_SGEObject *object_bouncing = NULL;
+guint object_bounce_timout_id = 0;
+
+#define HINT_GEM_BOUNCING_TIMEOUT_SECS  2
+
 GdkPixbuf *
 sge_get_pixbuf(gint index) {
     return g_pixbufs[index];
@@ -418,6 +423,9 @@ board_input_event (ClutterActor *stage,
     // only handle left button
     if (event->type == CLUTTER_BUTTON_PRESS && clutter_event_get_button (event) != CLUTTER_BUTTON_PRIMARY)
         return FALSE;
+
+    // Stop hint gem bouncing
+    sge_stop_bouncing();
     
     // Can't use the actor position due to possible gems transformations.
     clutter_event_get_coords (event, &x, &y);
@@ -587,11 +595,13 @@ sge_object_start_effect (T_SGEObject *object, T_SGEEffect effect)
     sge_object_effects_cb(object);
 }
 
-static void
+void
 sge_object_stop_effect (T_SGEObject *object) {
     object->effect = NONE;
-    g_source_remove(object->effect_handler_id);
-    object->effect_handler_id = 0;
+    if (object->effect_handler_id) {
+        g_source_remove(object->effect_handler_id);
+        object->effect_handler_id = 0;
+    }
     sge_object_reset_effects (object);
 }
 
@@ -610,13 +620,29 @@ sge_object_stop_bounce_cb (gpointer data)
 {
     T_SGEObject *object = SGE_OBJECT(data);
     sge_object_stop_effect (object);
+    object_bouncing = NULL;
+    object_bounce_timout_id = 0;
     return FALSE;
 }
 
 void sge_object_bounce (T_SGEObject *object)
 {
     sge_object_start_effect (object, BOUNCE);
-    g_timeout_add_seconds (2, sge_object_stop_bounce_cb, object);
+    object_bouncing = object;
+    object_bounce_timout_id = g_timeout_add_seconds (HINT_GEM_BOUNCING_TIMEOUT_SECS, sge_object_stop_bounce_cb, object);
+}
+
+void sge_stop_bouncing ()
+{
+    if (object_bouncing != NULL) {
+        sge_object_stop_effect (object_bouncing);
+        object_bouncing = NULL;
+    }
+
+    if (object_bounce_timout_id > 0) {
+        g_source_remove(object_bounce_timout_id);
+        object_bounce_timout_id = 0;
+    }
 }
 
 //objects creation/destruction

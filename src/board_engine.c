@@ -687,6 +687,10 @@ board_engine_loop (gpointer data)
 			x1 = gi_x_click;
 			y1 = gi_y_click;
 			gi_state = _FIRST_GEM_CLICKED;
+
+            // Stop any previous effects
+			sge_object_stop_effect(g_gem_objects[gi_x_click][gi_y_click]);
+
 			sge_object_blink_start(g_gem_objects[gi_x_click][gi_y_click]);
 
 			if (cursor[0])

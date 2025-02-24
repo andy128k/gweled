@@ -123,8 +123,10 @@ void sge_object_blink_start (T_SGEObject *object);
 void sge_object_blink_stop (T_SGEObject *object);
 
 void sge_object_bounce (T_SGEObject *object);
+void sge_stop_bouncing (void);
 
 void sge_object_reset_effects (T_SGEObject *object);
+void sge_object_stop_effect (T_SGEObject *object);
 
 gboolean sge_object_exists (T_SGEObject *object);
 
