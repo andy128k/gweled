@@ -272,6 +272,11 @@ configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 }
 
 void
+gweled_ui_window_present() {
+    gtk_window_present_with_time (GTK_WINDOW (gweled_ui->main_window), gtk_get_current_event_time());
+}
+
+void
 gweled_ui_init (GApplication *app)
 {
 	GtkWidget *box, *game_frame;

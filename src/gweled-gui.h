@@ -50,6 +50,9 @@ typedef struct
 } GuiContext;
 
 void
+gweled_ui_window_present();
+
+void
 gweled_ui_init(GApplication *app);
 
 void

@@ -137,6 +137,12 @@ void remove_saved_game()
 }
 
 static void
+gweled_activate_cb (GApplication *app, gpointer user_data)
+{
+    gweled_ui_window_present();
+}
+
+static void
 gweled_startup_cb (GApplication *app, gpointer user_data)
 {
     gtk_window_set_default_icon_name (PACKAGE_NAME);
@@ -164,7 +170,8 @@ int main (int argc, char **argv)
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
 
-    app = gtk_application_new (APPLICATION_ID, G_APPLICATION_FLAGS_NONE);
+    app = gtk_application_new (APPLICATION_ID, G_APPLICATION_DEFAULT_FLAGS);
+    g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
     g_signal_connect (app, "startup", G_CALLBACK (gweled_startup_cb), NULL);
 
     if (gtk_clutter_init (&argc, &argv) != CLUTTER_INIT_SUCCESS)
