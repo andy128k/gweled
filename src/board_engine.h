@@ -46,13 +46,13 @@ typedef struct s_gweled_gamestate
     gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
     gweled_game_mode game_mode;
     gint gi_score;
-    gint gi_total_gems_removed;
+    gfloat gi_total_gems_removed;
     gint gi_bonus_multiply;
     gint gi_previous_bonus_at;
     gint gi_next_bonus_at;
     gint gi_level;
     gint gi_trigger_bonus;
-    guint g_steps_for_timer;
+    gfloat g_steps_for_timer;
 
 } GweledGameState;
 

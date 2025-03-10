@@ -38,7 +38,7 @@
 
 #define FIRST_BONUS_AT	100	// needs tweaking
 #define NB_BONUS_GEMS	8	// same
-#define TOTAL_STEPS_FOR_TIMER	60	// seconds
+#define TOTAL_STEPS_FOR_TIMER	180	// seconds
 #define HINT_TIMEOUT  15	// seconds
 
 void gweled_remove_gems_and_update_score (void);
@@ -67,7 +67,7 @@ typedef struct s_alignment {
 
 gint gi_score, gi_current_score, gi_game_running = 0, gi_game_paused;
 
-gint gi_total_gems_removed;
+gfloat gi_total_gems_removed;
 gint gi_score_per_move;
 
 guint hint_timeout;
@@ -77,7 +77,7 @@ gint gi_previous_bonus_at;
 gint gi_next_bonus_at;
 gint gi_level;
 gint gi_trigger_bonus;
-guint g_steps_for_timer;
+gfloat g_steps_for_timer;
 
 gint gi_gem_clicked = 0;
 gint gi_x_click = 0;
@@ -338,7 +338,7 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
     if (g_do_not_score == FALSE) {
       gi_total_gems_removed += gi_gems_removed;
 
-      g_debug("Score: %d Gems removed: %d [tot:%d] %i:%i, dir %i, length:%i\n", i_total_score, gi_gems_removed, gi_score_per_move, alignment->x, alignment->y, alignment->direction, alignment->length);
+      g_debug("Score: %d Gems removed: %d [tot:%.2f] %i:%i, dir %i, length:%i\n", i_total_score, gi_gems_removed, gi_total_gems_removed, alignment->x, alignment->y, alignment->direction, alignment->length);
 
       gi_score += i_total_score;
 
@@ -647,9 +647,10 @@ board_engine_loop (gpointer data)
 	}
 
     /* Let's first check if we are in timer mode, and penalize the player if necessary */
-	if (prefs.game_mode == TIMED_MODE && gi_game_running && !gi_game_paused  && (time_slice % 10 == 0))
+	if (prefs.game_mode == TIMED_MODE && gi_game_running && !gi_game_paused  && (time_slice % 25 == 0))
 	{
-		gi_total_gems_removed -= g_steps_for_timer;
+        gi_total_gems_removed -= g_steps_for_timer;
+
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
 
 			gweled_draw_game_message (_("Time's up!"), 0);
@@ -668,11 +669,11 @@ board_engine_loop (gpointer data)
             if (gi_score > 0)
                 g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
 
-		} else
-			gtk_progress_bar_set_fraction ((GtkProgressBar *)
-						       gweled_ui->g_progress_bar,
-						       (float)(gi_total_gems_removed -gi_previous_bonus_at)
-						       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
+		}
+
+		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar),
+					       (float)(gi_total_gems_removed -gi_previous_bonus_at)
+					       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
 
     g_debug("Current state: %s\n", state[gi_state]);
@@ -908,26 +909,24 @@ gweled_start_new_game (void)
 	gi_previous_bonus_at = 0;
 	gi_next_bonus_at = FIRST_BONUS_AT;
 	gi_trigger_bonus = 0;
-	g_steps_for_timer = FIRST_BONUS_AT / TOTAL_STEPS_FOR_TIMER;
+    g_steps_for_timer = FIRST_BONUS_AT / (float) TOTAL_STEPS_FOR_TIMER;
 
-	if(prefs.game_mode == TIMED_MODE)
+	if (prefs.game_mode == TIMED_MODE) {
 		gi_total_gems_removed = FIRST_BONUS_AT / 2;
-	else
+        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.5);
+    }
+    else {
 		gi_total_gems_removed = 0;
-
-	gweled_set_hints_active(FALSE);
-
-    if(prefs.game_mode != ENDLESS_MODE) {
-        gchar *text = g_strdup_printf(_("Level %d"), 1);
-	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text );
         gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
+    }
+
+    if (prefs.game_mode != ENDLESS_MODE) {
+        gchar *text = g_strdup_printf(_("Level %d"), 1);
+	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text);
 	    g_free(text);
     }
-    else
-    {
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), "" );
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
-    }
+
+    gweled_set_hints_active(FALSE);
 
     gweled_set_current_score (0);
 
