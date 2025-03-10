@@ -57,14 +57,17 @@ gweled_setup_game_window(gboolean playing)
             case NORMAL_MODE:
                 gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Normal"));
                 gtk_widget_set_visible (gweled_ui->g_progress_bar, TRUE);
+                gtk_widget_set_visible (gweled_ui->g_pause_game_btn, TRUE);
                 break;
             case TIMED_MODE:
                 gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Timed"));
                 gtk_widget_set_visible (gweled_ui->g_progress_bar, TRUE);
+                gtk_widget_set_visible (gweled_ui->g_pause_game_btn, TRUE);
                 break;
             case ENDLESS_MODE:
                 gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), _("Endless"));
                 gtk_widget_set_visible (gweled_ui->g_progress_bar, FALSE);
+                gtk_widget_set_visible (gweled_ui->g_pause_game_btn, FALSE);
                 break;
         }
 
