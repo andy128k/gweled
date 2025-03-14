@@ -51,7 +51,6 @@ typedef struct s_gweled_gamestate
     gint gi_previous_bonus_at;
     gint gi_next_bonus_at;
     gint gi_level;
-    gint gi_trigger_bonus;
     gfloat g_steps_for_timer;
 
 } GweledGameState;

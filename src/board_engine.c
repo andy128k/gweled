@@ -76,7 +76,6 @@ gint gi_bonus_multiply;
 gint gi_previous_bonus_at;
 gint gi_next_bonus_at;
 gint gi_level;
-gint gi_trigger_bonus;
 gfloat g_steps_for_timer;
 
 gint gi_gem_clicked = 0;
@@ -908,7 +907,6 @@ gweled_start_new_game (void)
 	gi_level = 1;
 	gi_previous_bonus_at = 0;
 	gi_next_bonus_at = FIRST_BONUS_AT;
-	gi_trigger_bonus = 0;
     g_steps_for_timer = FIRST_BONUS_AT / (float) TOTAL_STEPS_FOR_TIMER;
 
 	if (prefs.game_mode == TIMED_MODE) {
@@ -954,7 +952,6 @@ gweled_get_current_game(void)
     game->gi_previous_bonus_at = gi_previous_bonus_at;
     game->gi_next_bonus_at = gi_next_bonus_at;
     game->gi_level = gi_level;
-    game->gi_trigger_bonus = gi_trigger_bonus;
     game->g_steps_for_timer = g_steps_for_timer;
 
     for (i = 0; i < BOARD_WIDTH; i++)
@@ -978,7 +975,6 @@ gweled_set_previous_game(GweledGameState *game)
     gi_previous_bonus_at = game->gi_previous_bonus_at;
     gi_next_bonus_at = game->gi_next_bonus_at;
     gi_level = game->gi_level;
-    gi_trigger_bonus = game->gi_trigger_bonus;
     g_steps_for_timer = game->g_steps_for_timer;
     gi_current_score = gi_score;
 
