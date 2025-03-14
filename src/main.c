@@ -38,6 +38,7 @@
 #include "main.h"
 
 #define SAVED_GAME_FILENAME "gweled.saved-game"
+#define SAVED_GAME_HEADER "gweled"
 
 // Globals
 guint board_engine_id;
@@ -70,17 +71,51 @@ void load_preferences(void)
 	prefs.hints_off = !g_settings_get_boolean (settings, "hints");
 }
 
-// check for previous saved game
-gboolean is_present_saved_game()
+gboolean
+validate_saved_game_file()
 {
     gchar *filename;
-    gboolean test;
+    gchar header_buf[strlen(SAVED_GAME_HEADER)];
 
     filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
-    test = g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR);
 
-    g_free(filename);
-    return test;
+    // Check if file exists
+    if (!g_file_test(filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR))
+        return FALSE;
+
+    FILE *fp = fopen(filename, "rb");
+
+    // Check file size
+    fseek(fp, 0, SEEK_END);
+    glong file_size = ftell(fp);
+    rewind(fp);
+
+    if (file_size != strlen(SAVED_GAME_HEADER) + sizeof(GweledGameState)) {
+        g_warning("Saved game file \"%s\": size mismatch, ignoring.", filename);
+        g_free(filename);
+        fclose(fp);
+        return FALSE;
+    }
+
+    fread(header_buf, strlen(SAVED_GAME_HEADER), 1, fp);
+    if (strncmp(header_buf, SAVED_GAME_HEADER, strlen(SAVED_GAME_HEADER)) != 0) {
+        g_warning("Saved game file \"%s\": Unable to find file header, ignoring.", filename);
+        g_free(filename);
+        fclose(fp);
+        return FALSE;
+    }
+
+    fclose(fp);
+
+    return TRUE;
+}
+
+
+// check for previous saved game
+gboolean
+is_present_saved_game()
+{
+    return validate_saved_game_file();
 }
 
 void
@@ -91,13 +126,19 @@ save_current_game(GweledGameState *game)
 
     filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
 
-    stream = fopen(filename, "w");
+    stream = fopen(filename, "wb");
 
     if(stream)
     {
+        fwrite(SAVED_GAME_HEADER, strlen(SAVED_GAME_HEADER), 1, stream);
         fwrite(game, sizeof(GweledGameState), 1, stream);
         fclose(stream);
     }
+    else {
+        g_warning ("Unable to write save game file.");
+    }
+
+    g_free(filename);
 }
 
 GweledGameState*
@@ -112,16 +153,20 @@ load_previous_game()
 
     filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
 
-    stream = fopen(filename, "r");
+    stream = fopen(filename, "rb");
 
-    if(stream)
+    if (stream)
     {
+        fseek(stream, strlen(SAVED_GAME_HEADER), SEEK_SET);
         ret = fread(game, sizeof(GweledGameState), 1, stream);
         fclose(stream);
+        g_free(filename);
 
         if(ret == 1)
             return game;
     }
+
+    g_free(filename);
 
     return NULL;
 }
