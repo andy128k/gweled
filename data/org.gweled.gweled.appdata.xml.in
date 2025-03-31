@@ -10,16 +10,21 @@
 
   <launchable type="desktop-id">org.gweled.gweled.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-2.0+ and GFDL-1.3</project_license>
+  <project_license>GPL-2.0-or-later</project_license>
 
   <url type="homepage">https://gweled.org/</url>
   <url type="bugtracker">https://bugs.launchpad.net/gweled</url>
   <url type="translate">https://translations.launchpad.net/gweled</url>
   <url type="donation">https://liberapay.com/Gweled/donate</url>
 
-  <update_contact>dnax88@gmail.com</update_contact>
-  <developer_name>Daniele Napolitano</developer_name>
+  <developer id="it.dnax">
+    <name>Daniele Napolitano</name>
+  </developer>
 
+  <!-- Supported Hardware -->
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
   <supports>
     <control>pointing</control>
     <control>touch</control>
@@ -33,6 +38,5 @@
 
   <translation type="gettext">gweled</translation>
 
-  <project_group>GNOME</project_group>
   <content_rating type="oars-1.1"/>
 </component>
