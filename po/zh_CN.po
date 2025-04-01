@@ -7,207 +7,158 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 20:00+0100\n"
-"PO-Revision-Date: 2012-08-13 04:18+0000\n"
-"Last-Translator: Wang Dianjin <Unknown>\n"
+"POT-Creation-Date: 2025-04-01 01:14+0300\n"
+"PO-Revision-Date: 2021-03-02 22:05+0000\n"
+"Last-Translator: Wang Dianjin\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
-"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-08-14 05:01+0000\n"
-"X-Generator: Launchpad (build 15791)\n"
+"X-Launchpad-Export-Date: 2025-04-01 19:32+0000\n"
+"X-Generator: Launchpad (build e76edd883483c71c468bb038e98836435de44530)\n"
+"Language: zh_CN\n"
 
-#: src/main.c:280
-msgid "Game over!"
-msgstr "游戏结束！"
+#: src/gweled-gui.c:58 src/gweled.ui:153
+msgid "Normal"
+msgstr ""
 
-#: src/main.c:282
-msgid "Great work, but unfortunately your score did not make the top ten."
-msgstr "赞啊，但您还没有入围前十名。"
+#: src/gweled-gui.c:63 src/gweled.ui:211
+msgid "Timed"
+msgstr ""
 
-#: src/main.c:284
-msgid "_New Game"
-msgstr "新游戏(_N)"
+#: src/gweled-gui.c:68 src/gweled.ui:269
+msgid "Endless"
+msgstr ""
 
-#: src/main.c:296
-msgid "Gweled Scores"
-msgstr "Gweled 排分榜"
-
-#: src/main.c:299
-msgid "Game type:"
-msgstr "游戏类型："
-
-#: src/main.c:306
-msgid "Congratulations!"
-msgstr "恭喜！"
-
-#: src/main.c:307
-msgid "Your score is the best!"
-msgstr "您的成绩是最好的！"
-
-#: src/main.c:308
-msgid "Your score has made the top ten."
-msgstr "您已经入围前十名。"
-
-#: src/main.c:396
-msgid "Get as many points as you can. The game ends if you run out of moves."
-msgstr "拼命夺分吧。直到僵局游戏才结束。"
-
-#: src/main.c:398
-msgid "Get as many points as you can. The game ends if you run out of time."
-msgstr "拼命夺分吧。直到时间用光游戏才结束。"
-
-#: src/main.c:400
-msgid "The game never ends, but your score will not be saved."
-msgstr "游戏永不结束，但您的分数不会保存。"
-
-#: src/main.c:452
-msgid "There is a game saved, do you want restore it?"
-msgstr "有一个保存的游戏，您要恢复它吗？"
-
-#: src/callbacks.c:73
-msgid "Do you really want to abort this game?"
-msgstr "您真的要中止该游戏吗？"
-
-#: src/callbacks.c:138
-msgid "Do you want to save the current game?"
-msgstr "您要保存当前游戏吗？"
-
-#: src/callbacks.c:173
+#: src/gweled-gui.c:111
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Wang Dianjin https://launchpad.net/~tuhaihe"
 
-#: src/callbacks.c:178
+#: src/gweled-gui.c:116
 msgid "A puzzle game with gems"
 msgstr "宝石益智游戏"
 
-#: src/board_engine.c:505
+#: src/gweled-gui.c:143
+msgid "Do you really want to abort this game?"
+msgstr "您真的要中止该游戏吗？"
+
+#: src/gweled-gui.c:225
+msgid "Do you want to save the current game?"
+msgstr "您要保存当前游戏吗？"
+
+#: src/gweled-gui.c:418
+msgid "There is a game saved, do you want restore it?"
+msgstr "有一个保存的游戏，您要恢复它吗？"
+
+#: src/board_engine.c:570
 msgid "_Resume"
 msgstr "恢复(_R)"
 
-#: src/board_engine.c:508
+#: src/board_engine.c:572 src/board_engine.c:575
 msgid "Paused"
 msgstr "已暂停"
 
-#: src/board_engine.c:518 data/gweled.ui:44
+#: src/board_engine.c:581 src/gweled.ui:385
 msgid "_Pause"
 msgstr "暂停(_P)"
 
-#: src/board_engine.c:827 src/board_engine.c:897 src/board_engine.c:999
+#: src/board_engine.c:655
+msgid "Time's up!"
+msgstr ""
+
+#. Game over
+#: src/board_engine.c:813 src/board_engine.c:823
+msgid "No moves left!"
+msgstr ""
+
+#: src/board_engine.c:852 src/board_engine.c:922 src/board_engine.c:985
 #, c-format
 msgid "Level %d"
 msgstr "级别 %d"
 
-#: src/games-scores-dialog.c:118 src/games-scores-dialog.c:545
-msgid "Score"
-msgstr "得分"
+#: src/board_engine.c:854
+#, c-format
+msgid "Bonus x%d"
+msgstr ""
 
-#: src/games-scores-dialog.c:437
-msgid "New Game"
-msgstr "新游戏"
-
-#: src/games-scores-dialog.c:537
-msgid "Name"
-msgstr "名称"
-
-#: data/gweled.ui:24
-msgid "_Game"
-msgstr "游戏(_G)"
-
-#: data/gweled.ui:43
-msgid "Pauses the game for you can return to it later"
-msgstr "暂停该游戏，您稍后可恢复"
-
-#: data/gweled.ui:58
-msgid "_Scores"
-msgstr "得分(_S)"
-
-#: data/gweled.ui:85
-msgid "_Settings"
-msgstr "设置(_S)"
-
-#: data/gweled.ui:106
-msgid "_Help"
-msgstr "帮助(_H)"
-
-#: data/gweled.ui:175
-msgid "Welcome to Gweled!"
-msgstr "欢迎畅玩 Gweled！"
-
-#: data/gweled.ui:219
+#: src/gweled-scores.c:39
+msgctxt "game type"
 msgid "Normal"
-msgstr "普通模式"
+msgstr ""
 
-#: data/gweled.ui:270
+#: src/gweled-scores.c:40
+msgctxt "game type"
 msgid "Timed"
-msgstr "限时模式"
+msgstr ""
 
-#: data/gweled.ui:322
-msgid "Endless"
-msgstr "无穷模式"
+#. Translators: label displayed on the scores dialog, preceding a difficulty.
+#: src/gweled-scores.c:106
+msgid "Game type:"
+msgstr "游戏类型："
 
-#: data/gweled.ui:382
+#: src/gweled.ui:57
 msgid "Score:"
-msgstr "分数："
-
-#: data/gweled.ui:415
-msgid "Preferences"
-msgstr "首选项"
-
-#: data/gweled.ui:439
-msgid "Board size"
-msgstr "面板大小"
-
-#: data/gweled.ui:456
-msgid "Small"
-msgstr "小"
-
-#: data/gweled.ui:477
-msgid "Medium"
-msgstr "中"
-
-#: data/gweled.ui:499
-msgid "Large"
-msgstr "大"
-
-#: data/gweled.ui:525
-msgid "Sound"
-msgstr "声音"
-
-#: data/gweled.ui:542
-msgid "Play sound effects"
-msgstr "播放声音效果"
-
-#: data/gweled.ui:573
-msgid "Miscellaneous"
 msgstr ""
 
-#: data/gweled.ui:590
-msgid "Disable hints"
+#: src/gweled.ui:110
+msgid "Welcome to Gweled!"
 msgstr ""
 
-#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
+#: src/gweled.ui:169
+msgid "Get as many points as you can. The game ends if you run out of moves."
+msgstr "拼命夺分吧。直到僵局游戏才结束。"
+
+#: src/gweled.ui:227
+msgid "Get as many points as you can. The game ends if you run out of time."
+msgstr "拼命夺分吧。直到时间用光游戏才结束。"
+
+#: src/gweled.ui:285
+msgid "The game never ends, but your score will not be saved."
+msgstr "游戏永不结束，但您的分数不会保存。"
+
+#: src/gweled.ui:356
+msgid "_New Game"
+msgstr "新游戏(_N)"
+
+#: src/gweled.ui:368
+msgid "Menu"
+msgstr ""
+
+#: src/gweled.ui:389
+msgid "Pauses the game for you can return to it later"
+msgstr ""
+
+#: src/gweled-headermenu.ui:22
+msgid "_Sound effects"
+msgstr ""
+
+#: src/gweled-headermenu.ui:26
+msgid "_Hints"
+msgstr ""
+
+#: src/gweled-headermenu.ui:32
+msgid "_Scores"
+msgstr ""
+
+#: src/gweled-headermenu.ui:36
+msgid "_About Gweled"
+msgstr ""
+
+#: data/org.gweled.gweled.desktop.in:3 data/org.gweled.gweled.appdata.xml.in:5
 msgid "Gweled"
-msgstr "Gweled"
-
-#: data/gweled.desktop.in:4
-msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr "一个类似于“钻石矿工”的益智游戏"
-
-#. TRANSLATORS: Do NOT translate or transliterate this text!
-#. This is an icon file name
-#: data/gweled.desktop.in:8
-msgid "gweled"
 msgstr ""
 
-#: data/gweled.appdata.xml.in:9
+#: data/org.gweled.gweled.desktop.in:4
+msgid "Play a puzzle game similar to \"Diamond Mine\""
+msgstr ""
+
+#: data/org.gweled.gweled.appdata.xml.in:6
 msgid "Bejeweled like real time strategic puzzle game"
 msgstr ""
 
-#: data/gweled.appdata.xml.in:11
+#: data/org.gweled.gweled.appdata.xml.in:8
 msgid ""
 "Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
 "\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "

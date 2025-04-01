@@ -7,221 +7,171 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-28 20:00+0100\n"
-"PO-Revision-Date: 2019-08-10 05:16+0200\n"
-"Last-Translator: satbadkd <Unknown>\n"
+"POT-Creation-Date: 2025-04-01 01:14+0300\n"
+"PO-Revision-Date: 2021-03-02 22:00+0000\n"
+"Last-Translator: zzz\n"
 "Language-Team: French <fr@li.org>\n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-01-22 05:36+0000\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Poedit-KeywordsList: _;NC_:1c,2\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SearchPath-0: src\n"
+"X-Launchpad-Export-Date: 2025-04-01 19:32+0000\n"
+"X-Generator: Launchpad (build e76edd883483c71c468bb038e98836435de44530)\n"
+"Language: fr\n"
 "X-Poedit-SearchPath-1: data\n"
 "X-Poedit-SearchPath-2: data/gweled.desktop.in\n"
+"X-Poedit-SearchPath-0: src\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: _;NC_:1c,2\n"
 
-#: src/main.c:280
-msgid "Game over!"
-msgstr "Perdu !"
-
-#: src/main.c:282
-msgid "Great work, but unfortunately your score did not make the top ten."
+#: src/gweled-gui.c:58 src/gweled.ui:153
+msgid "Normal"
 msgstr ""
-"Bien joué, mais malheureusement votre score n'entre pas dans le top 10."
 
-#: src/main.c:284
-msgid "_New Game"
-msgstr "_Nouvelle partie"
+#: src/gweled-gui.c:63 src/gweled.ui:211
+msgid "Timed"
+msgstr ""
 
-#: src/main.c:296
-msgid "Gweled Scores"
-msgstr "Scores Gweled"
+#: src/gweled-gui.c:68 src/gweled.ui:269
+msgid "Endless"
+msgstr ""
 
-#: src/main.c:299
+#: src/gweled-gui.c:111
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  Fabien LOISON https://launchpad.net/~flozz\n"
+"  Thibault Févry https://launchpad.net/~thibaultfevry\n"
+"  satbadkd https://launchpad.net/~satbadkd\n"
+"  xemard.nicolas https://launchpad.net/~xemard.nicolas\n"
+"  zzz https://launchpad.net/~th-bertiez"
+
+#: src/gweled-gui.c:116
+msgid "A puzzle game with gems"
+msgstr "Un jeu de puzzle avec des diamants"
+
+#: src/gweled-gui.c:143
+msgid "Do you really want to abort this game?"
+msgstr "Voulez-vous vraiment arrêter cette partie ?"
+
+#: src/gweled-gui.c:225
+msgid "Do you want to save the current game?"
+msgstr "Voulez-vous sauvegarder la partie en cours ?"
+
+#: src/gweled-gui.c:418
+msgid "There is a game saved, do you want restore it?"
+msgstr "Il existe une partie sauvegardée, voulez vous la continuer ?"
+
+#: src/board_engine.c:570
+msgid "_Resume"
+msgstr "_Reprendre"
+
+#: src/board_engine.c:572 src/board_engine.c:575
+msgid "Paused"
+msgstr "En pause"
+
+#: src/board_engine.c:581 src/gweled.ui:385
+msgid "_Pause"
+msgstr "_Pause"
+
+#: src/board_engine.c:655
+msgid "Time's up!"
+msgstr ""
+
+#. Game over
+#: src/board_engine.c:813 src/board_engine.c:823
+msgid "No moves left!"
+msgstr ""
+
+#: src/board_engine.c:852 src/board_engine.c:922 src/board_engine.c:985
+#, c-format
+msgid "Level %d"
+msgstr "Niveau %d"
+
+#: src/board_engine.c:854
+#, c-format
+msgid "Bonus x%d"
+msgstr ""
+
+#: src/gweled-scores.c:39
+msgctxt "game type"
+msgid "Normal"
+msgstr ""
+
+#: src/gweled-scores.c:40
+msgctxt "game type"
+msgid "Timed"
+msgstr ""
+
+#. Translators: label displayed on the scores dialog, preceding a difficulty.
+#: src/gweled-scores.c:106
 msgid "Game type:"
 msgstr "Type de jeu :"
 
-#: src/main.c:306
-msgid "Congratulations!"
-msgstr "Félicitations !"
+#: src/gweled.ui:57
+msgid "Score:"
+msgstr ""
 
-#: src/main.c:307
-msgid "Your score is the best!"
-msgstr "Vous avez fait le meilleur score !"
+#: src/gweled.ui:110
+msgid "Welcome to Gweled!"
+msgstr ""
 
-#: src/main.c:308
-msgid "Your score has made the top ten."
-msgstr "Votre score est entré dans le top 10."
-
-#: src/main.c:396
+#: src/gweled.ui:169
 msgid "Get as many points as you can. The game ends if you run out of moves."
 msgstr ""
 "Essayez d'avoir le score le plus grand possible. Le jeu prend fin quand il "
 "n'y a plus de mouvements possible."
 
-#: src/main.c:398
+#: src/gweled.ui:227
 msgid "Get as many points as you can. The game ends if you run out of time."
 msgstr ""
 "Essayez d'avoir le score le plus grand possible. Le jeu prend fin quand le "
 "chrono arrive à 0."
 
-#: src/main.c:400
+#: src/gweled.ui:285
 msgid "The game never ends, but your score will not be saved."
 msgstr "Le jeu ne prend jamais fin, mais votre score ne sera pas enregistré."
 
-#: src/main.c:452
-msgid "There is a game saved, do you want restore it?"
-msgstr "Il existe une partie sauvegardée, voulez vous la continuer ?"
+#: src/gweled.ui:356
+msgid "_New Game"
+msgstr "_Nouvelle partie"
 
-#: src/callbacks.c:73
-msgid "Do you really want to abort this game?"
-msgstr "Voulez-vous vraiment arrêter cette partie ?"
-
-#: src/callbacks.c:138
-msgid "Do you want to save the current game?"
-msgstr "Voulez-vous sauvegarder la partie en cours ?"
-
-#: src/callbacks.c:173
-msgid "translator-credits"
+#: src/gweled.ui:368
+msgid "Menu"
 msgstr ""
-"Launchpad Contributions:\n"
-"  Thibault Févry https://launchpad.net/~thibaultfevry\n"
-"  Weegee https://launchpad.net/~weegee\n"
-"  satbadkd https://launchpad.net/~satbadkd\n"
-"  xemard.nicolas https://launchpad.net/~xemard.nicolas\n"
-"  zzz https://launchpad.net/~th-bertiez"
 
-#: src/callbacks.c:178
-msgid "A puzzle game with gems"
-msgstr "Un jeu de puzzle avec des diamants"
-
-#: src/board_engine.c:505
-msgid "_Resume"
-msgstr "_Reprendre"
-
-#: src/board_engine.c:508
-msgid "Paused"
-msgstr "En pause"
-
-#: src/board_engine.c:518 data/gweled.ui:44
-msgid "_Pause"
-msgstr "_Pause"
-
-#: src/board_engine.c:827 src/board_engine.c:897 src/board_engine.c:999
-#, c-format
-msgid "Level %d"
-msgstr "Niveau %d"
-
-#: src/games-scores-dialog.c:118 src/games-scores-dialog.c:545
-msgid "Score"
-msgstr "Score"
-
-#: src/games-scores-dialog.c:437
-msgid "New Game"
-msgstr "Nouvelle partie"
-
-#: src/games-scores-dialog.c:537
-msgid "Name"
-msgstr "Nom"
-
-#: data/gweled.ui:24
-msgid "_Game"
-msgstr "_Jeu"
-
-#: data/gweled.ui:43
+#: src/gweled.ui:389
 msgid "Pauses the game for you can return to it later"
-msgstr "Mettre le jeu en pause pour continuer plus tard"
+msgstr ""
 
-#: data/gweled.ui:58
+#: src/gweled-headermenu.ui:22
+msgid "_Sound effects"
+msgstr ""
+
+#: src/gweled-headermenu.ui:26
+msgid "_Hints"
+msgstr ""
+
+#: src/gweled-headermenu.ui:32
 msgid "_Scores"
-msgstr "_Scores"
-
-#: data/gweled.ui:85
-msgid "_Settings"
-msgstr "_Paramètres"
-
-#: data/gweled.ui:106
-msgid "_Help"
-msgstr "_Aide"
-
-#: data/gweled.ui:175
-msgid "Welcome to Gweled!"
 msgstr ""
 
-#: data/gweled.ui:219
-msgid "Normal"
-msgstr "Normal"
-
-#: data/gweled.ui:270
-msgid "Timed"
-msgstr "Contre la montre"
-
-#: data/gweled.ui:322
-msgid "Endless"
-msgstr "Sans fin"
-
-#: data/gweled.ui:382
-msgid "Score:"
-msgstr "Score :"
-
-#: data/gweled.ui:415
-msgid "Preferences"
-msgstr "Préférences"
-
-#: data/gweled.ui:439
-msgid "Board size"
-msgstr "Taille du plateau"
-
-#: data/gweled.ui:456
-msgid "Small"
-msgstr "Petit"
-
-#: data/gweled.ui:477
-msgid "Medium"
-msgstr "Moyen"
-
-#: data/gweled.ui:499
-msgid "Large"
-msgstr "Grand"
-
-#: data/gweled.ui:525
-msgid "Sound"
-msgstr "Son"
-
-#: data/gweled.ui:542
-msgid "Play sound effects"
-msgstr "Jouer les effets sonores"
-
-#: data/gweled.ui:573
-msgid "Miscellaneous"
+#: src/gweled-headermenu.ui:36
+msgid "_About Gweled"
 msgstr ""
 
-#: data/gweled.ui:590
-msgid "Disable hints"
-msgstr "Désactiver les astuces"
-
-#: data/gweled.desktop.in:3 data/gweled.appdata.xml.in:8
+#: data/org.gweled.gweled.desktop.in:3 data/org.gweled.gweled.appdata.xml.in:5
 msgid "Gweled"
-msgstr "Gweled"
-
-#: data/gweled.desktop.in:4
-msgid "Play a puzzle game similar to \"Diamond Mine\""
-msgstr "Jouer à un casse tête similaire à \"Diamond Mine\""
-
-#. TRANSLATORS: Do NOT translate or transliterate this text!
-#. This is an icon file name
-#: data/gweled.desktop.in:8
-msgid "gweled"
 msgstr ""
 
-#: data/gweled.appdata.xml.in:9
+#: data/org.gweled.gweled.desktop.in:4
+msgid "Play a puzzle game similar to \"Diamond Mine\""
+msgstr ""
+
+#: data/org.gweled.gweled.appdata.xml.in:6
 msgid "Bejeweled like real time strategic puzzle game"
 msgstr ""
 
-#: data/gweled.appdata.xml.in:11
+#: data/org.gweled.gweled.appdata.xml.in:8
 msgid ""
 "Gweled is a GTK+ version of a popular PalmOS/Windows/Java game called "
 "\"Bejeweled\", originally written by Sebastien Delestaing. The aim of the "

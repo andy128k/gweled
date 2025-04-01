@@ -7,41 +7,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gweled\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-19 12:47+0100\n"
+"POT-Creation-Date: 2025-04-01 01:14+0300\n"
 "PO-Revision-Date: 2024-01-20 14:46+0000\n"
 "Last-Translator: Hans Joachim Desserud <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-02-21 11:44+0000\n"
-"X-Generator: Launchpad (build 9643586c585856148a18782148972ae9c1179d06)\n"
+"X-Launchpad-Export-Date: 2025-04-01 19:32+0000\n"
+"X-Generator: Launchpad (build e76edd883483c71c468bb038e98836435de44530)\n"
 "Language: nb\n"
 
 #: src/gweled-gui.c:58 src/gweled.ui:153
 msgid "Normal"
 msgstr "Normal"
 
-#: src/gweled-gui.c:62 src/gweled.ui:211
+#: src/gweled-gui.c:63 src/gweled.ui:211
 msgid "Timed"
 msgstr "På tid"
 
-#: src/gweled-gui.c:66 src/gweled.ui:269
+#: src/gweled-gui.c:68 src/gweled.ui:269
 msgid "Endless"
 msgstr "Endeløs"
 
-#: src/gweled-gui.c:108
+#: src/gweled-gui.c:111
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  Hans Joachim Desserud https://launchpad.net/~hjd"
 
-#: src/gweled-gui.c:113
+#: src/gweled-gui.c:116
 msgid "A puzzle game with gems"
 msgstr "Puslespill med edelstener"
 
-#: src/gweled-gui.c:140
+#: src/gweled-gui.c:143
 msgid "Do you really want to abort this game?"
 msgstr "Er du sikker på at du vil avbryte dette spillet?"
 
@@ -49,37 +48,37 @@ msgstr "Er du sikker på at du vil avbryte dette spillet?"
 msgid "Do you want to save the current game?"
 msgstr "Vil du lagre gjeldende spill?"
 
-#: src/gweled-gui.c:420
+#: src/gweled-gui.c:418
 msgid "There is a game saved, do you want restore it?"
 msgstr "Det finnes et lagret spill, vil du fortsette på det?"
 
-#: src/board_engine.c:552
+#: src/board_engine.c:570
 msgid "_Resume"
 msgstr "_Fortsett"
 
-#: src/board_engine.c:554 src/board_engine.c:557
+#: src/board_engine.c:572 src/board_engine.c:575
 msgid "Paused"
 msgstr "Pauset"
 
-#: src/board_engine.c:563 src/gweled.ui:385
+#: src/board_engine.c:581 src/gweled.ui:385
 msgid "_Pause"
 msgstr "_Pause"
 
-#: src/board_engine.c:636
+#: src/board_engine.c:655
 msgid "Time's up!"
 msgstr "Tiden er ute!"
 
 #. Game over
-#: src/board_engine.c:790 src/board_engine.c:800
+#: src/board_engine.c:813 src/board_engine.c:823
 msgid "No moves left!"
 msgstr "Ingen flere trekk!"
 
-#: src/board_engine.c:829 src/board_engine.c:898 src/board_engine.c:967
+#: src/board_engine.c:852 src/board_engine.c:922 src/board_engine.c:985
 #, c-format
 msgid "Level %d"
 msgstr "Nivå %d"
 
-#: src/board_engine.c:831
+#: src/board_engine.c:854
 #, c-format
 msgid "Bonus x%d"
 msgstr "Bonus x%d"
@@ -146,8 +145,8 @@ msgid "_Scores"
 msgstr "_Poeng"
 
 #: src/gweled-headermenu.ui:36
-msgid "_About"
-msgstr "_Om"
+msgid "_About Gweled"
+msgstr ""
 
 #: data/org.gweled.gweled.desktop.in:3 data/org.gweled.gweled.appdata.xml.in:5
 msgid "Gweled"
