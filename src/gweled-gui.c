@@ -101,24 +101,25 @@ welcome_screen_visibility (gboolean value)
 static void
 on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
 {
-	const gchar *authors[] = {
-	    "Sebastien Delestaing <sebdelestaing@free.fr>",
-	    "Daniele Napolitano <dnax88@gmail.com>",
-	    "Wesley Ellis",
-	    NULL
-	};
+    const gchar *authors[] = {
+        "Sebastien Delestaing <sebdelestaing@free.fr>",
+        "Daniele Napolitano <dnax88@gmail.com>",
+        "Wesley Ellis",
+        "Crunchpix (explode sound)",
+        NULL
+    };
 
-	const gchar *translator_credits = _("translator-credits");
+    const gchar *translator_credits = _("translator-credits");
 
     gtk_show_about_dialog (GTK_WINDOW(gweled_ui->main_window),
         "authors", authors,
-	    "translator-credits", strcmp("translator-credits", translator_credits) ? translator_credits : NULL,
+        "translator-credits", strcmp("translator-credits", translator_credits) ? translator_credits : NULL,
         "comments", _("A puzzle game with gems"),
-        "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010-2024 Daniele Napolitano",
+        "copyright", "Copyright © 2003-2005 Sebastien Delestaing\nCopyright © 2010-2025 Daniele Napolitano",
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_2_0,
         "website", "https://gweled.org",
-	    "logo-icon-name", APPLICATION_ID,
+        "logo-icon-name", APPLICATION_ID,
         NULL);
 }
 
@@ -436,5 +437,6 @@ gweled_ui_init (GApplication *app)
     welcome_screen_visibility(!start_previous_game);
     gweled_setup_game_window(start_previous_game);
 }
+
 
 

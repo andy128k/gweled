@@ -796,6 +796,8 @@ board_engine_loop (gpointer data)
 			gweled_take_down_deleted_gems ();
 			gweled_remove_gems_and_update_score ();
 
+            sound_effect_play (EXPLODE_EVENT);
+
             if(prefs.game_mode != ENDLESS_MODE) {
                 if (gi_total_gems_removed <= gi_next_bonus_at)
 				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));

@@ -32,7 +32,8 @@ static GSoundContext *sound_ctx = NULL;
 
 static const char* GweledSounds[NUM_SOUND_EFFECTS][2] = {
     {"click", GWELED_SOUND_BASEPATH "click.ogg"},
-    {"swap", GWELED_SOUND_BASEPATH "swap.ogg"}
+    {"swap", GWELED_SOUND_BASEPATH "swap.ogg"},
+    {"explode", GWELED_SOUND_BASEPATH "explode.ogg"}
 };
 
 extern GweledPrefs prefs;

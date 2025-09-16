@@ -26,6 +26,7 @@ typedef enum e_gweled_sound_effects
 {
     CLICK_EVENT,
     SWAP_EVENT,
+    EXPLODE_EVENT,
     // To track the length of the array.
     NUM_SOUND_EFFECTS
 } GweledSoundEffects;
