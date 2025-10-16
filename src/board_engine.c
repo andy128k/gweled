@@ -611,7 +611,7 @@ hint_callback (gpointer data)
 
 	if (gi_game_running) {
 		gweled_check_for_moves_left (&x, &y);
-		g_print("hint_callback(): x:%d, y%d\n", x, y);
+		g_debug("hint_callback: x:%d, y%d\n", x, y);
         sge_object_bounce(g_gem_objects[x][y]);
 	}
 
@@ -935,7 +935,7 @@ gweled_start_new_game (void)
 	gweled_gems_fall_into_place (TRUE);
 
 	gi_game_running = -1;
-	gi_state = _MARK_ALIGNED_GEMS;
+	gi_state = _IDLE;
 }
 
 

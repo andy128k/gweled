@@ -413,7 +413,7 @@ board_input_event (ClutterActor *stage,
                    ClutterEvent *event,
                    gpointer      dummy G_GNUC_UNUSED)
 {
-    gfloat x, y;
+    gfloat x, y, x_rel, y_rel;
     static gint x_press = -1;
     static gint y_press = -1;
     static gint x_release = -1;
@@ -440,14 +440,16 @@ board_input_event (ClutterActor *stage,
     
     // Can't use the actor position due to possible gems transformations.
     clutter_event_get_coords (event, &x, &y);
-    
-    g_debug("Board input! %i:%i [%.2lfx%.2lf] event_type:%i\n", gi_x_click, gi_y_click, x, y, event->type);
+    clutter_actor_transform_stage_point (g_gameboard, x, y, &x_rel, &y_rel);
+    g_debug("Board input! [%.1lfx%.1lf] event_type:%i", x_rel, y_rel, event->type);
 
     switch (event->type) {
         case CLUTTER_BUTTON_PRESS:
         case CLUTTER_TOUCH_BEGIN:
-            gi_x_click = x_press = round(x) / prefs.tile_size;
-            gi_y_click = y_press = round(y) / prefs.tile_size;
+            gi_x_click = x_press = floor(x_rel) / prefs.tile_size;
+            gi_y_click = y_press = floor(y_rel) / prefs.tile_size;
+
+            g_debug("Board input start! %i:%i", gi_x_click, gi_y_click);
 
             gi_gem_clicked = -1;
 
@@ -471,17 +473,19 @@ board_input_event (ClutterActor *stage,
         
 		    gi_gem_dragged = 0;
 
-            x_release = round(x) / prefs.tile_size;
-            y_release = round(y) / prefs.tile_size;
+            x_release = floor(x_rel) / prefs.tile_size;
+            y_release = floor(y_rel) / prefs.tile_size;
+
+            g_debug("Board input end! %i:%i", x_release, x_release);
 
             if (x_press != x_release || y_press != y_release) {
                 gi_x_click = x_release;
                 gi_y_click = y_release;
 			    gi_gem_clicked = -1;
                 gi_dragging = FALSE;
-            }
 
-            respawn_board_engine_loop();
+                respawn_board_engine_loop();
+            }
 
             break;
 
