@@ -700,7 +700,7 @@ board_engine_loop (gpointer data)
 					                       EFFECTS_LAYER, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
 			gi_gem_dragged = 0;
-		} else
+		}
 
 		break;
 
@@ -709,8 +709,8 @@ board_engine_loop (gpointer data)
 			x2 = gi_x_click;
 			y2 = gi_y_click;
 			gi_gem_clicked = 0;
-			if (((x1 == x2) && (fabs (y1 - y2) == 1)) ||
-			    ((y1 == y2) && (fabs (x1 - x2) == 1))) {
+			if (((x1 == x2) && (abs (y1 - y2) == 1)) ||
+			    ((y1 == y2) && (abs (x1 - x2) == 1))) {
 				// If the player clicks an adjacent gem, try to swap
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems

@@ -45,8 +45,7 @@ static GamesScoresContext *high_scores;
 const gchar *
 category_name_from_key (const gchar *key)
 {
-  int i;
-  for (i = 0; i < G_N_ELEMENTS (gweled_scorecats); ++i) {
+  for (size_t i = 0; i < G_N_ELEMENTS (gweled_scorecats); ++i) {
     if (g_strcmp0 (gweled_scorecats[i].key, key) == 0)
       return g_dpgettext2(NULL, "game type", gweled_scorecats[i].name);
   }

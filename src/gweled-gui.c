@@ -209,9 +209,9 @@ on_window_unfocus_cb (GtkWidget *widget,
 void
 gweled_set_current_score (gint score)
 {
-    gchar msg_buffer[6];
-    g_sprintf (msg_buffer, "%06d", score);
-	gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
+    gchar msg_buffer[7];
+    g_snprintf (msg_buffer, 7, "%06d", score);
+    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
 }
 
 
