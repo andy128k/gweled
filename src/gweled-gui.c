@@ -132,33 +132,37 @@ on_scores_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_da
   gweled_hiscores_show();
 }
 
+static void
+new_game_cb () {
+    gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), "");
+    gweled_stop_game ();
+    welcome_screen_visibility (TRUE);
+}
+
+static void
+abort_game_cb (GtkDialog *dialog, int response_id, gpointer user_data) {
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+    if (response_id == GTK_RESPONSE_YES)
+        new_game_cb ();
+}
+
 void
 on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 {
-	GtkWidget *dialog;
-	gint response;
-
-	if (is_game_running()) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
+    if (is_game_running()) {
+        GtkWidget *dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
 					      _("Do you really want to abort this game?"));
 
-		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 						 GTK_RESPONSE_NO);
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-
-		if (response != GTK_RESPONSE_YES)
-			return;
-	}
-
-	gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), "");
-
-    gweled_stop_game ();
-
-    welcome_screen_visibility (TRUE);
+        g_signal_connect (dialog, "response", G_CALLBACK (abort_game_cb), NULL);
+        gtk_window_present (GTK_WINDOW (dialog));
+    } else {
+        new_game_cb ();
+    }
 }
 
 void
