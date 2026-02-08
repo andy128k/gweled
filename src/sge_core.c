@@ -253,11 +253,10 @@ sge_object_is_moving (T_SGEObject * object)
 gboolean
 sge_objects_are_moving_on_layer (T_SGELayer layer)
 {
-	gint i;
 	T_SGEObject *object;
     gboolean moving = FALSE;
 
-	for (i = 0; i < g_list_length (g_object_list); i++) {
+	for (size_t i = 0; i < g_list_length (g_object_list); i++) {
 		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
 		if (object->layer == layer && sge_object_is_moving (object)) {
 			moving = TRUE;
@@ -500,7 +499,7 @@ board_input_event (ClutterActor *stage,
 void
 sge_objects_resize (gint size) {
     GError *error = NULL;
-    int i;
+    size_t i;
     T_SGEObject *object;
     
     g_print("sge_objects_resize at %i\n", size);

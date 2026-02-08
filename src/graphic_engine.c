@@ -150,12 +150,13 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 gboolean
 gweled_gems_ready_to_fall_check (gpointer data)
 {
-    if (sge_objects_are_moving_on_layer (GEMS_LAYER))
-        g_timeout_add (10, gweled_gems_ready_to_fall_check, data);
-    else
-        gweled_gems_fall_into_place (GPOINTER_TO_INT(data));
-
-    return FALSE;
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        return G_SOURCE_CONTINUE;
+    } else {
+        gboolean new_board_animation = GPOINTER_TO_INT(data);
+        gweled_gems_fall_into_place (new_board_animation);
+        return G_SOURCE_REMOVE;
+    }
 }
 
 void
