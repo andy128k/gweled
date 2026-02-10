@@ -326,8 +326,7 @@ restore_game_cb (GtkDialog *dialog, int response_id, gpointer user_data) {
 void
 gweled_ui_init (GApplication *app)
 {
-	GtkWidget *box, *game_frame;
-	gint       response;
+	GtkWidget *game_frame;
 	GtkBuilder *menu_builder;
 	GAction *action;
     

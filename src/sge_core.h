@@ -59,7 +59,6 @@ typedef struct s_sge_object
 {
 	gint x;
 	gint y;
-	gint y_delay;
 
 	gint width;
 	gint height;
