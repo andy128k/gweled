@@ -82,10 +82,6 @@ gint gi_gem_clicked = 0;
 gint gi_x_click = 0;
 gint gi_y_click = 0;
 
-gint gi_gem_dragged = 0;
-gint gi_x_drag = 0;
-gint gi_y_drag = 0;
-
 gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 gint gi_nb_of_tiles[7];
 
@@ -699,7 +695,6 @@ board_engine_loop (gpointer data)
 					                       y1,
 					                       EFFECTS_LAYER, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
-			gi_gem_dragged = 0;
 		}
 
 		break;
@@ -749,9 +744,6 @@ board_engine_loop (gpointer data)
 						y1,
 						EFFECTS_LAYER, gi_cursor_pixbuf);
 			}
-		}else if(gi_gem_dragged)
-		{
-			//printf("gem dragged\n");
 		}
 		break;
 

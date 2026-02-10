@@ -59,10 +59,6 @@ extern gint gi_gem_clicked;
 extern gint gi_x_click;
 extern gint gi_y_click;
 
-extern gint gi_gem_dragged;
-extern gint gi_x_drag;
-extern gint gi_y_drag;
-
 extern GuiContext *gweled_ui;
 
 extern GweledPrefs prefs;
@@ -470,8 +466,6 @@ board_input_event (ClutterActor *stage,
                 break;
             }
         
-		    gi_gem_dragged = 0;
-
             x_release = floor(x_rel) / prefs.tile_size;
             y_release = floor(y_rel) / prefs.tile_size;
 
@@ -672,8 +666,6 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     object->y = y;
     object->pixbuf_id = pixbuf_id;
 
-    object->y_delay = 0;
-
     object->animating = FALSE;
 
     object->effect = NONE;
@@ -787,8 +779,6 @@ sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *t
 
     object->animating = FALSE;
 
-    object->y_delay = 0;
-
     object->effect_handler_id = 0;
 
 	object->layer = layer;
@@ -842,8 +832,6 @@ sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
     object->pixbuf_id = 0;
 
     object->animating = FALSE;
-
-    object->y_delay = 0;
 
     object->effect_handler_id = 0;
 
