@@ -661,7 +661,7 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     g_print("sge_create_object %s at %i:%i -> %i:%i layer:%i\n", PIXBUF_ID_TO_STRING(pixbuf_id), x, y, x * prefs.tile_size, y * prefs.tile_size, layer);
     
     T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object = g_new0 (T_SGEObject, 1);
     object->x = x;
     object->y = y;
     object->pixbuf_id = pixbuf_id;
@@ -772,7 +772,7 @@ T_SGEObject *
 sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *text_data)
 {
     T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object = g_new0 (T_SGEObject, 1);
     object->x = x;
     object->y = y;
     object->pixbuf_id = 0;
@@ -826,7 +826,7 @@ T_SGEObject *
 sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
 {
     T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object = g_new0 (T_SGEObject, 1);
     object->x = 0;
     object->y = 0;
     object->pixbuf_id = 0;
