@@ -119,6 +119,7 @@ sge_destroy_object (gpointer object, gpointer user_data)
 
         if (SGE_OBJECT(object)->layer == TEXT_LAYER) {
             g_object_unref(CLUTTER_CANVAS (clutter_actor_get_content (SGE_OBJECT(object)->actor)));
+            g_free(SGE_OBJECT(object)->text_data->string);
             g_free(SGE_OBJECT(object)->text_data);
         }
 	    clutter_actor_destroy (SGE_OBJECT(object)->actor);

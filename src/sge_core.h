@@ -43,7 +43,7 @@ typedef uint32_t T_SGEColor;
 
 typedef struct s_sge_text_data
 {
-  const gchar *string;
+  gchar *string;
   guint relative_font_size;
   T_SGEColor text_color;
   T_SGEColor outline_color;

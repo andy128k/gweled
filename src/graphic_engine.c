@@ -110,12 +110,12 @@ gweled_draw_board (gint size)
 }
 
 T_SGEObject *
-gweled_draw_score_message (gchar * in_message, T_SGELayer layer, gint msg_x, gint msg_y)
+gweled_draw_score_message (const gchar *message, T_SGELayer layer, gint msg_x, gint msg_y)
 {
     T_SGEObject *object;
     T_SGETextData *text_data = g_new0 (T_SGETextData, 1);
 
-    text_data->string = in_message;
+    text_data->string = g_strdup (message);
     text_data->relative_font_size = 65;
     text_data->text_color = COLOR_CREATE(0xff, 0xd7, 0x00);
     text_data->outline_color = COLOR_CREATE(0x00, 0x00, 0x00);
@@ -131,7 +131,7 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
     T_SGEObject *object;
     T_SGETextData *text_data = g_new0 (T_SGETextData, 1);
 
-    text_data->string = message;
+    text_data->string = g_strdup (message);
     text_data->relative_font_size = 82;
     text_data->text_color = COLOR_CREATE(0xff, 0xd7, 0x00);
     text_data->outline_color = COLOR_CREATE(0x00, 0x00, 0x00);
@@ -142,7 +142,6 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 
     if (lifetime > 0)
         sge_object_fadeout(object, lifetime, 500);
-
 }
 
 //const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
