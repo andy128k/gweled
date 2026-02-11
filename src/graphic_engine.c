@@ -112,8 +112,8 @@ gweled_draw_board (gint size)
 T_SGEObject *
 gweled_draw_score_message (gchar * in_message, T_SGELayer layer, gint msg_x, gint msg_y)
 {
-	T_SGEObject *object;
-    T_SGETextData *text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
+    T_SGEObject *object;
+    T_SGETextData *text_data = g_new0 (T_SGETextData, 1);
 
     text_data->string = in_message;
     text_data->relative_font_size = 65;
@@ -128,8 +128,8 @@ gweled_draw_score_message (gchar * in_message, T_SGELayer layer, gint msg_x, gin
 void
 gweled_draw_game_message (const gchar * message, guint lifetime)
 {
-	T_SGEObject *object;
-    T_SGETextData *text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
+    T_SGEObject *object;
+    T_SGETextData *text_data = g_new0 (T_SGETextData, 1);
 
     text_data->string = message;
     text_data->relative_font_size = 82;

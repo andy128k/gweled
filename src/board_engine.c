@@ -402,7 +402,7 @@ gweled_delete_gems_for_bonus (void)
 
 	destroy_all_alignments ();
 	for (i = 0; i < NB_BONUS_GEMS; i++) {
-		alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
+		alignment = g_new0 (T_Alignment, 1);
 		alignment->x = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->y = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->direction = T_ALIGN_HORIZONTAL;
@@ -448,7 +448,7 @@ gweled_check_for_alignments (void)
 			} else {
 				// we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
-					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+					alignment = g_new0 (T_Alignment, 1);
 					alignment->x = start_x;
 					alignment->y = start_y;
 					alignment->direction = T_ALIGN_VERTICAL;
@@ -460,7 +460,7 @@ gweled_check_for_alignments (void)
 
 		// end of column
 		if (i_nb_aligned > 2) {
-			alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+			alignment = g_new0 (T_Alignment, 1);
 			alignment->x = start_x;
 			alignment->y = start_y;
 			alignment->direction = T_ALIGN_VERTICAL;
@@ -485,7 +485,7 @@ gweled_check_for_alignments (void)
 			} else {
 				// if we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
-					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+					alignment = g_new0 (T_Alignment, 1);
 					alignment->x = start_x;
 					alignment->y = start_y;
 					alignment->direction = T_ALIGN_HORIZONTAL;
@@ -497,7 +497,7 @@ gweled_check_for_alignments (void)
 
 		// end of row
 		if (i_nb_aligned > 2) {
-			alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
+			alignment = g_new0 (T_Alignment, 1);
 			alignment->x = start_x;
 			alignment->y = start_y;
 			alignment->direction = T_ALIGN_HORIZONTAL;
