@@ -148,13 +148,17 @@ sge_destroy_object_on_level (gpointer object, gpointer user_data)
 void
 sge_destroy_all_objects (void)
 {
-	g_list_foreach (g_object_list, sge_destroy_object, NULL);
+    GList *copy = g_list_copy (g_object_list);
+    g_list_foreach (copy, sge_destroy_object, NULL);
+    g_list_free (copy);
 }
 
 void
 sge_destroy_all_objects_on_level (T_SGELayer level)
 {
-	g_list_foreach (g_object_list, sge_destroy_object_on_level, GINT_TO_POINTER(level));
+    GList *copy = g_list_copy (g_object_list);
+    g_list_foreach (copy, sge_destroy_object_on_level, GINT_TO_POINTER(level));
+    g_list_free (copy);
 }
 
 
