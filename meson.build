@@ -48,12 +48,11 @@ libm_dep = cc.find_library('m', required : false)
 # Dependencies #
 ################
 
-glib = dependency('glib-2.0', version: '>= 2.36')
-gtk = dependency('gtk+-3.0', version: '>= 3.20')
-clutter = dependency('clutter-1.0', version: '>= 1.20')
-clutter_gtk = dependency('clutter-gtk-1.0', version: '>= 1.8')
-gsound = dependency('gsound', version: '>= 1.0.3')
-libgnome_games_support = dependency('libgnome-games-support-1', version: '>= 1.8')
+glib = dependency('glib-2.0', version: '>= 2.86')
+gtk = dependency('gtk4', version: '>= 4.20')
+adw_dependency = dependency('libadwaita-1', version: '>= 1.8')
+gnome_games_support = subproject('libgnome-games-support', default_options: 'superproject_name=gweled')
+libgnome_games_support = gnome_games_support.get_variable ('lggs_dependency')
 
 
 # Subdirs

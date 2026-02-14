@@ -1,6 +1,7 @@
 /* gweled-gui.h
  *
  * Copyright (C) 2021 Daniele Napolitano <dnax88@gmail.com>
+ * Copyright (C) 2026 Andrey Kutejko <andy128k@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,40 +23,34 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <clutter/clutter.h>
+#include <adwaita.h>
+#include "graphic_engine.h"
 
-#define LOOKUP_WIDGET(widget_name) GTK_WIDGET (gtk_builder_get_object (gweled_ui->builder, widget_name))
+#define GWELED_TYPE_WINDOW gweled_window_get_type ()
+G_DECLARE_FINAL_TYPE (GweledWindow, gweled_window, GWELED, WINDOW, AdwApplicationWindow)
 
-typedef struct
-{
-  GtkBuilder *builder;
+GweledWindow *
+gweled_window_new (AdwApplication *app);
 
-  GtkWidget *main_window,
-            *g_clutter,
-            *g_welcome_box,
-            *g_progress_bar,
-            *g_score_label,
-            *g_pref_sounds_button,
-            *g_main_game_stack,
-            *g_headerbar,
-            *g_new_game_btn,
-            *g_pause_game_btn;
-
-  ClutterActor *g_stage;
-
-  GtkMenuButton *g_menu_button;
-
-  GMenuModel *headermenu;
-
-} GuiContext;
+GweledStage *
+gweled_window_get_stage (GweledWindow *window);
 
 void
-gweled_ui_window_present();
+gweled_window_restore_game (GweledWindow *window);
 
 void
-gweled_ui_init(GApplication *app);
+gweled_window_set_current_score (GweledWindow *window, gint score);
 
 void
-gweled_set_current_score (gint score);
+gweled_window_set_pause_enabled (GweledWindow *window, gboolean enabled);
+void
+gweled_window_set_paused (GweledWindow *window, gboolean paused);
+
+void
+gweled_window_set_progress (GweledWindow *window, gdouble progress);
+void
+gweled_window_set_level (GweledWindow *window, gint level);
+void
+gweled_window_reset_progress (GweledWindow *window);
 
 #endif

@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2003-2005 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
  * Copyright (C) 2010 Daniele Napolitano <dnax88@gmail.com>
+ * Copyright (C) 2026 Andrey Kutejko <andy128k@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,22 +25,24 @@
 #include <glib.h>
 #include "sge_core.h"
 
-void
-gweled_load_pixmaps (gint size);
+#define GWELED_TYPE_STAGE gweled_stage_get_type ()
+G_DECLARE_FINAL_TYPE (GweledStage, gweled_stage, GWELED, STAGE, GtkWidget)
+
+GweledStage*
+gweled_stage_new (void);
 
 void
-gweled_draw_game_message (const gchar *message, guint timing);
+gweled_stage_set_layer_visibility (GweledStage* stage, T_SGELayer layer, gboolean visibility);
+void
+gweled_stage_set_layer_opacity (GweledStage* stage, T_SGELayer layer, gdouble opacity);
+
+void
+gweled_stage_create_game_message (GweledStage *stage, const gchar *message, guint timing);
 
 T_SGEObject*
-gweled_draw_score_message (const gchar *message, T_SGELayer layer, gint msg_x, gint msg_y);
+gweled_stage_create_score_message (GweledStage *stage, const gchar *message, double msg_x, double msg_y);
 
 void
 gweled_gems_fall_into_place (gboolean new_board_animation);
-
-void
-gweled_draw_board (gint size);
-
-void
-gweled_set_objects_size (gint size);
 
 #endif

@@ -29,12 +29,12 @@ void
 save_current_game(GweledGameState *game);
 
 GweledGameState*
-load_previous_game();
+load_previous_game(void);
 
 gboolean
-is_present_saved_game();
+is_present_saved_game(void);
 
 void
-remove_saved_game();
+remove_saved_game(void);
 
 #endif
