@@ -36,7 +36,6 @@ typedef enum e_gweled_game_mode
 typedef struct s_gweled_prefs
 {
 	gweled_game_mode game_mode;
-	gint tile_size;
 	gboolean sounds_on;
 	gboolean hints_off;
 } GweledPrefs;
@@ -69,7 +68,7 @@ board_get_pause(void);
 gboolean
 is_game_running(void);
 
-void respawn_board_engine_loop();
+void respawn_board_engine_loop(void);
 
 GweledGameState*
 gweled_get_current_game(void);
@@ -78,6 +77,6 @@ void
 gweled_set_previous_game(GweledGameState *game);
 
 void
-gweled_stop_game();
+gweled_stop_game(void);
 
 #endif
