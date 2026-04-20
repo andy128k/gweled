@@ -509,15 +509,9 @@ sge_objects_resize (gint size) {
                             BOARD_WIDTH * size,
                             BOARD_HEIGHT * size);
 
-    // Resize levels.
-    for (i = 0; i < 5; i++) {
-
-        clutter_actor_set_size (g_actor_layers[i],
-                                BOARD_WIDTH * size,
-                                BOARD_HEIGHT * size);
-
-        clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * size, BOARD_HEIGHT * size);
-    }
+    clutter_actor_set_clip (g_gameboard, 0, 0,
+                            BOARD_WIDTH * size,
+                            BOARD_HEIGHT * size);
 
     for (i = 0; i < g_list_length (g_object_list); i++) {
     
@@ -603,6 +597,7 @@ sge_object_effects_cb (gpointer data)
 static void
 sge_object_start_effect (T_SGEObject *object, T_SGEEffect effect)
 {
+    if (object == NULL) return;
     // Sets the effect
     object->effect = effect;
     // Reset the effect repetition status
@@ -612,6 +607,8 @@ sge_object_start_effect (T_SGEObject *object, T_SGEEffect effect)
 
 void
 sge_object_stop_effect (T_SGEObject *object) {
+    if (object == NULL) return;
+
     object->effect = NONE;
     if (object->effect_handler_id) {
         g_source_remove(object->effect_handler_id);
@@ -915,7 +912,14 @@ sge_init (void)
     clutter_actor_set_size (g_gameboard,
                             BOARD_WIDTH * prefs.tile_size,
                             BOARD_HEIGHT * prefs.tile_size);
-    clutter_actor_add_constraint (g_gameboard, clutter_align_constraint_new (gweled_ui->g_stage, CLUTTER_ALIGN_BOTH, 0.5));
+
+    clutter_actor_set_clip (g_gameboard, 0, 0,
+                            BOARD_WIDTH * prefs.tile_size,
+                            BOARD_HEIGHT * prefs.tile_size);
+
+    clutter_actor_add_constraint (g_gameboard,
+        clutter_align_constraint_new (gweled_ui->g_stage, CLUTTER_ALIGN_BOTH, 0.5));
+
     clutter_actor_add_child (gweled_ui->g_stage, g_gameboard);
     clutter_actor_show (g_gameboard);
 
@@ -936,15 +940,13 @@ sge_init (void)
 	    
 	    clutter_actor_set_easing_mode(g_actor_layers[i], CLUTTER_LINEAR);
         clutter_actor_set_easing_duration (g_actor_layers[i], 200);
-        clutter_actor_set_position(g_actor_layers[i], 0, 0);
-        clutter_actor_set_size (g_actor_layers[i],
-                                BOARD_WIDTH * prefs.tile_size,
-                                BOARD_HEIGHT * prefs.tile_size);
-                                
-        clutter_actor_set_clip(g_actor_layers[i], 0, 0, BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size);
         
+        clutter_actor_add_constraint (g_actor_layers[i],
+            clutter_bind_constraint_new (g_gameboard, CLUTTER_BIND_SIZE, 0));
+
         clutter_actor_add_child (g_gameboard, g_actor_layers[i]);
 
         clutter_actor_show (g_actor_layers[i]);
 	}
 }
+

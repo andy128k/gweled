@@ -37,6 +37,8 @@
 // GLOBALS
 GuiContext* gweled_ui;
 
+static guint layout_idle_id = 0;
+
 GRand *g_random_generator;
 
 extern GweledPrefs prefs;
@@ -179,6 +181,7 @@ gboolean
 board_start (gpointer data)
 {
     gweled_start_new_game ();
+    clutter_main ();
     respawn_board_engine_loop();
     return FALSE;
 }
@@ -247,32 +250,50 @@ gweled_ui_destroy(GtkWidget *window, gpointer user_data)
 
 
 static gboolean
-configure_event_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
+sync_layout_idle (gpointer data)
 {
     gint tilesize, ts_x, ts_y;
+    GtkWidget *widget = GTK_WIDGET (data);
+    ClutterActor *stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (widget));
 
-    g_print("configure_event_cb %dx%d %d\n", event->width, event->height, event->send_event);
+    gint w = gtk_widget_get_allocated_width  (widget);
+    gint h = gtk_widget_get_allocated_height (widget);
 
-    if (event->width == 1) return FALSE;
-
-    /* Compute the new tile size based on the size of the
-     * drawing area, rounded down. */
-    ts_x = event->width / BOARD_WIDTH;
-    ts_y = event->height / BOARD_HEIGHT;
-    if (ts_x * BOARD_WIDTH > event->width)
-        ts_x--;
-    if (ts_y * BOARD_HEIGHT > event->height)
-        ts_y--;
+    ts_x = w / BOARD_WIDTH;
+    ts_y = h / BOARD_HEIGHT;
     tilesize = MIN (ts_x, ts_y);
 
+    if (tilesize < 1) tilesize = 1;
+
     // If no changements do nothing
-    if (tilesize == prefs.tile_size) return FALSE;
+    if (tilesize != prefs.tile_size) {
 
-    gweled_set_objects_size (tilesize);
+        clutter_actor_set_size (stage,
+                            BOARD_WIDTH * tilesize,
+                            BOARD_HEIGHT * tilesize);
 
-    prefs.tile_size = tilesize;
+        clutter_actor_set_position (stage, 0, 0);
 
-    return TRUE;
+        prefs.tile_size = tilesize;
+        gweled_set_objects_size (tilesize);
+    }
+
+    layout_idle_id = 0;
+    return G_SOURCE_REMOVE;
+}
+
+
+static void
+on_stage_size_allocate (GtkWidget *widget, GtkAllocation *a, gpointer user_data)
+{
+    // Trying to avoid strange board movements on window resize.
+    if (layout_idle_id == 0) {
+        layout_idle_id = g_timeout_add_full (G_PRIORITY_DEFAULT,
+                                             50,
+                                          sync_layout_idle,
+                                          g_object_ref (widget),
+                                          (GDestroyNotify) g_object_unref);
+    }
 }
 
 void
@@ -328,12 +349,8 @@ gweled_ui_init (GApplication *app)
                                 BOARD_WIDTH * prefs.tile_size,
                                 BOARD_HEIGHT * prefs.tile_size);
 
-    clutter_stage_set_use_alpha(CLUTTER_STAGE(gweled_ui->g_stage), TRUE);
-    clutter_actor_set_background_color(gweled_ui->g_stage, CLUTTER_COLOR_Transparent);
-
+    clutter_stage_set_no_clear_hint (CLUTTER_STAGE(gweled_ui->g_stage), TRUE);
     gtk_container_add(GTK_CONTAINER(game_frame), gweled_ui->g_clutter);
-
-    gtk_widget_set_can_focus (gweled_ui->g_clutter, TRUE);
 
 	// Header button events
 	g_signal_connect(G_OBJECT(gweled_ui->g_new_game_btn), "clicked",
@@ -361,8 +378,8 @@ gweled_ui_init (GApplication *app)
     g_signal_connect(G_OBJECT(gweled_ui->main_window), "unmap-event",
                      G_CALLBACK(on_window_unfocus_cb), NULL);
 
-    g_signal_connect (G_OBJECT (gweled_ui->g_clutter), "configure_event",
-                    G_CALLBACK (configure_event_cb), NULL);
+    g_signal_connect_after (G_OBJECT (gweled_ui->g_clutter), "size-allocate",
+                    G_CALLBACK (on_stage_size_allocate), gweled_ui->g_stage);
 
     
     g_print("Size %d x %d; tile size: %d\n", BOARD_WIDTH * prefs.tile_size, BOARD_HEIGHT * prefs.tile_size, prefs.tile_size);
