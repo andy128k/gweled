@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2003-2005 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
  * Copyright (C) 2010 Daniele Napolitano <dnax88@gmail.com>
+ * Copyright (C) 2026 Andrey Kutejko <andy128k@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,26 +21,16 @@
 
 #ifndef _SOUND_H_
 #define _SOUND_H_
-#include <glib.h>
 
 typedef enum e_gweled_sound_effects
 {
     CLICK_EVENT,
     SWAP_EVENT,
-    EXPLODE_EVENT,
-    // To track the length of the array.
-    NUM_SOUND_EFFECTS
+    EXPLODE_EVENT
 } GweledSoundEffects;
 
-
-typedef enum e_gweled_sound_fields
-{
-    SOUND_NAME,
-    SOUND_PATH
-} GweledSoundFields;
-
 void
-sound_init();
+sound_init(void);
 
 void
 sound_effect_play(GweledSoundEffects);

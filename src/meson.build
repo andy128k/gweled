@@ -1,5 +1,3 @@
-src_inc = include_directories('.')
-
 app_sources = [
 	'main.c', 'main.h',
 	'gweled-gui.c', 'gweled-gui.h',
@@ -15,9 +13,7 @@ app_deps = [
   libm_dep,
   glib,
   gtk,
-  clutter,
-  clutter_gtk,
-  gsound,
+  adw_dependency,
   libgnome_games_support,
 ]
 
@@ -43,5 +39,3 @@ gweled = executable(
   install: true,
   install_dir: bin_dir,
 )
-
-

@@ -29,7 +29,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <clutter-gtk/clutter-gtk.h>
 
 #include "gweled-gui.h"
 #include "board_engine.h"
@@ -41,11 +40,13 @@
 #define SAVED_GAME_HEADER "gweled"
 
 // Globals
+GweledWindow* g_main_window;
 guint board_engine_id;
 
 GweledPrefs prefs;
 GSettings *settings;
 
+extern GRand *g_random_generator;
 
 void
 gweled_setting_changed (GSettings* self,
@@ -66,7 +67,6 @@ gweled_setting_changed (GSettings* self,
 
 void load_preferences(void)
 {
-	prefs.tile_size = 64;
 	prefs.sounds_on = g_settings_get_boolean (settings, "sound");
 	prefs.hints_off = !g_settings_get_boolean (settings, "hints");
 }
@@ -113,7 +113,7 @@ validate_saved_game_file()
 
 // check for previous saved game
 gboolean
-is_present_saved_game()
+is_present_saved_game(void)
 {
     return validate_saved_game_file();
 }
@@ -142,7 +142,7 @@ save_current_game(GweledGameState *game)
 }
 
 GweledGameState*
-load_previous_game()
+load_previous_game(void)
 {
     gchar *filename;
     FILE *stream;
@@ -171,7 +171,7 @@ load_previous_game()
     return NULL;
 }
 
-void remove_saved_game()
+void remove_saved_game(void)
 {
     gchar *filename;
     filename = g_strconcat(g_get_user_config_dir(), G_DIR_SEPARATOR_S SAVED_GAME_FILENAME, NULL);
@@ -182,66 +182,92 @@ void remove_saved_game()
 }
 
 static void
-gweled_activate_cb (GApplication *app, gpointer user_data)
-{
-    gweled_ui_window_present();
-}
-
-static void
-gweled_startup_cb (GApplication *app, gpointer user_data)
+gweled_startup_cb (GApplication *app, gpointer user_data G_GNUC_UNUSED)
 {
     gtk_window_set_default_icon_name (PACKAGE_NAME);
-    
-    g_object_set (gtk_settings_get_default (),
-                    "gtk-application-prefer-dark-theme", TRUE,
-                    NULL);
+
+    adw_style_manager_set_color_scheme (adw_style_manager_get_default (),
+                                        ADW_COLOR_SCHEME_PREFER_DARK);
     
     load_preferences();
 
-    /* Initialize the GUI */
-    gweled_ui_init(app);
+    gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.hamburger",
+                                           (char const * const[]){ "F10", NULL });
+    gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.pause",
+                                           (char const * const[]){ "<Control>p", NULL });
 
     // Init sound system
     sound_init ();
+
+    g_random_generator = g_rand_new_with_seed (time (NULL));
+}
+
+static void
+restore_game_cb (AdwAlertDialog* dialog G_GNUC_UNUSED,
+                 gchar* response,
+                 gpointer user_data)
+{
+    GweledWindow *window = GWELED_WINDOW (user_data);
+
+    if (g_strcmp0 (response, "yes") == 0) {
+        gweled_window_restore_game (window);
+    }
+    remove_saved_game();
+}
+
+static void
+gweled_activate_cb (GApplication *app, gpointer user_data G_GNUC_UNUSED)
+{
+    GweledWindow *window = gweled_window_new (ADW_APPLICATION (app));
+
+    g_main_window = window;
+
+    gtk_window_present (GTK_WINDOW (window));
+
+    // check for previous saved game
+    if (is_present_saved_game()) {
+        AdwDialog *dialog = adw_alert_dialog_new (_("Restore game?"),
+                                                  _("There is a game saved, do you want restore it?"));
+        adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
+                                        "no", _("_No"),
+                                        "yes", _("_Yes"),
+                                        NULL);
+        adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "no");
+        adw_alert_dialog_set_close_response (ADW_ALERT_DIALOG (dialog), "no");
+
+        g_signal_connect (dialog, "response", G_CALLBACK (restore_game_cb), window);
+
+        adw_dialog_present (dialog, GTK_WIDGET (window));
+    }
+}
+
+static void
+gweled_shutdown_cb (GApplication *app G_GNUC_UNUSED, gpointer user_data G_GNUC_UNUSED)
+{
+    g_rand_free (g_random_generator);
 }
 
 int main (int argc, char **argv)
 {
-	GtkApplication *app;
-	int status;
-	
-	/* gettext */
+    /* gettext */
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
 
-    app = gtk_application_new (APPLICATION_ID, G_APPLICATION_DEFAULT_FLAGS);
-    g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
+    AdwApplication *app = adw_application_new (APPLICATION_ID, G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect (app, "startup", G_CALLBACK (gweled_startup_cb), NULL);
+    g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
+    g_signal_connect (app, "shutdown", G_CALLBACK (gweled_shutdown_cb), NULL);
 
-    if (gtk_clutter_init (&argc, &argv) != CLUTTER_INIT_SUCCESS)
-    {
-        GtkWidget *dialog = gtk_message_dialog_new (NULL,
-                                                GTK_DIALOG_MODAL,
-                                                GTK_MESSAGE_ERROR,
-                                                GTK_BUTTONS_NONE,
-                                                "%s", "Unable to initialize Clutter.");
-        gtk_window_set_title (GTK_WINDOW (dialog), g_get_application_name ());
-        gtk_dialog_run (GTK_DIALOG (dialog));
-        gtk_widget_destroy (dialog);
-        exit (EXIT_FAILURE);
-    }
-    
     settings = g_settings_new (APPLICATION_ID);
     g_signal_connect (settings, "changed", G_CALLBACK (gweled_setting_changed), NULL);
 
-    g_set_application_name("Gweled");
+    g_set_application_name (_("Gweled"));
 
-	status = g_application_run (G_APPLICATION (app), argc, argv);
+    int status = g_application_run (G_APPLICATION (app), argc, argv);
 
-    g_object_run_dispose (G_OBJECT (app));
     g_clear_object (&app);
 
-	return status;
+    return status;
 }
 

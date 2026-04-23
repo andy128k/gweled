@@ -28,12 +28,12 @@
 #define GAME_SCORE_CAT_TIMED 1
 
 void
-gweled_hiscores_show();
+gweled_hiscores_show(GtkWindow *parent_window);
 
 void
-gweled_hiscores_show_and_add(guint score, guint category);
+gweled_hiscores_show_and_add(GtkWindow *parent_window, guint score, guint category);
 
 void
-gweled_init_scores(GtkWindow *parent_window);
+gweled_init_scores(void);
 
 #endif

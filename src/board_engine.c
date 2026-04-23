@@ -82,10 +82,6 @@ gint gi_gem_clicked = 0;
 gint gi_x_click = 0;
 gint gi_y_click = 0;
 
-gint gi_gem_dragged = 0;
-gint gi_x_drag = 0;
-gint gi_y_drag = 0;
-
 gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 gint gi_nb_of_tiles[7];
 
@@ -98,11 +94,10 @@ static T_GameState gi_state = _IDLE;
 
 static GList *g_alignment_list;
 
-extern GRand *g_random_generator;
+GRand *g_random_generator;
 
-extern GuiContext *gweled_ui;
+extern GweledWindow* g_main_window;
 
-extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
 
 extern guint board_engine_id;
@@ -246,6 +241,8 @@ gweled_refill_board (void)
     gint same_tile_count = 1;
 	g_debug("gweled_refill_board():");
 
+    GweledStage *stage = gweled_window_get_stage (g_main_window);
+
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
 			if (gpc_game_board[i][j] == -1)
@@ -279,15 +276,17 @@ gweled_refill_board (void)
 
 				// make sure the new tile appears outside of the screen (1st row is special-cased)
 				if (j && g_gem_objects[i][1])
-					g_gem_objects[i][0] = sge_create_object (i,
+					g_gem_objects[i][0] = sge_create_object (GTK_WIDGET (stage),
+											i,
 											g_gem_objects[i][1]->y - 1,
 											GEMS_LAYER,
-											gi_gems_pixbuf[gpc_game_board[i][0]]);
+											gpc_game_board[i][0]);
 				else
-					g_gem_objects[i][0] = sge_create_object (i,
+					g_gem_objects[i][0] = sge_create_object (GTK_WIDGET (stage),
+											i,
 											-1,
 											GEMS_LAYER,
-											gi_gems_pixbuf[gpc_game_board[i][0]]);
+											gpc_game_board[i][0]);
 			}
 }
 
@@ -296,17 +295,19 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 {
 	gint i, i_total_score;
     gint gi_gems_removed = 0;
-	int xhotspot, yhotspot, xpos, ypos;
+	double xhotspot, yhotspot, xpos, ypos;
 	char *buffer;
 	T_Alignment *alignment;
 	T_SGEObject *object;
+
+	GweledStage *stage = gweled_window_get_stage (g_main_window);
 
 	alignment = (T_Alignment *) alignment_pointer;
     // delete alignment
 	if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
 	{
-		xhotspot = (alignment->x * prefs.tile_size + alignment->length * prefs.tile_size / 2);
-		yhotspot = (alignment->y * prefs.tile_size + prefs.tile_size / 2);
+		xhotspot = alignment->x + alignment->length / 2.0;
+		yhotspot = alignment->y + 0.5;
 		for (i = alignment->x; i < alignment->x + alignment->length; i++) {
 			if (gpc_game_board[i][alignment->y] != -1) {
 				gi_gems_removed++;
@@ -315,8 +316,8 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 			}
 		}
 	} else {
-		xhotspot = (alignment->x * prefs.tile_size + prefs.tile_size / 2);
-		yhotspot = (alignment->y * prefs.tile_size + alignment->length * prefs.tile_size / 2);
+		xhotspot = alignment->x + 0.5;
+		yhotspot = alignment->y + alignment->length / 2.0;
 		for (i = alignment->y; i < alignment->y + alignment->length; i++) {
 			if (gpc_game_board[alignment->x][i] != -1) {
 				gi_gems_removed++;
@@ -343,10 +344,10 @@ delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 
       // display score
       buffer = g_strdup_printf ("%d", i_total_score);
-      xpos = xhotspot - prefs.tile_size;
-      ypos = yhotspot - (prefs.tile_size / 2);
-      object = gweled_draw_score_message (buffer, TEXT_LAYER, xpos, ypos);
-      sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BOUNCE);
+      xpos = xhotspot - 1;
+      ypos = yhotspot - 0.5;
+      object = gweled_stage_create_score_message (stage, buffer, xpos, ypos);
+      sge_object_zoomin (object, 500, ADW_EASE_OUT_BOUNCE);
       sge_object_fly_away (object);
       g_free (buffer);
 	}
@@ -406,7 +407,7 @@ gweled_delete_gems_for_bonus (void)
 
 	destroy_all_alignments ();
 	for (i = 0; i < NB_BONUS_GEMS; i++) {
-		alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
+		alignment = g_new0 (T_Alignment, 1);
 		alignment->x = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->y = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->direction = T_ALIGN_HORIZONTAL;
@@ -452,7 +453,7 @@ gweled_check_for_alignments (void)
 			} else {
 				// we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
-					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+					alignment = g_new0 (T_Alignment, 1);
 					alignment->x = start_x;
 					alignment->y = start_y;
 					alignment->direction = T_ALIGN_VERTICAL;
@@ -464,7 +465,7 @@ gweled_check_for_alignments (void)
 
 		// end of column
 		if (i_nb_aligned > 2) {
-			alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+			alignment = g_new0 (T_Alignment, 1);
 			alignment->x = start_x;
 			alignment->y = start_y;
 			alignment->direction = T_ALIGN_VERTICAL;
@@ -489,7 +490,7 @@ gweled_check_for_alignments (void)
 			} else {
 				// if we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
-					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+					alignment = g_new0 (T_Alignment, 1);
 					alignment->x = start_x;
 					alignment->y = start_y;
 					alignment->direction = T_ALIGN_HORIZONTAL;
@@ -501,7 +502,7 @@ gweled_check_for_alignments (void)
 
 		// end of row
 		if (i_nb_aligned > 2) {
-			alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
+			alignment = g_new0 (T_Alignment, 1);
 			alignment->x = start_x;
 			alignment->y = start_y;
 			alignment->direction = T_ALIGN_HORIZONTAL;
@@ -516,9 +517,11 @@ gweled_check_for_alignments (void)
 
 
 void
-gweled_fill_new_board ()
+gweled_fill_new_board (void)
 {
     gint i, j;
+
+    GweledStage *stage = gweled_window_get_stage (g_main_window);
 
     memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
 
@@ -528,10 +531,11 @@ gweled_fill_new_board ()
 			gpc_game_board[i][j] = get_new_tile ();
 			gi_nb_of_tiles[gpc_game_board[i][j]]++;
 			g_gem_objects[i][j] =
-			    sge_create_object (i,
+			    sge_create_object (GTK_WIDGET (stage),
+							i,
 							(j - BOARD_HEIGHT),
 							GEMS_LAYER,
-							gi_gems_pixbuf[gpc_game_board[i][j]]);
+							gpc_game_board[i][j]);
 		}
 
 	g_do_not_score = TRUE;
@@ -555,38 +559,32 @@ gweled_fill_new_board ()
 
 	for (i = 0; i < BOARD_WIDTH; i++)
 		for (j = 0; j < BOARD_HEIGHT; j++)
-			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), GEMS_LAYER,
-													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+			g_gem_objects[i][j] = sge_create_object (GTK_WIDGET (stage),
+                                                     i,
+                                                     (j - BOARD_HEIGHT),
+                                                     GEMS_LAYER,
+                                                     gpc_game_board[i][j]);
 
 }
 
 void
 board_set_pause(gboolean value)
 {
-    static gchar *last_text;
+    GweledStage *stage = gweled_window_get_stage (g_main_window);
+
     gi_game_paused = value;
 
+    gweled_window_set_paused (g_main_window, value);
     if(value == TRUE) {
-    	gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
+        gweled_stage_create_game_message (stage, _("Paused"), 0);
 
-        gweled_draw_game_message(_("Paused"), 0);
-
-        last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
-        sge_set_layer_visibility(GEMS_LAYER, FALSE);
-        sge_set_layer_visibility(EFFECTS_LAYER, FALSE);
+        gweled_stage_set_layer_visibility (stage, GEMS_LAYER, FALSE);
+        gweled_stage_set_layer_visibility (stage, EFFECTS_LAYER, FALSE);
         gweled_set_hints_active(FALSE);
     }
     else {
-        gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Pause"));
-        
-        if(last_text != NULL) {
-            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), last_text);
-            g_free(last_text);
-            last_text = NULL;
-        }
-        sge_set_layer_visibility(GEMS_LAYER, TRUE);
-        sge_set_layer_visibility(EFFECTS_LAYER, TRUE);
+        gweled_stage_set_layer_visibility (stage, GEMS_LAYER, TRUE);
+        gweled_stage_set_layer_visibility (stage, EFFECTS_LAYER, TRUE);
         sge_destroy_all_objects_on_level(TEXT_LAYER);
         respawn_board_engine_loop();
     }
@@ -622,7 +620,8 @@ hint_callback (gpointer data)
 gboolean
 gweled_game_over_callback (gpointer data)
 {
-    gweled_hiscores_show_and_add(gi_score, prefs.game_mode);
+    GtkWindow *parent_window = GTK_WINDOW (data);
+    gweled_hiscores_show_and_add(parent_window, gi_score, prefs.game_mode);
     return FALSE;
 }
 
@@ -633,6 +632,9 @@ board_engine_loop (gpointer data)
 	static T_SGEObject *cursor[2] = { NULL, NULL };
 	gchar msg_buffer[200];
 
+    GtkWindow *parent_window = GTK_WINDOW (g_main_window);
+    GweledStage *stage = gweled_window_get_stage (g_main_window);
+
 	time_slice++;
 
 	const gchar* state[] = {"_IDLE", "_FIRST_GEM_CLICKED", "_SECOND_GEM_CLICKED",
@@ -642,7 +644,7 @@ board_engine_loop (gpointer data)
 	if(gi_current_score < gi_score)
 	{
 		gi_current_score += 10;
-        gweled_set_current_score (gi_current_score);
+        gweled_window_set_current_score (g_main_window, gi_current_score);
 	}
 
     /* Let's first check if we are in timer mode, and penalize the player if necessary */
@@ -652,25 +654,25 @@ board_engine_loop (gpointer data)
 
 		if (gi_total_gems_removed <= gi_previous_bonus_at) {
 
-			gweled_draw_game_message (_("Time's up!"), 0);
-            sge_set_layer_opacity(GEMS_LAYER, 128);
+			gweled_stage_create_game_message (stage, _("Time's up!"), 0);
+            gweled_stage_set_layer_opacity (stage, GEMS_LAYER, 0.5);
 
             // Removes any gem that is still activated
             sge_object_blink_stop(g_gem_objects[gi_x_click][gi_y_click]);
-            sge_set_layer_visibility (EFFECTS_LAYER, FALSE);
+            gweled_stage_set_layer_visibility (stage, EFFECTS_LAYER, FALSE);
 
-            gtk_widget_hide(gweled_ui->g_pause_game_btn);
+            gweled_window_set_pause_enabled (g_main_window, FALSE);
 
 			gi_game_running = FALSE;
             gi_game_paused = TRUE;
             gi_state = _IDLE;
 
             if (gi_score > 0)
-                g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
+                g_timeout_add_seconds (1, gweled_game_over_callback, parent_window);
 
 		}
 
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar),
+		gweled_window_set_progress (g_main_window,
 					       (float)(gi_total_gems_removed -gi_previous_bonus_at)
 					       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
 	}
@@ -695,12 +697,9 @@ board_engine_loop (gpointer data)
 
 			if (cursor[0])
 				sge_destroy_object (cursor[0], NULL);
-			cursor[0] = sge_create_object (x1,
-					                       y1,
-					                       EFFECTS_LAYER, gi_cursor_pixbuf);
+			cursor[0] = sge_create_object (GTK_WIDGET (stage), x1, y1, EFFECTS_LAYER, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
-			gi_gem_dragged = 0;
-		} else
+		}
 
 		break;
 
@@ -709,8 +708,8 @@ board_engine_loop (gpointer data)
 			x2 = gi_x_click;
 			y2 = gi_y_click;
 			gi_gem_clicked = 0;
-			if (((x1 == x2) && (fabs (y1 - y2) == 1)) ||
-			    ((y1 == y2) && (fabs (x1 - x2) == 1))) {
+			if (((x1 == x2) && (abs (y1 - y2) == 1)) ||
+			    ((y1 == y2) && (abs (x1 - x2) == 1))) {
 				// If the player clicks an adjacent gem, try to swap
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems
@@ -745,13 +744,8 @@ board_engine_loop (gpointer data)
 				y1 = y2;
 				if (cursor[0])
 					sge_destroy_object (cursor[0], NULL);
-				cursor[0] = sge_create_object (x1,
-						y1,
-						EFFECTS_LAYER, gi_cursor_pixbuf);
+				cursor[0] = sge_create_object (GTK_WIDGET (stage), x1, y1, EFFECTS_LAYER, gi_cursor_pixbuf);
 			}
-		}else if(gi_gem_dragged)
-		{
-			//printf("gem dragged\n");
 		}
 		break;
 
@@ -800,9 +794,9 @@ board_engine_loop (gpointer data)
 
             if(prefs.game_mode != ENDLESS_MODE) {
                 if (gi_total_gems_removed <= gi_next_bonus_at)
-				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
+				    gweled_window_set_progress (g_main_window, (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
 			    else
-				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), 1.0);
+				    gweled_window_set_progress (g_main_window, 1.0);
             }
 
 			gi_state = _BOARD_REFILLING;
@@ -812,7 +806,7 @@ board_engine_loop (gpointer data)
 			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
 				if (prefs.game_mode == ENDLESS_MODE || prefs.game_mode == TIMED_MODE) {
 
-					gweled_draw_game_message (_("No moves left!"), 2);
+					gweled_stage_create_game_message (stage, _("No moves left!"), 2);
 
                     sge_destroy_all_objects_on_level(GEMS_LAYER);
                     gweled_fill_new_board();
@@ -822,15 +816,15 @@ board_engine_loop (gpointer data)
 				} else {
 				    // Game over
 
-					gweled_draw_game_message (_("No moves left!"), 0);
-                    sge_set_layer_opacity(GEMS_LAYER, 128);
-                    gtk_widget_hide(gweled_ui->g_pause_game_btn);
+                    gweled_stage_create_game_message (stage, _("No moves left!"), 0);
+                    gweled_stage_set_layer_opacity (stage, GEMS_LAYER, 0.5);
+                    gweled_window_set_pause_enabled (g_main_window, FALSE);
 					gi_game_running = FALSE;
                     gi_game_paused = TRUE;
                     gi_state = _IDLE;
 
                     if (gi_score > 0)
-                        g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
+                        g_timeout_add_seconds (1, gweled_game_over_callback, parent_window);
 				}
 			} else {
 				g_do_not_score = FALSE;
@@ -851,10 +845,9 @@ board_engine_loop (gpointer data)
                 // draw bonus message and new level in game
                 gi_bonus_multiply++;
                 gi_level++;
-                g_sprintf(msg_buffer, _("Level %d"), gi_level);
-                gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), msg_buffer);
+                gweled_window_set_level (g_main_window, gi_level);
 				g_sprintf (msg_buffer, _("Bonus x%d"), gi_bonus_multiply >> 1);
-				gweled_draw_game_message (msg_buffer, 2);
+				gweled_stage_create_game_message (stage, msg_buffer, 2);
 
 				gweled_delete_gems_for_bonus ();
 				gweled_take_down_deleted_gems ();
@@ -863,7 +856,7 @@ board_engine_loop (gpointer data)
 				if (prefs.game_mode == TIMED_MODE)
 					gi_total_gems_removed = (gi_next_bonus_at + gi_previous_bonus_at) / 2;
 
-				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar),
+				gweled_window_set_progress (g_main_window,
 					(float) (gi_total_gems_removed - gi_previous_bonus_at) /
 					(float) (gi_next_bonus_at - gi_previous_bonus_at));
 
@@ -891,7 +884,7 @@ board_engine_loop (gpointer data)
 	return TRUE;
 }
 
-void respawn_board_engine_loop()
+void respawn_board_engine_loop(void)
 {
     if(!board_engine_id)
         board_engine_id = g_timeout_add (50, board_engine_loop, NULL);
@@ -913,22 +906,20 @@ gweled_start_new_game (void)
 
 	if (prefs.game_mode == TIMED_MODE) {
 		gi_total_gems_removed = FIRST_BONUS_AT / 2;
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.5);
+        gweled_window_set_progress (g_main_window, 0.5);
     }
     else {
 		gi_total_gems_removed = 0;
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
+        gweled_window_set_progress (g_main_window, 0.0);
     }
 
     if (prefs.game_mode != ENDLESS_MODE) {
-        gchar *text = g_strdup_printf(_("Level %d"), 1);
-	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text);
-	    g_free(text);
+	    gweled_window_set_level (g_main_window, 1);
     }
 
     gweled_set_hints_active(FALSE);
 
-    gweled_set_current_score (0);
+    gweled_window_set_current_score (g_main_window, 0);
 
     gweled_fill_new_board();
 
@@ -967,8 +958,9 @@ gweled_get_current_game(void)
 void
 gweled_set_previous_game(GweledGameState *game)
 {
-    gchar *text_buffer;
     int i, j;
+
+    GweledStage *stage = gweled_window_get_stage (g_main_window);
 
     prefs.game_mode = game->game_mode;
     gi_score = game->gi_score;
@@ -981,23 +973,20 @@ gweled_set_previous_game(GweledGameState *game)
     gi_current_score = gi_score;
 
     if(prefs.game_mode != ENDLESS_MODE) {
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar),
-                                (float)(gi_total_gems_removed -gi_previous_bonus_at)
+        gweled_window_set_progress (g_main_window,
+                                (float)(gi_total_gems_removed - gi_previous_bonus_at)
                                 / (float)(gi_next_bonus_at - gi_previous_bonus_at));
-        text_buffer = g_strdup_printf(_("Level %d"), gi_level);
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text_buffer);
-        g_free(text_buffer);
+        gweled_window_set_level (g_main_window, gi_level);
     }
 
-    gweled_set_current_score (gi_current_score);
+    gweled_window_set_current_score (g_main_window, gi_current_score);
 
     sge_destroy_all_objects ();
 
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++) {
             gpc_game_board[i][j] = game->gpc_game_board[i][j];
-            g_gem_objects[i][j] = sge_create_object (i, j , GEMS_LAYER,
-													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+            g_gem_objects[i][j] = sge_create_object (GTK_WIDGET (stage), i, j, GEMS_LAYER, gpc_game_board[i][j]);
         }
 
     gi_game_running = -1;
@@ -1010,16 +999,15 @@ gweled_set_previous_game(GweledGameState *game)
 }
 
 
-void gweled_stop_game()
+void gweled_stop_game(void)
 {
     board_set_pause(FALSE);
     respawn_board_engine_loop();
     gi_game_running = 0;
     sge_destroy_all_objects();
 
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), "" );
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
-    gweled_set_current_score (0);
+    gweled_window_reset_progress (g_main_window);
+    gweled_window_set_current_score (g_main_window, 0);
 }
 
 void gweled_set_hints_active(gboolean yn)

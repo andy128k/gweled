@@ -45,8 +45,7 @@ static GamesScoresContext *high_scores;
 const gchar *
 category_name_from_key (const gchar *key)
 {
-  int i;
-  for (i = 0; i < G_N_ELEMENTS (gweled_scorecats); ++i) {
+  for (size_t i = 0; i < G_N_ELEMENTS (gweled_scorecats); ++i) {
     if (g_strcmp0 (gweled_scorecats[i].key, key) == 0)
       return g_dpgettext2(NULL, "game type", gweled_scorecats[i].name);
   }
@@ -77,13 +76,13 @@ add_score_cb (GObject *source_object, GAsyncResult *res, gpointer user_data)
 }
 
 void
-gweled_hiscores_show()
+gweled_hiscores_show(GtkWindow *parent_window)
 {
-    games_scores_context_run_dialog (high_scores);
+    games_scores_context_present_dialog (high_scores, parent_window, NULL);
 }
 
 void
-gweled_hiscores_show_and_add(guint score, guint game_type)
+gweled_hiscores_show_and_add(GtkWindow *parent_window, guint score, guint game_type)
 {
     GamesScoresCategory *category;
 
@@ -92,22 +91,22 @@ gweled_hiscores_show_and_add(guint score, guint game_type)
     games_scores_context_add_score (high_scores,
                                     score,
                                     category,
+                                    GTK_WINDOW (parent_window),
                                     NULL,
                                     add_score_cb,
                                     NULL);
-    gweled_hiscores_show();
+    gweled_hiscores_show (parent_window);
 }
 
 void
-gweled_init_scores(GtkWindow *parent_window)
+gweled_init_scores(void)
 {
-    high_scores = games_scores_context_new_with_icon_name("gweled",
+    high_scores = games_scores_context_new ("gweled",
                                            /* Translators: label displayed on the scores dialog, preceding a difficulty. */
-                                           _("Game type:"),
-                                           GTK_WINDOW (parent_window),
+                                           _("Game type"),
                                            get_scores_category_from_key,
                                            NULL, GAMES_SCORES_STYLE_POINTS_GREATER_IS_BETTER,
-                                           APPLICATION_ID);
-
+                                           APPLICATION_ID,
+                                           10);
 }
 
