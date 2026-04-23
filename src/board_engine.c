@@ -82,10 +82,6 @@ gint gi_gem_clicked = 0;
 gint gi_x_click = 0;
 gint gi_y_click = 0;
 
-gint gi_gem_dragged = 0;
-gint gi_x_drag = 0;
-gint gi_y_drag = 0;
-
 gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
 gint gi_nb_of_tiles[7];
 
@@ -406,7 +402,7 @@ gweled_delete_gems_for_bonus (void)
 
 	destroy_all_alignments ();
 	for (i = 0; i < NB_BONUS_GEMS; i++) {
-		alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
+		alignment = g_new0 (T_Alignment, 1);
 		alignment->x = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->y = g_rand_int_range (g_random_generator, 0, 7);
 		alignment->direction = T_ALIGN_HORIZONTAL;
@@ -452,7 +448,7 @@ gweled_check_for_alignments (void)
 			} else {
 				// we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
-					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+					alignment = g_new0 (T_Alignment, 1);
 					alignment->x = start_x;
 					alignment->y = start_y;
 					alignment->direction = T_ALIGN_VERTICAL;
@@ -464,7 +460,7 @@ gweled_check_for_alignments (void)
 
 		// end of column
 		if (i_nb_aligned > 2) {
-			alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+			alignment = g_new0 (T_Alignment, 1);
 			alignment->x = start_x;
 			alignment->y = start_y;
 			alignment->direction = T_ALIGN_VERTICAL;
@@ -489,7 +485,7 @@ gweled_check_for_alignments (void)
 			} else {
 				// if we found one, let's remember it for later use
 				if (i_nb_aligned > 2) {
-					alignment = (T_Alignment *)g_malloc (sizeof (T_Alignment));
+					alignment = g_new0 (T_Alignment, 1);
 					alignment->x = start_x;
 					alignment->y = start_y;
 					alignment->direction = T_ALIGN_HORIZONTAL;
@@ -501,7 +497,7 @@ gweled_check_for_alignments (void)
 
 		// end of row
 		if (i_nb_aligned > 2) {
-			alignment = (T_Alignment *) g_malloc (sizeof (T_Alignment));
+			alignment = g_new0 (T_Alignment, 1);
 			alignment->x = start_x;
 			alignment->y = start_y;
 			alignment->direction = T_ALIGN_HORIZONTAL;
@@ -699,8 +695,7 @@ board_engine_loop (gpointer data)
 					                       y1,
 					                       EFFECTS_LAYER, gi_cursor_pixbuf);
 			gi_gem_clicked = 0;
-			gi_gem_dragged = 0;
-		} else
+		}
 
 		break;
 
@@ -709,8 +704,8 @@ board_engine_loop (gpointer data)
 			x2 = gi_x_click;
 			y2 = gi_y_click;
 			gi_gem_clicked = 0;
-			if (((x1 == x2) && (fabs (y1 - y2) == 1)) ||
-			    ((y1 == y2) && (fabs (x1 - x2) == 1))) {
+			if (((x1 == x2) && (abs (y1 - y2) == 1)) ||
+			    ((y1 == y2) && (abs (x1 - x2) == 1))) {
 				// If the player clicks an adjacent gem, try to swap
 				sge_object_blink_stop(g_gem_objects[x1][y1]);
 				// swap gems
@@ -749,9 +744,6 @@ board_engine_loop (gpointer data)
 						y1,
 						EFFECTS_LAYER, gi_cursor_pixbuf);
 			}
-		}else if(gi_gem_dragged)
-		{
-			//printf("gem dragged\n");
 		}
 		break;
 

@@ -132,33 +132,37 @@ on_scores_activate (GSimpleAction *simple, GVariant *parameter, gpointer user_da
   gweled_hiscores_show();
 }
 
+static void
+new_game_cb () {
+    gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), "");
+    gweled_stop_game ();
+    welcome_screen_visibility (TRUE);
+}
+
+static void
+abort_game_cb (GtkDialog *dialog, int response_id, gpointer user_data) {
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+    if (response_id == GTK_RESPONSE_YES)
+        new_game_cb ();
+}
+
 void
 on_new_game_activate_cb (GtkWidget *button, gpointer user_data)
 {
-	GtkWidget *dialog;
-	gint response;
-
-	if (is_game_running()) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
+    if (is_game_running()) {
+        GtkWidget *dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
 					      GTK_DIALOG_DESTROY_WITH_PARENT,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
 					      _("Do you really want to abort this game?"));
 
-		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 						 GTK_RESPONSE_NO);
-		response = gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-
-		if (response != GTK_RESPONSE_YES)
-			return;
-	}
-
-	gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gweled_ui->g_headerbar), "");
-
-    gweled_stop_game ();
-
-    welcome_screen_visibility (TRUE);
+        g_signal_connect (dialog, "response", G_CALLBACK (abort_game_cb), NULL);
+        gtk_window_present (GTK_WINDOW (dialog));
+    } else {
+        new_game_cb ();
+    }
 }
 
 void
@@ -209,9 +213,9 @@ on_window_unfocus_cb (GtkWidget *widget,
 void
 gweled_set_current_score (gint score)
 {
-    gchar msg_buffer[6];
-    g_sprintf (msg_buffer, "%06d", score);
-	gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
+    gchar msg_buffer[7];
+    g_snprintf (msg_buffer, 7, "%06d", score);
+    gtk_label_set_markup (GTK_LABEL(gweled_ui->g_score_label), msg_buffer);
 }
 
 
@@ -301,14 +305,30 @@ gweled_ui_window_present() {
     gtk_window_present_with_time (GTK_WINDOW (gweled_ui->main_window), gtk_get_current_event_time());
 }
 
+static void
+restore_game_cb (GtkDialog *dialog, int response_id, gpointer user_data) {
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+
+    gboolean start_previous_game = FALSE;
+    if (response_id == GTK_RESPONSE_YES) {
+        GweledGameState *previous_game = load_previous_game();
+        gweled_set_previous_game(previous_game);
+        g_free(previous_game);
+        start_previous_game = TRUE;
+    }
+
+    remove_saved_game();
+
+    welcome_screen_visibility(!start_previous_game);
+    gweled_setup_game_window(start_previous_game);
+}
+
 void
 gweled_ui_init (GApplication *app)
 {
-	GtkWidget *box, *game_frame;
-	gint       response;
+	GtkWidget *game_frame;
 	GtkBuilder *menu_builder;
 	GAction *action;
-    gboolean start_previous_game = FALSE;
     
     GError    *error = NULL;
 
@@ -428,32 +448,21 @@ gweled_ui_init (GApplication *app)
     gtk_widget_set_visible (gweled_ui->g_progress_bar, FALSE);
 
     // check for previous saved game
-	if(is_present_saved_game()) {
-	    box = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
+    if(is_present_saved_game()) {
+        GtkWidget *dialog = gtk_message_dialog_new (GTK_WINDOW (gweled_ui->main_window),
                           GTK_DIALOG_DESTROY_WITH_PARENT,
                           GTK_MESSAGE_QUESTION,
                           GTK_BUTTONS_YES_NO,
                           _("There is a game saved, do you want restore it?"));
 
-        gtk_dialog_set_default_response (GTK_DIALOG (box),
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                          GTK_RESPONSE_NO);
-        response = gtk_dialog_run (GTK_DIALOG (box));
-        gtk_widget_destroy (box);
-
-        if (response == GTK_RESPONSE_YES) {
-            GweledGameState *previous_game = load_previous_game();
-            gweled_set_previous_game(previous_game);
-            g_free(previous_game);
-            start_previous_game = TRUE;
-        }
-
-        remove_saved_game();
-	}
-
-    // Setup default window mode.
-    welcome_screen_visibility(!start_previous_game);
-    gweled_setup_game_window(start_previous_game);
+        g_signal_connect (dialog, "response", G_CALLBACK (restore_game_cb), NULL);
+        gtk_window_present (GTK_WINDOW (dialog));
+    } else {
+        // Setup default window mode.
+        welcome_screen_visibility(TRUE);
+        gweled_setup_game_window(FALSE);
+    }
 }
-
-
 
