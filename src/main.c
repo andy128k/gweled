@@ -41,8 +41,6 @@
 #define SAVED_GAME_HEADER "gweled"
 
 // Globals
-guint board_engine_id;
-
 GweledPrefs prefs;
 GSettings *settings;
 

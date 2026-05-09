@@ -105,7 +105,7 @@ extern GuiContext *gweled_ui;
 extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
 
-extern guint board_engine_id;
+guint board_engine_id;
 extern GweledPrefs prefs;
 
 gint
@@ -567,7 +567,7 @@ board_set_pause(gboolean value)
     gi_game_paused = value;
 
     if(value == TRUE) {
-    	gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
+        gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
 
         gweled_draw_game_message(_("Paused"), 0);
 
@@ -934,6 +934,8 @@ gweled_start_new_game (void)
 
 	gweled_gems_fall_into_place (TRUE);
 
+    respawn_board_engine_loop();
+
 	gi_game_running = -1;
 	gi_state = _IDLE;
 }
@@ -1013,7 +1015,9 @@ gweled_set_previous_game(GweledGameState *game)
 void gweled_stop_game()
 {
     board_set_pause(FALSE);
-    respawn_board_engine_loop();
+    g_source_remove(board_engine_id);
+    board_engine_id = 0;
+
     gi_game_running = 0;
     sge_destroy_all_objects();
 
