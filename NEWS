@@ -1,3 +1,23 @@
+1.0-beta2
+======
+
+  Released: 2026-05-11
+
+  Features:
+    * Sound for gems alignment points
+    * Added Portuguese translation; Updated translations
+    * Hardening saved game file
+
+  Fixed bugs:
+    * Fixed timed game type too fast
+    * Fixed crash clicking on suggested gem [lp #2097660]
+    * Fixed crash on clicking on the egde of the board [lp #2122748]
+    * Other small improvements...
+
+  Known bugs:
+    * No custom messages if your score is not in the first 10 ones
+
+
 1.0-beta1
 ======
 
