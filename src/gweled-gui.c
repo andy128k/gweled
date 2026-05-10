@@ -178,10 +178,9 @@ on_pause_activate_cb (GtkWidget *button, gpointer user_data)
 }
 
 gboolean
-board_start (gpointer data)
+gweled_board_start (gpointer data)
 {
     gweled_start_new_game ();
-    clutter_main ();
     respawn_board_engine_loop();
     return FALSE;
 }
@@ -193,8 +192,8 @@ on_game_mode_start_clicked (GtkButton * button, gpointer game_mode)
     welcome_screen_visibility(FALSE);
     gweled_setup_game_window(TRUE);
 
-    // Waiting for the clutter stage to be realized.
-    g_timeout_add (50, board_start, NULL);
+    // Waiting for the clutter stage to be realized (without this, there is no start animation).
+    g_timeout_add (50, gweled_board_start, NULL);
 }
 
 void
