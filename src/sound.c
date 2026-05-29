@@ -41,9 +41,7 @@ extern GweledPrefs prefs;
 void
 sound_init()
 {
-    int i;
     GError *error = NULL;
-
 
     if (sound_available == TRUE)
 	    return;
@@ -54,21 +52,6 @@ sound_init()
 
         gsound_context_open (sound_ctx, &error);
         if (error != NULL) goto sound_errors;
-
-        for (i = 0; i < NUM_SOUND_EFFECTS; i ++) {
-            error = NULL;
-            gsound_context_cache(sound_ctx, &error,
-                                 GSOUND_ATTR_EVENT_ID,
-                                 GweledSounds[i][SOUND_NAME],
-                                 GSOUND_ATTR_MEDIA_FILENAME,
-                                 GweledSounds[i][SOUND_PATH],
-                                 GSOUND_ATTR_MEDIA_ROLE, "game",
-                                 NULL);
-            if (error != NULL)  {
-                g_warning("File [%s] %i: %s\n", GweledSounds[i][SOUND_PATH], error->code, error->message);
-                g_error_free (error);
-            }
-        }
     }
 
     g_print("Sound init OK\n");
