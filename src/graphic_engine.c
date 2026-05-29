@@ -110,12 +110,12 @@ gweled_draw_board (gint size)
 }
 
 T_SGEObject *
-gweled_draw_score_message (gchar * in_message, T_SGELayer layer, gint msg_x, gint msg_y)
+gweled_draw_score_message (const gchar *message, T_SGELayer layer, gint msg_x, gint msg_y)
 {
-	T_SGEObject *object;
-    T_SGETextData *text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
+    T_SGEObject *object;
+    T_SGETextData *text_data = g_new0 (T_SGETextData, 1);
 
-    text_data->string = in_message;
+    text_data->string = g_strdup (message);
     text_data->relative_font_size = 65;
     text_data->text_color = COLOR_CREATE(0xff, 0xd7, 0x00);
     text_data->outline_color = COLOR_CREATE(0x00, 0x00, 0x00);
@@ -128,10 +128,10 @@ gweled_draw_score_message (gchar * in_message, T_SGELayer layer, gint msg_x, gin
 void
 gweled_draw_game_message (const gchar * message, guint lifetime)
 {
-	T_SGEObject *object;
-    T_SGETextData *text_data = (T_SGETextData *) g_malloc (sizeof (T_SGETextData));
+    T_SGEObject *object;
+    T_SGETextData *text_data = g_new0 (T_SGETextData, 1);
 
-    text_data->string = message;
+    text_data->string = g_strdup (message);
     text_data->relative_font_size = 82;
     text_data->text_color = COLOR_CREATE(0xff, 0xd7, 0x00);
     text_data->outline_color = COLOR_CREATE(0x00, 0x00, 0x00);
@@ -142,7 +142,6 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 
     if (lifetime > 0)
         sge_object_fadeout(object, lifetime, 500);
-
 }
 
 //const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
@@ -150,12 +149,13 @@ gweled_draw_game_message (const gchar * message, guint lifetime)
 gboolean
 gweled_gems_ready_to_fall_check (gpointer data)
 {
-    if (sge_objects_are_moving_on_layer (GEMS_LAYER))
-        g_timeout_add (10, gweled_gems_ready_to_fall_check, data);
-    else
-        gweled_gems_fall_into_place (GPOINTER_TO_INT(data));
-
-    return FALSE;
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        return G_SOURCE_CONTINUE;
+    } else {
+        gboolean new_board_animation = GPOINTER_TO_INT(data);
+        gweled_gems_fall_into_place (new_board_animation);
+        return G_SOURCE_REMOVE;
+    }
 }
 
 void

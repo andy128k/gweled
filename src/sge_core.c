@@ -59,10 +59,6 @@ extern gint gi_gem_clicked;
 extern gint gi_x_click;
 extern gint gi_y_click;
 
-extern gint gi_gem_dragged;
-extern gint gi_x_drag;
-extern gint gi_y_drag;
-
 extern GuiContext *gweled_ui;
 
 extern GweledPrefs prefs;
@@ -123,6 +119,7 @@ sge_destroy_object (gpointer object, gpointer user_data)
 
         if (SGE_OBJECT(object)->layer == TEXT_LAYER) {
             g_object_unref(CLUTTER_CANVAS (clutter_actor_get_content (SGE_OBJECT(object)->actor)));
+            g_free(SGE_OBJECT(object)->text_data->string);
             g_free(SGE_OBJECT(object)->text_data);
         }
 	    clutter_actor_destroy (SGE_OBJECT(object)->actor);
@@ -151,13 +148,17 @@ sge_destroy_object_on_level (gpointer object, gpointer user_data)
 void
 sge_destroy_all_objects (void)
 {
-	g_list_foreach (g_object_list, sge_destroy_object, NULL);
+    GList *copy = g_list_copy (g_object_list);
+    g_list_foreach (copy, sge_destroy_object, NULL);
+    g_list_free (copy);
 }
 
 void
 sge_destroy_all_objects_on_level (T_SGELayer level)
 {
-	g_list_foreach (g_object_list, sge_destroy_object_on_level, GINT_TO_POINTER(level));
+    GList *copy = g_list_copy (g_object_list);
+    g_list_foreach (copy, sge_destroy_object_on_level, GINT_TO_POINTER(level));
+    g_list_free (copy);
 }
 
 
@@ -253,11 +254,10 @@ sge_object_is_moving (T_SGEObject * object)
 gboolean
 sge_objects_are_moving_on_layer (T_SGELayer layer)
 {
-	gint i;
 	T_SGEObject *object;
     gboolean moving = FALSE;
 
-	for (i = 0; i < g_list_length (g_object_list); i++) {
+	for (size_t i = 0; i < g_list_length (g_object_list); i++) {
 		object = SGE_OBJECT (g_list_nth_data (g_object_list, i));
 		if (object->layer == layer && sge_object_is_moving (object)) {
 			moving = TRUE;
@@ -471,8 +471,6 @@ board_input_event (ClutterActor *stage,
                 break;
             }
         
-		    gi_gem_dragged = 0;
-
             x_release = floor(x_rel) / prefs.tile_size;
             y_release = floor(y_rel) / prefs.tile_size;
 
@@ -500,7 +498,7 @@ board_input_event (ClutterActor *stage,
 void
 sge_objects_resize (gint size) {
     GError *error = NULL;
-    int i;
+    size_t i;
     T_SGEObject *object;
     
     g_print("sge_objects_resize at %i\n", size);
@@ -668,12 +666,10 @@ sge_create_object (gint x, gint y, T_SGELayer layer, gint pixbuf_id)
     g_print("sge_create_object %s at %i:%i -> %i:%i layer:%i\n", PIXBUF_ID_TO_STRING(pixbuf_id), x, y, x * prefs.tile_size, y * prefs.tile_size, layer);
     
     T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object = g_new0 (T_SGEObject, 1);
     object->x = x;
     object->y = y;
     object->pixbuf_id = pixbuf_id;
-
-    object->y_delay = 0;
 
     object->animating = FALSE;
 
@@ -781,14 +777,12 @@ T_SGEObject *
 sge_create_score_text_object (gint x, gint y, T_SGELayer layer, T_SGETextData *text_data)
 {
     T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object = g_new0 (T_SGEObject, 1);
     object->x = x;
     object->y = y;
     object->pixbuf_id = 0;
 
     object->animating = FALSE;
-
-    object->y_delay = 0;
 
     object->effect_handler_id = 0;
 
@@ -837,14 +831,12 @@ T_SGEObject *
 sge_create_fullscreen_text_object (T_SGELayer layer, T_SGETextData *text_data)
 {
     T_SGEObject * object;
-	object = (T_SGEObject *) g_malloc (sizeof (T_SGEObject));
+    object = g_new0 (T_SGEObject, 1);
     object->x = 0;
     object->y = 0;
     object->pixbuf_id = 0;
 
     object->animating = FALSE;
-
-    object->y_delay = 0;
 
     object->effect_handler_id = 0;
 

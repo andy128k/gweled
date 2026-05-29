@@ -31,7 +31,7 @@ void
 gweled_draw_game_message (const gchar *message, guint timing);
 
 T_SGEObject*
-gweled_draw_score_message (gchar *in_message, T_SGELayer layer, gint msg_x, gint msg_y);
+gweled_draw_score_message (const gchar *message, T_SGELayer layer, gint msg_x, gint msg_y);
 
 void
 gweled_gems_fall_into_place (gboolean new_board_animation);
