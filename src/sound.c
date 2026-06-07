@@ -23,19 +23,13 @@
 #include <gtk/gtk.h>
 
 #include "sound.h"
-#include "board_engine.h"
 
 #define GWELED_SOUND_BASEPATH DATA_DIRECTORY G_DIR_SEPARATOR_S "sounds" G_DIR_SEPARATOR_S PACKAGE_NAME G_DIR_SEPARATOR_S
-
-extern GweledPrefs prefs;
 
 /* Play sound fx */
 void
 sound_effect_play(GweledSoundEffects effect)
 {
-    if (!prefs.sounds_on)
-        return;
-
     const gchar *effect_path;
     switch (effect) {
     case CLICK_EVENT:

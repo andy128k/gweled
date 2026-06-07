@@ -24,13 +24,17 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <adwaita.h>
+#include "board_engine.h"
 #include "graphic_engine.h"
 
 #define GWELED_TYPE_WINDOW gweled_window_get_type ()
 G_DECLARE_FINAL_TYPE (GweledWindow, gweled_window, GWELED, WINDOW, AdwApplicationWindow)
 
 GweledWindow *
-gweled_window_new (AdwApplication *app);
+gweled_window_new (AdwApplication *app, GSettings *settings);
+
+GweledEngine *
+gweled_window_get_engine (GweledWindow *window);
 
 GweledStage *
 gweled_window_get_stage (GweledWindow *window);
@@ -41,8 +45,6 @@ gweled_window_restore_game (GweledWindow *window);
 void
 gweled_window_set_current_score (GweledWindow *window, gint score);
 
-void
-gweled_window_set_pause_enabled (GweledWindow *window, gboolean enabled);
 void
 gweled_window_set_paused (GweledWindow *window, gboolean paused);
 

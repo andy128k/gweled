@@ -30,44 +30,11 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "gweled-gui.h"
-#include "board_engine.h"
-#include "graphic_engine.h"
-#include "sound.h"
 #include "main.h"
+#include "gweled-gui.h"
 
 #define SAVED_GAME_FILENAME "gweled.saved-game"
 #define SAVED_GAME_HEADER "gweled"
-
-// Globals
-GweledWindow* g_main_window;
-GweledPrefs prefs;
-GSettings *settings;
-
-extern GRand *g_random_generator;
-
-void
-gweled_setting_changed (GSettings* self,
-                        gchar* key,
-                        gpointer user_data
-) {
-    g_print("Settings changed: %s\n", key);
-
-    if (g_strcmp0 (key, "sound") == 0) {
-    	prefs.sounds_on = g_settings_get_boolean (self, "sound");
-    }
-
-    if (g_strcmp0 (key, "hints") == 0) {
-    	prefs.hints_off = !g_settings_get_boolean (self, "hints");
-		gweled_set_hints_active(!prefs.hints_off);
-    }
-}
-
-void load_preferences(void)
-{
-	prefs.sounds_on = g_settings_get_boolean (settings, "sound");
-	prefs.hints_off = !g_settings_get_boolean (settings, "hints");
-}
 
 gboolean
 validate_saved_game_file()
@@ -186,15 +153,11 @@ gweled_startup_cb (GApplication *app, gpointer user_data G_GNUC_UNUSED)
 
     adw_style_manager_set_color_scheme (adw_style_manager_get_default (),
                                         ADW_COLOR_SCHEME_PREFER_DARK);
-    
-    load_preferences();
 
     gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.hamburger",
                                            (char const * const[]){ "F10", NULL });
     gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.pause",
                                            (char const * const[]){ "<Control>p", NULL });
-
-    g_random_generator = g_rand_new_with_seed (time (NULL));
 }
 
 static void
@@ -213,9 +176,9 @@ restore_game_cb (AdwAlertDialog* dialog G_GNUC_UNUSED,
 static void
 gweled_activate_cb (GApplication *app, gpointer user_data G_GNUC_UNUSED)
 {
-    GweledWindow *window = gweled_window_new (ADW_APPLICATION (app));
+    GSettings *settings = g_settings_new (APPLICATION_ID);
 
-    g_main_window = window;
+    GweledWindow *window = gweled_window_new (ADW_APPLICATION (app), settings);
 
     gtk_window_present (GTK_WINDOW (window));
 
@@ -236,12 +199,6 @@ gweled_activate_cb (GApplication *app, gpointer user_data G_GNUC_UNUSED)
     }
 }
 
-static void
-gweled_shutdown_cb (GApplication *app G_GNUC_UNUSED, gpointer user_data G_GNUC_UNUSED)
-{
-    g_rand_free (g_random_generator);
-}
-
 int main (int argc, char **argv)
 {
     /* gettext */
@@ -252,10 +209,6 @@ int main (int argc, char **argv)
     AdwApplication *app = adw_application_new (APPLICATION_ID, G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect (app, "startup", G_CALLBACK (gweled_startup_cb), NULL);
     g_signal_connect (app, "activate", G_CALLBACK (gweled_activate_cb), NULL);
-    g_signal_connect (app, "shutdown", G_CALLBACK (gweled_shutdown_cb), NULL);
-
-    settings = g_settings_new (APPLICATION_ID);
-    g_signal_connect (settings, "changed", G_CALLBACK (gweled_setting_changed), NULL);
 
     g_set_application_name (_("Gweled"));
 

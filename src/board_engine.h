@@ -22,6 +22,7 @@
 #define _BOARD_ENGINE_H_
 
 #include <glib.h>
+#include "graphic_engine.h"
 
 #define BOARD_WIDTH   8
 #define BOARD_HEIGHT  8
@@ -32,13 +33,6 @@ typedef enum e_gweled_game_mode
     TIMED_MODE,
     ENDLESS_MODE
 } gweled_game_mode;
-
-typedef struct s_gweled_prefs
-{
-	gweled_game_mode game_mode;
-	gboolean sounds_on;
-	gboolean hints_off;
-} GweledPrefs;
 
 typedef struct s_gweled_gamestate
 {
@@ -54,29 +48,42 @@ typedef struct s_gweled_gamestate
 
 } GweledGameState;
 
-// FUNCTIONS
-void gweled_start_new_game(void);
-void gweled_swap_gems(gint x1, gint y1, gint x2, gint y2);
-void gweled_refill_board(void);
+#define GWELED_TYPE_ENGINE gweled_engine_get_type ()
+G_DECLARE_FINAL_TYPE (GweledEngine, gweled_engine, GWELED, ENGINE, GObject)
 
-void board_set_pause(gboolean value);
-void gweled_set_hints_active(gboolean yn);
+void
+gweled_engine_set_stage (GweledEngine *engine, GweledStage *stage);
+
+gweled_game_mode
+gweled_engine_get_mode (GweledEngine *engine);
+void
+gweled_engine_set_mode (GweledEngine *engine, gweled_game_mode game_mode);
+
+void
+gweled_engine_start_new_game (GweledEngine *engine);
+
+void
+gweled_engine_set_pause (GweledEngine *engine, gboolean value);
 
 gboolean
-board_get_pause(void);
+gweled_engine_is_paused (GweledEngine *engine);
 
 gboolean
-is_game_running(void);
+gweled_engine_is_game_running (GweledEngine *engine);
 
-void respawn_board_engine_loop(void);
+void
+gweled_engine_respawn (GweledEngine *engine);
 
 GweledGameState*
-gweled_get_current_game(void);
+gweled_engine_get_current_game (GweledEngine *engine);
 
 void
-gweled_set_previous_game(GweledGameState *game);
+gweled_engine_set_previous_game (GweledEngine *engine, GweledGameState *game);
 
 void
-gweled_stop_game(void);
+gweled_engine_stop_game (GweledEngine *engine);
+
+void
+gweled_engine_handle_click (GweledEngine *engine, gint x, gint y);
 
 #endif

@@ -21,32 +21,21 @@
 
 /* for exit() */
 #include <stdlib.h>
-/* for strlen() */
-#include <string.h>
+/* for fabs() */
+#include <math.h>
 
 #include <gtk/gtk.h>
 
+#include "graphic_engine.h"
 #include "sge_core.h"
 #include "sge_utils.h"
-
 #include "board_engine.h"
-#include "gweled-gui.h"
-#include "graphic_engine.h"
-#include "sound.h"
-
-extern T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
 
 extern GList *g_object_list;
-
-extern gint gi_gem_clicked;
-extern gint gi_x_click;
-extern gint gi_y_click;
 
 gint gi_tiles_bg_pixbuf = -1;
 gint gi_gems_pixbuf[7] = {-1, -1, -1, -1, -1, -1, -1};
 gint gi_cursor_pixbuf = -1;
-
-gboolean ready_to_fall = FALSE;
 
 struct _GweledStage {
     GtkWidget parent;
@@ -140,58 +129,6 @@ gweled_stage_create_game_message (GweledStage *stage, const gchar *message, guin
         sge_object_fadeout(object, lifetime, 500);
 }
 
-//const gchar* gems[] = {"\e[1;37;40mWH", "\e[1;36;40mBL", "\e[0;33;40mAR", "\e[1;35;40mVI", "\e[1;31;40mRO", "\e[1;33;40mYE", "\e[1;32;40mGR"};
-
-gboolean
-gweled_gems_ready_to_fall_check (gpointer data)
-{
-    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
-        return G_SOURCE_CONTINUE;
-    } else {
-        gboolean new_board_animation = GPOINTER_TO_INT(data);
-        gweled_gems_fall_into_place (new_board_animation);
-        return G_SOURCE_REMOVE;
-    }
-}
-
-void
-gweled_gems_fall_into_place (gboolean new_board_animation)
-{
-	gint i, j;
-    gint delay_incr = 0;
-    gint max_height = 0;
-
-    // Avoid gems falling if there are something moving/animating.
-    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
-        g_timeout_add (10, gweled_gems_ready_to_fall_check, GINT_TO_POINTER(new_board_animation));
-        return;
-    }
-
-    for (i = BOARD_WIDTH - 1; i >= 0; i--) {
-        delay_incr = 0;
-        for (j = BOARD_HEIGHT - 1; j >= 0; j--) {
-
-            if (g_gem_objects[i][j]->y == j) continue;
-
-            if (max_height < j)
-                max_height = j;
-
-            if (new_board_animation)
-                sge_object_fall_to_with_effect (g_gem_objects[i][j], j,
-                                    (i * 100) + ((BOARD_HEIGHT - j) * 50));
-            else
-                sge_object_fall_to (g_gem_objects[i][j], j,
-                                    // delay incremental
-                                    delay_incr * 25,
-                                    // trying to have the same speed regardless the destination
-                                    100 + 20 * max_height);
-
-            delay_incr++;
-        }
-    }
-
-}
-
 static void
 button_pressed (GtkGestureClick* gesture G_GNUC_UNUSED,
                 gint n_press G_GNUC_UNUSED,
@@ -202,17 +139,6 @@ button_pressed (GtkGestureClick* gesture G_GNUC_UNUSED,
     GweledStage *stage = GWELED_STAGE (user_data);
     GweledStagePrivate *priv = gweled_stage_get_instance_private (stage);
 
-    // resume game on click
-    if (is_game_running() && board_get_pause() == TRUE ) {
-        board_set_pause(FALSE);
-        // not handle this click
-        return;
-    }
-
-    // in pause mode don't accept events
-    if (board_get_pause())
-        return;
-
     // Stop hint gem bouncing
     sge_stop_bouncing();
 
@@ -220,15 +146,10 @@ button_pressed (GtkGestureClick* gesture G_GNUC_UNUSED,
     int height = gtk_widget_get_height (GTK_WIDGET (stage));
     int tile_size = MIN (width / BOARD_WIDTH, height / BOARD_HEIGHT);
 
-    gi_x_click = priv->x_press = floor(x) / tile_size;
-    gi_y_click = priv->y_press = floor(y) / tile_size;
+    priv->x_press = floor(x) / tile_size;
+    priv->y_press = floor(y) / tile_size;
 
-    g_debug("Board input start! %i:%i", gi_x_click, gi_y_click);
-
-    gi_gem_clicked = -1;
-
-    sound_effect_play (CLICK_EVENT);
-    respawn_board_engine_loop();
+    g_signal_emit_by_name (stage, "clicked", priv->x_press, priv->y_press);
 }
 
 static void
@@ -241,10 +162,6 @@ button_released (GtkGestureClick* gesture G_GNUC_UNUSED,
     GweledStage *stage = GWELED_STAGE (user_data);
     GweledStagePrivate *priv = gweled_stage_get_instance_private (stage);
 
-    // in pause mode don't accept events
-    if (board_get_pause())
-        return;
-
     int width = gtk_widget_get_width (GTK_WIDGET (stage));
     int height = gtk_widget_get_height (GTK_WIDGET (stage));
     int tile_size = MIN (width / BOARD_WIDTH, height / BOARD_HEIGHT);
@@ -252,14 +169,8 @@ button_released (GtkGestureClick* gesture G_GNUC_UNUSED,
     gint x_release = floor(x) / tile_size;
     gint y_release = floor(y) / tile_size;
 
-    g_debug("Board input end! %i:%i", x_release, x_release);
-
     if (priv->x_press != x_release || priv->y_press != y_release) {
-        gi_x_click = x_release;
-        gi_y_click = y_release;
-        gi_gem_clicked = -1;
-
-        respawn_board_engine_loop();
+        g_signal_emit_by_name (stage, "clicked", x_release, y_release);
     }
 }
 
@@ -386,6 +297,14 @@ static void
 gweled_stage_class_init (GweledStageClass *klass) {
     GTK_WIDGET_CLASS (klass)->size_allocate = gweled_stage_size_allocate;
     GTK_WIDGET_CLASS (klass)->snapshot = gweled_stage_snapshot;
+
+    g_signal_new ("clicked",
+        G_TYPE_FROM_CLASS (klass),
+        G_SIGNAL_RUN_LAST,
+        0,
+        NULL, NULL,
+        NULL,
+        G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
 }
 
 static void
@@ -405,9 +324,4 @@ gweled_stage_init (GweledStage *stage) {
     g_signal_connect (click, "pressed", G_CALLBACK (button_pressed), stage);
     g_signal_connect (click, "released", G_CALLBACK (button_released), stage);
     gtk_widget_add_controller (GTK_WIDGET (stage), GTK_EVENT_CONTROLLER (click));
-}
-
-GweledStage *
-gweled_stage_new (void) {
-    return g_object_new (GWELED_TYPE_STAGE, NULL);
 }

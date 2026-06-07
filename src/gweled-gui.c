@@ -31,10 +31,6 @@
 #include "main.h"
 #include "gweled-gui.h"
 
-// GLOBALS
-extern GweledPrefs prefs;
-extern GSettings *settings;
-
 #define GWELED_RESOURCE_BASE "/org/gweled/"
 
 struct _GweledWindow {
@@ -48,6 +44,7 @@ typedef struct _GweledWindowPrivate {
     GtkWidget *score_label;
     GtkWidget *main_game_stack;
     GtkAspectFrame *game_frame;
+    GweledEngine *engine;
     GweledStage *stage;
     GtkButton *new_game_button;
     GtkButton *pause_button;
@@ -58,6 +55,13 @@ typedef struct _GweledWindowPrivate {
 
 G_DEFINE_TYPE_WITH_PRIVATE (GweledWindow, gweled_window, ADW_TYPE_APPLICATION_WINDOW)
 
+GweledEngine *
+gweled_window_get_engine (GweledWindow *window) {
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
+    return priv->engine;
+}
+
 GweledStage *
 gweled_window_get_stage (GweledWindow *window) {
     GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
@@ -66,7 +70,7 @@ gweled_window_get_stage (GweledWindow *window) {
 }
 
 static void
-gweled_setup_game_window(GweledWindow *window, gboolean playing)
+gweled_setup_game_window (GweledWindow *window, gboolean playing)
 {
     GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
 
@@ -76,7 +80,7 @@ gweled_setup_game_window(GweledWindow *window, gboolean playing)
         gtk_widget_set_visible (GTK_WIDGET (priv->pause_button), TRUE);
 
         // Sets window subtitle and progress bar visibility
-        switch (prefs.game_mode) {
+        switch (gweled_engine_get_mode (priv->engine)) {
             case NORMAL_MODE:
                 adw_window_title_set_subtitle (priv->window_title, _("Normal"));
                 gtk_widget_set_visible (GTK_WIDGET (priv->progress_bar), TRUE);
@@ -93,9 +97,7 @@ gweled_setup_game_window(GweledWindow *window, gboolean playing)
                 gtk_widget_set_visible (GTK_WIDGET (priv->pause_button), FALSE);
                 break;
         }
-
-    }
-    else {
+    } else {
         // Hide Play/Pause buttons.
         gtk_widget_set_visible (GTK_WIDGET (priv->new_game_button), FALSE);
         gtk_widget_set_visible (GTK_WIDGET (priv->pause_button), FALSE);
@@ -177,7 +179,11 @@ new_game_cb (GweledWindow *window) {
     GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
 
     adw_window_title_set_subtitle (priv->window_title, "");
-    gweled_stop_game ();
+    gweled_engine_stop_game (priv->engine);
+
+    gweled_window_reset_progress (window);
+    gweled_window_set_current_score (window, 0);
+
     welcome_screen_visibility (window, TRUE);
 }
 
@@ -196,8 +202,9 @@ void
 on_new_game_activate_cb (GtkWidget *button G_GNUC_UNUSED, gpointer user_data)
 {
     GweledWindow *window = GWELED_WINDOW (user_data);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
 
-    if (is_game_running()) {
+    if (gweled_engine_is_game_running (priv->engine)) {
         AdwDialog *dialog = adw_alert_dialog_new (_("Abort game?"),
                                                   _("Do you really want to abort this game?"));
         adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
@@ -216,28 +223,26 @@ on_new_game_activate_cb (GtkWidget *button G_GNUC_UNUSED, gpointer user_data)
 }
 
 static void
-on_pause_activate_cb (GtkWidget* widget G_GNUC_UNUSED,
+on_pause_activate_cb (GtkWidget* widget,
                       const char* action_name G_GNUC_UNUSED,
                       GVariant* parameter G_GNUC_UNUSED)
 {
+    GweledWindow *window = GWELED_WINDOW (widget);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
 
-    if(!is_game_running()) return;
-
-    if ( board_get_pause() ) {
-	    board_set_pause(FALSE);
-
-	}
-    else {
-	    board_set_pause(TRUE);
-
-	}
+    if (gweled_engine_is_game_running (priv->engine)) {
+        gweled_engine_set_pause (priv->engine, !gweled_engine_is_paused(priv->engine));
+    }
 }
 
-gboolean
+static gboolean
 gweled_board_start (gpointer data)
 {
-    gweled_start_new_game ();
-    respawn_board_engine_loop();
+    GweledWindow *window = GWELED_WINDOW (data);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
+    gweled_engine_start_new_game (priv->engine);
+    gweled_engine_respawn (priv->engine);
     return FALSE;
 }
 
@@ -247,31 +252,39 @@ on_game_mode_start_clicked (GtkWidget* widget,
                             GVariant* parameter)
 {
     GweledWindow *window = GWELED_WINDOW (widget);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
     const char *game_mode = g_variant_get_string (parameter, NULL);
 
+    gweled_game_mode mode;
     if (g_strcmp0 (game_mode, "normal") == 0)
-        prefs.game_mode = NORMAL_MODE;
+        mode = NORMAL_MODE;
     else if (g_strcmp0 (game_mode, "timed") == 0)
-        prefs.game_mode = TIMED_MODE;
+        mode = TIMED_MODE;
     else if (g_strcmp0 (game_mode, "endless") == 0)
-        prefs.game_mode = ENDLESS_MODE;
+        mode = ENDLESS_MODE;
     else {
         g_warning ("Unknown game mode %s", game_mode);
-        prefs.game_mode = NORMAL_MODE;
+        mode = NORMAL_MODE;
     }
-    welcome_screen_visibility(window, FALSE);
+    gweled_engine_set_mode (priv->engine, mode);
+
+    welcome_screen_visibility (window, FALSE);
     gweled_setup_game_window (window, TRUE);
 
     // Waiting for the clutter stage to be realized (without this, there is no start animation).
-    g_timeout_add (50, gweled_board_start, NULL);
+    g_timeout_add (50, gweled_board_start, window);
 }
 
 void
 on_window_unfocus_cb (GtkEventControllerFocus* controller G_GNUC_UNUSED,
-                      gpointer user_data G_GNUC_UNUSED)
+                      gpointer user_data)
 {
-    if (is_game_running() && prefs.game_mode == TIMED_MODE && board_get_pause() == FALSE )
-        board_set_pause(TRUE);
+    GweledWindow *window = GWELED_WINDOW (user_data);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
+    if (gweled_engine_is_game_running (priv->engine) && gweled_engine_get_mode (priv->engine) == TIMED_MODE && !gweled_engine_is_paused(priv->engine))
+        gweled_engine_set_pause (priv->engine, TRUE);
 }
 
 void
@@ -281,13 +294,6 @@ gweled_window_set_current_score (GweledWindow *window, gint score) {
     gchar msg_buffer[7];
     g_snprintf (msg_buffer, 7, "%06d", score);
     gtk_label_set_markup (GTK_LABEL(priv->score_label), msg_buffer);
-}
-
-void
-gweled_window_set_pause_enabled (GweledWindow *window, gboolean enabled) {
-    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
-
-    gtk_widget_set_visible (GTK_WIDGET (priv->pause_button), enabled);
 }
 
 void
@@ -343,19 +349,32 @@ save_game_cb (AdwAlertDialog* dialog G_GNUC_UNUSED,
               gpointer user_data)
 {
     GweledWindow *window = GWELED_WINDOW (user_data);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
 
     if (g_strcmp0 (response, "yes") == 0)
-        save_current_game(gweled_get_current_game());
+        save_current_game (gweled_engine_get_current_game (priv->engine));
     else
         remove_saved_game();
 
     gtk_window_destroy (GTK_WINDOW (window));
 }
 
+static void
+on_game_over (GweledEngine *engine, gint score, guint game_mode, gpointer user_data) {
+    GweledWindow *window = GWELED_WINDOW (user_data);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
+    gtk_widget_set_visible (GTK_WIDGET (priv->pause_button), FALSE);
+    gweled_hiscores_show_and_add (GTK_WINDOW (window), score, game_mode);
+}
+
 static gboolean
-on_close_request(GtkWidget *window, gpointer user_data G_GNUC_UNUSED)
+on_close_request (GtkWidget *wnd, gpointer user_data G_GNUC_UNUSED)
 {
-    if (!is_game_running()) {
+    GweledWindow *window = GWELED_WINDOW (wnd);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
+    if (!gweled_engine_is_game_running (priv->engine)) {
         return FALSE;
     }
 
@@ -385,8 +404,10 @@ gweled_window_dispose (GObject *obj)
 void
 gweled_window_restore_game (GweledWindow *window)
 {
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
+
     GweledGameState *previous_game = load_previous_game();
-    gweled_set_previous_game(previous_game);
+    gweled_engine_set_previous_game (priv->engine, previous_game);
     g_free(previous_game);
 
     welcome_screen_visibility (window, FALSE);
@@ -394,11 +415,12 @@ gweled_window_restore_game (GweledWindow *window)
 }
 
 GweledWindow *
-gweled_window_new (AdwApplication *app)
+gweled_window_new (AdwApplication *app, GSettings *settings)
 {
     GAction *action;
 
     GweledWindow *window = g_object_new (GWELED_TYPE_WINDOW, "application", app, NULL);
+    GweledWindowPrivate *priv = gweled_window_get_instance_private (window);
 
     sge_init ();
 	
@@ -406,9 +428,11 @@ gweled_window_new (AdwApplication *app)
 
     action = g_settings_create_action(settings, "sound");
     g_action_map_add_action (G_ACTION_MAP (win_actions), action);
+    g_settings_bind (settings, "sound", priv->engine, "play-sounds", G_SETTINGS_BIND_DEFAULT);
 
     action = g_settings_create_action(settings, "hints");
     g_action_map_add_action (G_ACTION_MAP (win_actions), action);
+    g_settings_bind (settings, "hints", priv->engine, "show-hints", G_SETTINGS_BIND_DEFAULT);
 
     gtk_widget_insert_action_group (GTK_WIDGET (window), "win", win_actions);
 
@@ -457,10 +481,27 @@ gweled_window_init (GweledWindow *window) {
 
     gtk_widget_init_template (GTK_WIDGET (window));
 
+    priv->engine = g_object_new (GWELED_TYPE_ENGINE, NULL);
+    gweled_engine_set_stage (priv->engine, priv->stage);
+
     // Set the board size at the default tile size.
     gtk_widget_set_size_request (priv->main_game_stack,
                                  BOARD_WIDTH * 64,
                                  BOARD_HEIGHT * 64);
+
+    // Game events
+    g_signal_connect_swapped (priv->engine, "progress",
+                      G_CALLBACK (gweled_window_set_progress), window);
+    g_signal_connect_swapped (priv->engine, "score-changed",
+                      G_CALLBACK (gweled_window_set_current_score), window);
+    g_signal_connect_swapped (priv->engine, "level-changed",
+                      G_CALLBACK (gweled_window_set_level), window);
+    g_signal_connect_swapped (priv->engine, "paused",
+                      G_CALLBACK (gweled_window_set_paused), window);
+    g_signal_connect (priv->engine, "game-over",
+                      G_CALLBACK (on_game_over), window);
+    g_signal_connect_swapped (priv->stage, "clicked",
+                      G_CALLBACK (gweled_engine_handle_click), priv->engine);
 
     // Header button events
     g_signal_connect (priv->new_game_button, "clicked",
@@ -472,6 +513,6 @@ gweled_window_init (GweledWindow *window) {
 
     GtkEventController* focus_controller = gtk_event_controller_focus_new ();
     g_signal_connect (focus_controller, "leave",
-                      G_CALLBACK (on_window_unfocus_cb), NULL);
+                      G_CALLBACK (on_window_unfocus_cb), window);
     gtk_widget_add_controller (GTK_WIDGET (window), GTK_EVENT_CONTROLLER (focus_controller));
 }

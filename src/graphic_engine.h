@@ -28,9 +28,6 @@
 #define GWELED_TYPE_STAGE gweled_stage_get_type ()
 G_DECLARE_FINAL_TYPE (GweledStage, gweled_stage, GWELED, STAGE, GtkWidget)
 
-GweledStage*
-gweled_stage_new (void);
-
 void
 gweled_stage_set_layer_visibility (GweledStage* stage, T_SGELayer layer, gboolean visibility);
 void
@@ -41,8 +38,5 @@ gweled_stage_create_game_message (GweledStage *stage, const gchar *message, guin
 
 T_SGEObject*
 gweled_stage_create_score_message (GweledStage *stage, const gchar *message, double msg_x, double msg_y);
-
-void
-gweled_gems_fall_into_place (gboolean new_board_animation);
 
 #endif
