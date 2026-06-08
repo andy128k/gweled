@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2003-2005 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
  * Copyright (C) 2010 Daniele Napolitano <dnax88@gmail.com>
+ * Copyright (C) 2026 Andrey Kutejko <andy128k@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,71 +20,33 @@
  */
 
 #include <config.h>
-
-#include <gsound.h>
+#include <gtk/gtk.h>
 
 #include "sound.h"
-#include "board_engine.h"
 
 #define GWELED_SOUND_BASEPATH DATA_DIRECTORY G_DIR_SEPARATOR_S "sounds" G_DIR_SEPARATOR_S PACKAGE_NAME G_DIR_SEPARATOR_S
-
-static gboolean sound_available;
-static GSoundContext *sound_ctx = NULL;
-
-static const char* GweledSounds[NUM_SOUND_EFFECTS][2] = {
-    {"click", GWELED_SOUND_BASEPATH "click.ogg"},
-    {"swap", GWELED_SOUND_BASEPATH "swap.ogg"},
-    {"explode", GWELED_SOUND_BASEPATH "explode.ogg"}
-};
-
-extern GweledPrefs prefs;
-
-void
-sound_init()
-{
-    GError *error = NULL;
-
-    if (sound_available == TRUE)
-	    return;
-
-    if (sound_ctx == NULL) {
-        sound_ctx = gsound_context_new (NULL, &error);
-        if (error != NULL) goto sound_errors;
-
-        gsound_context_open (sound_ctx, &error);
-        if (error != NULL) goto sound_errors;
-    }
-
-    g_print("Sound init OK\n");
-    sound_available = TRUE;
-    return;
-
-    sound_errors:
-        g_print("Sound error %i: %s\n", error->code, error->message);
-        g_error_free (error);
-        sound_available = FALSE;
-}
 
 /* Play sound fx */
 void
 sound_effect_play(GweledSoundEffects effect)
 {
-    GError *error = NULL;
-
-    if (!(prefs.sounds_on && sound_available))
-        return;
-
-    gsound_context_play_simple (sound_ctx, NULL, &error,
-                                GSOUND_ATTR_EVENT_ID, GweledSounds[effect][SOUND_NAME],
-                                GSOUND_ATTR_MEDIA_FILENAME, GweledSounds[effect][SOUND_PATH],
-                                GSOUND_ATTR_MEDIA_ROLE, "game",
-                                GSOUND_ATTR_CANBERRA_CACHE_CONTROL, "permanent",
-                                NULL);
-
-    if (error != NULL)  {
-        g_warning("File [%s] %i: %s\n", GweledSounds[effect][SOUND_PATH], error->code, error->message);
-        g_error_free (error);
+    const gchar *effect_path;
+    switch (effect) {
+    case CLICK_EVENT:
+        effect_path = GWELED_SOUND_BASEPATH "click.ogg";
+        break;
+    case SWAP_EVENT:
+        effect_path = GWELED_SOUND_BASEPATH "swap.ogg";
+        break;
+    case EXPLODE_EVENT:
+        effect_path = GWELED_SOUND_BASEPATH "explode.ogg";
+        break;
+    default:
+        g_warning("Unknown sound effect %d", effect);
         return;
     }
-}
 
+    GtkMediaStream *stream = gtk_media_file_new_for_filename (effect_path);
+    gtk_media_stream_play (stream);
+    g_timeout_add_once (1000, g_object_unref, stream);
+}

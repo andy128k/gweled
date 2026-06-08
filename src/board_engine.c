@@ -2,6 +2,7 @@
  *
  * Copyright (C) 2003-2005 Sebastien Delestaing <sebastien.delestaing@wanadoo.fr>
  * Copyright (C) 2010 Daniele Napolitano <dnax88@gmail.com>
+ * Copyright (C) 2026 Andrey Kutejko <andy128k@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,34 +23,27 @@
 
 /* for memset and strlen */
 #include <string.h>
-/* for fabs() */
-#include <math.h>
 
 #include <gtk/gtk.h>
 #include <glib/gprintf.h>
 #include <glib/gi18n-lib.h>
 
-#include "gweled-scores.h"
-#include "gweled-gui.h"
-#include "sge_core.h"
 #include "board_engine.h"
-#include "graphic_engine.h"
+#include "sge_core.h"
 #include "sound.h"
 
-#define FIRST_BONUS_AT	100	// needs tweaking
-#define NB_BONUS_GEMS	8	// same
-#define TOTAL_STEPS_FOR_TIMER	180	// seconds
-#define HINT_TIMEOUT  15	// seconds
-
-void gweled_remove_gems_and_update_score (void);
+#define FIRST_BONUS_AT          100  // needs tweaking
+#define NB_BONUS_GEMS           8    // same
+#define TOTAL_STEPS_FOR_TIMER   180  // seconds
+#define HINT_TIMEOUT            15   // seconds
 
 typedef enum e_game_state {
-	_IDLE,
-	_FIRST_GEM_CLICKED,
-	_SECOND_GEM_CLICKED,
-	_ILLEGAL_MOVE,
-	_MARK_ALIGNED_GEMS,
-	_BOARD_REFILLING
+    _IDLE,
+    _FIRST_GEM_CLICKED,
+    _SECOND_GEM_CLICKED,
+    _ILLEGAL_MOVE,
+    _MARK_ALIGNED_GEMS,
+    _BOARD_REFILLING
 } T_GameState;
 
 typedef enum e_alignment_dir
@@ -59,204 +53,250 @@ typedef enum e_alignment_dir
 } T_AlignmentDir;
 
 typedef struct s_alignment {
-	gint x;
-	gint y;
-	T_AlignmentDir direction;
-	gint length;
+    gint x;
+    gint y;
+    T_AlignmentDir direction;
+    gint length;
 } T_Alignment;
 
-gint gi_score, gi_current_score, gi_game_running = 0, gi_game_paused;
+static unsigned char gpc_bit_n[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-gfloat gi_total_gems_removed;
-gint gi_score_per_move;
-
-guint hint_timeout;
-
-gint gi_bonus_multiply;
-gint gi_previous_bonus_at;
-gint gi_next_bonus_at;
-gint gi_level;
-gfloat g_steps_for_timer;
-
-gint gi_gem_clicked = 0;
-gint gi_x_click = 0;
-gint gi_y_click = 0;
-
-gint gpc_game_board[BOARD_WIDTH][BOARD_HEIGHT];
-gint gi_nb_of_tiles[7];
-
-gboolean g_do_not_score;
-
-T_SGEObject *g_gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
-unsigned char gpc_bit_n[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
-
-static T_GameState gi_state = _IDLE;
-
-static GList *g_alignment_list;
-
-extern GRand *g_random_generator;
-
-extern GuiContext *gweled_ui;
-
-extern gint gi_gems_pixbuf[7];
 extern gint gi_cursor_pixbuf;
 
-guint board_engine_id;
-extern GweledPrefs prefs;
+struct _GweledEngine {
+    GObject parent;
+};
 
-gint
-get_new_tile (void)
+typedef struct _GweledEnginePrivate {
+    gweled_game_mode mode;
+    gboolean show_hints;
+    gboolean play_sounds;
+
+    GRand *random_generator;
+
+    gint score;
+    gint current_score;
+    gboolean is_game_running;
+    gboolean is_game_paused;
+
+    gfloat total_gems_removed;
+    gint score_per_move;
+
+    guint hint_timeout;
+
+    gint bonus_multiply;
+    gint previous_bonus_at;
+    gint next_bonus_at;
+    gint level;
+    gfloat steps_for_timer;
+
+    GweledStage *stage;
+
+    gint game_board[BOARD_WIDTH][BOARD_HEIGHT];
+    T_SGEObject *gem_objects[BOARD_WIDTH][BOARD_HEIGHT];
+    gint number_of_tiles[7];
+
+    gboolean do_not_score;
+
+    T_GameState state;
+
+    GList *alignments;
+
+    guint board_engine_id;
+
+    gboolean gem_clicked;
+    gint x_click;
+    gint y_click;
+} GweledEnginePrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE (GweledEngine, gweled_engine, G_TYPE_OBJECT)
+
+enum
 {
-	int i;
-	int min, max, min_index, max_index, previous_min_index;
+    PROP_SHOW_HINTS = 1,
+    PROP_PLAY_SOUNDS,
+    N_PROPERTIES
+};
 
-	min_index = 0;
-	previous_min_index = 0;
-	max_index = 0;
-	min = gi_nb_of_tiles[0];
-	max = gi_nb_of_tiles[0];
-	for (i = 0; i < 7; i++) {
-		if (gi_nb_of_tiles[i] < min) {
-			min = gi_nb_of_tiles[i];
-			min_index = i;
-			previous_min_index = min_index;
-		}
-		if (gi_nb_of_tiles[i] > max) {
-			max = gi_nb_of_tiles[i];
-			max_index = i;
-		}
-	}
+static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
-	i = (gint) g_rand_int_range (g_random_generator, 0, 2);
+static void
+gweled_engine_set_hints_active (GweledEngine *engine, gboolean yn);
 
-	switch (i) {
-	case 0:
-		return g_rand_int_range (g_random_generator, 0, 2) ? min_index : previous_min_index;
-	default:
-		return (max_index + (gchar) g_rand_int_range (g_random_generator, 1, 7)) % 7;
-	}
+void
+gweled_engine_set_stage (GweledEngine *engine, GweledStage *stage) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    priv->stage = stage;
 }
 
+gweled_game_mode
+gweled_engine_get_mode (GweledEngine *engine) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-
-gint
-gweled_is_part_of_an_alignment (gint x, gint y)
-{
-	gint i, result;
-
-	result = 0;
-	for (i = x - 2; i <= x; i++)
-		if (i >= 0 && i + 2 < BOARD_WIDTH)
-			if (gpc_bit_n[gpc_game_board[i][y]] &
-			     gpc_bit_n[gpc_game_board[i + 1][y]] &
-			     gpc_bit_n[gpc_game_board[i + 2][y]]) {
-				result |= 1;	// is part of an horizontal alignment
-				break;
-			}
-
-	for (i = y - 2; i <= y; i++)
-		if (i >= 0 && i + 2 < BOARD_HEIGHT)
-		if (gpc_bit_n[gpc_game_board[x][i]] &
-		     gpc_bit_n[gpc_game_board[x][i + 1]] &
-		     gpc_bit_n[gpc_game_board[x][i + 2]]) {
-				result |= 2;	// is part of a vertical alignment
-				break;
-		}
-
-	return result;
-}
-
-gboolean
-gweled_check_for_moves_left (int *pi, int *pj)
-{
-	gint i, j;
-
-	for (j = 0; j <= BOARD_HEIGHT - 1; j++)
-		for (i = 0; i <= BOARD_WIDTH - 1; i++) {
-			if (i > 0) {
-				gweled_swap_gems (i - 1, j, i, j);
-				if (gweled_is_part_of_an_alignment (i, j)) {
-					gweled_swap_gems (i - 1, j, i, j);
-					i = i - 1;
-					goto move_found;
-				}
-				gweled_swap_gems (i - 1, j, i, j);
-			}
-			if (i < 7) {
-				gweled_swap_gems (i + 1, j, i, j);
-				if (gweled_is_part_of_an_alignment (i, j)) {
-					gweled_swap_gems (i + 1, j, i, j);
-					i = i + 1;
-					goto move_found;
-				}
-				gweled_swap_gems (i + 1, j, i, j);
-			}
-			if (j > 0) {
-				gweled_swap_gems (i, j - 1, i, j);
-				if (gweled_is_part_of_an_alignment (i, j)) {
-					gweled_swap_gems (i, j - 1, i, j);
-					j = j - 1;
-					goto move_found;
-				}
-				gweled_swap_gems (i, j - 1, i, j);
-			}
-			if (j < 7) {
-				gweled_swap_gems (i, j + 1, i, j);
-				if (gweled_is_part_of_an_alignment (i, j)) {
-					gweled_swap_gems (i, j + 1, i, j);
-					j = j + 1;
-					goto move_found;
-				}
-				gweled_swap_gems (i, j + 1, i, j);
-			}
-		}
-	return FALSE;
-
-move_found:
-	if (pi && pj) {
-		*pi = i;
-		*pj = j;
-	}
-	return TRUE;
+    return priv->mode;
 }
 
 void
-gweled_swap_gems (gint x1, gint y1, gint x2, gint y2)
-{
-	gint i;
-	T_SGEObject * object;
+gweled_engine_set_mode (GweledEngine *engine, gweled_game_mode mode) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-	object = g_gem_objects[x1][y1];
-	g_gem_objects[x1][y1] = g_gem_objects[x2][y2];
-	g_gem_objects[x2][y2] = object;
-	i = gpc_game_board[x1][y1];
-	gpc_game_board[x1][y1] = gpc_game_board[x2][y2];
-	gpc_game_board[x2][y2] = i;
+    priv->mode = mode;
 }
 
-void
-gweled_refill_board (void)
+static gint
+get_new_tile (GweledEngine *engine)
 {
-	gint i, j, k;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    int min_index = 0;
+    int previous_min_index = 0;
+    int max_index = 0;
+    int min = priv->number_of_tiles[0];
+    int max = priv->number_of_tiles[0];
+    for (int i = 0; i < 7; i++) {
+        if (priv->number_of_tiles[i] < min) {
+            min = priv->number_of_tiles[i];
+            min_index = i;
+            previous_min_index = min_index;
+        }
+        if (priv->number_of_tiles[i] > max) {
+            max = priv->number_of_tiles[i];
+            max_index = i;
+        }
+    }
+
+    int random = g_rand_int_range (priv->random_generator, 0, 2);
+    switch (random) {
+    case 0:
+        return g_rand_int_range (priv->random_generator, 0, 2) ? min_index : previous_min_index;
+    default:
+        return (max_index + (gchar) g_rand_int_range (priv->random_generator, 1, 7)) % 7;
+    }
+}
+
+static gint
+gweled_is_part_of_an_alignment (GweledEngine *engine, gint x, gint y)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    gint i;
+
+    gint result = 0;
+    for (i = x - 2; i <= x; i++)
+        if (i >= 0 && i + 2 < BOARD_WIDTH)
+            if (gpc_bit_n[priv->game_board[i][y]] &
+                gpc_bit_n[priv->game_board[i + 1][y]] &
+                gpc_bit_n[priv->game_board[i + 2][y]]
+            ) {
+                result |= 1;	// is part of an horizontal alignment
+                break;
+            }
+
+    for (i = y - 2; i <= y; i++)
+        if (i >= 0 && i + 2 < BOARD_HEIGHT)
+            if (gpc_bit_n[priv->game_board[x][i]] &
+                gpc_bit_n[priv->game_board[x][i + 1]] &
+                gpc_bit_n[priv->game_board[x][i + 2]]
+            ) {
+                result |= 2;	// is part of a vertical alignment
+                break;
+            }
+
+    return result;
+}
+
+static void
+gweled_swap_gems (GweledEngine *engine, gint x1, gint y1, gint x2, gint y2)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    T_SGEObject * object;
+    object = priv->gem_objects[x1][y1];
+    priv->gem_objects[x1][y1] = priv->gem_objects[x2][y2];
+    priv->gem_objects[x2][y2] = object;
+
+    gint i;
+    i = priv->game_board[x1][y1];
+    priv->game_board[x1][y1] = priv->game_board[x2][y2];
+    priv->game_board[x2][y2] = i;
+}
+
+static void
+set_int (int *ptr, int value) {
+    if (ptr) *ptr = value;
+}
+
+static gboolean
+gweled_check_for_moves_left (GweledEngine *engine, int *pi, int *pj)
+{
+    for (int j = 0; j < BOARD_HEIGHT; j++)
+        for (int i = 0; i < BOARD_WIDTH; i++) {
+            if (i > 0) {
+                gweled_swap_gems (engine, i - 1, j, i, j);
+                gint alignments = gweled_is_part_of_an_alignment (engine, i, j);
+                gweled_swap_gems (engine, i - 1, j, i, j);
+                if (alignments) {
+                    set_int (pi, i - 1);
+                    set_int (pj, j);
+                    return TRUE;
+                }
+            }
+            if (i < 7) {
+                gweled_swap_gems (engine, i + 1, j, i, j);
+                gint alignments = gweled_is_part_of_an_alignment (engine, i, j);
+                gweled_swap_gems (engine, i + 1, j, i, j);
+                if (alignments) {
+                    set_int (pi, i + 1);
+                    set_int (pj, j);
+                    return TRUE;
+                }
+            }
+            if (j > 0) {
+                gweled_swap_gems (engine, i, j - 1, i, j);
+                gint alignments = gweled_is_part_of_an_alignment (engine, i, j);
+                gweled_swap_gems (engine, i, j - 1, i, j);
+                if (alignments) {
+                    set_int (pi, i);
+                    set_int (pj, j - 1);
+                    return TRUE;
+                }
+            }
+            if (j < 7) {
+                gweled_swap_gems (engine, i, j + 1, i, j);
+                gint alignments = gweled_is_part_of_an_alignment (engine, i, j);
+                gweled_swap_gems (engine, i, j + 1, i, j);
+                if (alignments) {
+                    set_int (pi, i);
+                    set_int (pj, j + 1);
+                    return TRUE;
+                }
+            }
+        }
+    return FALSE;
+}
+
+static void
+gweled_refill_board (GweledEngine *engine)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    gint i, j, k;
     gint last_tile = -1;
     gint same_tile_count = 1;
-	g_debug("gweled_refill_board():");
+    g_debug("gweled_refill_board():");
 
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			if (gpc_game_board[i][j] == -1)
-			{
-				for (k = j; k > 0; k--)
-				{
-					gpc_game_board[i][k] =
-					    gpc_game_board[i][k - 1];
-					g_gem_objects[i][k] =
-					    g_gem_objects[i][k - 1];
-				}
-				gpc_game_board[i][0] = get_new_tile ();
+    for (i = 0; i < BOARD_WIDTH; i++)
+        for (j = 0; j < BOARD_HEIGHT; j++)
+            if (priv->game_board[i][j] == -1) {
+                for (k = j; k > 0; k--) {
+                    priv->game_board[i][k] = priv->game_board[i][k - 1];
+                    priv->gem_objects[i][k] = priv->gem_objects[i][k - 1];
+                }
+                priv->game_board[i][0] = get_new_tile (engine);
 
                 // Keeps count of gems of the same type in a row
-                if (last_tile == gpc_game_board[i][0])
+                if (last_tile == priv->game_board[i][0])
                     same_tile_count++;
                 else
                     same_tile_count = 1;
@@ -265,150 +305,157 @@ gweled_refill_board (void)
                 if (same_tile_count >= 3) {
                     g_debug("##### 3 gems in a row!!\n");
                     do  {
-                        gpc_game_board[i][0] = get_new_tile ();
-                    } while (last_tile == gpc_game_board[i][0]);
+                        priv->game_board[i][0] = get_new_tile (engine);
+                    } while (last_tile == priv->game_board[i][0]);
                 }
 
-                last_tile = gpc_game_board[i][0];
+                last_tile = priv->game_board[i][0];
 
-				gi_nb_of_tiles[gpc_game_board[i][0]]++;
+                priv->number_of_tiles[priv->game_board[i][0]]++;
 
-				// make sure the new tile appears outside of the screen (1st row is special-cased)
-				if (j && g_gem_objects[i][1])
-					g_gem_objects[i][0] = sge_create_object (i,
-											g_gem_objects[i][1]->y - 1,
-											GEMS_LAYER,
-											gi_gems_pixbuf[gpc_game_board[i][0]]);
-				else
-					g_gem_objects[i][0] = sge_create_object (i,
-											-1,
-											GEMS_LAYER,
-											gi_gems_pixbuf[gpc_game_board[i][0]]);
-			}
+                // make sure the new tile appears outside of the screen (1st row is special-cased)
+                if (j && priv->gem_objects[i][1])
+                    priv->gem_objects[i][0] = sge_create_object (GTK_WIDGET (priv->stage),
+                                            i,
+                                            priv->gem_objects[i][1]->y - 1,
+                                            GEMS_LAYER,
+                                            priv->game_board[i][0]);
+                else
+                    priv->gem_objects[i][0] = sge_create_object (GTK_WIDGET (priv->stage),
+                                            i,
+                                            -1,
+                                            GEMS_LAYER,
+                                            priv->game_board[i][0]);
+            }
 }
 
-void
+static void
 delete_alignment_from_board (gpointer alignment_pointer, gpointer user_data)
 {
-	gint i, i_total_score;
+    GweledEngine *engine = GWELED_ENGINE (user_data);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    gint i, i_total_score;
     gint gi_gems_removed = 0;
-	int xhotspot, yhotspot, xpos, ypos;
-	char *buffer;
-	T_Alignment *alignment;
-	T_SGEObject *object;
+    double xhotspot, yhotspot, xpos, ypos;
+    char *buffer;
+    T_Alignment *alignment;
+    T_SGEObject *object;
 
-	alignment = (T_Alignment *) alignment_pointer;
+    alignment = (T_Alignment *) alignment_pointer;
     // delete alignment
-	if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
-	{
-		xhotspot = (alignment->x * prefs.tile_size + alignment->length * prefs.tile_size / 2);
-		yhotspot = (alignment->y * prefs.tile_size + prefs.tile_size / 2);
-		for (i = alignment->x; i < alignment->x + alignment->length; i++) {
-			if (gpc_game_board[i][alignment->y] != -1) {
-				gi_gems_removed++;
-				gi_nb_of_tiles[gpc_game_board[i][alignment->y]]--;
-				gpc_game_board[i][alignment->y] = -1;
-			}
-		}
-	} else {
-		xhotspot = (alignment->x * prefs.tile_size + prefs.tile_size / 2);
-		yhotspot = (alignment->y * prefs.tile_size + alignment->length * prefs.tile_size / 2);
-		for (i = alignment->y; i < alignment->y + alignment->length; i++) {
-			if (gpc_game_board[alignment->x][i] != -1) {
-				gi_gems_removed++;
-				gi_nb_of_tiles[gpc_game_board[alignment->x][i]]--;
-				gpc_game_board[alignment->x][i] = -1;
-			}
-		}
-	}
+    if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
+    {
+        xhotspot = alignment->x + alignment->length / 2.0;
+        yhotspot = alignment->y + 0.5;
+        for (i = alignment->x; i < alignment->x + alignment->length; i++) {
+            if (priv->game_board[i][alignment->y] != -1) {
+                gi_gems_removed++;
+                priv->number_of_tiles[priv->game_board[i][alignment->y]]--;
+                priv->game_board[i][alignment->y] = -1;
+            }
+        }
+    } else {
+        xhotspot = alignment->x + 0.5;
+        yhotspot = alignment->y + alignment->length / 2.0;
+        for (i = alignment->y; i < alignment->y + alignment->length; i++) {
+            if (priv->game_board[alignment->x][i] != -1) {
+                gi_gems_removed++;
+                priv->number_of_tiles[priv->game_board[alignment->x][i]]--;
+                priv->game_board[alignment->x][i] = -1;
+            }
+        }
+    }
+
     //compute score
-	if (alignment->length == 1) {	//bonus mode
-		i_total_score = 10 * g_rand_int_range (g_random_generator, 1, 2);
+    if (alignment->length == 1) {	//bonus mode
+        i_total_score = 10 * g_rand_int_range (priv->random_generator, 1, 2);
+    } else {
+        i_total_score = 10 * (priv->bonus_multiply >> 1) * (alignment->length - 2) + priv->score_per_move;
+        if (priv->do_not_score == TRUE)
+            priv->score_per_move = i_total_score;
     }
-	else {
-		i_total_score = 10 * (gi_bonus_multiply >> 1) * (alignment->length - 2) + gi_score_per_move;
-        if(g_do_not_score == TRUE)
-            gi_score_per_move = i_total_score;
+
+    if (priv->do_not_score == FALSE) {
+        priv->total_gems_removed += gi_gems_removed;
+
+        g_debug("Score: %d Gems removed: %d [tot:%.2f] %i:%i, dir %i, length:%i\n", i_total_score, gi_gems_removed, priv->total_gems_removed, alignment->x, alignment->y, alignment->direction, alignment->length);
+
+        priv->score += i_total_score;
+
+        // display score
+        buffer = g_strdup_printf ("%d", i_total_score);
+        xpos = xhotspot - 1;
+        ypos = yhotspot - 0.5;
+        object = gweled_stage_create_score_message (priv->stage, buffer, xpos, ypos);
+        sge_object_zoomin (object, 500, ADW_EASE_OUT_BOUNCE);
+        sge_object_fly_away (object);
+        g_free (buffer);
     }
-    if (g_do_not_score == FALSE) {
-      gi_total_gems_removed += gi_gems_removed;
-
-      g_debug("Score: %d Gems removed: %d [tot:%.2f] %i:%i, dir %i, length:%i\n", i_total_score, gi_gems_removed, gi_total_gems_removed, alignment->x, alignment->y, alignment->direction, alignment->length);
-
-      gi_score += i_total_score;
-
-      // display score
-      buffer = g_strdup_printf ("%d", i_total_score);
-      xpos = xhotspot - prefs.tile_size;
-      ypos = yhotspot - (prefs.tile_size / 2);
-      object = gweled_draw_score_message (buffer, TEXT_LAYER, xpos, ypos);
-      sge_object_zoomin (object, 500, CLUTTER_EASE_OUT_BOUNCE);
-      sge_object_fly_away (object);
-      g_free (buffer);
-	}
 }
 
-void
-gweled_remove_gems_and_update_score (void)
+static void
+gweled_remove_gems_and_update_score (GweledEngine *engine)
 {
-	g_list_foreach (g_alignment_list, delete_alignment_from_board, NULL);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_list_foreach (priv->alignments, delete_alignment_from_board, engine);
 }
 
-void
+static void
 take_down_alignment (gpointer object, gpointer user_data)
 {
-	gint i;
-	T_Alignment *alignment;
+    T_Alignment *alignment = (T_Alignment *) object;
+    GweledEngine *engine = GWELED_ENGINE (user_data);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-	alignment = (T_Alignment *) object;
-
-	if (alignment->direction == T_ALIGN_HORIZONTAL)	// horizontal
-		for (i = alignment->x; i < alignment->x + alignment->length; i++) {
-      sge_gem_destroy (g_gem_objects[i][alignment->y]);
-      g_gem_objects[i][alignment->y] = NULL;
+    if (alignment->direction == T_ALIGN_HORIZONTAL)	{
+        // horizontal
+        for (int i = alignment->x; i < alignment->x + alignment->length; i++) {
+            sge_gem_destroy (priv->gem_objects[i][alignment->y]);
+            priv->gem_objects[i][alignment->y] = NULL;
+        }
+    } else {
+        for (int i = alignment->y; i < alignment->y + alignment->length; i++) {
+            sge_gem_destroy (priv->gem_objects[alignment->x][i]);
+            priv->gem_objects[alignment->x][i] = NULL;
+        }
     }
+}
 
-	else
-		for (i = alignment->y; i < alignment->y + alignment->length; i++) {
-      sge_gem_destroy (g_gem_objects[alignment->x][i]);
-      g_gem_objects[alignment->x][i] = NULL;
+static void
+gweled_take_down_deleted_gems (GweledEngine *engine)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_list_foreach (priv->alignments, take_down_alignment, engine);
+}
+
+static void
+destroy_all_alignments (GweledEngine *engine)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_list_free_full (g_steal_pointer (&priv->alignments), g_free);
+}
+
+static void
+gweled_delete_gems_for_bonus (GweledEngine *engine)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    gint i;
+    T_Alignment * alignment;
+
+    destroy_all_alignments (engine);
+    for (i = 0; i < NB_BONUS_GEMS; i++) {
+        alignment = g_new0 (T_Alignment, 1);
+        alignment->x = g_rand_int_range (priv->random_generator, 0, 7);
+        alignment->y = g_rand_int_range (priv->random_generator, 0, 7);
+        alignment->direction = T_ALIGN_HORIZONTAL;
+        alignment->length = 1;
+        priv->alignments = g_list_append (priv->alignments, (gpointer) alignment);
     }
-
-}
-
-void
-gweled_take_down_deleted_gems (void)
-{
-	g_list_foreach (g_alignment_list, take_down_alignment, NULL);
-}
-
-void
-destroy_alignment (gpointer object, gpointer user_data)
-{
-	g_alignment_list = g_list_remove (g_alignment_list, object);
-}
-
-void
-destroy_all_alignments (void)
-{
-	g_list_foreach (g_alignment_list, destroy_alignment, NULL);
-}
-
-void
-gweled_delete_gems_for_bonus (void)
-{
-	gint i;
-	T_Alignment * alignment;
-
-	destroy_all_alignments ();
-	for (i = 0; i < NB_BONUS_GEMS; i++) {
-		alignment = g_new0 (T_Alignment, 1);
-		alignment->x = g_rand_int_range (g_random_generator, 0, 7);
-		alignment->y = g_rand_int_range (g_random_generator, 0, 7);
-		alignment->direction = T_ALIGN_HORIZONTAL;
-		alignment->length = 1;
-		g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
-	}
 }
 
 
@@ -425,118 +472,121 @@ gweled_delete_gems_for_bonus (void)
 // giving a score of 40 appearing in the middle rather than 10 + 40 (combo bonus).
 // However the fix implies a significant change in the function below for
 // a bug that is unlikely to happen. I will fix it. Just... not now.
-gboolean
-gweled_check_for_alignments (void)
+static gboolean
+gweled_check_for_alignments (GweledEngine *engine)
 {
-	gint i, j, i_nb_aligned, start_x, start_y;
-	T_Alignment *alignment;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-	destroy_all_alignments ();
+    gint i, j, i_nb_aligned, start_x, start_y;
+    T_Alignment *alignment;
+
+    destroy_all_alignments (engine);
 
     // make a list of vertical alignments
-	i_nb_aligned = 0;
+    i_nb_aligned = 0;
 
-	for (i = 0; i < BOARD_WIDTH; i++) {
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			if ((gweled_is_part_of_an_alignment (i, j) & 2) == 2) {
-				// record the origin of the alignment
-				if (i_nb_aligned == 0) {
-					start_x = i;
-					start_y = j;
-				}
-				i_nb_aligned++;
-			} else {
-				// we found one, let's remember it for later use
-				if (i_nb_aligned > 2) {
-					alignment = g_new0 (T_Alignment, 1);
-					alignment->x = start_x;
-					alignment->y = start_y;
-					alignment->direction = T_ALIGN_VERTICAL;
-					alignment->length = i_nb_aligned;
-					g_alignment_list = g_list_append(g_alignment_list, (gpointer) alignment);
-				}
-				i_nb_aligned = 0;
-			}
+    for (i = 0; i < BOARD_WIDTH; i++) {
+        for (j = 0; j < BOARD_HEIGHT; j++)
+            if ((gweled_is_part_of_an_alignment (engine, i, j) & 2) == 2) {
+                // record the origin of the alignment
+                if (i_nb_aligned == 0) {
+                    start_x = i;
+                    start_y = j;
+                }
+                i_nb_aligned++;
+            } else {
+                // we found one, let's remember it for later use
+                if (i_nb_aligned > 2) {
+                    alignment = g_new0 (T_Alignment, 1);
+                    alignment->x = start_x;
+                    alignment->y = start_y;
+                    alignment->direction = T_ALIGN_VERTICAL;
+                    alignment->length = i_nb_aligned;
+                    priv->alignments = g_list_append(priv->alignments, (gpointer) alignment);
+                }
+                i_nb_aligned = 0;
+            }
 
-		// end of column
-		if (i_nb_aligned > 2) {
-			alignment = g_new0 (T_Alignment, 1);
-			alignment->x = start_x;
-			alignment->y = start_y;
-			alignment->direction = T_ALIGN_VERTICAL;
-			alignment->length = i_nb_aligned;
-			g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
-		}
-		i_nb_aligned = 0;
-	}
+        // end of column
+        if (i_nb_aligned > 2) {
+            alignment = g_new0 (T_Alignment, 1);
+            alignment->x = start_x;
+            alignment->y = start_y;
+            alignment->direction = T_ALIGN_VERTICAL;
+            alignment->length = i_nb_aligned;
+            priv->alignments = g_list_append (priv->alignments, (gpointer) alignment);
+        }
+        i_nb_aligned = 0;
+    }
 
-  // make a list of horizontal alignments
-	i_nb_aligned = 0;
+    // make a list of horizontal alignments
+    i_nb_aligned = 0;
 
-	for (j = 0; j < BOARD_HEIGHT; j++) {
-		for (i = 0; i < BOARD_WIDTH; i++)
-			if ((gweled_is_part_of_an_alignment (i, j) & 1) == 1) {
-				// record the origin of the alignment
-				if (i_nb_aligned == 0) {
-					start_x = i;
-					start_y = j;
-				}
-				i_nb_aligned++;
-			} else {
-				// if we found one, let's remember it for later use
-				if (i_nb_aligned > 2) {
-					alignment = g_new0 (T_Alignment, 1);
-					alignment->x = start_x;
-					alignment->y = start_y;
-					alignment->direction = T_ALIGN_HORIZONTAL;
-					alignment->length = i_nb_aligned;
-					g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
-				}
-				i_nb_aligned = 0;
-			}
+    for (j = 0; j < BOARD_HEIGHT; j++) {
+        for (i = 0; i < BOARD_WIDTH; i++)
+            if ((gweled_is_part_of_an_alignment (engine, i, j) & 1) == 1) {
+                // record the origin of the alignment
+                if (i_nb_aligned == 0) {
+                    start_x = i;
+                    start_y = j;
+                }
+                i_nb_aligned++;
+            } else {
+                // if we found one, let's remember it for later use
+                if (i_nb_aligned > 2) {
+                    alignment = g_new0 (T_Alignment, 1);
+                    alignment->x = start_x;
+                    alignment->y = start_y;
+                    alignment->direction = T_ALIGN_HORIZONTAL;
+                    alignment->length = i_nb_aligned;
+                    priv->alignments = g_list_append (priv->alignments, (gpointer) alignment);
+                }
+                i_nb_aligned = 0;
+            }
 
-		// end of row
-		if (i_nb_aligned > 2) {
-			alignment = g_new0 (T_Alignment, 1);
-			alignment->x = start_x;
-			alignment->y = start_y;
-			alignment->direction = T_ALIGN_HORIZONTAL;
-			alignment->length = i_nb_aligned;
-			g_alignment_list = g_list_append (g_alignment_list, (gpointer) alignment);
-		}
-		i_nb_aligned = 0;
-	}
+        // end of row
+        if (i_nb_aligned > 2) {
+            alignment = g_new0 (T_Alignment, 1);
+            alignment->x = start_x;
+            alignment->y = start_y;
+            alignment->direction = T_ALIGN_HORIZONTAL;
+            alignment->length = i_nb_aligned;
+            priv->alignments = g_list_append (priv->alignments, (gpointer) alignment);
+        }
+        i_nb_aligned = 0;
+    }
 
-	return (g_list_length (g_alignment_list) != 0);
+    return (g_list_length (priv->alignments) != 0);
 }
 
-
-void
-gweled_fill_new_board ()
+static void
+gweled_fill_new_board (GweledEngine *engine)
 {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
     gint i, j;
 
-    memset (gi_nb_of_tiles, 0, 7 * sizeof (int));
+    memset (priv->number_of_tiles, 0, 7 * sizeof (int));
 
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-		{
-			gpc_game_board[i][j] = get_new_tile ();
-			gi_nb_of_tiles[gpc_game_board[i][j]]++;
-			g_gem_objects[i][j] =
-			    sge_create_object (i,
-							(j - BOARD_HEIGHT),
-							GEMS_LAYER,
-							gi_gems_pixbuf[gpc_game_board[i][j]]);
-		}
+    for (i = 0; i < BOARD_WIDTH; i++)
+        for (j = 0; j < BOARD_HEIGHT; j++)
+        {
+            priv->game_board[i][j] = get_new_tile (engine);
+            priv->number_of_tiles[priv->game_board[i][j]]++;
+            priv->gem_objects[i][j] = sge_create_object (GTK_WIDGET (priv->stage),
+                            i,
+                            (j - BOARD_HEIGHT),
+                            GEMS_LAYER,
+                            priv->game_board[i][j]);
+        }
 
-	g_do_not_score = TRUE;
+    priv->do_not_score = TRUE;
 
-    while(gweled_check_for_alignments ()) {
-		gweled_remove_gems_and_update_score ();
-		gweled_refill_board();
-	};
-	g_do_not_score = FALSE;
+    while (gweled_check_for_alignments (engine)) {
+        gweled_remove_gems_and_update_score (engine);
+        gweled_refill_board (engine);
+    };
+    priv->do_not_score = FALSE;
 
     //test pattern for a known bug
 /*
@@ -548,487 +598,706 @@ gweled_fill_new_board ()
     gpc_game_board[5][7] = 1;
 */
 
+    for (i = 0; i < BOARD_WIDTH; i++)
+        for (j = 0; j < BOARD_HEIGHT; j++)
+            priv->gem_objects[i][j] = sge_create_object (GTK_WIDGET (priv->stage),
+                                                    i,
+                                                    (j - BOARD_HEIGHT),
+                                                    GEMS_LAYER,
+                                                    priv->game_board[i][j]);
 
-	for (i = 0; i < BOARD_WIDTH; i++)
-		for (j = 0; j < BOARD_HEIGHT; j++)
-			g_gem_objects[i][j] = sge_create_object (i, (j - BOARD_HEIGHT), GEMS_LAYER,
-													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+}
 
+static void
+gweled_gems_fall_into_place (GweledEngine *engine, gboolean new_board_animation);
+
+static gboolean
+gweled_gems_ready_to_fall_check (gpointer user_data)
+{
+    GweledEngine *engine = GWELED_ENGINE (user_data);
+
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        return G_SOURCE_CONTINUE;
+    } else {
+        gweled_gems_fall_into_place (engine, FALSE);
+        return G_SOURCE_REMOVE;
+    }
+}
+
+static gboolean
+gweled_gems_ready_to_fall_check_new_board_animation (gpointer user_data)
+{
+    GweledEngine *engine = GWELED_ENGINE (user_data);
+
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        return G_SOURCE_CONTINUE;
+    } else {
+        gweled_gems_fall_into_place (engine, TRUE);
+        return G_SOURCE_REMOVE;
+    }
+}
+
+static void
+gweled_gems_fall_into_place (GweledEngine *engine, gboolean new_board_animation)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    gint i, j;
+    gint delay_incr = 0;
+    gint max_height = 0;
+
+    // Avoid gems falling if there are something moving/animating.
+    if (sge_objects_are_moving_on_layer (GEMS_LAYER)) {
+        g_timeout_add (10,
+            new_board_animation ? gweled_gems_ready_to_fall_check_new_board_animation : gweled_gems_ready_to_fall_check,
+            engine);
+        return;
+    }
+
+    for (i = BOARD_WIDTH - 1; i >= 0; i--) {
+        delay_incr = 0;
+        for (j = BOARD_HEIGHT - 1; j >= 0; j--) {
+
+            if (priv->gem_objects[i][j]->y == j)
+                continue;
+
+            if (max_height < j)
+                max_height = j;
+
+            if (new_board_animation)
+                sge_object_fall_to_with_effect (priv->gem_objects[i][j], j,
+                                    (i * 100) + ((BOARD_HEIGHT - j) * 50));
+            else
+                sge_object_fall_to (priv->gem_objects[i][j], j,
+                                    // delay incremental
+                                    delay_incr * 25,
+                                    // trying to have the same speed regardless the destination
+                                    100 + 20 * max_height);
+
+            delay_incr++;
+        }
+    }
 }
 
 void
-board_set_pause(gboolean value)
+gweled_engine_set_pause (GweledEngine *engine, gboolean value)
 {
-    static gchar *last_text;
-    gi_game_paused = value;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-    if(value == TRUE) {
-        gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Resume"));
+    priv->is_game_paused = value;
+    g_signal_emit_by_name (engine, "paused", priv->is_game_paused);
 
-        gweled_draw_game_message(_("Paused"), 0);
+    if (value) {
+        gweled_stage_create_game_message (priv->stage, _("Paused"), 0);
 
-        last_text = g_strdup(gtk_progress_bar_get_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar)));
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), _("Paused"));
-        sge_set_layer_visibility(GEMS_LAYER, FALSE);
-        sge_set_layer_visibility(EFFECTS_LAYER, FALSE);
-        gweled_set_hints_active(FALSE);
-    }
-    else {
-        gtk_button_set_label(GTK_BUTTON(gweled_ui->g_pause_game_btn), _("_Pause"));
-        
-        if(last_text != NULL) {
-            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), last_text);
-            g_free(last_text);
-            last_text = NULL;
-        }
-        sge_set_layer_visibility(GEMS_LAYER, TRUE);
-        sge_set_layer_visibility(EFFECTS_LAYER, TRUE);
+        gweled_stage_set_layer_visibility (priv->stage, GEMS_LAYER, FALSE);
+        gweled_stage_set_layer_visibility (priv->stage, EFFECTS_LAYER, FALSE);
+        gweled_engine_set_hints_active (engine, FALSE);
+    } else {
+        gweled_stage_set_layer_visibility (priv->stage, GEMS_LAYER, TRUE);
+        gweled_stage_set_layer_visibility (priv->stage, EFFECTS_LAYER, TRUE);
         sge_destroy_all_objects_on_level(TEXT_LAYER);
-        respawn_board_engine_loop();
+        gweled_engine_respawn (engine);
     }
 }
 
 gboolean
-board_get_pause()
+gweled_engine_is_paused (GweledEngine *engine)
 {
-    return gi_game_paused;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    return priv->is_game_paused;
 }
 
 gboolean
-is_game_running() {
-    return gi_game_running;
+gweled_engine_is_game_running (GweledEngine *engine)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    return priv->is_game_running;
 }
 
-
-gboolean
+static gboolean
 hint_callback (gpointer data)
 {
-	gint x, y;
+    GweledEngine *engine = GWELED_ENGINE (data);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-	if (gi_game_running) {
-		gweled_check_for_moves_left (&x, &y);
-		g_debug("hint_callback: x:%d, y%d\n", x, y);
-        sge_object_bounce(g_gem_objects[x][y]);
-	}
+    gint x, y;
 
-	return TRUE;
+    if (priv->is_game_running) {
+        gweled_check_for_moves_left (engine, &x, &y);
+        g_debug("hint_callback: x:%d, y%d\n", x, y);
+        sge_object_bounce (priv->gem_objects[x][y]);
+    }
 
+    return TRUE;
+}
+
+static void
+gweled_engine_emit_score_changed (GweledEngine *engine) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_signal_emit_by_name (engine, "score-changed", priv->current_score);
+}
+
+static void
+gweled_engine_emit_level_changed (GweledEngine *engine) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_signal_emit_by_name (engine, "level-changed", priv->level);
+}
+
+static void
+gweled_engine_emit_progress (GweledEngine *engine) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    gdouble progress = (gdouble) (priv->total_gems_removed - priv->previous_bonus_at)
+                     / (gdouble) (priv->next_bonus_at - priv->previous_bonus_at);
+    progress = CLAMP (progress, 0.0, 1.0);
+
+    g_signal_emit_by_name (engine, "progress", progress);
 }
 
 gboolean
 gweled_game_over_callback (gpointer data)
 {
-    gweled_hiscores_show_and_add(gi_score, prefs.game_mode);
+    GweledEngine *engine = GWELED_ENGINE (data);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_signal_emit_by_name (engine, "game-over", priv->score, (guint) priv->mode);
     return FALSE;
 }
 
 gboolean
-board_engine_loop (gpointer data)
+board_engine_loop (gpointer user_data)
 {
-	static gint x1, y1, x2, y2, time_slice = 0;
-	static T_SGEObject *cursor[2] = { NULL, NULL };
-	gchar msg_buffer[200];
+    GweledEngine *engine = GWELED_ENGINE (user_data);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-	time_slice++;
+    static gint x1, y1, x2, y2, time_slice = 0;
+    static T_SGEObject *cursor[2] = { NULL, NULL };
+    gchar msg_buffer[200];
 
-	const gchar* state[] = {"_IDLE", "_FIRST_GEM_CLICKED", "_SECOND_GEM_CLICKED",
-	                        "_ILLEGAL_MOVE", "_MARK_ALIGNED_GEMS", "_BOARD_REFILLING"};
+    time_slice++;
+
+    const gchar* state[] = {"_IDLE", "_FIRST_GEM_CLICKED", "_SECOND_GEM_CLICKED",
+                            "_ILLEGAL_MOVE", "_MARK_ALIGNED_GEMS", "_BOARD_REFILLING"};
 
     // progressive score
-	if(gi_current_score < gi_score)
-	{
-		gi_current_score += 10;
-        gweled_set_current_score (gi_current_score);
-	}
-
-    /* Let's first check if we are in timer mode, and penalize the player if necessary */
-	if (prefs.game_mode == TIMED_MODE && gi_game_running && !gi_game_paused  && (time_slice % 25 == 0))
-	{
-        gi_total_gems_removed -= g_steps_for_timer;
-
-		if (gi_total_gems_removed <= gi_previous_bonus_at) {
-
-			gweled_draw_game_message (_("Time's up!"), 0);
-            sge_set_layer_opacity(GEMS_LAYER, 128);
-
-            // Removes any gem that is still activated
-            sge_object_blink_stop(g_gem_objects[gi_x_click][gi_y_click]);
-            sge_set_layer_visibility (EFFECTS_LAYER, FALSE);
-
-            gtk_widget_hide(gweled_ui->g_pause_game_btn);
-
-			gi_game_running = FALSE;
-            gi_game_paused = TRUE;
-            gi_state = _IDLE;
-
-            if (gi_score > 0)
-                g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
-
-		}
-
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar),
-					       (float)(gi_total_gems_removed -gi_previous_bonus_at)
-					       / (float)(gi_next_bonus_at - gi_previous_bonus_at));
-	}
-
-    g_debug("Current state: %s\n", state[gi_state]);
-
-    if(hint_timeout && gi_gem_clicked) {
-        gweled_set_hints_active(FALSE);
+    if (priv->current_score < priv->score)
+    {
+        priv->current_score += 10;
+        gweled_engine_emit_score_changed (engine);
     }
 
-	switch (gi_state) {
-	case _IDLE:
-		if (gi_gem_clicked) {
-			x1 = gi_x_click;
-			y1 = gi_y_click;
-			gi_state = _FIRST_GEM_CLICKED;
+    /* Let's first check if we are in timer mode, and penalize the player if necessary */
+    if (priv->mode == TIMED_MODE && priv->is_game_running && !priv->is_game_paused  && (time_slice % 25 == 0))
+    {
+        priv->total_gems_removed -= priv->steps_for_timer;
+
+        if (priv->total_gems_removed <= priv->previous_bonus_at) {
+
+            gweled_stage_create_game_message (priv->stage, _("Time's up!"), 0);
+            gweled_stage_set_layer_opacity (priv->stage, GEMS_LAYER, 0.5);
+
+            // Removes any gem that is still activated
+            sge_object_blink_stop (priv->gem_objects[priv->x_click][priv->y_click]);
+            gweled_stage_set_layer_visibility (priv->stage, EFFECTS_LAYER, FALSE);
+
+            priv->is_game_running = FALSE;
+            priv->is_game_paused = TRUE;
+            priv->state = _IDLE;
+
+            if (priv->score > 0)
+                g_timeout_add_seconds (1, gweled_game_over_callback, engine);
+
+        }
+
+        gweled_engine_emit_progress (engine);
+    }
+
+    g_debug("Current state: %s\n", state[priv->state]);
+
+    if (priv->hint_timeout && priv->gem_clicked) {
+        gweled_engine_set_hints_active (engine, FALSE);
+    }
+
+    switch (priv->state) {
+    case _IDLE:
+        if (priv->gem_clicked) {
+            x1 = priv->x_click;
+            y1 = priv->y_click;
+            priv->state = _FIRST_GEM_CLICKED;
 
             // Stop any previous effects
-			sge_object_stop_effect(g_gem_objects[gi_x_click][gi_y_click]);
+            sge_object_stop_effect (priv->gem_objects[priv->x_click][priv->y_click]);
 
-			sge_object_blink_start(g_gem_objects[gi_x_click][gi_y_click]);
+            sge_object_blink_start (priv->gem_objects[priv->x_click][priv->y_click]);
 
-			if (cursor[0])
-				sge_destroy_object (cursor[0], NULL);
-			cursor[0] = sge_create_object (x1,
-					                       y1,
-					                       EFFECTS_LAYER, gi_cursor_pixbuf);
-			gi_gem_clicked = 0;
-		}
+            if (cursor[0])
+                sge_destroy_object (cursor[0], NULL);
+            cursor[0] = sge_create_object (GTK_WIDGET (priv->stage), x1, y1, EFFECTS_LAYER, gi_cursor_pixbuf);
+            priv->gem_clicked = FALSE;
+        }
 
-		break;
+        break;
 
-	case _FIRST_GEM_CLICKED:
-		if (gi_gem_clicked) {
-			x2 = gi_x_click;
-			y2 = gi_y_click;
-			gi_gem_clicked = 0;
-			if (((x1 == x2) && (abs (y1 - y2) == 1)) ||
-			    ((y1 == y2) && (abs (x1 - x2) == 1))) {
-				// If the player clicks an adjacent gem, try to swap
-				sge_object_blink_stop(g_gem_objects[x1][y1]);
-				// swap gems
-				sge_object_move_to (g_gem_objects[x1][y1],
-						x2,
-						y2);
-				sge_object_move_to (g_gem_objects[x2][y2],
-						x1,
-						y1);
-				// swap cursors
-				sge_object_move_to (cursor[0],
-						x2,
-						y2);
+    case _FIRST_GEM_CLICKED:
+        if (priv->gem_clicked) {
+            x2 = priv->x_click;
+            y2 = priv->y_click;
+            priv->gem_clicked = FALSE;
+            if (((x1 == x2) && (abs (y1 - y2) == 1)) ||
+                ((y1 == y2) && (abs (x1 - x2) == 1))) {
+                // If the player clicks an adjacent gem, try to swap
+                sge_object_blink_stop (priv->gem_objects[x1][y1]);
+                // swap gems
+                sge_object_move_to (priv->gem_objects[x1][y1],
+                        x2,
+                        y2);
+                sge_object_move_to (priv->gem_objects[x2][y2],
+                        x1,
+                        y1);
+                // swap cursors
+                sge_object_move_to (cursor[0],
+                        x2,
+                        y2);
 
-				sound_effect_play (SWAP_EVENT);
+                if (priv->play_sounds) {
+                    sound_effect_play (SWAP_EVENT);
+                }
 
-				gi_state = _SECOND_GEM_CLICKED;
-			} else if((x1 == x2) && (y1 == y2)) {
-				// If the player clicks the selected gem, deselect it
-				if(cursor[0]) {
-					sge_destroy_object(cursor[0], NULL);
-					cursor[0] = NULL;
-				}
-				sge_object_blink_stop(g_gem_objects[x1][y1]);
-				gi_state = _IDLE;
-				gi_gem_clicked = 0;
-			} else {
-				// If the player clicks anywhere else, make that the first selection
-				sge_object_blink_stop(g_gem_objects[x1][y1]);
-				sge_object_blink_start(g_gem_objects[x2][y2]);
-				x1 = x2;
-				y1 = y2;
-				if (cursor[0])
-					sge_destroy_object (cursor[0], NULL);
-				cursor[0] = sge_create_object (x1,
-						y1,
-						EFFECTS_LAYER, gi_cursor_pixbuf);
-			}
-		}
-		break;
+                priv->state = _SECOND_GEM_CLICKED;
+            } else if((x1 == x2) && (y1 == y2)) {
+                // If the player clicks the selected gem, deselect it
+                if(cursor[0]) {
+                    sge_destroy_object(cursor[0], NULL);
+                    cursor[0] = NULL;
+                }
+                sge_object_blink_stop (priv->gem_objects[x1][y1]);
+                priv->state = _IDLE;
+                priv->gem_clicked = FALSE;
+            } else {
+                // If the player clicks anywhere else, make that the first selection
+                sge_object_blink_stop (priv->gem_objects[x1][y1]);
+                sge_object_blink_start (priv->gem_objects[x2][y2]);
+                x1 = x2;
+                y1 = y2;
+                if (cursor[0])
+                    sge_destroy_object (cursor[0], NULL);
+                cursor[0] = sge_create_object (GTK_WIDGET (priv->stage), x1, y1, EFFECTS_LAYER, gi_cursor_pixbuf);
+            }
+        }
+        break;
 
-	case _SECOND_GEM_CLICKED:
-		if (!sge_object_is_moving (g_gem_objects[x1][y1]) && !sge_object_is_moving (g_gem_objects[x2][y2])) {
-			gweled_swap_gems (x1, y1, x2, y2);
-			if (!gweled_is_part_of_an_alignment (x1, y1) && !gweled_is_part_of_an_alignment (x2, y2)) {
-				// re-swap gems
-				sge_object_move_to (g_gem_objects[x1][y1],
-						x2,
-						y2);
-				sge_object_move_to (g_gem_objects[x2][y2],
-						x1,
-						y1);
-				// re-swap cursors
-				sge_object_move_to (cursor[0],
-						x1,
-						y1);
+    case _SECOND_GEM_CLICKED:
+        if (!sge_object_is_moving (priv->gem_objects[x1][y1]) && !sge_object_is_moving (priv->gem_objects[x2][y2])) {
+            gweled_swap_gems (engine, x1, y1, x2, y2);
+            if (!gweled_is_part_of_an_alignment (engine, x1, y1) && !gweled_is_part_of_an_alignment (engine, x2, y2)) {
+                // re-swap gems
+                sge_object_move_to (priv->gem_objects[x1][y1],
+                        x2,
+                        y2);
+                sge_object_move_to (priv->gem_objects[x2][y2],
+                        x1,
+                        y1);
+                // re-swap cursors
+                sge_object_move_to (cursor[0],
+                        x1,
+                        y1);
 
-				gi_state = _ILLEGAL_MOVE;
-			} else {
-                gi_score_per_move = 0;
-				gi_state = _MARK_ALIGNED_GEMS;
-			}
-			// fadeout cursors
-			if (cursor[0])
-				sge_object_fadeout (cursor[0], 0, 200);
-			cursor[0] = NULL;
-			cursor[1] = NULL;
-		}
-		break;
+                priv->state = _ILLEGAL_MOVE;
+            } else {
+                priv->score_per_move = 0;
+                priv->state = _MARK_ALIGNED_GEMS;
+            }
+            // fadeout cursors
+            if (cursor[0])
+                sge_object_fadeout (cursor[0], 0, 200);
+            cursor[0] = NULL;
+            cursor[1] = NULL;
+        }
+        break;
 
-	case _ILLEGAL_MOVE:
-		if (!sge_object_is_moving (g_gem_objects[x1][y1]) && !sge_object_is_moving (g_gem_objects[x2][y2])) {
-			gweled_swap_gems (x1, y1, x2, y2);
-			gi_state = _IDLE;
-		}
-		break;
+    case _ILLEGAL_MOVE:
+        if (!sge_object_is_moving (priv->gem_objects[x1][y1]) && !sge_object_is_moving (priv->gem_objects[x2][y2])) {
+            gweled_swap_gems (engine, x1, y1, x2, y2);
+            priv->state = _IDLE;
+        }
+        break;
 
-	case _MARK_ALIGNED_GEMS:
-		if (gweled_check_for_alignments () == TRUE) {
-			gweled_take_down_deleted_gems ();
-			gweled_remove_gems_and_update_score ();
+    case _MARK_ALIGNED_GEMS:
+        if (gweled_check_for_alignments (engine) == TRUE) {
+            gweled_take_down_deleted_gems (engine);
+            gweled_remove_gems_and_update_score (engine);
 
-            sound_effect_play (EXPLODE_EVENT);
-
-            if(prefs.game_mode != ENDLESS_MODE) {
-                if (gi_total_gems_removed <= gi_next_bonus_at)
-				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), (float) (gi_total_gems_removed - gi_previous_bonus_at) / (float) (gi_next_bonus_at - gi_previous_bonus_at));
-			    else
-				    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar), 1.0);
+            if (priv->play_sounds) {
+                sound_effect_play (EXPLODE_EVENT);
             }
 
-			gi_state = _BOARD_REFILLING;
-			gweled_refill_board ();
-			gweled_gems_fall_into_place (FALSE);
-		} else {
-			if (gweled_check_for_moves_left (NULL, NULL) == FALSE) {
-				if (prefs.game_mode == ENDLESS_MODE || prefs.game_mode == TIMED_MODE) {
+            if (priv->mode != ENDLESS_MODE) {
+                gweled_engine_emit_progress (engine);
+            }
 
-					gweled_draw_game_message (_("No moves left!"), 2);
+            priv->state = _BOARD_REFILLING;
+            gweled_refill_board (engine);
+            gweled_gems_fall_into_place (engine, FALSE);
+        } else {
+            if (gweled_check_for_moves_left (engine, NULL, NULL) == FALSE) {
+                if (priv->mode == ENDLESS_MODE || priv->mode == TIMED_MODE) {
+
+                    gweled_stage_create_game_message (priv->stage, _("No moves left!"), 2);
 
                     sge_destroy_all_objects_on_level(GEMS_LAYER);
-                    gweled_fill_new_board();
+                    gweled_fill_new_board (engine);
 
-					gweled_gems_fall_into_place (FALSE);
-					gi_state = _MARK_ALIGNED_GEMS;
-				} else {
-				    // Game over
+                    gweled_gems_fall_into_place (engine, FALSE);
+                    priv->state = _MARK_ALIGNED_GEMS;
+                } else {
+                    // Game over
 
-					gweled_draw_game_message (_("No moves left!"), 0);
-                    sge_set_layer_opacity(GEMS_LAYER, 128);
-                    gtk_widget_hide(gweled_ui->g_pause_game_btn);
-					gi_game_running = FALSE;
-                    gi_game_paused = TRUE;
-                    gi_state = _IDLE;
+                    gweled_stage_create_game_message (priv->stage, _("No moves left!"), 0);
+                    gweled_stage_set_layer_opacity (priv->stage, GEMS_LAYER, 0.5);
+                    priv->is_game_running = FALSE;
+                    priv->is_game_paused = TRUE;
+                    priv->state = _IDLE;
 
-                    if (gi_score > 0)
-                        g_timeout_add_seconds (1, gweled_game_over_callback, NULL);
-				}
-			} else {
-				g_do_not_score = FALSE;
-				gi_state = _IDLE;
-			}
-		}
-		break;
+                    if (priv->score > 0)
+                        g_timeout_add_seconds (1, gweled_game_over_callback, engine);
+                }
+            } else {
+                priv->do_not_score = FALSE;
+                priv->state = _IDLE;
+            }
+        }
+        break;
 
-	case _BOARD_REFILLING:
+    case _BOARD_REFILLING:
         if (!sge_objects_are_moving_on_layer (GEMS_LAYER)) {
-			if (gi_total_gems_removed >= gi_next_bonus_at && prefs.game_mode != ENDLESS_MODE) {
-				gi_previous_bonus_at = gi_next_bonus_at;
-				gi_next_bonus_at *= 2;
+            if (priv->total_gems_removed >= priv->next_bonus_at && priv->mode != ENDLESS_MODE) {
+                priv->previous_bonus_at = priv->next_bonus_at;
+                priv->next_bonus_at *= 2;
 
-				if (prefs.game_mode == TIMED_MODE)
-					g_steps_for_timer = (gi_next_bonus_at - gi_previous_bonus_at) / TOTAL_STEPS_FOR_TIMER + 1;
+                if (priv->mode == TIMED_MODE)
+                    priv->steps_for_timer = (priv->next_bonus_at - priv->previous_bonus_at) / TOTAL_STEPS_FOR_TIMER + 1;
 
                 // draw bonus message and new level in game
-                gi_bonus_multiply++;
-                gi_level++;
-                g_sprintf(msg_buffer, _("Level %d"), gi_level);
-                gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), msg_buffer);
-				g_sprintf (msg_buffer, _("Bonus x%d"), gi_bonus_multiply >> 1);
-				gweled_draw_game_message (msg_buffer, 2);
+                priv->bonus_multiply++;
+                priv->level++;
+                gweled_engine_emit_level_changed (engine);
+                g_sprintf (msg_buffer, _("Bonus x%d"), priv->bonus_multiply >> 1);
+                gweled_stage_create_game_message (priv->stage, msg_buffer, 2);
 
-				gweled_delete_gems_for_bonus ();
-				gweled_take_down_deleted_gems ();
-				gweled_remove_gems_and_update_score ();
+                gweled_delete_gems_for_bonus (engine);
+                gweled_take_down_deleted_gems (engine);
+                gweled_remove_gems_and_update_score (engine);
 
-				if (prefs.game_mode == TIMED_MODE)
-					gi_total_gems_removed = (gi_next_bonus_at + gi_previous_bonus_at) / 2;
+                if (priv->mode == TIMED_MODE)
+                    priv->total_gems_removed = (priv->next_bonus_at + priv->previous_bonus_at) / 2;
 
-				gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR(gweled_ui->g_progress_bar),
-					(float) (gi_total_gems_removed - gi_previous_bonus_at) /
-					(float) (gi_next_bonus_at - gi_previous_bonus_at));
+                gweled_engine_emit_progress (engine);
 
-				gweled_refill_board ();
-				gweled_gems_fall_into_place (FALSE);
-				g_do_not_score = TRUE;
-			} else {
-				gi_state = _MARK_ALIGNED_GEMS;
-			}
-		}
-		break;
-	default:
-		break;
-	}
+                gweled_refill_board (engine);
+                gweled_gems_fall_into_place (engine, FALSE);
+                priv->do_not_score = TRUE;
+            } else {
+                priv->state = _MARK_ALIGNED_GEMS;
+            }
+        }
+        break;
+    default:
+        break;
+    }
 
-	if(gi_state == _IDLE && gi_gem_clicked == FALSE && !hint_timeout && !prefs.hints_off)
-	    gweled_set_hints_active(TRUE);
+    if (priv->state == _IDLE && !priv->gem_clicked && !priv->hint_timeout && priv->show_hints)
+        gweled_engine_set_hints_active (engine, TRUE);
 
-	if((gi_state == _IDLE || gi_state == _FIRST_GEM_CLICKED) && gi_current_score == gi_score && ((prefs.game_mode == TIMED_MODE && gi_game_paused) || !(prefs.game_mode == TIMED_MODE)))
+    if ((priv->state == _IDLE || priv->state == _FIRST_GEM_CLICKED) && priv->current_score == priv->score && (priv->is_game_paused || priv->mode != TIMED_MODE))
     {
-        board_engine_id = 0;
+        priv->board_engine_id = 0;
         //g_debug("Board engine timer stopped");
         return FALSE;
     }
-	return TRUE;
+    return TRUE;
 }
-
-void respawn_board_engine_loop()
-{
-    if(!board_engine_id)
-        board_engine_id = g_timeout_add (50, board_engine_loop, NULL);
-}
-
 
 void
-gweled_start_new_game (void)
+gweled_engine_respawn (GweledEngine *engine)
 {
-    gi_game_paused = 0;
-	gi_score = 0;
-	gi_current_score = 0;
-    gi_score_per_move = 0;
-	gi_bonus_multiply = 3;
-	gi_level = 1;
-	gi_previous_bonus_at = 0;
-	gi_next_bonus_at = FIRST_BONUS_AT;
-    g_steps_for_timer = FIRST_BONUS_AT / (float) TOTAL_STEPS_FOR_TIMER;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-	if (prefs.game_mode == TIMED_MODE) {
-		gi_total_gems_removed = FIRST_BONUS_AT / 2;
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.5);
-    }
-    else {
-		gi_total_gems_removed = 0;
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
-    }
-
-    if (prefs.game_mode != ENDLESS_MODE) {
-        gchar *text = g_strdup_printf(_("Level %d"), 1);
-	    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text);
-	    g_free(text);
-    }
-
-    gweled_set_hints_active(FALSE);
-
-    gweled_set_current_score (0);
-
-    gweled_fill_new_board();
-
-	gweled_gems_fall_into_place (TRUE);
-
-    respawn_board_engine_loop();
-
-	gi_game_running = -1;
-	gi_state = _IDLE;
+    if(!priv->board_engine_id)
+        priv->board_engine_id = g_timeout_add (50, board_engine_loop, engine);
 }
 
+void
+gweled_engine_start_new_game (GweledEngine *engine)
+{
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    priv->is_game_paused = FALSE;
+    priv->score = 0;
+    priv->current_score = 0;
+    priv->score_per_move = 0;
+    priv->bonus_multiply = 3;
+    priv->level = 1;
+    priv->previous_bonus_at = 0;
+    priv->next_bonus_at = FIRST_BONUS_AT;
+    priv->steps_for_timer = FIRST_BONUS_AT / (float) TOTAL_STEPS_FOR_TIMER;
+
+    if (priv->mode == TIMED_MODE) {
+        priv->total_gems_removed = FIRST_BONUS_AT / 2;
+    } else {
+        priv->total_gems_removed = 0;
+    }
+    gweled_engine_emit_progress (engine);
+
+    if (priv->mode != ENDLESS_MODE) {
+        gweled_engine_emit_level_changed (engine);
+    }
+
+    gweled_engine_set_hints_active (engine, FALSE);
+
+    gweled_engine_emit_score_changed (engine);
+
+    gweled_fill_new_board (engine);
+
+    gweled_gems_fall_into_place (engine, TRUE);
+
+    gweled_engine_respawn (engine);
+
+    priv->is_game_running = TRUE;
+    priv->state = _IDLE;
+}
 
 GweledGameState*
-gweled_get_current_game(void)
+gweled_engine_get_current_game (GweledEngine *engine)
 {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
     GweledGameState *game;
     int i, j;
 
     game = g_malloc( sizeof(GweledGameState) );
 
-    game->game_mode = prefs.game_mode;
-    game->gi_score = gi_score;
-    game->gi_total_gems_removed = gi_total_gems_removed;
-    game->gi_bonus_multiply = gi_bonus_multiply;
-    game->gi_previous_bonus_at = gi_previous_bonus_at;
-    game->gi_next_bonus_at = gi_next_bonus_at;
-    game->gi_level = gi_level;
-    game->g_steps_for_timer = g_steps_for_timer;
+    game->game_mode = priv->mode;
+    game->gi_score = priv->score;
+    game->gi_total_gems_removed = priv->total_gems_removed;
+    game->gi_bonus_multiply = priv->bonus_multiply;
+    game->gi_previous_bonus_at = priv->previous_bonus_at;
+    game->gi_next_bonus_at = priv->next_bonus_at;
+    game->gi_level = priv->level;
+    game->g_steps_for_timer = priv->steps_for_timer;
 
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++)
-            game->gpc_game_board[i][j] = gpc_game_board[i][j];
+            game->gpc_game_board[i][j] = priv->game_board[i][j];
 
     return game;
 }
 
-
 void
-gweled_set_previous_game(GweledGameState *game)
+gweled_engine_set_previous_game (GweledEngine *engine, GweledGameState *game)
 {
-    gchar *text_buffer;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
     int i, j;
 
-    prefs.game_mode = game->game_mode;
-    gi_score = game->gi_score;
-    gi_total_gems_removed = game->gi_total_gems_removed;
-    gi_bonus_multiply = game->gi_bonus_multiply;
-    gi_previous_bonus_at = game->gi_previous_bonus_at;
-    gi_next_bonus_at = game->gi_next_bonus_at;
-    gi_level = game->gi_level;
-    g_steps_for_timer = game->g_steps_for_timer;
-    gi_current_score = gi_score;
+    priv->mode = game->game_mode;
+    priv->score = game->gi_score;
+    priv->total_gems_removed = game->gi_total_gems_removed;
+    priv->bonus_multiply = game->gi_bonus_multiply;
+    priv->previous_bonus_at = game->gi_previous_bonus_at;
+    priv->next_bonus_at = game->gi_next_bonus_at;
+    priv->level = game->gi_level;
+    priv->steps_for_timer = game->g_steps_for_timer;
+    priv->current_score = priv->score;
 
-    if(prefs.game_mode != ENDLESS_MODE) {
-        gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar),
-                                (float)(gi_total_gems_removed -gi_previous_bonus_at)
-                                / (float)(gi_next_bonus_at - gi_previous_bonus_at));
-        text_buffer = g_strdup_printf(_("Level %d"), gi_level);
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), text_buffer);
-        g_free(text_buffer);
+    if (priv->mode != ENDLESS_MODE) {
+        gweled_engine_emit_progress (engine);
+        gweled_engine_emit_level_changed (engine);
     }
 
-    gweled_set_current_score (gi_current_score);
+    gweled_engine_emit_score_changed (engine);
 
     sge_destroy_all_objects ();
 
     for (i = 0; i < BOARD_WIDTH; i++)
         for (j = 0; j < BOARD_HEIGHT; j++) {
-            gpc_game_board[i][j] = game->gpc_game_board[i][j];
-            g_gem_objects[i][j] = sge_create_object (i, j , GEMS_LAYER,
-													 gi_gems_pixbuf[gpc_game_board[i][j]]);
+            priv->game_board[i][j] = game->gpc_game_board[i][j];
+            priv->gem_objects[i][j] = sge_create_object (GTK_WIDGET (priv->stage), i, j, GEMS_LAYER, priv->game_board[i][j]);
         }
 
-    gi_game_running = -1;
-    gi_state = _MARK_ALIGNED_GEMS;
+    priv->is_game_running = TRUE;
+    priv->state = _MARK_ALIGNED_GEMS;
 
-    respawn_board_engine_loop();
+    gweled_engine_respawn (engine);
 
-    gi_game_running = TRUE;
-    gi_game_paused = FALSE;
+    priv->is_game_running = TRUE;
+    priv->is_game_paused = FALSE;
 }
 
-
-void gweled_stop_game()
+void
+gweled_engine_stop_game (GweledEngine *engine)
 {
-    board_set_pause(FALSE);
-    g_source_remove(board_engine_id);
-    board_engine_id = 0;
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
 
-    gi_game_running = 0;
-    sge_destroy_all_objects();
+    gweled_engine_set_pause (engine, FALSE);
+    g_source_remove (priv->board_engine_id);
+    priv->board_engine_id = 0;
 
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), "" );
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (gweled_ui->g_progress_bar), 0.0);
-    gweled_set_current_score (0);
+    priv->is_game_running = FALSE;
+    sge_destroy_all_objects ();
 }
 
-void gweled_set_hints_active(gboolean yn)
+static void
+gweled_engine_set_hints_active (GweledEngine *engine, gboolean yn)
 {
-    if(yn) {
-        if(!hint_timeout) {
-            hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, NULL);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    if (yn) {
+        if (!priv->hint_timeout) {
+            priv->hint_timeout = g_timeout_add_seconds (HINT_TIMEOUT, hint_callback, engine);
+        }
+    } else {
+        if (priv->hint_timeout) {
+            g_source_remove (priv->hint_timeout);
+            priv->hint_timeout = 0;
         }
     }
-    else {
-        if(hint_timeout) {
-            g_source_remove(hint_timeout);
-            hint_timeout = 0;
-        }
+}
+
+void
+gweled_engine_handle_click (GweledEngine *engine, gint x, gint y) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    // resume game on click
+    if (gweled_engine_is_game_running (engine) && gweled_engine_is_paused(engine)) {
+        gweled_engine_set_pause (engine, FALSE);
+        // skip this click
+        return;
     }
+
+    // in pause mode don't accept events
+    if (gweled_engine_is_paused(engine))
+        return;
+
+    priv->x_click = x;
+    priv->y_click = y;
+    priv->gem_clicked = TRUE;
+
+    if (priv->play_sounds) {
+        sound_effect_play (CLICK_EVENT);
+    }
+    gweled_engine_respawn (engine);
+}
+
+static void
+gweled_engine_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec) {
+    GweledEngine *engine = GWELED_ENGINE (object);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    switch (prop_id) {
+    case PROP_SHOW_HINTS:
+        priv->show_hints = g_value_get_boolean (value);
+        gweled_engine_set_hints_active (engine, priv->show_hints);
+        break;
+    case PROP_PLAY_SOUNDS:
+        priv->play_sounds = g_value_get_boolean (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+gweled_engine_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec) {
+    GweledEngine *engine = GWELED_ENGINE (object);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    switch (prop_id) {
+    case PROP_SHOW_HINTS:
+        g_value_set_boolean (value, priv->show_hints);
+        break;
+    case PROP_PLAY_SOUNDS:
+        g_value_set_boolean (value, priv->play_sounds);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        break;
+    }
+}
+
+static void
+gweled_engine_dispose (GObject *object) {
+    GweledEngine *engine = GWELED_ENGINE (object);
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    g_clear_pointer (&priv->random_generator, g_rand_free);
+}
+
+static void
+gweled_engine_class_init (GweledEngineClass *klass) {
+    G_OBJECT_CLASS (klass)->dispose = gweled_engine_dispose;
+    G_OBJECT_CLASS (klass)->set_property = gweled_engine_set_property;
+    G_OBJECT_CLASS (klass)->get_property = gweled_engine_get_property;
+
+    obj_properties[PROP_SHOW_HINTS] = g_param_spec_boolean ("show-hints", NULL, NULL, TRUE, G_PARAM_READWRITE);
+    obj_properties[PROP_PLAY_SOUNDS] = g_param_spec_boolean ("play-sounds", NULL, NULL, TRUE, G_PARAM_READWRITE);
+    g_object_class_install_properties (G_OBJECT_CLASS (klass), N_PROPERTIES, obj_properties);
+
+    g_signal_new ("progress",
+        G_TYPE_FROM_CLASS (klass),
+        G_SIGNAL_RUN_LAST,
+        0,
+        NULL, NULL,
+        NULL,
+        G_TYPE_NONE, 1, G_TYPE_DOUBLE);
+
+    g_signal_new ("score-changed",
+        G_TYPE_FROM_CLASS (klass),
+        G_SIGNAL_RUN_LAST,
+        0,
+        NULL, NULL,
+        NULL,
+        G_TYPE_NONE, 1, G_TYPE_INT);
+
+    g_signal_new ("level-changed",
+        G_TYPE_FROM_CLASS (klass),
+        G_SIGNAL_RUN_LAST,
+        0,
+        NULL, NULL,
+        NULL,
+        G_TYPE_NONE, 1, G_TYPE_INT);
+
+    g_signal_new ("paused",
+        G_TYPE_FROM_CLASS (klass),
+        G_SIGNAL_RUN_LAST,
+        0,
+        NULL, NULL,
+        NULL,
+        G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+
+    g_signal_new ("game-over",
+        G_TYPE_FROM_CLASS (klass),
+        G_SIGNAL_RUN_LAST,
+        0,
+        NULL, NULL,
+        NULL,
+        G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_UINT);
+}
+
+static void
+gweled_engine_init (GweledEngine *engine) {
+    GweledEnginePrivate *priv = gweled_engine_get_instance_private (engine);
+
+    priv->mode = NORMAL_MODE;
+    priv->show_hints = TRUE;
+    priv->play_sounds = TRUE;
+    priv->random_generator = g_rand_new_with_seed (time (NULL));
+    priv->is_game_running = FALSE;
+    priv->state = _IDLE;
+    priv->gem_clicked = FALSE;
 }
